@@ -17,6 +17,15 @@
       "skills": [
         "./skills/chart-visualization"
       ]
+    },
+    {
+      "name": "infographic-creator",
+      "description": "Create beautiful infographics based on given text content. Use when users request to create infographics.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/infographic-creator"
+      ]
     }
   ]
 }
