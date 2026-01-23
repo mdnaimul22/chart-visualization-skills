@@ -10,7 +10,12 @@ In the era of data-driven decision-making, efficient and accurate data visualiza
 
 ## Usage
 
-Add this skill to your project:
+Add this marketplace to Claude Code:
+```bash
+/plugin marketplace add antvis/chart-visualization-skills
+```
+
+Or you can directly install the skills for your multiple agents:
 
 ```bash
 npx skills add antvis/chart-visualization-skills
