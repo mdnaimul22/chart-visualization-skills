@@ -26,6 +26,15 @@
       "skills": [
         "./skills/infographic-creator"
       ]
+    },
+    {
+      "name": "narrative-text-visualization",
+      "description": "Generate structured narrative text visualizations from data using T8 schema. Creates data interpretation reports with entity labeling.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/narrative-text-visualization"
+      ]
     }
   ]
 }
