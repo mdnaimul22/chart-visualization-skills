@@ -50,8 +50,104 @@ npx skills add antvis/chart-visualization-skills
 
 `AntV S2 Expert` helps users develop with the S2 multi-dimensional cross-analysis table engine. It provides comprehensive guidance on `@antv/s2` core engine, `@antv/s2-react` and `@antv/s2-vue` framework bindings, `@antv/s2-react-components` advanced analysis components, and `@antv/s2-ssr` server-side rendering. Covers pivot tables, table sheets, custom cells, theming, events, interactions, sorting, totals, tooltips, frozen rows/columns, icons, pagination, and more.
 
+- 📈 **antv-g2-chart**: G2 v5 chart code generator. Use when users need to generate G2 charts — bar charts, line charts, pie charts, scatter plots, area charts, heatmaps, and any statistical data visualization with the G2 library.
+
+`AntV G2 Chart` generates accurate, runnable G2 v5 code following Spec Mode best practices. It covers 30+ chart types (interval, line, area, point, rect, cell, treemap, sankey, chord, wordCloud, gauge, and more), data transforms (stackY, dodgeX, binX, fold, etc.), coordinate systems (cartesian, polar, theta, radial), scales, interactions (brush, slider, legend filter), components (axis, legend, tooltip, annotation), and multi-view compositions. Built-in guard rails prevent common v4→v5 migration pitfalls such as using deprecated chain APIs, invalid palette names, or referencing `d3` in user code.
+
+**Evaluation Results**
+
+Harness Engineering approach has been rigorously tested against 174 chart generation test cases, demonstrating significant improvements over baseline methods:
+
+| Model | Success Rate | Improvement |
+| :--- | :--- | :--- |
+| qwen3-coder-480b-a35b-instruct | **98.2%** | +18.2% |
+| Kimi-K2.5 | **97.7%** | +17.7% |
+| GLM-5.1 | **93.6%** | +13.6% |
+| DeepSeek-V3.2 | **87.3%** | +7.3% |
+| Context7 Baseline | 80% | baseline |
+
+The results show that Harness Engineering enables LLMs to achieve near-production-ready accuracy (up to 98.2%), significantly outperforming the Context7 baseline approach.
+
 > [!TIP]
 > More skills are coming soon.
+
+## CLI Usage
+
+We also provide a CLI tool named `antv` for easy usage in your terminal, Install globally:
+
+```bash
+npm install -g chart-visualization-skills
+```
+
+**Retrieve or list skills by query**:
+
+```bash
+# Retrieve skills by query
+antv retrieve "bar chart" --library g2 --topk 10 --content
+
+# List all available skills
+antv list --library g2 --category core
+
+# Show skill info
+antv info --library g2
+```
+
+**Usage for the command**:
+
+```
+Usage: antv [options] [command]
+
+CLI tool for AntV chart visualization skills retrieval
+
+Options:
+  -V, --version               output the version number
+  -h, --help                  display help for command
+
+Commands:
+  retrieve [options] <query>  Search for skills matching a query
+  list [options]              List all available skills
+  info [options]              Show skill info from SKILL.md
+  help [command]              display help for command
+```
+
+## API Usage
+
+```typescript
+import { retrieve } from 'chart-visualization-skills';
+
+const skills = retrieve('bar chart', 'g2', 5);
+// with content body: retrieve('bar chart', 'g2', 5, true)
+```
+
+```typescript
+retrieve(query: string, library?: string, topk?: number, content?: boolean)
+```
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `query` | `string` | — | Search query |
+| `library` | `string` | `'g2'` | Library filter (`g2` or `g6`) |
+| `topk` | `number` | `7` | Number of results |
+| `content` | `boolean` | `false` | Whether to include markdown content |
+
+> Notes:
+> - Default retrieval returns lightweight result objects without the `content` field.
+> - `content = true` returns markdown content body (frontmatter metadata is excluded).
+
+```typescript
+import { info } from 'chart-visualization-skills';
+
+const skillInfo = info('g2');
+// => { name: 'antv-g2-chart', description: '...', content: '...' }
+```
+
+```typescript
+info(library?: string): SkillInfo | undefined
+```
+
+| Parameter | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `library` | `string` | `'g2'` | Library to get info for (`g2` or `g6`) |
 
 ## License
 

@@ -42,3 +42,35 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# env
+.env
+
+# Eval results (local runs, not for review)
+# eval/result/
+logs
+
+# Validator state directory
+eval/temp/
+
+# harness
+harness/memory.json
+
+# lock files
+pnpm-lock.yaml
+
+# skills index
+src/index/
+
+# Playground (Next.js)
+playground/.next/
+playground/node_modules/
+playground/.env.local
+playground/out/
+
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# AI
+settings.local.json
