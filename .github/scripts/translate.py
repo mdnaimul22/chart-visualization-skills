@@ -59,18 +59,33 @@ Content:
     try:
         print(f"DEBUG: Sending request for translation using model {MODEL_ID} (via requests)...")
         start_time = time.time()
-        response = requests.post(invoke_url, headers=headers, json=payload, timeout=180)
+        response = requests.post(invoke_url, headers=headers, json=payload, timeout=300)
         duration = time.time() - start_time
         
         if response.status_code == 200:
             data = response.json()
             print(f"DEBUG: Received response in {duration:.2f} seconds.")
-            return data['choices'][0]['message']['content']
+            
+            if 'choices' in data and len(data['choices']) > 0:
+                message = data['choices'][0].get('message', {})
+                content = message.get('content', "")
+                
+                # Handle cases where content might be empty but reasoning/thinking exists
+                if not content and 'reasoning_content' in message:
+                    print("DEBUG: Content empty but reasoning_content found. Using reasoning_content.")
+                    content = message['reasoning_content']
+                
+                if not content:
+                    print(f"DEBUG: Choice found but content is empty. Full message: {json.dumps(message)}")
+                
+                return content
+            else:
+                print(f"DEBUG: No choices found in response. Data: {json.dumps(data)}")
         else:
             print(f"Error during translation: Status {response.status_code}")
             print(f"Response: {response.text}")
     except Exception as e:
-        print(f"Error during translation: {e}")
+        print(f"Error during translation exception: {e}")
     
     return None
 
