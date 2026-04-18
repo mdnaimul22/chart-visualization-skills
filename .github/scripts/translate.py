@@ -7,8 +7,8 @@ import requests
 from pathlib import Path
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-API_KEY = os.environ.get("LLM_API_KEY")
-API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+API_KEY = os.environ.get("LLM_API_KEY", "").strip()
+API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1").strip()
 MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen3.5-122b-a10b") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
