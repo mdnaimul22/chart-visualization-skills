@@ -12,8 +12,8 @@ API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 MODEL_ID = os.environ.get("LLM_MODEL", "google/gemma-4-31b-it") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
-BATCH_SIZE = 5 # Process 1 file at a time for minimal tracking
-DELAY_SECONDS = 20 # Wait seconds between files
+BATCH_SIZE = 1 # Process 1 file at a time for minimal tracking
+DELAY_SECONDS = 30 # Wait seconds between files
 
 # Regex for Chinese characters
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
