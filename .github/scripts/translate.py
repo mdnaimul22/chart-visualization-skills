@@ -12,6 +12,8 @@ API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 MODEL_ID = os.environ.get("LLM_MODEL", "google/gemma-4-31b-it") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
+BATCH_SIZE = 20 # Process 20 files at a time to avoid timeouts
+DELAY_SECONDS = 4 # Wait 4 seconds between files
 
 # Regex for Chinese characters
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
@@ -21,6 +23,10 @@ def has_chinese(text):
 
 def get_hash(text):
     return hashlib.md5(text.encode('utf-8')).hexdigest()
+
+def save_cache(cache):
+    with open(CACHE_FILE, "w") as f:
+        json.dump(cache, f, indent=2)
 
 def translate_text(client, text):
     prompt = f"""
@@ -41,7 +47,7 @@ Content:
             messages=[
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.7, # Gemma usually likes a bit higher temp than Qwen for thinking
+            temperature=0.7,
             top_p=0.95,
             max_tokens=4096,
             extra_body={
@@ -72,14 +78,12 @@ def main():
 
     # Find all .md files in skills directory
     md_files = list(Path(SKILLS_DIR).rglob("*.md"))
-    # Also include the root README.md
     if os.path.exists("README.md"):
         md_files.append(Path("README.md"))
 
     print(f"Found {len(md_files)} Markdown files.")
 
-    updated_count = 0
-    
+    files_to_translate = []
     for md_path in md_files:
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -91,30 +95,40 @@ def main():
         content_hash = get_hash(content)
 
         if cache.get(file_id) == content_hash:
-            # Check if an English version already exists (overlay strategy)
-            # Actually, in this script we overwrite the file because it's a dedicated sync-translate repo
             continue
+            
+        files_to_translate.append((md_path, content, content_hash))
 
-        print(f"Translating: {md_path} ...")
+    print(f"Queue size: {len(files_to_translate)} files need translation.")
+    
+    # Take only the first BATCH_SIZE files
+    batch = files_to_translate[:BATCH_SIZE]
+    if batch:
+        print(f"Processing batch of {len(batch)} files...")
+    else:
+        print("No new files to translate.")
+        return
+
+    updated_count = 0
+    for md_path, content, original_hash in batch:
+        print(f"Translating ({updated_count+1}/{len(batch)}): {md_path} ...")
         translated = translate_text(client, content)
         
         if translated:
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write(translated)
             
-            cache[file_id] = get_hash(content) # Cache the ORIGINAL hash
+            cache[str(md_path)] = original_hash
+            save_cache(cache) # Save cache after EVERY file
             updated_count += 1
             print(f"  ✓ Translated and updated: {md_path}")
-            # Rate limiting sleep
-            time.sleep(2)
+            
+            if updated_count < len(batch):
+                time.sleep(DELAY_SECONDS)
         else:
-            print(f"  ✗ Failed to translate.")
+            print(f"  ✗ Failed to translate: {md_path}")
 
-    # Save cache
-    with open(CACHE_FILE, "w") as f:
-        json.dump(cache, f, indent=2)
-
-    print(f"Finished. Updated {updated_count} files.")
+    print(f"Batch finished. Updated {updated_count} files.")
 
 if __name__ == "__main__":
     main()
