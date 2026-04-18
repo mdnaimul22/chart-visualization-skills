@@ -3,8 +3,8 @@ import re
 import json
 import hashlib
 import time
+import requests
 from pathlib import Path
-from openai import OpenAI
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 API_KEY = os.environ.get("LLM_API_KEY")
@@ -28,7 +28,14 @@ def save_cache(cache):
     with open(CACHE_FILE, "w") as f:
         json.dump(cache, f, indent=2)
 
-def translate_text(client, text):
+def translate_text(text):
+    invoke_url = f"{API_BASE}/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
+    
     prompt = f"""
 Translate the following Markdown content from Chinese to English. 
 Maintain all Markdown formatting, code blocks, and structure perfectly.
@@ -39,30 +46,31 @@ Content:
 {text}
 """
     
+    payload = {
+        "model": MODEL_ID,
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "max_tokens": 4096,
+        "stream": False,
+        "chat_template_kwargs": {"enable_thinking": True}
+    }
+    
     try:
-        print(f"DEBUG: Sending request for translation using model {MODEL_ID}...")
+        print(f"DEBUG: Sending request for translation using model {MODEL_ID} (via requests)...")
         start_time = time.time()
-        response = client.chat.completions.create(
-            model=MODEL_ID,
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7,
-            top_p=0.95,
-            max_tokens=4096,
-            timeout=120, # 120 seconds timeout
-            extra_body={
-                "chat_template_kwargs": {"enable_thinking": True}
-            }
-        )
+        response = requests.post(invoke_url, headers=headers, json=payload, timeout=180)
         duration = time.time() - start_time
-        print(f"DEBUG: Received response in {duration:.2f} seconds.")
-        if response.choices[0].message.content:
-            return response.choices[0].message.content
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"DEBUG: Received response in {duration:.2f} seconds.")
+            return data['choices'][0]['message']['content']
+        else:
+            print(f"Error during translation: Status {response.status_code}")
+            print(f"Response: {response.text}")
     except Exception as e:
-        import traceback
         print(f"Error during translation: {e}")
-        traceback.print_exc()
     
     return None
 
@@ -71,8 +79,6 @@ def main():
         print("Error: LLM_API_KEY not found in environment.")
         return
 
-    client = OpenAI(base_url=API_BASE, api_key=API_KEY)
-    
     # Load cache
     cache = {}
     if os.path.exists(CACHE_FILE):
@@ -115,7 +121,7 @@ def main():
     updated_count = 0
     for md_path, content, original_hash in batch:
         print(f"Translating ({updated_count+1}/{len(batch)}): {md_path} ...")
-        translated = translate_text(client, content)
+        translated = translate_text(content)
         
         if translated:
             with open(md_path, "w", encoding="utf-8") as f:
@@ -127,6 +133,7 @@ def main():
             print(f"  ✓ Translated and updated: {md_path}")
             
             if updated_count < len(batch):
+                print(f"Waiting {DELAY_SECONDS} seconds before next file...")
                 time.sleep(DELAY_SECONDS)
         else:
             print(f"  ✗ Failed to translate: {md_path}")
