@@ -1,3 +1,20 @@
 {
-  "skills/antv-g2-chart/SKILL.md": "a0a34fc391d84182ee15fc6c55322e84"
+  "skills/antv-g2-chart/SKILL.md": "97cb48613fe227dbf9d5e96cf2b259a7",
+  "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "559db8189210c3d8eb574340abbfe463",
+  "skills/antv-g2-chart/references/scales/g2-scale-band.md": "f595a1b51ed94c47e9964bb92fe7b4e4",
+  "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "07cdd31a61bcbdb2145855160457ccbb",
+  "skills/antv-g2-chart/references/scales/g2-scale-pow-sqrt.md": "7f857e0e1d5d9d616f3b2c4175323eca",
+  "skills/antv-g2-chart/references/scales/g2-scale-threshold.md": "2eeb541e5137e5483565ed36b26a8337",
+  "skills/antv-g2-chart/references/scales/g2-scale-quantile-quantize.md": "9d7d7b4bcda0c835914e2a87ce37b71d",
+  "skills/antv-g2-chart/references/scales/g2-scale-log.md": "36e3c265bc65cafa4564a0a4da4943b0",
+  "skills/antv-g2-chart/references/scales/g2-scale-point.md": "c8619e36edd82362f3313f4310b0af0f",
+  "skills/antv-g2-chart/references/scales/g2-scale-time.md": "3f18b62f070058e5d5eb801055ba83c2",
+  "skills/antv-g2-chart/references/scales/g2-scale-sequential.md": "5aded5f26755815ddc3fb4cd5c7fc00e",
+  "skills/antv-g2-chart/references/palette/g2-palette-category10.md": "b25197ecce020231ea2b74bcacefb5ed",
+  "skills/antv-g2-chart/references/palette/g2-palette-category20.md": "ffe0c497f207555af411ba298e1cc646",
+  "skills/antv-g2-chart/references/marks/g2-mark-liquid.md": "433fb6a8b2bd9c668f335d3f226e87c3",
+  "skills/antv-g2-chart/references/marks/g2-mark-point-bubble.md": "ed8cc2eeef35554db7c138ffd0375796",
+  "skills/antv-g2-chart/references/marks/g2-mark-wordcloud.md": "4fd416b3f15d384cfae80a5cebfe3d41",
+  "skills/antv-g2-chart/references/marks/g2-mark-line-basic.md": "c77a3eabab0d9d4c274a580e8d312ef3",
+  "skills/antv-g2-chart/references/marks/g2-mark-rect.md": "f16d75abc7d2bc2347ab25068c24124b"
 }

@@ -9,7 +9,7 @@ You are an expert in AntV G2 v5 charting library. Generate accurate, runnable co
 
 ---
 
-## 1. Core Constraints / 核心约束 (MUST follow)
+## 1. Core Constraints (MUST follow)
 
 1. **`container` is mandatory**: `new Chart({ container: 'container', ... })`
 2. **Use Spec Mode ONLY**: `chart.options({ type: 'interval', data, encode: {...} })` (See Forbidden Patterns for V4 chained API)
@@ -1028,7 +1028,6 @@ Label transforms are used to handle issues such as label overlap and overflow, i
 ## 18. Patterns / 模式
 
 Patterns are best practices for common scenarios, including migration guides, performance optimization, responsive adaptation, and more.
-
 ### 18.1 Migration Guide / Migration (v4 → v5)
 
 | v4 (Deprecated) | v5 (Correct) |
