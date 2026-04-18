@@ -195,7 +195,6 @@ axis: {
   },
 }
 ```
-
 ## Common Errors and Fixes
 
 ### Error: Forgetting to Set `nice: true` Causes Uneven Ticks

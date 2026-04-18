@@ -2,7 +2,7 @@
 id: "g2-scale-quantile-quantize"
 title: "G2 Quantile Scale (quantile) and Quantize Scale (quantize)"
 description: |
-  quantile: Groups data by quantiles based on actual data distribution, with equal number of data points in each group (equal-frequency grouping).
+  quantile: Groups data by quantiles based on actual data distribution, with an equal number of data points in each group (equal-frequency grouping).
   quantize: Divides the numerical range into equal intervals, with equal width for each segment (equal-interval grouping).
   Both map continuous values to discrete outputs (e.g., colors) and are commonly used for map classification coloring.
   The difference from threshold is: threshold manually specifies breakpoints, while quantile/quantize automatically calculates them.
@@ -13,12 +13,11 @@ category: "scales"
 tags:
   - "quantile"
   - "quantize"
-  - "分位数"
-  - "等频"
-  - "等距"
-  - "比例尺"
+  - "quantile"
+  - "equal-frequency"
+  - "equal-interval"
   - "scale"
-  - "分级着色"
+  - "classification coloring"
 
 related:
   - "g2-scale-threshold"
@@ -37,7 +36,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/scale/quantile"
 ---
-
 ## Quantile vs Quantize vs Threshold Comparison
 
 | Scale | Grouping Method | Suitable Scenarios |

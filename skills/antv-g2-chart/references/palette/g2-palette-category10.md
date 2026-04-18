@@ -9,11 +9,10 @@ library: "g2"
 version: "5.x"
 category: "palette"
 tags:
-  - "调色板"
   - "palette"
-  - "颜色"
-  - "分类"
-  - "10色"
+  - "color"
+  - "category"
+  - "10-color"
 
 related:
   - "g2-palette-category20"
@@ -35,7 +34,6 @@ updated: "2025-03-26"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/palette"
 ---
-
 ## Core Concepts
 
 Category10 is the default categorical color palette of AntV:

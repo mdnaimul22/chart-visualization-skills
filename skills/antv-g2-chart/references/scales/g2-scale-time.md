@@ -98,7 +98,6 @@ chart.options({
   },
 });
 ```
-
 ## String Dates (Recommended to Convert to Date Objects)
 
 G2 v5 has some automatic recognition capability for string dates in the `YYYY-MM-DD` format, but the behavior relies on internal inference and is **unstable**.

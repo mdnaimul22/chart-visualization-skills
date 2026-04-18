@@ -34,7 +34,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/scale/ordinal"
 ---
-
 ## Minimum Viable Example
 
 ```javascript

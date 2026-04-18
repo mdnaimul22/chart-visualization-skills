@@ -286,7 +286,6 @@ chart.options({
   interaction: [{ type: 'tooltip' }],
 });
 ```
-
 ## Spec Field Quick Reference
 
 | Field | Example Value | Description |
