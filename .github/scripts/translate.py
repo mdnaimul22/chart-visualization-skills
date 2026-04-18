@@ -12,7 +12,7 @@ API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
 MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen3.5-122b-a10b") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
-BATCH_SIZE = 1 # Process 1 file at a time for minimal tracking
+BATCH_SIZE = 5 # Process 5 files at a time for faster progress
 DELAY_SECONDS = 30 # Wait seconds between files
 
 # Regex for Chinese characters
@@ -37,22 +37,25 @@ def translate_text(text):
     }
     
     prompt = f"""
-Translate the following Markdown content from Chinese to English. 
-Maintain all Markdown formatting, code blocks, and structure perfectly.
-Only translate the text content. Do not change technical terms, IDs, or file paths if they are in English.
-The output must be ONLY the translated Markdown content.
+TASK: Translate the following Markdown content from Chinese to English.
 
-Content:
+STRICT RULES:
+1. Maintain all Markdown formatting, symbols, and structure EXACTLY as the original.
+2. DO NOT squash lines. Preserve every single line break and empty line.
+3. Keep all technical terms, IDs, and file paths in their original English form.
+4. Output ONLY the translated Markdown content. Do not add any conversational text, explanations, or quotes around the output.
+
+CONTENT TO TRANSLATE:
 {text}
 """
     
     payload = {
         "model": MODEL_ID,
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7,
+        "temperature": 0.1, # Lower temperature for more deterministic/stable formatting
         "top_p": 0.95,
         "max_tokens": 16384,
-        "stream": False, # Standard request is safer for preserving formatting
+        "stream": False,
         "chat_template_kwargs": {"enable_thinking": True}
     }
     
