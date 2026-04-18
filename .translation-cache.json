@@ -1,20 +1,21 @@
 {
   "skills/antv-g2-chart/SKILL.md": "cb575d030c87b99200382e9c55da3409",
-  "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "37bc3fbe1e720862a621eef7629e8023",
+  "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "6369d562522952faf3ee5f4788bd71be",
   "skills/antv-g2-chart/references/scales/g2-scale-band.md": "f595a1b51ed94c47e9964bb92fe7b4e4",
-  "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "55a2858576bd92804d3c1324075c2200",
+  "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "a33c49a97c8d98ffb080f0df3271a07a",
   "skills/antv-g2-chart/references/scales/g2-scale-pow-sqrt.md": "7f857e0e1d5d9d616f3b2c4175323eca",
   "skills/antv-g2-chart/references/scales/g2-scale-threshold.md": "2eeb541e5137e5483565ed36b26a8337",
   "skills/antv-g2-chart/references/scales/g2-scale-quantile-quantize.md": "d76aa77524e601826b67798db9ba2699",
   "skills/antv-g2-chart/references/scales/g2-scale-log.md": "36e3c265bc65cafa4564a0a4da4943b0",
   "skills/antv-g2-chart/references/scales/g2-scale-point.md": "c8619e36edd82362f3313f4310b0af0f",
-  "skills/antv-g2-chart/references/scales/g2-scale-time.md": "3ae368ea5ab88f8bd5b12882b08d7f23",
+  "skills/antv-g2-chart/references/scales/g2-scale-time.md": "b8c5c5f6d8b03c7721aff1487c0a206b",
   "skills/antv-g2-chart/references/scales/g2-scale-sequential.md": "5aded5f26755815ddc3fb4cd5c7fc00e",
   "skills/antv-g2-chart/references/palette/g2-palette-category10.md": "7dfdf2a629b3a937c5db345dd6c1360b",
   "skills/antv-g2-chart/references/palette/g2-palette-category20.md": "ffe0c497f207555af411ba298e1cc646",
   "skills/antv-g2-chart/references/marks/g2-mark-liquid.md": "433fb6a8b2bd9c668f335d3f226e87c3",
   "skills/antv-g2-chart/references/marks/g2-mark-point-bubble.md": "ed8cc2eeef35554db7c138ffd0375796",
   "skills/antv-g2-chart/references/marks/g2-mark-wordcloud.md": "4fd416b3f15d384cfae80a5cebfe3d41",
-  "skills/antv-g2-chart/references/marks/g2-mark-line-basic.md": "800db3c807882de835ff75128781b8e7",
-  "skills/antv-g2-chart/references/marks/g2-mark-rect.md": "f16d75abc7d2bc2347ab25068c24124b"
+  "skills/antv-g2-chart/references/marks/g2-mark-line-basic.md": "a7de274e2ec42c95d367682904f585ef",
+  "skills/antv-g2-chart/references/marks/g2-mark-rect.md": "f16d75abc7d2bc2347ab25068c24124b",
+  "skills/antv-g2-chart/references/marks/g2-mark-link.md": "227d6ebc5535a6b76d6901f22e097dba"
 }
