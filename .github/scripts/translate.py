@@ -9,7 +9,7 @@ from openai import OpenAI
 # ── Configuration ─────────────────────────────────────────────────────────────
 API_KEY = os.environ.get("LLM_API_KEY")
 API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
-MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen2.5-72b-instruct") # Updated based on user input
+MODEL_ID = os.environ.get("LLM_MODEL", "google/gemma-4-31b-it") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
 
@@ -34,15 +34,22 @@ Content:
 """
     
     try:
+        print(f"DEBUG: Sending request for translation using model {MODEL_ID}...")
+        start_time = time.time()
         response = client.chat.completions.create(
             model=MODEL_ID,
             messages=[
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.1,
-            top_p=0.7,
+            temperature=0.7, # Gemma usually likes a bit higher temp than Qwen for thinking
+            top_p=0.95,
             max_tokens=4096,
+            extra_body={
+                "chat_template_kwargs": {"enable_thinking": True}
+            }
         )
+        duration = time.time() - start_time
+        print(f"DEBUG: Received response in {duration:.2f} seconds.")
         if response.choices[0].message.content:
             return response.choices[0].message.content
     except Exception as e:
@@ -97,9 +104,9 @@ def main():
             
             cache[file_id] = get_hash(content) # Cache the ORIGINAL hash
             updated_count += 1
-            print(f"  ✓ Translated and updated.")
+            print(f"  ✓ Translated and updated: {md_path}")
             # Rate limiting sleep
-            time.sleep(1)
+            time.sleep(2)
         else:
             print(f"  ✗ Failed to translate.")
 
