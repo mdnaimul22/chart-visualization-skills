@@ -4,13 +4,13 @@ import json
 import hashlib
 import time
 from pathlib import Path
-from google import genai
-from google.genai import types
+from openai import OpenAI
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-API_KEY = os.environ.get("GEMINI_API_KEY")
+API_KEY = os.environ.get("LLM_API_KEY")
+API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
+MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen2.5-72b-instruct") # Updated based on user input
 CACHE_FILE = ".translation-cache.json"
-MODELS = ["gemini-2.0-flash", "gemini-1.5-flash"]
 SKILLS_DIR = "skills"
 
 # Regex for Chinese characters
@@ -33,29 +33,29 @@ Content:
 {text}
 """
     
-    for model_id in MODELS:
-        try:
-            response = client.models.generate_content(
-                model=model_id,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.1,
-                )
-            )
-            if response.text:
-                return response.text
-        except Exception as e:
-            print(f"Error with {model_id}: {e}")
-            continue
+    try:
+        response = client.chat.completions.create(
+            model=MODEL_ID,
+            messages=[
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.1,
+            top_p=0.7,
+            max_tokens=4096,
+        )
+        if response.choices[0].message.content:
+            return response.choices[0].message.content
+    except Exception as e:
+        print(f"Error during translation: {e}")
     
     return None
 
 def main():
     if not API_KEY:
-        print("Error: GEMINI_API_KEY not found in environment.")
+        print("Error: LLM_API_KEY not found in environment.")
         return
 
-    client = genai.Client(api_key=API_KEY)
+    client = OpenAI(base_url=API_BASE, api_key=API_KEY)
     
     # Load cache
     cache = {}
