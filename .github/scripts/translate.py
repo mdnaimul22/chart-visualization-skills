@@ -9,7 +9,7 @@ from pathlib import Path
 # ── Configuration ─────────────────────────────────────────────────────────────
 API_KEY = os.environ.get("LLM_API_KEY")
 API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1")
-MODEL_ID = os.environ.get("LLM_MODEL", "google/gemma-4-31b-it") 
+MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen3.5-122b-a10b") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
 BATCH_SIZE = 1 # Process 1 file at a time for minimal tracking
