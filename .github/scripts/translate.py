@@ -8,12 +8,12 @@ from pathlib import Path
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 API_KEY = os.environ.get("LLM_API_KEY", "").strip()
-API_BASE = os.environ.get("LLM_BASE_URL", "https://integrate.api.nvidia.com/v1").strip()
-MODEL_ID = os.environ.get("LLM_MODEL", "qwen/qwen3.5-122b-a10b") 
+API_BASE = os.environ.get("LLM_BASE_URL", "http://13.204.27.202:8000/v1").strip()
+MODEL_ID = os.environ.get("LLM_MODEL", "CohereForAI_C4AI_Command") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
 BATCH_SIZE = 5 # Process 5 files at a time for faster progress
-DELAY_SECONDS = 30 # Wait seconds between files
+DELAY_SECONDS = 5 # Reduced delay for this API
 
 # Regex for Chinese characters
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
@@ -37,13 +37,16 @@ def translate_text(text):
     }
     
     prompt = f"""
+You are a professional technical translator specializing in software documentation and Markdown.
+
 TASK: Translate the following Markdown content from Chinese to English.
 
-STRICT RULES:
-1. Maintain all Markdown formatting, symbols, and structure EXACTLY as the original.
-2. DO NOT squash lines. Preserve every single line break and empty line.
-3. Keep all technical terms, IDs, and file paths in their original English form.
-4. Output ONLY the translated Markdown content. Do not add any conversational text, explanations, or quotes around the output.
+STRICT INSTRUCTIONS:
+1. PRESERVE STRUCTURE: Maintain all Markdown syntax, headers, code blocks, lists, and tables EXACTLY as they are.
+2. WHITESPACE INTEGRITY: Do not remove or add any empty lines. Every single line break and spacing must be identical to the original. Ensure there is an empty line before every header if it existed in the original.
+3. TECHNICAL TERMS: Keep all English technical terms, library names (AntV, G2, etc.), API methods (chart.options(), etc.), and variable names in their original form.
+4. NO EXPLANATIONS: Provide ONLY the translated Markdown content. Do not include any introductory or concluding remarks.
+5. QUALITY: Ensure the English translation is professional, clear, and follows technical writing best practices.
 
 CONTENT TO TRANSLATE:
 {text}
@@ -55,8 +58,7 @@ CONTENT TO TRANSLATE:
         "temperature": 0.1, # Lower temperature for more deterministic/stable formatting
         "top_p": 0.95,
         "max_tokens": 16384,
-        "stream": False,
-        "chat_template_kwargs": {"enable_thinking": True}
+        "stream": False
     }
     
     try:
@@ -94,6 +96,25 @@ CONTENT TO TRANSLATE:
     
     return None
 
+def split_markdown(text):
+    """Splits markdown into chunks based on headers."""
+    lines = text.splitlines(keepends=True)
+    chunks = []
+    current_chunk = []
+    
+    for line in lines:
+        # Split by level 1, 2, or 3 headers
+        if re.match(r'^#{1,3} ', line):
+            if current_chunk:
+                chunks.append("".join(current_chunk))
+                current_chunk = []
+        current_chunk.append(line)
+    
+    if current_chunk:
+        chunks.append("".join(current_chunk))
+    
+    return chunks
+
 def main():
     if not API_KEY:
         print("Error: LLM_API_KEY not found in environment.")
@@ -112,53 +133,88 @@ def main():
 
     print(f"Found {len(md_files)} Markdown files.")
 
-    files_to_translate = []
+    files_to_process = []
     for md_path in md_files:
         with open(md_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        if not has_chinese(content):
-            continue
-
+        # Always process if it has Chinese, regardless of cache for now to ensure thoroughness
+        # or use hash-based cache on the whole file to skip unchanged files
         file_id = str(md_path)
         content_hash = get_hash(content)
 
         if cache.get(file_id) == content_hash:
             continue
             
-        files_to_translate.append((md_path, content, content_hash))
+        files_to_process.append((md_path, content, content_hash))
 
-    print(f"Queue size: {len(files_to_translate)} files need translation.")
+    print(f"Queue size: {len(files_to_process)} files need checking/translation.")
     
     # Take only the first BATCH_SIZE files
-    batch = files_to_translate[:BATCH_SIZE]
+    batch = files_to_process[:BATCH_SIZE]
     if batch:
         print(f"Processing batch of {len(batch)} files...")
     else:
         print("No new files to translate.")
         return
 
-    updated_count = 0
     for md_path, content, original_hash in batch:
-        print(f"Translating ({updated_count+1}/{len(batch)}): {md_path} ...")
-        translated = translate_text(content)
+        print(f"\n--- Processing: {md_path} ---")
+        chunks = split_markdown(content)
+        print(f"File split into {len(chunks)} chunks.")
         
-        if translated:
-            with open(md_path, "w", encoding="utf-8") as f:
-                f.write(translated)
-            
+        translated_chunks = []
+        chunks_updated = 0
+        
+        for i, chunk in enumerate(chunks):
+            if has_chinese(chunk):
+                print(f"  Translating chunk {i+1}/{len(chunks)} ({len(chunk)} chars)...")
+                translated = translate_text(chunk)
+                if translated:
+                    translated_chunks.append(translated)
+                    chunks_updated += 1
+                    
+                    # SAVE PROGRESS IMMEDIATELY after each chunk
+                    temp_processed = []
+                    for j, c in enumerate(translated_chunks):
+                        content_to_add = c
+                        # If this is not the first chunk and it starts with a header,
+                        # ensure the previous chunk ended with two newlines for professional spacing.
+                        if j > 0 and re.match(r'^#{1,3} ', content_to_add):
+                            # Strip any trailing whitespace from previous chunk before adding newlines
+                            temp_processed[-1] = temp_processed[-1].rstrip() + '\n\n'
+                        
+                        # Ensure the current chunk ends with at least one newline for safety
+                        if j < len(chunks) - 1 and not content_to_add.endswith('\n'):
+                            content_to_add += '\n'
+                            
+                        temp_processed.append(content_to_add)
+                    
+                    # Add remaining original chunks to keep the file structure
+                    temp_processed.extend(chunks[i+1:])
+                    
+                    final_temp = "".join(temp_processed)
+                    with open(md_path, "w", encoding="utf-8") as f:
+                        f.write(final_temp)
+                    
+                    # Small delay between chunks
+                    time.sleep(1) 
+                else:
+                    print(f"  ✗ Failed to translate chunk {i+1}. Keeping original.")
+                    translated_chunks.append(chunk)
+            else:
+                # Keep original English/already translated chunk
+                translated_chunks.append(chunk)
+        
+        if chunks_updated > 0:
+            # Final save and update cache
             cache[str(md_path)] = original_hash
-            save_cache(cache) # Save cache after EVERY file
-            updated_count += 1
-            print(f"  ✓ Translated and updated: {md_path}")
-            
-            if updated_count < len(batch):
-                print(f"Waiting {DELAY_SECONDS} seconds before next file...")
-                time.sleep(DELAY_SECONDS)
+            save_cache(cache)
+            print(f"  ✓ Finished {md_path} ({chunks_updated} chunks translated).")
         else:
-            print(f"  ✗ Failed to translate: {md_path}")
+            print(f"  - No Chinese found in {md_path} chunks (or translation failed).")
 
-    print(f"Batch finished. Updated {updated_count} files.")
+    print("\nBatch finished.")
 
 if __name__ == "__main__":
     main()
