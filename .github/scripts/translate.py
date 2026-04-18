@@ -215,6 +215,9 @@ def main():
             print(f"  - No Chinese found in {md_path} chunks (or translation failed).")
 
     print("\nBatch finished.")
+    
+    # Auto-push changes after the batch
+    os.system('if [ -n "$(git status --porcelain)" ]; then git add . && git commit -m "auto-translate: progress update" && git push origin master; fi')
 
 if __name__ == "__main__":
     main()
