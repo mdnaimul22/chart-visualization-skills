@@ -50,6 +50,7 @@ Content:
             temperature=0.7,
             top_p=0.95,
             max_tokens=4096,
+            timeout=120, # 120 seconds timeout
             extra_body={
                 "chat_template_kwargs": {"enable_thinking": True}
             }
@@ -59,7 +60,9 @@ Content:
         if response.choices[0].message.content:
             return response.choices[0].message.content
     except Exception as e:
+        import traceback
         print(f"Error during translation: {e}")
+        traceback.print_exc()
     
     return None
 
