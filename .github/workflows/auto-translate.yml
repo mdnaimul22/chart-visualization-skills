@@ -52,6 +52,7 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "sync: auto-translate from upstream $(date +'%Y-%m-%d %H:%M')"
+            git pull --rebase origin master
             git push origin master
           else
             echo "No changes to commit."
