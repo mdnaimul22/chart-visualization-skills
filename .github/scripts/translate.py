@@ -33,7 +33,7 @@ def translate_text(text):
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json" # We can still use JSON accept but stream chunks
     }
     
     prompt = f"""
@@ -51,39 +51,56 @@ Content:
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.7,
         "top_p": 0.95,
-        "max_tokens": 4096,
-        "stream": False,
+        "max_tokens": 16384,
+        "stream": True,
         "chat_template_kwargs": {"enable_thinking": True}
     }
     
     try:
-        print(f"DEBUG: Sending request for translation using model {MODEL_ID} (via requests)...")
-        start_time = time.time()
-        response = requests.post(invoke_url, headers=headers, json=payload, timeout=300)
-        duration = time.time() - start_time
+        print(f"DEBUG: Sending request for translation using model {MODEL_ID} (streaming)...")
+        response = requests.post(invoke_url, headers=headers, json=payload, timeout=600, stream=True)
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"DEBUG: Received response in {duration:.2f} seconds.")
-            
-            if 'choices' in data and len(data['choices']) > 0:
-                message = data['choices'][0].get('message', {})
-                content = message.get('content', "")
-                
-                # Handle cases where content might be empty but reasoning/thinking exists
-                if not content and 'reasoning_content' in message:
-                    print("DEBUG: Content empty but reasoning_content found. Using reasoning_content.")
-                    content = message['reasoning_content']
-                
-                if not content:
-                    print(f"DEBUG: Choice found but content is empty. Full message: {json.dumps(message)}")
-                
-                return content
-            else:
-                print(f"DEBUG: No choices found in response. Data: {json.dumps(data)}")
-        else:
+        if response.status_code != 200:
             print(f"Error during translation: Status {response.status_code}")
             print(f"Response: {response.text}")
+            return None
+
+        full_content = []
+        reasoning_content = []
+        
+        for line in response.iter_lines():
+            if line:
+                line_text = line.decode("utf-8")
+                if line_text.startswith("data: "):
+                    data_str = line_text[6:]
+                    if data_str == "[DONE]":
+                        break
+                    try:
+                        chunk = json.loads(data_str)
+                        delta = chunk['choices'][0].get('delta', {})
+                        
+                        # Capture regular content
+                        if 'content' in delta and delta['content']:
+                            full_content.append(delta['content'])
+                        
+                        # Capture reasoning if present
+                        if 'reasoning_content' in delta and delta['reasoning_content']:
+                            reasoning_content.append(delta['reasoning_content'])
+                            
+                    except json.JSONDecodeError:
+                        continue
+        
+        result = "".join(full_content)
+        if not result and reasoning_content:
+            print("DEBUG: Content empty but reasoning found. Using reasoning as fallback.")
+            result = "".join(reasoning_content)
+            
+        if result:
+            print(f"DEBUG: Successfully received {len(result)} characters of translation.")
+            return result
+        else:
+            print("DEBUG: Translation result is empty.")
+            
     except Exception as e:
         print(f"Error during translation exception: {e}")
     
