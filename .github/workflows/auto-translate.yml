@@ -39,6 +39,10 @@ jobs:
           # Merge upstream changes, favoring local for conflicts in .github/
           git merge upstream/master --no-edit || { git checkout --ours .github/ && git add .github/ && git commit -m "chore: resolved conflicts in .github/ during sync"; }
 
+      - name: Test Connectivity
+        run: |
+          curl -I https://integrate.api.nvidia.com/v1/chat/completions
+          
       - name: Run Translation Script
         env:
           LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
