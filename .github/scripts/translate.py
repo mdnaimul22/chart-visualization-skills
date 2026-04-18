@@ -12,8 +12,8 @@ API_BASE = os.environ.get("LLM_BASE_URL", "http://13.204.27.202:8000/v1").strip(
 MODEL_ID = os.environ.get("LLM_MODEL", "CohereForAI_C4AI_Command") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
-BATCH_SIZE = 5 # Process 5 files at a time for faster progress
-DELAY_SECONDS = 5 # Reduced delay for this API
+BATCH_SIZE = 50 # Process 50 files at a time for faster progress
+DELAY_SECONDS = 2 # Reduced delay for this API
 
 # Regex for Chinese characters
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
