@@ -11,11 +11,10 @@ version: "5.x"
 category: "marks"
 tags:
   - "partition"
-  - "旭日图"
   - "sunburst"
-  - "层次数据"
-  - "矩形分区"
-  - "下钻"
+  - "hierarchical data"
+  - "rectangular partition"
+  - "drilldown"
 
 related:
   - "g2-mark-treemap"
@@ -165,7 +164,6 @@ d.data['category']   → '技术'      ✅ (Original data is on d.data)
 ```
 
 **Special Case**: `encode.value: 'value'` works as a string because G2 has **special handling** for the `value` channel of hierarchical marks. Other channels (`color`, `shape`, etc.) do not have this special handling and must use a callback.
-
 ### Structure of Callback Parameter d
 
 ```javascript
