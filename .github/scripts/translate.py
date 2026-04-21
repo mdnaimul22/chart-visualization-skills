@@ -12,8 +12,8 @@ API_BASE = os.environ.get("LLM_BASE_URL", "http://13.204.27.202:8000/v1").strip(
 MODEL_ID = os.environ.get("LLM_MODEL", "CohereForAI_C4AI_Command") 
 CACHE_FILE = ".translation-cache.json"
 SKILLS_DIR = "skills"
-BATCH_SIZE = 50 # Process 50 files at a time for faster progress
-DELAY_SECONDS = 2 # Reduced delay for this API
+BATCH_SIZE = 100 # Process 100 files at a time for faster progress
+DELAY_SECONDS = 1 # Further reduced delay
 
 # Regex for Chinese characters
 CHINESE_PATTERN = re.compile(r'[\u4e00-\u9fff]')
@@ -62,32 +62,24 @@ CONTENT TO TRANSLATE:
     }
     
     try:
-        print(f"DEBUG: Sending request for translation using model {MODEL_ID} (standard)...")
-        start_time = time.time()
-        # Large timeout for deep-thinking models
         response = requests.post(invoke_url, headers=headers, json=payload, timeout=600)
-        duration = time.time() - start_time
         
         if response.status_code == 200:
             data = response.json()
-            print(f"DEBUG: Received response in {duration:.2f} seconds.")
             
             if 'choices' in data and len(data['choices']) > 0:
                 message = data['choices'][0].get('message', {})
                 content = message.get('content', "")
                 
-                # Handle cases where content might be empty but reasoning/thinking exists
                 if not content and 'reasoning_content' in message:
-                    print("DEBUG: Content empty but reasoning_content found. Using reasoning_content.")
                     content = message['reasoning_content']
                 
                 if content:
-                    print(f"DEBUG: Successfully received {len(content)} characters of translation.")
                     return content
                 else:
-                    print(f"DEBUG: Choice found but content is empty. Message: {json.dumps(message)}")
+                    print(f"  ⚠ Response choice found but content is empty.")
             else:
-                print(f"DEBUG: No choices found in response. Data: {json.dumps(data)}")
+                print(f"  ⚠ No choices found in response.")
         else:
             print(f"Error during translation: Status {response.status_code}")
             print(f"Response: {response.text}")
@@ -161,14 +153,15 @@ def main():
     for md_path, content, original_hash in batch:
         print(f"\n--- Processing: {md_path} ---")
         chunks = split_markdown(content)
-        print(f"File split into {len(chunks)} chunks.")
         
         translated_chunks = []
         chunks_updated = 0
         
+        all_chunks_succeeded = True
+        
         for i, chunk in enumerate(chunks):
             if has_chinese(chunk):
-                print(f"  Translating chunk {i+1}/{len(chunks)} ({len(chunk)} chars)...")
+                print(f"  Translating chunk {i+1}/{len(chunks)}...")
                 translated = translate_text(chunk)
                 if translated:
                     translated_chunks.append(translated)
@@ -194,6 +187,11 @@ def main():
                     temp_processed.extend(chunks[i+1:])
                     
                     final_temp = "".join(temp_processed)
+                    
+                    # FIX: Remove leading empty lines added by LLM
+                    if i == 0: # If we just translated the first chunk
+                         final_temp = final_temp.lstrip()
+                         
                     with open(md_path, "w", encoding="utf-8") as f:
                         f.write(final_temp)
                     
@@ -202,15 +200,18 @@ def main():
                 else:
                     print(f"  ✗ Failed to translate chunk {i+1}. Keeping original.")
                     translated_chunks.append(chunk)
+                    all_chunks_succeeded = False
             else:
                 # Keep original English/already translated chunk
                 translated_chunks.append(chunk)
         
-        if chunks_updated > 0:
-            # Final save and update cache
+        if chunks_updated > 0 and all_chunks_succeeded:
+            # Final save and update cache ONLY if everything succeeded
             cache[str(md_path)] = original_hash
             save_cache(cache)
             print(f"  ✓ Finished {md_path} ({chunks_updated} chunks translated).")
+        elif chunks_updated > 0:
+            print(f"  ⚠ Partially translated {md_path} ({chunks_updated} chunks). Will retry missing parts next time.")
         else:
             print(f"  - No Chinese found in {md_path} chunks (or translation failed).")
 
