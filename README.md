@@ -50,6 +50,10 @@ npx skills add antvis/chart-visualization-skills
 
 `AntV S2 Expert` helps users develop with the S2 multi-dimensional cross-analysis table engine. It provides comprehensive guidance on `@antv/s2` core engine, `@antv/s2-react` and `@antv/s2-vue` framework bindings, `@antv/s2-react-components` advanced analysis components, and `@antv/s2-ssr` server-side rendering. Covers pivot tables, table sheets, custom cells, theming, events, interactions, sorting, totals, tooltips, frozen rows/columns, icons, pagination, and more.
 
+- 🕸️ **antv-g6-graph**: G6 v5 graph visualization code generator. Use when users need to generate G6 graphs — network graphs, tree graphs, flow charts, mind maps, and any relational or graph-structured data visualization with the G6 library.
+
+`AntV G6 Graph` generates accurate, runnable G6 v5 code following best practices. It covers core graph initialization, data structures (nodes, edges, combos), 10+ layout algorithms (force, dagre, circular, grid, mindmap, fishbone, etc.), all built-in node/edge/combo types, state management, 15+ behaviors (drag-canvas, zoom-canvas, click-select, lasso, etc.), 10+ plugins (minimap, tooltip, toolbar, legend, timebar, etc.), custom element development, transforms, and animation. Built-in guard rails prevent common v4→v5 migration pitfalls such as using deprecated `G6.Graph()` constructors, `graph.data()` APIs, or Mode-based behavior configuration.
+
 - 📈 **antv-g2-chart**: G2 v5 chart code generator. Use when users need to generate G2 charts — bar charts, line charts, pie charts, scatter plots, area charts, heatmaps, and any statistical data visualization with the G2 library.
 
 `AntV G2 Chart` generates accurate, runnable G2 v5 code following Spec Mode best practices. It covers 30+ chart types (interval, line, area, point, rect, cell, treemap, sankey, chord, wordCloud, gauge, and more), data transforms (stackY, dodgeX, binX, fold, etc.), coordinate systems (cartesian, polar, theta, radial), scales, interactions (brush, slider, legend filter), components (axis, legend, tooltip, annotation), and multi-view compositions. Built-in guard rails prevent common v4→v5 migration pitfalls such as using deprecated chain APIs, invalid palette names, or referencing `d3` in user code.
@@ -58,13 +62,13 @@ npx skills add antvis/chart-visualization-skills
 
 Harness Engineering approach has been rigorously tested against 174 chart generation test cases, demonstrating significant improvements over baseline methods:
 
-| Model | Success Rate | Improvement |
-| :--- | :--- | :--- |
-| qwen3-coder-480b-a35b-instruct | **98.2%** | +18.2% |
-| Kimi-K2.5 | **97.7%** | +17.7% |
-| GLM-5.1 | **93.6%** | +13.6% |
-| DeepSeek-V3.2 | **87.3%** | +7.3% |
-| Context7 Baseline | 80% | baseline |
+| **Model** | **G2** | **G6** |
+| :---: | :---: | :---: |
+| qwen3-coder-480b-a35b-instruct | ✨ 98.2% <sup><sub>+17.7%</sub></sup> | 94.8% <sup><sub>+15.6%</sub></sup> |
+| Kimi-K2.5 | 97.7% <sup><sub>+17.2%</sub></sup> | 96.9% <sup><sub>+17.7%</sub></sup> |
+| GLM-5.1 | 93.6% <sup><sub>+13.1%</sub></sup> | 92.8% <sup><sub>+13.6%</sub></sup> |
+| DeepSeek-V3.2 | 90.8% <sup><sub>+10.3%</sub></sup> | ✨ 97.9% <sup><sub>+18.7%</sub></sup> |
+| Context7 <sub>Baseline</sub> | 80.5% | 79.2% |
 
 The results show that Harness Engineering enables LLMs to achieve near-production-ready accuracy (up to 98.2%), significantly outperforming the Context7 baseline approach.
 
