@@ -11,11 +11,9 @@ version: "5.x"
 category: "marks"
 tags:
   - "connector"
-  - "连接器"
-  - "标注"
-  - "差值标注"
   - "annotation"
-  - "折线连接"
+  - "difference annotation"
+  - "polyline connection"
 
 related:
   - "g2-mark-link"
@@ -34,7 +32,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/annotation/connector/"
 ---
-
 ## Minimum Viable Example (Difference Annotation)
 
 ```javascript

@@ -11,10 +11,10 @@ version: "5.x"
 category: "marks"
 tags:
   - "polygon"
-  - "多边形"
+  - "polygon"
   - "Voronoi"
-  - "地图"
-  - "自定义形状"
+  - "map"
+  - "custom shape"
 
 related:
   - "g2-mark-image"
@@ -32,7 +32,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/general/other/#polygon"
 ---
-
 ## Minimum Viable Example (Voronoi Diagram)
 
 ```javascript

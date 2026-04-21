@@ -275,7 +275,6 @@ children: [
   },
 }
 ```
-
 ### Error 4: Placing rangeX behind the line chart causes occlusion
 
 ```javascript

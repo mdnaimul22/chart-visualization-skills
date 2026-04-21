@@ -250,7 +250,6 @@ d.data['label']   → 'A类'      ✅ (Original data is on d.data)
 ```
 
 **Special Case**: `encode.value: 'sum'` works as a string because G2 applies **special handling** to the `value` channel for hierarchical marks. Other channels (`color`, `shape`, etc.) do not have this special handling and must use a callback.
-
 ### Structure of Callback Parameter d
 
 ```javascript

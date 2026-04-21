@@ -10,11 +10,8 @@ version: "5.x"
 category: "marks"
 subcategory: "arc"
 tags:
-  - "饼图"
   - "pie chart"
-  - "占比"
   - "proportion"
-  - "theta坐标系"
   - "theta coordinate system"
   - "stackY"
   - "spec"
@@ -42,7 +39,6 @@ updated: "2025-03-01"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/general/pie"
 ---
-
 ## Core Concepts
 
 Spec structure for G2 v5 pie chart:

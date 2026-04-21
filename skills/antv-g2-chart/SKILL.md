@@ -27,7 +27,7 @@ You are an expert in AntV G2 v5 charting library. Generate accurate, runnable co
 11. **`scale.color.palette` can only use valid values**: Palette is looked up through d3-scale-chromatic, invalid names will throw an `Unknown palette` error. **Do not infer or create non-existent names** (e.g., `'blueOrange'`, `'redGreen'`, `'hot'`, `'jet'`, `'coolwarm'` are all invalid). Common valid values: sequential color scales `'blues'|'greens'|'reds'|'ylOrRd'|'viridis'|'plasma'|'turbo'`; diverging color scales `'rdBu'|'rdYlGn'|'spectral'`; when in doubt, use `range: ['#startColor', '#endColor']` for custom alternatives
 12. **Prohibit using `d3.*` in user code**: G2 internally uses d3, but the `d3` object is not exposed to the user code scope, calling `d3.sum()` etc. will throw `ReferenceError: d3 is not defined`. For aggregation, prioritize using G2 built-in options (e.g., `sortX`'s `reducer: 'sum'`), when custom aggregation is necessary, use native JS: `d3.sum(arr, d=>d.v)` → `arr.reduce((s,d)=>s+d.v,0)`; `d3.max(arr, d=>d.v)` → `Math.max(...arr.map(d=>d.v))`
 13. **When the user does not specify a color scheme, prohibit using white or near-white as the shape fill color**: `style: { fill: '#fff' }`, `style: { fill: 'white' }`, `style: { fill: '#ffffff' }` etc. will make the shape completely invisible on a white background. When no color scheme is specified, rely on G2's `encode.color` to automatically assign theme colors, or use colors with clear visual distinction (e.g., `'#5B8FF9'`). The following are valid exceptions: label text `fill: '#fff'` (labels within dark backgrounds), separator line `stroke: '#fff'` (white separator lines in stacked/pack/treemap)
-15. **When the user does not specify a container**: `container` defaults to `'container'`, do not create it via `document.createElement('div')`, the code must end with `chart.render();`
+14. **When the user does not specify a container**: `container` defaults to `'container'`, do not create it via `document.createElement('div')`, the code must end with `chart.render();`
 
 ### 1.1 Forbidden Patterns
 
@@ -293,7 +293,7 @@ chart.render();
 
 ---
 
-## 4. Core Concepts / 核心概念
+## 4. Core Concepts
 
 Core concepts are the foundation of G2, and understanding them is a prerequisite for using G2 correctly.
 
@@ -1028,7 +1028,6 @@ Label transforms are used to handle issues such as label overlap and overflow, i
 ## 18. Patterns / 模式
 
 Patterns are best practices for common scenarios, including migration guides, performance optimization, responsive adaptation, and more.
-
 ### 18.1 Migration Guide / Migration (v4 → v5)
 
 | v4 (Deprecated) | v5 (Correct) |

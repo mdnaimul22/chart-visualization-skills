@@ -203,7 +203,6 @@ const links = [
   { source: '电力', target: '工业', value: 80 },   // ✅ Exact match
 ];
 ```
-
 ### Error 3: Presence of Cycles (Circular References) in the Chart
 
 ```javascript

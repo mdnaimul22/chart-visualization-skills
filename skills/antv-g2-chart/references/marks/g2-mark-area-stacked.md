@@ -10,12 +10,12 @@ version: "5.x"
 category: "marks"
 subcategory: "area"
 tags:
-  - "堆叠面积图"
+  - "stacked area chart"
   - "stacked area"
   - "stackY"
-  - "多系列"
-  - "趋势"
-  - "总量"
+  - "multi-series"
+  - "trend"
+  - "total amount"
   - "spec"
 
 related:
@@ -39,7 +39,6 @@ updated: "2025-03-01"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/area/stacked"
 ---
-
 ## Minimum Viable Example
 
 ```javascript

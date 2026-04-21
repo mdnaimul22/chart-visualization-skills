@@ -11,7 +11,7 @@ version: "5.x"
 category: "marks"
 tags:
   - "path"
-  - "路径"
+  - "path"
   - "SVG"
   - "custom shapes"
   - "annotation"
@@ -33,7 +33,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/mark/path"
 ---
-
 ## Minimum Viable Example
 
 ```javascript

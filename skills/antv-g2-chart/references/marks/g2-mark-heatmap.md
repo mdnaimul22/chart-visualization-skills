@@ -11,7 +11,7 @@ version: "5.x"
 category: "marks"
 tags:
   - "heatmap"
-  - "热力图"
+  - "heatmap"
   - "density heatmap"
   - "gradient heatmap"
   - "Gaussian kernel"
@@ -34,7 +34,6 @@ updated: "2025-03-24"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/general/heatmap/"
 ---
-
 ## Minimum Viable Example
 
 ```javascript

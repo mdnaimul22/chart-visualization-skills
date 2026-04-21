@@ -98,7 +98,7 @@ chart.options({
     {
       // Fixed position text, using a single data point
       type: 'text',
-      data: [{ x: '3月', y: 200, label: '达标线' }],
+      data: [{ x: 'March', y: 200, label: 'Threshold' }],
       encode: { x: 'x', y: 'y', text: 'label' },
       style: {
         fill: '#ff4d4f',
@@ -134,7 +134,7 @@ chart.options({
     {
       // Threshold annotation text
       type: 'text',
-      data: [{ month: '5月', value: 160, label: '目标 160' }],
+      data: [{ month: 'May', value: 160, label: 'Target 160' }],
       encode: { x: 'month', y: 'value', text: 'label' },
       style: {
         fill: '#ff4d4f',
@@ -256,7 +256,7 @@ chart.options({
   encode: {
     x: 'month',
     y: 'value',
-    text: '固定文字',   // ❌ This is a literal string, but there is no field named '固定文字' in the data
+    text: 'fixed text',   // ❌ This is a literal string, but there is no field named 'fixed text' in the data
   },
 });
 
@@ -281,7 +281,6 @@ chart.options({
   },
 });
 ```
-
 ### Error 3: Forgetting to Share the View When Overlaying Text and Interval
 
 ```javascript
