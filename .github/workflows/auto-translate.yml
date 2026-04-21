@@ -38,8 +38,16 @@ jobs:
         run: |
           git remote add upstream https://github.com/antvis/chart-visualization-skills.git || true
           git fetch upstream
-          # Merge upstream changes, favoring local for conflicts in .github/
-          git merge upstream/master --no-edit || { git checkout --ours .github/ && git add .github/ && git commit -m "chore: resolved conflicts in .github/ during sync"; }
+          # Try to merge upstream changes
+          if ! git merge upstream/master --no-edit; then
+            echo "Conflicts detected, resolving..."
+            # For conflicts in .github, keep our improved scripts and workflows
+            git checkout --ours .github/ || true
+            # For everything else (skills content), favor upstream to get the latest source
+            git checkout --theirs . || true
+            git add .
+            git commit -m "chore: resolved sync conflicts (favored local .github and upstream content)"
+          fi
 
       - name: Run Translation Script
         env:
