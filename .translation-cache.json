@@ -26,7 +26,7 @@
   "skills/antv-g2-chart/references/marks/g2-mark-vector.md": "4e4a21b20f3178f8c39b0533a94218f3",
   "skills/antv-g2-chart/references/marks/g2-mark-interval-grouped.md": "b100fe530e4669bd47f523c1adb40a7a",
   "skills/antv-g2-chart/references/marks/g2-mark-beeswarm.md": "ab8d0e0f185e384f405c7485aa15396d",
-  "skills/antv-g2-chart/references/marks/g2-mark-sunburst.md": "a128078860492ff6385a3fd6d7a288e5",
+  "skills/antv-g2-chart/references/marks/g2-mark-sunburst.md": "d2034b50c7b10e6e8f095e96fce55fe7",
   "skills/antv-g2-chart/references/marks/g2-mark-interval-normalized.md": "f68d1216a26718cc43578d7c7a0d1008",
   "skills/antv-g2-chart/references/marks/g2-mark-area-stacked.md": "748392730b6c3458954c6a45c19ec5ac",
   "skills/antv-g2-chart/references/marks/g2-mark-path.md": "d713b2aa2cf3412a7cef611320e8ac38",
@@ -43,7 +43,7 @@
   "skills/antv-g2-chart/references/marks/g2-mark-polygon.md": "7ea65f840d3577d942b4fa85dadeca3a",
   "skills/antv-g2-chart/references/marks/g2-mark-arc-donut.md": "9c4473222b24c11664024822a48b11d3",
   "skills/antv-g2-chart/references/marks/g2-mark-bi-directional-bar.md": "85ffb2a316573eb19beebbf78806f47c",
-  "skills/antv-g2-chart/references/marks/g2-mark-tree.md": "30adf98815c3142126d12677b5f1daaf",
+  "skills/antv-g2-chart/references/marks/g2-mark-tree.md": "7a9242777804c71297ff6dcf2887e633",
   "skills/antv-g2-chart/references/marks/g2-mark-bullet.md": "e184e51a8572b2d84fd7fb553395a465",
   "skills/antv-g2-chart/references/marks/g2-mark-funnel.md": "7f750ccb27fcf61e201f7acc9b7f1b31",
   "skills/antv-g2-chart/references/marks/g2-mark-shape.md": "69584ceec871f6098039747136f529fd",
@@ -130,7 +130,7 @@
   "skills/antv-g2-chart/references/components/g2-comp-annotation.md": "415bc597f1915d03de5b4aa0a458ae18",
   "skills/antv-g2-chart/references/components/g2-comp-legend-category.md": "0f8bffb1c56b0bac4e6675fe0899749b",
   "skills/antv-g2-chart/references/components/g2-comp-legend-config.md": "d49b66a0a87c35f95a71b787bb933f1e",
-  "skills/antv-g2-chart/references/components/g2-comp-tooltip-config.md": "27cab02d24d1e7ba7df74eda34728d5d",
+  "skills/antv-g2-chart/references/components/g2-comp-tooltip-config.md": "bc212084f35f5f96c2c4ccc07416d5af",
   "skills/antv-g2-chart/references/components/g2-comp-scrollbar.md": "2d6c3b5aada8a56adee9c2aa768785db",
   "skills/antv-g2-chart/references/data/g2-data-transform-patterns.md": "f36b90b2cf259c82e85ab0f1e44c6a9b",
   "skills/antv-g2-chart/references/data/g2-data-log.md": "f6ee5b1d6efc391813f99b95392082e6",
@@ -144,5 +144,6 @@
   "skills/antv-g2-chart/references/data/g2-data-kde.md": "c4b8700c9fcc8daa9ee359fc8994a412",
   "skills/antv-g2-chart/references/patterns/g2-pattern-performance.md": "c0d0ed55fae1e8d37c326bff194db611",
   "skills/antv-g2-chart/references/patterns/g2-pattern-v4-to-v5.md": "351c94cf42956db9a4267e9712f13d38",
-  "skills/antv-g2-chart/references/patterns/g2-pattern-responsive.md": "b55b6170ff2ba08ab6f1f3d05b78055f"
+  "skills/antv-g2-chart/references/patterns/g2-pattern-responsive.md": "b55b6170ff2ba08ab6f1f3d05b78055f",
+  "skills/antv-g2-chart/references/animations/g2-animation-types.md": "bc1ee2d2b96492e118c82dc220ca8048"
 }
