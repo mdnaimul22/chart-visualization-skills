@@ -27,7 +27,6 @@ completeness: "full"
 created: "2026-04-16"
 updated: "2026-04-16"
 ---
-
 ## Edge Bundling
 
 Bundles edges with similar directions in the graph to reduce edge crossings and visual clutter in large-scale graphs, while revealing high-level connection patterns. Based on the FEDB (Force-Directed Edge Bundling) algorithm.

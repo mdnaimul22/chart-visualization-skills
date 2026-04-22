@@ -9,13 +9,11 @@ library: "g2"
 version: "5.x"
 category: "patterns"
 tags:
-  - "响应式"
   - "responsive"
-  - "自适应"
   - "autoFit"
   - "resize"
-  - "移动端"
-  - "容器尺寸"
+  - "mobile"
+  - "container size"
 
 related:
   - "g2-core-chart-init"
@@ -28,7 +26,6 @@ use_cases:
 difficulty: "intermediate"
 completeness: "full"
 ---
-
 ## G2 Adaptive Width (autoFit)
 
 ```javascript

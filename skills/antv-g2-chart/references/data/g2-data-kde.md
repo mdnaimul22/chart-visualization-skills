@@ -49,7 +49,6 @@ source_url: "https://g2.antv.antgroup.com/manual/core/data/kde"
 kde: field='value' → 输出 as=['y','size'] → encode: { y: 'y', size: 'size' }
                       ↑ Regardless of the field name, encode always uses the values from `as`
 ```
-
 ## Minimum Viable Example
 
 ```javascript

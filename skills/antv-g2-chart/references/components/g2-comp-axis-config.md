@@ -517,7 +517,6 @@ axis: {
   z: { labelFormatter: '.1%' },   // ✅ Percentage
 }
 ```
-
 ### Error 7: Incorrect `labelFormatter` Callback Signature
 
 The callback signature for `labelFormatter` should be `(datum, index, array) => string`, where:

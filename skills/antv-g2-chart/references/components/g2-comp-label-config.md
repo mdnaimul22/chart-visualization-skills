@@ -76,14 +76,13 @@ chart.render();
 labels: [
   {
     // Function method: Access the complete data row
-    text: (d) => `${d.sold.toLocaleString()} 万`,
+    text: (d) => `${d.sold.toLocaleString()} million`,
 
     // Or string field name (automatically retrieves the value of the field)
     // text: 'sold',
   },
 ],
 ```
-
 ## Complete label configuration
 
 ```javascript

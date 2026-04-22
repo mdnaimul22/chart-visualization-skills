@@ -334,7 +334,6 @@ chart.options({
   },
 });
 ```
-
 ### Error 4: Multiple Series Tooltip Without `shared` Configuration
 
 ```javascript

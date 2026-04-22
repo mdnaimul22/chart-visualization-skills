@@ -12,9 +12,8 @@ category: "patterns"
 tags:
   - "v4"
   - "v5"
-  - "迁移"
   - "migration"
-  - "废弃API"
+  - "deprecated API"
   - "upgrade"
 
 related:
@@ -127,7 +126,7 @@ chart.options({
     { type: 'line', encode: { x: 'month', y: 'value' } },
     {
       type: 'lineY',
-      [{ threshold: 50 }],
+      data: [{ threshold: 50 }],
       encode: { y: 'threshold' },
       style: { stroke: 'red', lineDash: [4, 4] },
       labels: [{ text: 'Target Line', position: 'right' }],
@@ -154,7 +153,6 @@ chart.options({
   ],
 });
 ```
-
 ## Change 8: Tooltip Configuration
 
 ```javascript

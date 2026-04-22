@@ -10,7 +10,7 @@ version: "5.x"
 category: "components"
 tags:
   - "legend"
-  - "图例"
+  - "legend"
   - "position"
   - "filter"
   - "color legend"
@@ -36,7 +36,6 @@ updated: "2025-03-26"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/component/legend"
 ---
-
 ## Basic Usage
 
 ```javascript

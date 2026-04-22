@@ -288,7 +288,7 @@ function filterData(data, conditions) {
 }
 
 const filtered = filterData(data, [
-  { key: 'region', op: 'in',  value: ['华东', '华南'] },
+  { key: 'region', op: 'in',  value: ['East China', 'South China'] },
   { key: 'sales',  op: 'gt',  value: 1000 },
 ]);
 ```
@@ -301,7 +301,7 @@ chart.options({
     type: 'inline',
     value: data,
     transform: [
-      { type: 'filter', callback: (d) => ['华东', '华南'].includes(d.region) && d.sales > 1000 },
+      { type: 'filter', callback: (d) => ['East China', 'South China'].includes(d.region) && d.sales > 1000 },
     ],
   },
   encode: { x: 'region', y: 'sales' },
