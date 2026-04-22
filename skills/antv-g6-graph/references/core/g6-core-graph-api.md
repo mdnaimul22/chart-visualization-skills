@@ -1,9 +1,9 @@
 ---
 id: "g6-core-graph-api"
-title: "G6 Graph 核心 API 参考"
+title: "G6 Graph Core API Reference"
 description: |
-  Graph 实例上的常用方法：数据增删改查、视口控制（缩放、平移、适配）、
-  元素状态管理、事件监听、动态更新布局/行为/插件等。
+  Commonly used methods on the Graph instance: data CRUD operations, viewport control (zoom, pan, fit),
+  element state management, event listening, dynamic updates of layout/behavior/plugins, etc.
 
 library: "g6"
 version: "5.x"
@@ -12,10 +12,10 @@ subcategory: "api"
 tags:
   - "API"
   - "Graph"
-  - "数据操作"
-  - "视口"
-  - "状态"
-  - "事件"
+  - "Data Operations"
+  - "Viewport"
+  - "State"
+  - "Event"
 
 related:
   - "g6-core-graph-init"
@@ -28,57 +28,57 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 数据操作 API
+## Data Manipulation API
 
-### 读取数据
+### Read Data
 
 ```javascript
-// 获取所有数据
+// Get all data
 const allData = graph.getData();         // { nodes, edges, combos }
 const nodes   = graph.getNodeData();     // NodeData[]
 const edges   = graph.getEdgeData();     // EdgeData[]
 const combos  = graph.getComboData();    // ComboData[]
 
-// 按 id 获取单个元素
+// Get a single element by id
 const node  = graph.getNodeData('n1');
 const edge  = graph.getEdgeData('e1');
 const combo = graph.getComboData('c1');
 
-// 按 id 数组批量获取
+// Batch get by id array
 const someNodes = graph.getNodeData(['n1', 'n2', 'n3']);
 ```
 
-### 添加元素
+### Add Elements
 
 ```javascript
-// 添加节点
+// Add node
 graph.addNodeData([
-   { id: 'n3', data: { label: '新节点', type: 'server' } },
+   { id: 'n3', data: { label: 'New Node', type: 'server' } },
 ]);
 
-// 添加边
+// Add edge
 graph.addEdgeData([
    { source: 'n1', target: 'n3', data: { weight: 5 } },
 ]);
 
-// 添加 combo
+// Add combo
 graph.addComboData([
-   { id: 'c1', data: { label: '新分组' } },
+   { id: 'c1', data: { label: 'New Group' } },
 ]);
 
-// 添加后需要 draw 生效
+// Need to call draw after adding to take effect
 graph.draw();
 ```
 
-### 更新元素
+### Update Elements
 
 ```javascript
-// 更新节点数据（只传需要更新的字段）
+// Update node data (only pass the fields that need to be updated)
 graph.updateNodeData([
-   { id: 'n1', data: { label: '更新后的标签', value: 200 } },
+   { id: 'n1', data: { label: 'Updated Label', value: 200 } },
 ]);
 
-// 更新边
+// Update edge
 graph.updateEdgeData([
    { id: 'e1', data: { weight: 10 } },
 ]);
@@ -86,23 +86,23 @@ graph.updateEdgeData([
 graph.draw();
 ```
 
-### 删除元素
+### Remove Elements
 
 ```javascript
-graph.removeNodeData(['n3']);         // 删除节点（关联边自动删除）
-graph.removeEdgeData(['e1']);         // 删除边
-graph.removeComboData(['c1']);        // 删除 combo
+graph.removeNodeData(['n3']);         // Remove node (associated edges are automatically removed)
+graph.removeEdgeData(['e1']);         // Remove edge
+graph.removeComboData(['c1']);        // Remove combo
 
 graph.draw();
 ```
 
-### 批量操作（合并为一次历史记录）
+### Batch Operations (Merged into One History Record)
 
 ```javascript
-// batch 内的操作合并为一次渲染和历史记录
+// Operations within batch are merged into one render and history record
 graph.batch(() => {
-  graph.addNodeData([{ id: 'n10', data: { label: '批量A' } }]);
-  graph.addNodeData([{ id: 'n11', data: { label: '批量B' } }]);
+  graph.addNodeData([{ id: 'n10', data: { label: 'Batch A' } }]);
+  graph.addNodeData([{ id: 'n11', data: { label: 'Batch B' } }]);
   graph.addEdgeData([{ source: 'n10', target: 'n11' }]);
 });
 graph.draw();
@@ -110,48 +110,48 @@ graph.draw();
 
 ---
 
-## 视口控制 API
+## Viewport Control API
 
-### 缩放
+### Zoom
 
 ```javascript
-// 获取当前缩放比例
-const zoom = graph.getZoom();         // 返回数字，1.0 = 原始大小
+// Get the current zoom level
+const zoom = graph.getZoom();         // Returns a number, 1.0 = original size
 
-// 缩放到指定比例（带动画）
+// Zoom to a specified level (with animation)
 await graph.zoomTo(1.5, { easing: 'ease-out', duration: 300 });
 
-// 相对缩放（在当前比例基础上）
-await graph.zoom(0.8);                // 缩小到当前的 80%
+// Relative zoom (based on the current level)
+await graph.zoom(0.8);                // Zoom out to 80% of the current size
 ```
 
-### 平移
+### Translation
 
 ```javascript
-// 获取当前平移量
+// Get the current translation
 const { x, y } = graph.getTranslate();
 
-// 平移到绝对位置
+// Translate to an absolute position
 await graph.translateTo({ x: 100, y: 200 });
 
-// 相对平移
+// Relative translation
 await graph.translate({ x: 50, y: 0 });
 ```
 
-### 适配视图
+### Fit View
 
 ```javascript
-// 自动缩放并居中显示所有元素
+// Auto-scale and center all elements
 await graph.fitView({
-  padding: 20,                        // 边距
+  padding: 20,                        // Padding
   direction: 'both',                  // 'x' | 'y' | 'both'
-  when: 'overflow',                   // 仅内容溢出时适配
+  when: 'overflow',                   // Fit only when content overflows
 });
 
-// 居中（不缩放）
+// Center (without scaling)
 await graph.fitCenter();
 
-// 聚焦到指定元素（平移+缩放到该元素）
+// Focus on a specific element (pan and zoom to the element)
 await graph.focusElement('n1', {
   easing: 'ease-in-out',
   duration: 500,
@@ -160,96 +160,96 @@ await graph.focusElement('n1', {
 
 ---
 
-## 元素状态 API
+## Element State API
 
 ```javascript
-// 设置单个元素状态
+// Set the state of a single element
 graph.setElementState('n1', 'selected');
 graph.setElementState('n1', ['selected', 'highlight']);
-graph.setElementState('n1', []);          // 清除所有状态
+graph.setElementState('n1', []);          // Clear all states
 
-// 批量设置（推荐，性能更好）
+// Batch setting (recommended, better performance)
 graph.setElementState({
   'n1': 'selected',
   'n2': ['highlight'],
   'e1': 'active',
 });
 
-// 读取状态
+// Read state
 const states = graph.getElementState('n1'); // string[]
 
-// 按状态查询元素
+// Query elements by state
 const selectedNodes = graph.getElementDataByState('node', 'selected');
 const activeEdges   = graph.getElementDataByState('edge', 'active');
 ```
 
 ---
 
-## 元素可见性 API
+## Element Visibility API
 
 ```javascript
-// 隐藏/显示（可带动画）
-graph.hideElement(['n1', 'n2'], true);     // true = 带动画
+// Hide/Show (with optional animation)
+graph.hideElement(['n1', 'n2'], true);     // true = with animation
 graph.showElement(['n1', 'n2'], true);
 
-// 调整 Z 轴顺序
-graph.frontElement(['n1']);               // 置顶
-graph.backElement(['n1']);                // 置底
+// Adjust Z-axis order
+graph.frontElement(['n1']);               // Bring to front
+graph.backElement(['n1']);                // Send to back
 ```
 
 ---
 
-## 关联查询 API
+## Association Query API
 
 ```javascript
-// 查询节点的所有关联边
+// Query all associated edges of a node
 const relatedEdges  = graph.getRelatedEdgesData('n1');
 const incomingEdges = graph.getIncomingEdgesData('n1');
 const outgoingEdges = graph.getOutgoingEdgesData('n1');
 
-// 查询元素类型
+// Query element type
 const type = graph.getElementType('n1'); // 'node' | 'edge' | 'combo' | null
 ```
 
 ---
 
-## 布局 / 行为 / 插件动态更新
+## Layout / Behavior / Plugin Dynamic Update
 
 ```javascript
-// 动态切换布局
+// Dynamically switch layout
 graph.setLayout({ type: 'circular' });
-await graph.layout();                    // 重新执行布局
+await graph.layout();                    // Re-execute layout
 
-// 动态更新行为（不用重新 render）
+// Dynamically update behaviors (no need to re-render)
 graph.setBehaviors([
   'drag-canvas',
   'zoom-canvas',
-    { type: 'click-select', multiple: true },
+  { type: 'click-select', multiple: true },
 ]);
 
-// 局部更新某个行为配置
+// Partially update a specific behavior configuration
 graph.updateBehavior({
   key: 'click-select',
   multiple: false,
 });
 
-// 动态添加/移除插件
+// Dynamically add/remove plugins
 graph.setPlugins(['minimap', { type: 'tooltip', getContent: () => '' }]);
 
-// 获取插件实例（需要给插件设置 key）
+// Get plugin instance (requires setting a key for the plugin)
 // plugins: [{ type: 'history', key: 'h1', stackSize: 20 }]
 const history = graph.getPluginInstance('h1');
 ```
 
 ---
 
-## 图片导出
+## Image Export
 
 ```javascript
-// 导出为 PNG Data URL
+// Export as PNG Data URL
 const dataURL = await graph.toDataURL({ type: 'image/png', encoderOptions: 0.9 });
 
-// 下载图片
+// Download Image
 const link = document.createElement('a');
 link.download = 'graph.png';
 link.href = dataURL;
@@ -258,9 +258,9 @@ link.click();
 
 ---
 
-## 销毁
+## Destroy
 
 ```javascript
-// 销毁图实例，释放内存
+// Destroy the graph instance and release memory
 graph.destroy();
 ```

@@ -1,33 +1,32 @@
 ---
 id: "g6-plugin-tooltip"
-title: "G6 Tooltip 插件"
+title: "G6 Tooltip Plugin"
 description: |
-  使用 tooltip 插件在悬停/点击节点或边时显示详细信息面板。
-  支持自定义 HTML 内容、位置、触发方式等。
+  Use the tooltip plugin to display a detailed information panel when hovering over or clicking on nodes or edges.
+  Supports custom HTML content, positioning, trigger methods, and more.
 
 library: "g6"
 version: "5.x"
 category: "plugins"
 subcategory: "interaction"
 tags:
-  - "插件"
-  - "tooltip"
-  - "提示"
-  - "悬停"
-  - "信息面板"
   - "plugin"
+  - "tooltip"
+  - "tip"
+  - "hover"
+  - "information panel"
 
 related:
   - "g6-plugin-minimap"
   - "g6-behavior-click-select"
 
 use_cases:
-  - "悬停节点显示详细属性"
-  - "悬停边显示关系信息"
-  - "点击元素显示操作面板"
+  - "Display detailed attributes when hovering over a node"
+  - "Display relationship information when hovering over an edge"
+  - "Display an operation panel when clicking on an element"
 
 anti_patterns:
-  - "tooltip 内容过多时影响性能，考虑侧边栏面板替代"
+  - "Performance may be affected when tooltip content is excessive; consider using a sidebar panel as an alternative"
 
 difficulty: "beginner"
 completeness: "full"
@@ -37,7 +36,7 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/plugin/tooltip"
 ---
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -48,11 +47,11 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 'n1', data: { name: '张三', age: 28, dept: '工程部' } },
-       { id: 'n2', data: { name: '李四', age: 35, dept: '产品部' } },
+       { id: 'n1', data: { name: 'Zhang San', age: 28, dept: 'Engineering' } },
+       { id: 'n2', data: { name: 'Li Si', age: 35, dept: 'Product' } },
     ],
     edges: [
-       { id: 'e1', source: 'n1', target: 'n2', data: { relation: '同事', since: 2020 } },
+       { id: 'e1', source: 'n1', target: 'n2', data: { relation: 'Colleague', since: 2020 } },
     ],
   },
   node: {
@@ -69,7 +68,7 @@ const graph = new Graph({
   plugins: [
     {
       type: 'tooltip',
-      // 自定义 tooltip 内容
+      // Custom tooltip content
       getContent: (event, items) => {
         const item = items[0];
         if (!item) return '';
@@ -78,9 +77,9 @@ const graph = new Graph({
         return `
           <div style="padding: 8px 12px; min-width: 120px;">
             <div style="font-weight: bold; margin-bottom: 4px;">${data.name || item.id}</div>
-            ${data.age ? `<div>年龄：${data.age}</div>` : ''}
-            ${data.dept ? `<div>部门：${data.dept}</div>` : ''}
-            ${data.relation ? `<div>关系：${data.relation}</div>` : ''}
+            ${data.age ? `<div>Age: ${data.age}</div>` : ''}
+            ${data.dept ? `<div>Department: ${data.dept}</div>` : ''}
+            ${data.relation ? `<div>Relation: ${data.relation}</div>` : ''}
           </div>
         `;
       },
@@ -91,18 +90,18 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 分节点/边显示不同内容
+### Display Different Content for Nodes/Edges
 
 ```javascript
 plugins: [
   {
     type: 'tooltip',
     trigger: 'hover',             // 'hover' | 'click'
-    position: 'right',            // 'top' | 'bottom' | 'left' | 'right' | 'top-left' 等
+    position: 'right',            // 'top' | 'bottom' | 'left' | 'right' | 'top-left' etc.
     enable: (event) => {
-      // 只对节点显示 tooltip
+      // Display tooltip only for nodes
       return event.targetType === 'node';
     },
     getContent: (event, items) => {
@@ -126,38 +125,38 @@ plugins: [
 ],
 ```
 
-### 点击触发 tooltip
+### Click to Trigger Tooltip
 
 ```javascript
 plugins: [
   {
     type: 'tooltip',
-    trigger: 'click',             // 点击触发
-    enterable: true,              // 鼠标可以进入 tooltip 内部
+    trigger: 'click',             // Trigger on click
+    enterable: true,              // Mouse can enter the tooltip
     getContent: (event, items) => {
       const [item] = items;
       return `<div style="padding:8px">
-        <a href="/detail/${item.id}" target="_blank">查看详情</a>
+        <a href="/detail/${item.id}" target="_blank">View Details</a>
       </div>`;
     },
   },
 ],
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface TooltipOptions {
-  trigger?: 'hover' | 'click';          // 触发方式，默认 'hover'
+  trigger?: 'hover' | 'click';          // Trigger method, default 'hover'
   position?: 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
   enable?: boolean | ((event) => boolean);
   getContent?: (event: IPointerEvent, items: ElementDatum[]) => HTMLElement | string;
   onOpenChange?: (open: boolean) => void;
-  offset?: [number, number];            // 偏移量 [x, y]
-  enterable?: boolean;                  // 鼠标是否可以进入 tooltip
-  title?: string | ((items) => string); // tooltip 标题
-  container?: HTMLElement;              // 自定义容器
-  style?: {                             // 样式
+  offset?: [number, number];            // Offset [x, y]
+  enterable?: boolean;                  // Whether the mouse can enter the tooltip
+  title?: string | ((items) => string); // Tooltip title
+  container?: HTMLElement;              // Custom container
+  style?: {                             // Style
     ['.g6-tooltip']?: CSSProperties;
   };
 }

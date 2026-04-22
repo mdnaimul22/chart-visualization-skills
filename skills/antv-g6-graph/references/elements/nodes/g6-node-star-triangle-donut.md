@@ -1,19 +1,16 @@
 ---
 id: "g6-node-star-triangle-donut"
-title: "G6 特殊形状节点（Star / Triangle / Donut）"
+title: "G6 Special Shape Nodes (Star / Triangle / Donut)"
 description: |
-  使用五角星（star）、三角形（triangle）、环形进度（donut）节点。
-  适合特殊标注、方向指示、进度展示等场景。
+  Use star, triangle, and donut nodes.
+  Suitable for special annotations, direction indicators, progress displays, and other scenarios.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
-  - "五角星"
-  - "三角形"
-  - "环形"
+  - "node"
   - "star"
   - "triangle"
   - "donut"
@@ -28,9 +25,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 五角星节点（star）
+## Star Node (star)
 
-五角星节点适合"评分"、"收藏"、"重要标记"等场景。
+The star node is suitable for scenarios such as "rating", "favoriting", and "important marking".
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -41,9 +38,9 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 's1', data: { label: '重要', level: 1 } },
-       { id: 's2', data: { label: '普通', level: 0 } },
-       { id: 's3', data: { label: '关键', level: 2 } },
+       { id: 's1', data: { label: 'Important', level: 1 } },
+       { id: 's2', data: { label: 'Normal', level: 0 } },
+       { id: 's3', data: { label: 'Critical', level: 2 } },
     ],
     edges: [
        { source: 's1', target: 's2' },
@@ -53,7 +50,7 @@ const graph = new Graph({
   node: {
     type: 'star',
     style: {
-      size: 60,                          // 外接圆直径
+      size: 60,                          // Circumcircle diameter
       fill: (d) => (d.data.level > 0 ? '#faad14' : '#ddd'),
       stroke: '#d48806',
       lineWidth: 2,
@@ -68,19 +65,19 @@ const graph = new Graph({
 graph.render();
 ```
 
-### star 特有属性
+### Star-specific Properties
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `32` | 外接圆直径 |
+| `size` | `number` | `32` | Diameter of the circumscribed circle |
 
-> 内圈半径自动计算为 `outerR * 3/8`，无需手动配置。
+> The inner circle radius is automatically calculated as `outerR * 3/8`, no manual configuration is required.
 
 ---
 
-## 三角形节点（triangle）
+## Triangle Node (triangle)
 
-三角形节点支持四个方向，可用于表示方向/流向。
+The triangle node supports four directions and can be used to represent direction/flow.
 
 ```javascript
 node: {
@@ -97,18 +94,18 @@ node: {
 },
 ```
 
-### triangle 特有属性
+### Triangle-Specific Properties
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `size` | `number` | `40` | 节点尺寸 |
-| `direction` | `'up' \| 'down' \| 'left' \| 'right'` | `'up'` | 三角形朝向 |
+| Property | Type | Default Value | Description |
+|----------|------|---------------|-------------|
+| `size` | `number` | `40` | Node size |
+| `direction` | `'up' \| 'down' \| 'left' \| 'right'` | `'up'` | Triangle direction |
 
 ---
 
-## 环形进度节点（donut）
+## Donut Node
 
-donut 节点在圆形基础上叠加一个或多个环形区域，适合展示多维度比例数据。
+The donut node overlays one or more annular regions on a circular base, suitable for displaying multi-dimensional proportional data.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -122,7 +119,7 @@ const graph = new Graph({
       {
         id: 'n1',
         data: {
-          label: '服务器A',
+          label: 'Server A',
           cpu: 60,
           memory: 30,
           disk: 10,
@@ -131,7 +128,7 @@ const graph = new Graph({
       {
         id: 'n2',
         data: {
-          label: '服务器B',
+          label: 'Server B',
           cpu: 20,
           memory: 50,
           disk: 30,
@@ -147,11 +144,11 @@ const graph = new Graph({
       fill: '#f0f0f0',
       stroke: '#d9d9d9',
       lineWidth: 1,
-      // donuts：每一段的数值（自动归一化为比例）
+      // donuts: values for each segment (automatically normalized to proportions)
       donuts: (d) => [d.data.cpu, d.data.memory, d.data.disk],
-      // 自定义各段颜色（也可用 donutPalette 色板）
+      // custom colors for each segment (can also use donutPalette)
       donutPalette: ['#ff4d4f', '#1890ff', '#52c41a'],
-      // 内圈半径，默认 '50%'（相对于 size）
+      // inner radius, default '50%' (relative to size)
       innerR: '40%',
       labelText: (d) => d.data.label,
       labelPlacement: 'bottom',
@@ -164,24 +161,24 @@ const graph = new Graph({
 graph.render();
 ```
 
-### donut 特有属性
+### Donut-specific Properties
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `donuts` | `number[] \| DonutRound[] \| ((d) => number[])` | `[]` | 各段数值，自动归一化 |
-| `donutPalette` | `string \| string[]` | `'tableau'` | 各段颜色，支持内置色板名 |
-| `innerR` | `number \| string` | `'50%'` | 内圈半径，百分比或 px |
+| `donuts` | `number[] \| DonutRound[] \| ((d) => number[])` | `[]` | Segment values, automatically normalized |
+| `donutPalette` | `string \| string[]` | `'tableau'` | Segment colors, supports built-in palette names |
+| `innerR` | `number \| string` | `'50%'` | Inner radius, percentage or px |
 
-### DonutRound 对象格式
+### DonutRound Object Format
 
 ```typescript
 interface DonutRound {
   value: number;
-  color?: string;       // 优先级高于 donutPalette
-  label?: string;       // 段标签（当前版本不显示）
+  color?: string;       // Higher priority than donutPalette
+  label?: string;       // Segment label (not displayed in the current version)
 }
 
-// 使用对象格式
+// Using object format
 donuts: (d) => [
     { value: d.data.cpu,    color: '#ff4d4f' },
     { value: d.data.memory, color: '#1890ff' },
@@ -191,14 +188,14 @@ donuts: (d) => [
 
 ---
 
-## 常见错误
+## Common Errors
 
-### 错误：donuts 设置为 0 时不显示
+### Error: Donuts Not Displayed When Set to 0
 
 ```javascript
-// ❌ 如果所有 donuts 值均为 0，不会渲染环形
+// ❌ If all donuts values are 0, the ring will not be rendered
 donuts: [0, 0, 0]
 
-// ✅ 确保至少有一个非零值
+// ✅ Ensure at least one non-zero value
 donuts: (d) => [d.data.a || 1, d.data.b, d.data.c]
 ```

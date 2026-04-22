@@ -1,20 +1,19 @@
 ---
 id: "g6-core-data-structure"
-title: "G6 数据结构"
+title: "G6 Data Structure"
 description: |
-  G6 5.x 的图数据格式规范，包含 NodeData、EdgeData、ComboData 的完整字段说明，
-  数据操作 API 和最佳实践。
+  Graph data format specification for G6 5.x, including complete field descriptions for NodeData, EdgeData, and ComboData,
+  data manipulation APIs, and best practices.
 
 library: "g6"
 version: "5.x"
 category: "core"
 subcategory: "data"
 tags:
-  - "数据结构"
+  - "data structure"
   - "NodeData"
   - "EdgeData"
   - "ComboData"
-  - "data structure"
   - "graph data"
   - "nodes"
   - "edges"
@@ -25,14 +24,14 @@ related:
   - "g6-edge-line"
 
 use_cases:
-  - "定义图的数据格式"
-  - "从服务端加载数据并渲染图"
-  - "动态增删节点和边"
+  - "Define the data format for a graph"
+  - "Load data from the server and render the graph"
+  - "Dynamically add or remove nodes and edges"
 
 anti_patterns:
-  - "不要把业务属性直接放在节点顶层，应放在 data 字段"
-  - "不要在 style 中放业务逻辑数据，style 只放渲染相关属性"
-  - "不要生成重复边（相同 source+target 的边），会导致 Edge already exists 错误"
+  - "Do not place business attributes directly at the top level of nodes; they should be placed in the data field"
+  - "Do not include business logic data in the style field; style should only contain rendering-related properties"
+  - "Do not generate duplicate edges (edges with the same source and target), as this will result in an 'Edge already exists' error"
 
 difficulty: "beginner"
 completeness: "full"
@@ -42,11 +41,11 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/data"
 ---
 
-## 核心概念
+## Core Concepts
 
-G6 是数据驱动的图可视化引擎，使用标准 JSON 格式描述图结构。
+G6 is a data-driven graph visualization engine that uses standard JSON format to describe graph structures.
 
-**GraphData 基本结构：**
+**GraphData Basic Structure:**
 ```typescript
 interface GraphData {
   nodes?: NodeData[];
@@ -55,7 +54,7 @@ interface GraphData {
 }
 ```
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -66,8 +65,8 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-      { id: 'n1', data: { name: '节点A', type: 'user' } },
-      { id: 'n2', data: { name: '节点B', type: 'product' } },
+      { id: 'n1', data: { name: 'Node A', type: 'user' } },
+      { id: 'n2', data: { name: 'Node B', type: 'product' } },
     ],
     edges: [
       { id: 'e1', source: 'n1', target: 'n2', data: { weight: 5 } },
@@ -83,52 +82,52 @@ const graph = new Graph({
 graph.render();
 ```
 
-## NodeData 完整结构
+## Complete Structure of NodeData
 
 ```typescript
 interface NodeData {
-  id: string;                      // 必填，唯一标识符
-  type?: string;                   // 节点类型，如 'circle', 'rect', 'image'
-  data?: Record<string, unknown>;  // 业务数据（推荐存放自定义属性）
-  style?: NodeStyle;               // 节点样式（覆盖全局配置）
-  states?: string[];               // 初始状态列表
-  combo?: string;                  // 所属 combo 的 id
-  children?: string[];             // 树形数据中子节点 id 列表
+  id: string;                      // Required, unique identifier
+  type?: string;                   // Node type, e.g., 'circle', 'rect', 'image'
+  data?: Record<string, unknown>;  // Business data (recommended for storing custom attributes)
+  style?: NodeStyle;               // Node style (overrides global configuration)
+  states?: string[];               // Initial state list
+  combo?: string;                  // ID of the belonging combo
+  children?: string[];             // List of child node IDs in tree data
 }
 
-// 示例
+// Example
 const nodes = [
   {
     id: 'user-001',
-    type: 'circle',                  // 覆盖全局节点类型
+    type: 'circle',                  // Overrides global node type
     data: {
-      name: '张三',
+      name: 'Zhang San',
       role: 'admin',
       score: 95,
     },
     style: {
-      fill: '#ff7875',               // 覆盖全局样式
+      fill: '#ff7875',               // Overrides global style
       size: 60,
     },
-    states: ['selected'],            // 初始为选中状态
+    states: ['selected'],            // Initially in selected state
   },
 ];
 ```
 
-## EdgeData 完整结构
+## EdgeData Complete Structure
 
 ```typescript
 interface EdgeData {
-  id?: string;                     // 可选，唯一标识，未指定时自动生成
-  source: string;                  // 必填，起点节点 id
-  target: string;                  // 必填，终点节点 id
-  type?: string;                   // 边类型，如 'line', 'cubic', 'polyline'
-  data?: Record<string, unknown>;  // 业务数据
-  style?: EdgeStyle;               // 边样式（覆盖全局配置）
-  states?: string[];               // 初始状态列表
+  id?: string;                     // Optional, unique identifier, automatically generated if not specified
+  source: string;                  // Required, source node id
+  target: string;                  // Required, target node id
+  type?: string;                   // Edge type, e.g., 'line', 'cubic', 'polyline'
+  data?: Record<string, unknown>;  // Business data
+  style?: EdgeStyle;               // Edge style (overrides global configuration)
+  states?: string[];               // Initial state list
 }
 
-// 示例
+// Example
 const edges = [
   {
     id: 'edge-001',
@@ -147,58 +146,58 @@ const edges = [
 ];
 ```
 
-## ComboData 完整结构
+## ComboData Complete Structure
 
 ```typescript
 interface ComboData {
-  id: string;                      // 必填，唯一标识符
-  type?: string;                   // combo 类型：'circle' | 'rect'
-  data?: Record<string, unknown>;  // 业务数据
-  style?: ComboStyle;              // combo 样式
-  states?: string[];               // 初始状态
-  combo?: string;                  // 父 combo id（嵌套 combo）
+  id: string;                      // Required, unique identifier
+  type?: string;                   // combo type: 'circle' | 'rect'
+  data?: Record<string, unknown>;  // Business data
+  style?: ComboStyle;              // combo style
+  states?: string[];               // Initial states
+  combo?: string;                  // Parent combo id (nested combo)
 }
 
-// 示例：节点分组
+// Example: Node grouping
 const data = {
   nodes: [
-    { id: 'n1', combo: 'group1', data: { label: '成员1' } },
-    { id: 'n2', combo: 'group1', data: { label: '成员2' } },
-    { id: 'n3', combo: 'group2', data: { label: '成员3' } },
+    { id: 'n1', combo: 'group1', data: { label: 'Member 1' } },
+    { id: 'n2', combo: 'group1', data: { label: 'Member 2' } },
+    { id: 'n3', combo: 'group2', data: { label: 'Member 3' } },
   ],
   edges: [
     { source: 'n1', target: 'n3' },
   ],
   combos: [
-    { id: 'group1', data: { label: '团队A' } },
-    { id: 'group2', data: { label: '团队B' } },
+    { id: 'group1', data: { label: 'Team A' } },
+    { id: 'group2', data: { label: 'Team B' } },
   ],
 };
 ```
 
-## 树形数据
+## Tree Data
 
-树形布局（mindmap、compact-box 等）使用 `treeToGraphData()` 转换，必须从 `@antv/g6` 中导入：
+Tree layouts (mindmap, compact-box, etc.) use `treeToGraphData()` for conversion, which must be imported from `@antv/g6`:
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
-// 树形结构数据
+// Tree structure data
 const treeData = {
   id: 'root',
-  data: { label: '根节点' },
+  data: { label: 'Root Node' },
   children: [
     {
       id: 'child1',
-      data: { label: '子节点1' },
+      data: { label: 'Child Node 1' },
       children: [
-        { id: 'grandchild1', data: { label: '孙节点1' } },
-        { id: 'grandchild2', data: { label: '孙节点2' } },
+        { id: 'grandchild1', data: { label: 'Grandchild Node 1' } },
+        { id: 'grandchild2', data: { label: 'Grandchild Node 2' } },
       ],
     },
     {
       id: 'child2',
-      data: { label: '子节点2' },
+      data: { label: 'Child Node 2' },
     },
   ],
 };
@@ -207,7 +206,7 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  data: treeToGraphData(treeData),   // 转换为 GraphData 格式
+  data: treeToGraphData(treeData),   // Convert to GraphData format
   layout: {
     type: 'mindmap',
     direction: 'H',
@@ -218,74 +217,74 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 远程数据加载
+## Remote Data Loading
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  data: { nodes: [], edges: [] },  // 初始空数据
+  data: { nodes: [], edges: [] },  // Initial empty data
   layout: { type: 'force' },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
 
-// 异步加载数据
+// Asynchronous data loading
 fetch('https://api.example.com/graph-data')
   .then((res) => res.json())
   .then((data) => {
-    graph.setData(data);     // 或在 render 前设置
+    graph.setData(data);     // Or set before render
     graph.render();
   });
 
-// 推荐方式：等待 render 后再更新
+// Recommended approach: Update after render
 await graph.render();
 const data = await fetch('/api/data').then((r) => r.json());
 graph.setData(data);
 await graph.draw();
 ```
 
-## 数据操作 API
+## Data Manipulation API
 
 ```javascript
-// 读取数据
+// Read data
 const allNodes = graph.getNodeData();
 const oneNode = graph.getNodeData('n1');
 const allEdges = graph.getEdgeData();
 const oneEdge = graph.getEdgeData('e1');
 
-// 新增
+// Add
 graph.addNodeData([
-  { id: 'n10', data: { label: '新节点' } },
+  { id: 'n10', data: { label: 'New Node' } },
 ]);
 graph.addEdgeData([
   { source: 'n1', target: 'n10' },
 ]);
 await graph.draw();
 
-// 更新
+// Update
 graph.updateNodeData([
-  { id: 'n1', data: { label: '更新后' }, style: { fill: 'red' } },
+  { id: 'n1', data: { label: 'Updated' }, style: { fill: 'red' } },
 ]);
 await graph.draw();
 
-// 删除
-graph.removeNodeData(['n10']);    // 会同时删除关联的边
+// Delete
+graph.removeNodeData(['n10']);    // Also deletes associated edges
 graph.removeEdgeData(['e1']);
 await graph.draw();
 
-// 批量更新数据（替换全量）
+// Batch update data (replace all)
 graph.setData({ nodes: [...], edges: [...] });
 await graph.draw();
 ```
 
-## 样式与数据的分离（最佳实践）
+## Separation of Style and Data (Best Practice)
 
 ```javascript
-// ✅ 推荐：业务数据放 data，样式通过回调函数从 data 计算
+// ✅ Recommended: Place business data in `data`, and calculate styles through callback functions from `data`
 const nodes = [
-  { id: 'n1', data: { name: '高优先级', priority: 'high', value: 100 } },
-  { id: 'n2', data: { name: '低优先级', priority: 'low', value: 30 } },
+  { id: 'n1', data: { name: 'High Priority', priority: 'high', value: 100 } },
+  { id: 'n2', data: { name: 'Low Priority', priority: 'low', value: 30 } },
 ];
 
 const graph = new Graph({
@@ -293,7 +292,7 @@ const graph = new Graph({
   data: { nodes, edges: [] },
   node: {
     style: {
-      // 通过回调函数将数据映射为样式
+      // Map data to styles through callback functions
       fill: (d) => d.data.priority === 'high' ? '#ff4d4f' : '#1783FF',
       size: (d) => Math.max(20, d.data.value / 2),
       labelText: (d) => d.data.name,
@@ -302,72 +301,72 @@ const graph = new Graph({
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误1：业务属性放在节点顶层
+### Error 1: Business Attributes at the Node Top Level
 
 ```javascript
-// ❌ 错误：label、type 等业务属性直接在节点顶层
-{ id: 'n1', label: '节点1', category: 'user', value: 100 }
+// ❌ Incorrect: label, type, and other business attributes directly at the node top level
+{ id: 'n1', label: 'Node 1', category: 'user', value: 100 }
 
-// ✅ 正确：业务属性放在 data 字段
-{ id: 'n1', data: { label: '节点1', category: 'user', value: 100 } }
+// ✅ Correct: Business attributes placed in the data field
+{ id: 'n1', data: { label: 'Node 1', category: 'user', value: 100 } }
 ```
 
-### 错误2：边缺少 source 或 target
+### Error 2: Edge Missing `source` or `target`
 
 ```javascript
-// ❌ 错误：缺少 source 或 target
-{ id: 'e1', from: 'n1', to: 'n2' }    // v4 写法
+// ❌ Incorrect: Missing `source` or `target`
+{ id: 'e1', from: 'n1', to: 'n2' }    // v4 syntax
 
-// ✅ 正确
+// ✅ Correct
 { id: 'e1', source: 'n1', target: 'n2' }
 ```
 
-### 错误3：节点 id 重复
+### Error 3: Duplicate Node IDs
 
 ```javascript
-// ❌ 错误：id 重复会导致渲染异常
+// ❌ Error: Duplicate IDs cause rendering anomalies
 const nodes = [
   { id: 'node1', data: { label: 'A' } },
-  { id: 'node1', data: { label: 'B' } },   // 重复 id
+  { id: 'node1', data: { label: 'B' } },   // Duplicate ID
 ];
 
-// ✅ 正确：每个节点 id 必须唯一
+// ✅ Correct: Each node ID must be unique
 const nodes = [
   { id: 'node-a', data: { label: 'A' } },
   { id: 'node-b', data: { label: 'B' } },
 ];
 ```
 
-### 错误4：边的 source/target 引用了不存在的节点
+### Error 4: Edge source/target references a non-existent node
 
 ```javascript
-// ❌ 错误：引用了不存在的节点 id
+// ❌ Error: References a non-existent node id
 const edges = [
-  { source: 'n1', target: 'n999' },  // n999 不存在
+  { source: 'n1', target: 'n999' },  // n999 does not exist
 ];
 
-// ✅ 正确：确保 source 和 target 都存在于 nodes 中
+// ✅ Correct: Ensure both source and target exist in nodes
 ```
 
-### 错误5：重复边导致 "Edge already exists" 错误
+### Error 5: Duplicate Edges Causing "Edge already exists" Error
 
-G6 不允许存在重复边（相同 source 和 target 的边）。动态生成边时必须去重，否则会抛出 `Edge already exists: xxx-yyy` 错误。
+G6 does not allow duplicate edges (edges with the same source and target). When dynamically generating edges, duplicates must be removed; otherwise, an `Edge already exists: xxx-yyy` error will be thrown.
 
 ```javascript
-// ❌ 错误：随机生成边时可能产生重复边
+// ❌ Incorrect: Randomly generated edges may result in duplicates
 const edges = [];
 for (let i = 0; i < 34; i++) {
   for (let j = 0; j < 3; j++) {
     const target = Math.floor(Math.random() * 34);
     if (target !== i) {
-      edges.push({ source: `${i}`, target: `${target}` }); // 可能重复！
+      edges.push({ source: `${i}`, target: `${target}` }); // Potential duplicate!
     }
   }
 }
 
-// ✅ 正确：使用 Set 去重，确保每对 source-target 唯一
+// ✅ Correct: Use a Set to deduplicate, ensuring each source-target pair is unique
 const edges = [];
 const edgeSet = new Set();
 for (let i = 0; i < 34; i++) {
@@ -383,10 +382,10 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-**最佳实践：优先使用明确的静态边数据，避免随机生成边。** 如果必须动态生成，务必在添加前检查重复：
+**Best Practice: Prioritize using explicit static edge data to avoid randomly generating edges.** If dynamic generation is necessary, ensure duplicates are checked before adding:
 
 ```javascript
-// ✅ 推荐：使用明确的边数据，不依赖随机生成
+// ✅ Recommended: Use explicit edge data, avoiding reliance on random generation
 const data = {
   nodes: Array.from({ length: 10 }, (_, i) => ({ id: `${i}` })),
   edges: [
@@ -394,7 +393,7 @@ const data = {
     { source: '0', target: '2' },
     { source: '1', target: '3' },
     { source: '2', target: '3' },
-    // 每对 source-target 只出现一次
+    // Each source-target pair appears only once
   ],
 };
 
@@ -416,15 +415,15 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 错误6：treeToGraphData 未导入
+### Error 6: treeToGraphData Not Imported
 
 ```javascript
-// ❌ 错误：忘记从 @antv/g6 导入 treeToGraphData
+// ❌ Error: Forgot to import treeToGraphData from @antv/g6
 import { Graph } from '@antv/g6';
 // ...
 data: treeToGraphData(treeData),  // ReferenceError: treeToGraphData is not defined
 
-// ✅ 正确：必须显式导入
+// ✅ Correct: Must explicitly import
 import { Graph, treeToGraphData } from '@antv/g6';
 // ...
 data: treeToGraphData(treeData),

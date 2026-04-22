@@ -1,9 +1,9 @@
 ---
 id: "g6-combo-overview"
-title: "G6 Combo（组合节点）"
+title: "G6 Combo (Composite Node)"
 description: |
-  使用 combo 对节点进行分组/归类，支持折叠/展开、拖拽移动、
-  嵌套 combo。内置 circle-combo 和 rect-combo 两种类型。
+  Use combo to group/categorize nodes, supporting collapse/expand, drag-and-drop,
+  and nested combos. Built-in types include circle-combo and rect-combo.
 
 library: "g6"
 version: "5.x"
@@ -11,10 +11,10 @@ category: "elements"
 subcategory: "combos"
 tags:
   - "combo"
-  - "组合"
-  - "分组"
-  - "折叠"
-  - "展开"
+  - "composite"
+  - "group"
+  - "collapse"
+  - "expand"
 
 related:
   - "g6-node-circle"
@@ -22,9 +22,9 @@ related:
   - "g6-layout-dagre"
 
 use_cases:
-  - "组织架构图（部门分组）"
-  - "微服务架构（服务分组）"
-  - "多层嵌套关系展示"
+  - "Organizational Structure Chart (Department Grouping)"
+  - "Microservice Architecture (Service Grouping)"
+  - "Multi-level Nested Relationship Display"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -32,28 +32,28 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Combo** 是对一组节点/子 combo 的包围容器，通过 `combo` 字段关联：
-- 节点数据中 `combo: 'comboId'` 表示该节点属于指定 combo
-- Combo 自动根据内部元素计算大小
-- 支持折叠（collapsed）状态
-- **G6 5.x 支持 combo 作为边的源或目标**（即边可以连接 combo）
+**Combo** is a bounding container for a group of nodes/sub-combos, associated via the `combo` field:
+- In node data, `combo: 'comboId'` indicates the node belongs to the specified combo
+- Combo size is automatically calculated based on internal elements
+- Supports collapsed state
+- **G6 5.x supports combo as a source or target of edges** (i.e., edges can connect to combos)
 
-## Combo 数据结构
+## Combo Data Structure
 
-| 属性 | 描述 | 类型 | 默认值 | 必选 |
+| Property | Description | Type | Default Value | Required |
 |------|------|------|--------|------|
-| `id` | 组合的唯一标识符 | `string` | - | ✓ |
-| `type` | 组合类型（`circle`/`rect`） | `string` | - | |
-| `data` | 业务数据（标签等） | `object` | - | |
-| `style` | 样式配置（位置、折叠状态等） | `object` | - | |
-| `combo` | 父 combo ID（用于嵌套） | `string` | - | |
-| `states` | 初始状态 | `string[]` | - | |
+| `id` | Unique identifier for the combo | `string` | - | ✓ |
+| `type` | Combo type (`circle`/`rect`) | `string` | - | |
+| `data` | Business data (labels, etc.) | `object` | - | |
+| `style` | Style configuration (position, collapse state, etc.) | `object` | - | |
+| `combo` | Parent combo ID (for nesting) | `string` | - | |
+| `states` | Initial states | `string[]` | - | |
 
-**重要**：父 combo（被其他 combo 引用的容器）也需要在 `combos` 数组中定义，即使它只有 `id` 字段。
+**Important**: Parent combos (containers referenced by other combos) must also be defined in the `combos` array, even if they only have the `id` field.
 
-## 最小可运行示例（rect-combo）
+## Minimum Viable Example (rect-combo)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -64,19 +64,19 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'n1', combo: 'c1', data: { label: '前端A' } },
-       { id: 'n2', combo: 'c1', data: { label: '前端B' } },
-       { id: 'n3', combo: 'c2', data: { label: '后端A' } },
-       { id: 'n4', combo: 'c2', data: { label: '后端B' } },
-       { id: 'n5', combo: 'c2', data: { label: '后端C' } },
+       { id: 'n1', combo: 'c1', data: { label: 'Frontend A' } },
+       { id: 'n2', combo: 'c1', data: { label: 'Frontend B' } },
+       { id: 'n3', combo: 'c2', data: { label: 'Backend A' } },
+       { id: 'n4', combo: 'c2', data: { label: 'Backend B' } },
+       { id: 'n5', combo: 'c2', data: { label: 'Backend C' } },
     ],
     edges: [
        { source: 'n1', target: 'n3' },
        { source: 'n2', target: 'n4' },
     ],
     combos: [
-       { id: 'c1', data: { label: '前端团队' } },
-       { id: 'c2', data: { label: '后端团队' } },
+       { id: 'c1', data: { label: 'Frontend Team' } },
+       { id: 'c2', data: { label: 'Backend Team' } },
     ],
   },
   node: {
@@ -96,13 +96,13 @@ const graph = new Graph({
       fill: '#f0f5ff',
       stroke: '#adc6ff',
       lineWidth: 1,
-      radius: 8,                       // 圆角
-      padding: 20,                     // 内边距
+      radius: 8,                       // border radius
+      padding: 20,                     // inner padding
       labelText: (d) => d.data.label,
       labelPlacement: 'top',
       labelFill: '#1d39c4',
       labelFontWeight: 600,
-      // 折叠后的尺寸
+      // size after collapse
       collapsedSize: [60, 30],
       collapsedFill: '#1783FF',
     },
@@ -114,7 +114,7 @@ const graph = new Graph({
     'drag-element',
     {
       type: 'collapse-expand',
-      trigger: 'dblclick',           // 双击 combo 折叠/展开
+      trigger: 'dblclick',           // double-click combo to collapse/expand
     },
   ],
 });
@@ -122,7 +122,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 圆形 Combo（circle-combo）
+## Circle Combo (circle-combo)
 
 ```javascript
 combo: {
@@ -138,28 +138,28 @@ combo: {
 },
 ```
 
-## 嵌套 Combo
+## Nested Combo
 
-嵌套 combo 时，子 combo 通过 `combo` 字段指定父 combo ID，**父 combo 必须在 `combos` 数组中定义**：
+When nesting combos, the child combo specifies the parent combo ID through the `combo` field, and **the parent combo must be defined in the `combos` array**:
 
 ```javascript
 data: {
   combos: [
-     { id: 'parent', data: { label: '母公司' } },           // 父 combo
-     { id: 'child1', combo: 'parent', data: { label: '子公司A' } },  // 子 combo
-     { id: 'child2', combo: 'parent', data: { label: '子公司B' } },  // 子 combo
+     { id: 'parent', data: { label: 'Parent Company' } },           // Parent combo
+     { id: 'child1', combo: 'parent', data: { label: 'Subsidiary A' } },  // Child combo
+     { id: 'child2', combo: 'parent', data: { label: 'Subsidiary B' } },  // Child combo
   ],
   nodes: [
-     { id: 'n1', combo: 'child1', data: { label: '员工1' } },
-     { id: 'n2', combo: 'child1', data: { label: '员工2' } },
-     { id: 'n3', combo: 'child2', data: { label: '员工3' } },
+     { id: 'n1', combo: 'child1', data: { label: 'Employee 1' } },
+     { id: 'n2', combo: 'child1', data: { label: 'Employee 2' } },
+     { id: 'n3', combo: 'child2', data: { label: 'Employee 3' } },
   ],
 },
 ```
 
-## Combo 作为边的端点
+## Combo as Edge Endpoints
 
-G6 5.x 支持将 combo 作为边的 source 或 target：
+G6 5.x supports using combos as the source or target of edges:
 
 ```javascript
 data: {
@@ -168,103 +168,103 @@ data: {
     { id: 'n2', combo: 'c2' },
   ],
   edges: [
-    { source: 'c1', target: 'n2' },    // 从 combo 到节点
-    { source: 'c1', target: 'c2' },   // 从 combo 到 combo
+    { source: 'c1', target: 'n2' },    // From combo to node
+    { source: 'c1', target: 'c2' },   // From combo to combo
   ],
   combos: [
-    { id: 'c1', data: { label: '组1' } },
-    { id: 'c2', data: { label: '组2' } },
+    { id: 'c1', data: { label: 'Group 1' } },
+    { id: 'c2', data: { label: 'Group 2' } },
   ],
 },
 ```
 
-## 折叠 / 展开 API
+## Collapse / Expand API
 
 ```javascript
-// 折叠 combo
+// Collapse combo
 await graph.collapseElement('c1');
 
-// 展开 combo
+// Expand combo
 await graph.expandElement('c1');
 
-// 判断是否折叠
+// Check if collapsed
 const isCollapsed = graph.isCollapsed('c1');
 ```
 
-## 初始折叠状态
+## Initial Collapsed State
 
-在数据中设置 combo 的初始折叠状态：
+Set the initial collapsed state of a combo in the data:
 
 ```javascript
 combos: [
   { 
     id: 'c1', 
-    data: { label: '折叠组' },
-    style: { collapsed: true }        // 初始折叠
+    data: { label: 'Collapsed Group' },
+    style: { collapsed: true }        // Initially collapsed
   },
 ],
 ```
 
-## Combo 样式属性参考
+## Combo Style Attribute Reference
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Attribute | Type | Default Value | Description |
 |------|------|--------|------|
-| `fill` | `string` | — | 背景填充色 |
-| `stroke` | `string` | — | 边框颜色 |
-| `lineWidth` | `number` | `1` | 边框宽度 |
-| `padding` | `number \| number[]` | `10` | 内边距 |
-| `radius` | `number` | `0` | 圆角（rect combo） |
-| `collapsed` | `boolean` | `false` | 是否折叠 |
-| `collapsedSize` | `[number, number]` | — | 折叠后尺寸 |
-| `collapsedFill` | `string` | — | 折叠后填充色 |
-| `labelText` | `string \| ((d) => string)` | — | 标签文字 |
-| `labelPlacement` | `'top' \| 'bottom' \| 'center'` | `'top'` | 标签位置 |
+| `fill` | `string` | — | Background fill color |
+| `stroke` | `string` | — | Border color |
+| `lineWidth` | `number` | `1` | Border width |
+| `padding` | `number \| number[]` | `10` | Inner padding |
+| `radius` | `number` | `0` | Border radius (rect combo) |
+| `collapsed` | `boolean` | `false` | Whether collapsed |
+| `collapsedSize` | `[number, number]` | — | Size after collapse |
+| `collapsedFill` | `string` | — | Fill color after collapse |
+| `labelText` | `string \| ((d) => string)` | — | Label text |
+| `labelPlacement` | `'top' \| 'bottom' \| 'center'` | `'top'` | Label position |
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误：将父 combo 错误识别为普通节点
+### Error: Parent combo mistakenly identified as a regular node
 
-当解析混合数据时，父 combo（被其他 combo 引用的容器）如果没有明显的 combo 特征（如没有 `style.collapsed`），容易被误判为普通节点，导致 `Node not found` 错误。
+When parsing mixed data, a parent combo (a container referenced by other combos) without clear combo characteristics (such as no `style.collapsed`) can be misidentified as a regular node, resulting in a `Node not found` error.
 
 ```javascript
-// ❌ 错误：将 combo2 识别为节点
+// ❌ Error: combo2 identified as a node
 const rawData = [
-  {"id":"combo1","combo":"combo2"},  // combo1 属于 combo2
-  {"id":"combo2"},                    // 父 combo，但可能被误判为节点
+  {"id":"combo1","combo":"combo2"},  // combo1 belongs to combo2
+  {"id":"combo2"},                    // Parent combo, but may be misidentified as a node
 ];
 
-// 错误的解析逻辑（导致 combo2 成为节点而非 combo）
+// Incorrect parsing logic (causes combo2 to become a node instead of a combo)
 const nodes = rawData.filter(item => !item.combo && !item.style?.collapsed);
 const combos = rawData.filter(item => item.combo || item.style?.collapsed);
 
-// ✅ 正确：先收集所有 combo ID，包括被引用的父 combo
+// ✅ Correct: First collect all combo IDs, including referenced parent combos
 const comboIds = new Set();
 rawData.forEach(item => {
-  if (item.combo) comboIds.add(item.combo);  // 收集父 combo ID
+  if (item.combo) comboIds.add(item.combo);  // Collect parent combo IDs
   if (item.style?.collapsed !== undefined || item.combo) {
-    comboIds.add(item.id);  // 收集明确的 combo
+    comboIds.add(item.id);  // Collect explicit combos
   }
 });
 
-// 然后根据 comboIds 分类
+// Then categorize based on comboIds
 const nodes = rawData.filter(item => !comboIds.has(item.id));
 const combos = rawData.filter(item => comboIds.has(item.id));
 ```
 
-### 错误：将业务数据（labelText）放在 combo 的 `style` 字段而非 `data` 字段
+### Error: Placing Business Data (`labelText`) in the `style` Field Instead of the `data` Field of a Combo
 
 ```javascript
-// ❌ style 字段用于样式覆盖（坐标、尺寸等），不是业务数据的存储位置
+// ❌ The `style` field is used for style overrides (coordinates, dimensions, etc.), not for storing business data
 combos: [
   { id: 'a', style: { labelText: 'Combo A' } },
 ],
 combo: {
   style: {
-    labelText: (d) => d.style.labelText,  // 可能在样式计算阶段读取失败
+    labelText: (d) => d.style.labelText,  // May fail during style calculation
   },
 },
 
-// ✅ 业务数据放在 data 字段
+// ✅ Business data should be placed in the `data` field
 combos: [
   { id: 'a', data: { label: 'Combo A' } },
 ],
@@ -275,44 +275,44 @@ combo: {
 },
 ```
 
-### 错误：circle combo 使用 `radius` 属性
+### Error: Circle Combo Using `radius` Property
 
 ```javascript
-// ❌ radius 只对 rect combo 有效（用于圆角），circle combo 半径由内容自动计算
+// ❌ radius is only valid for rect combo (for rounded corners), circle combo radius is automatically calculated based on content
 combo: {
   type: 'circle',
-  style: { radius: 10 },   // 无效，不会生效
+  style: { radius: 10 },   // Invalid, will not take effect
 },
 
-// ✅ circle combo 用 padding 控制内边距
+// ✅ Use padding to control the inner margin of circle combo
 combo: {
   type: 'circle',
   style: { padding: 10 },
 },
 ```
 
-### 错误：节点 combo 字段引用了不存在的 combo id
+### Error: Node combo field references a non-existent combo id
 
 ```javascript
-// ❌ combo 'cx' 未在 combos 数组中定义
+// ❌ combo 'cx' is not defined in the combos array
 nodes: [{ id: 'n1', combo: 'cx', data: {} }],
 combos: [],
 
-// ✅ 确保 combo id 存在
-combos: [{ id: 'cx', data: { label: '组' } }],
+// ✅ Ensure the combo id exists
+combos: [{ id: 'cx', data: { label: 'Group' } }],
 nodes: [{ id: 'n1', combo: 'cx', data: {} }],
 ```
 
-### 错误：边引用了未定义的 combo 作为端点
+### Error: Edge references an undefined combo as an endpoint
 
 ```javascript
-// ❌ combo 'c1' 未在 combos 数组中定义，但边引用了它
+// ❌ Combo 'c1' is not defined in the combos array, but an edge references it
 edges: [{ source: 'c1', target: 'n1' }],
 nodes: [{ id: 'n1' }],
 combos: [],
 
-// ✅ 确保作为边端点的 combo 已定义
-combos: [{ id: 'c1', data: { label: '组1' } }],
+// ✅ Ensure the combo referenced as an edge endpoint is defined
+combos: [{ id: 'c1', data: { label: 'Group 1' } }],
 nodes: [{ id: 'n1' }],
 edges: [{ source: 'c1', target: 'n1' }],
 ```

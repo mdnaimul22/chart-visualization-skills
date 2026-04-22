@@ -1,20 +1,20 @@
 ---
 id: "g6-core-events"
-title: "G6 事件系统"
+title: "G6 Event System"
 description: |
-  G6 v5 事件系统：元素事件（node/edge/combo 的点击、悬停、拖拽）、
-  画布事件和图生命周期事件的监听方式与常用事件列表。
+  G6 v5 Event System: Element events (click, hover, drag for nodes/edges/combos),
+  canvas events, and graph lifecycle event listening methods with a list of commonly used events.
 
 library: "g6"
 version: "5.x"
 category: "core"
 subcategory: "events"
 tags:
-  - "事件"
-  - "监听"
+  - "event"
+  - "listen"
   - "node:click"
   - "canvas"
-  - "生命周期"
+  - "lifecycle"
 
 related:
   - "g6-core-graph-api"
@@ -26,74 +26,74 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 事件监听基础
+## Event Listening Basics
 
 ```javascript
-// 监听
+// Listen
 graph.on('node:click', (event) => {
   const { target, targetType } = event;
-  console.log('点击节点:', target.id);
+  console.log('Node clicked:', target.id);
 });
 
-// 取消监听（传入同一函数引用）
+// Unlisten (pass the same function reference)
 const handler = (e) => console.log(e);
 graph.on('node:click', handler);
 graph.off('node:click', handler);
 
-// 取消该事件的所有监听
+// Remove all listeners for the event
 graph.off('node:click');
 ```
 
 ---
 
-## 元素事件
+## Element Events
 
-元素事件格式：`{元素类型}:{事件类型}`，如 `node:click`、`edge:pointerover`。
+Element event format: `{elementType}:{eventType}`, such as `node:click`, `edge:pointerover`.
 
-| 事件名 | 说明 |
-|--------|------|
-| `node:click` | 点击节点 |
-| `node:dblclick` | 双击节点 |
-| `node:pointerover` | 鼠标移入节点 |
-| `node:pointerout` | 鼠标移出节点 |
-| `node:pointerdown` | 鼠标/触摸按下节点 |
-| `node:pointerup` | 鼠标/触摸抬起 |
-| `node:contextmenu` | 右键节点 |
-| `node:dragstart` | 开始拖拽节点 |
-| `node:drag` | 拖拽节点中 |
-| `node:dragend` | 拖拽节点结束 |
-| `edge:click` | 点击边 |
-| `edge:pointerover` | 鼠标移入边 |
-| `combo:click` | 点击 combo |
-| `combo:dblclick` | 双击 combo |
+| Event Name | Description |
+|------------|-------------|
+| `node:click` | Click on a node |
+| `node:dblclick` | Double-click on a node |
+| `node:pointerover` | Mouse enters a node |
+| `node:pointerout` | Mouse leaves a node |
+| `node:pointerdown` | Mouse/touch press down on a node |
+| `node:pointerup` | Mouse/touch release |
+| `node:contextmenu` | Right-click on a node |
+| `node:dragstart` | Start dragging a node |
+| `node:drag` | Dragging a node |
+| `node:dragend` | End dragging a node |
+| `edge:click` | Click on an edge |
+| `edge:pointerover` | Mouse enters an edge |
+| `combo:click` | Click on a combo |
+| `combo:dblclick` | Double-click on a combo |
 
-### 事件对象属性
+### Event Object Properties
 
 ```typescript
 interface IElementEvent {
-  target: DisplayObject;    // 触发事件的图形对象
+  target: DisplayObject;    // The graphic object that triggered the event
   targetType: string;       // 'node' | 'edge' | 'combo' | 'canvas'
-  originalEvent: Event;     // 原始 DOM 事件
-  // 坐标（画布坐标系）
+  originalEvent: Event;     // The original DOM event
+  // Coordinates (Canvas coordinate system)
   canvas: { x: number; y: number };
-  // 坐标（视口坐标系）
+  // Coordinates (Viewport coordinate system)
   viewport: { x: number; y: number };
-  // 坐标（客户端坐标系）
+  // Coordinates (Client coordinate system)
   client: { x: number; y: number };
 }
 ```
 
-### 典型用法
+### Typical Usage
 
 ```javascript
-// 点击节点获取数据
+// Get data by clicking on a node
 graph.on('node:click', (event) => {
   const nodeId = event.target.id;
   const nodeData = graph.getNodeData(nodeId);
   console.log(nodeData);
 });
 
-// 悬停边高亮
+// Highlight edge on hover
 graph.on('edge:pointerover', (event) => {
   graph.setElementState(event.target.id, 'active');
 });
@@ -101,29 +101,29 @@ graph.on('edge:pointerout', (event) => {
   graph.setElementState(event.target.id, []);
 });
 
-// 右键菜单
+// Right-click menu
 graph.on('node:contextmenu', (event) => {
   event.originalEvent.preventDefault();
-  console.log('右键节点:', event.target.id);
+  console.log('Right-click node:', event.target.id);
 });
 ```
 
 ---
 
-## 画布事件
+## Canvas Events
 
-| 事件名 | 说明 |
-|--------|------|
-| `canvas:click` | 点击画布空白区域 |
-| `canvas:dblclick` | 双击画布 |
-| `canvas:pointerdown` | 鼠标按下画布 |
-| `canvas:pointerup` | 鼠标抬起 |
-| `canvas:pointermove` | 鼠标在画布移动 |
-| `canvas:wheel` | 画布滚轮事件 |
-| `canvas:contextmenu` | 右键画布 |
+| Event Name | Description |
+|------------|-------------|
+| `canvas:click` | Click on the blank area of the canvas |
+| `canvas:dblclick` | Double-click the canvas |
+| `canvas:pointerdown` | Mouse button pressed on the canvas |
+| `canvas:pointerup` | Mouse button released |
+| `canvas:pointermove` | Mouse moves on the canvas |
+| `canvas:wheel` | Canvas scroll wheel event |
+| `canvas:contextmenu` | Right-click the canvas |
 
 ```javascript
-// 点击空白区域取消选中
+// Click on blank area to cancel selection
 graph.on('canvas:click', () => {
   const selected = graph.getElementDataByState('node', 'selected');
   selected.forEach(n => graph.setElementState(n.id, []));
@@ -132,63 +132,63 @@ graph.on('canvas:click', () => {
 
 ---
 
-## 图生命周期事件
+## Graph Lifecycle Events
 
 ```javascript
 import { GraphEvent } from '@antv/g6';
 
-// 渲染完成
+// Render complete
 graph.on(GraphEvent.AFTER_RENDER, () => {
-  console.log('图渲染完成');
+  console.log('Graph render complete');
 });
 
-// 布局完成
+// Layout complete
 graph.on(GraphEvent.AFTER_LAYOUT, () => {
-  console.log('布局完成');
+  console.log('Layout complete');
 });
 
-// 元素创建后（批量）
+// Elements created (batch)
 graph.on(GraphEvent.AFTER_ELEMENT_CREATE, (event) => {
-  console.log('新增元素:', event.data);
+  console.log('New elements:', event.data);
 });
 
-// 视口变换（缩放/平移）
+// Viewport transformation (zoom/pan)
 graph.on(GraphEvent.AFTER_TRANSFORM, (event) => {
   const { translate, zoom } = event.data;
-  console.log('视口变换:', zoom);
+  console.log('Viewport transformation:', zoom);
 });
 ```
 
-### 常用生命周期事件
+### Common Lifecycle Events
 
-| 事件常量 | 事件名 | 触发时机 |
+| Event Constant | Event Name | Trigger Timing |
 |----------|--------|---------|
-| `GraphEvent.BEFORE_RENDER` | `beforerender` | render() 开始前 |
-| `GraphEvent.AFTER_RENDER` | `afterrender` | render() 完成后 |
-| `GraphEvent.BEFORE_DRAW` | `beforedraw` | draw() 开始前 |
-| `GraphEvent.AFTER_DRAW` | `afterdraw` | draw() 完成后 |
-| `GraphEvent.AFTER_LAYOUT` | `afterlayout` | 布局计算完成 |
-| `GraphEvent.AFTER_ELEMENT_CREATE` | `afterelementcreate` | 元素新增后 |
-| `GraphEvent.AFTER_ELEMENT_UPDATE` | `afterelementupdate` | 元素更新后 |
-| `GraphEvent.AFTER_ELEMENT_DESTROY` | `afterelementdestroy` | 元素删除后 |
-| `GraphEvent.AFTER_TRANSFORM` | `aftertransform` | 视口变换后 |
-| `GraphEvent.BEFORE_DESTROY` | `beforedestroy` | destroy() 前 |
+| `GraphEvent.BEFORE_RENDER` | `beforerender` | Before render() starts |
+| `GraphEvent.AFTER_RENDER` | `afterrender` | After render() completes |
+| `GraphEvent.BEFORE_DRAW` | `beforedraw` | Before draw() starts |
+| `GraphEvent.AFTER_DRAW` | `afterdraw` | After draw() completes |
+| `GraphEvent.AFTER_LAYOUT` | `afterlayout` | After layout calculation completes |
+| `GraphEvent.AFTER_ELEMENT_CREATE` | `afterelementcreate` | After an element is added |
+| `GraphEvent.AFTER_ELEMENT_UPDATE` | `afterelementupdate` | After an element is updated |
+| `GraphEvent.AFTER_ELEMENT_DESTROY` | `afterelementdestroy` | After an element is deleted |
+| `GraphEvent.AFTER_TRANSFORM` | `aftertransform` | After viewport transformation |
+| `GraphEvent.BEFORE_DESTROY` | `beforedestroy` | Before destroy() |
 
 ---
 
-## 常见模式
+## Common Patterns
 
-### 节点拖拽后更新坐标
+### Update Node Coordinates After Dragging
 
 ```javascript
 graph.on('node:dragend', (event) => {
   const nodeId = event.target.id;
   const { x, y } = graph.getNodeData(nodeId);
-  console.log(`节点 ${nodeId} 新坐标: (${x}, ${y})`);
+  console.log(`Node ${nodeId} new coordinates: (${x}, ${y})`);
 });
 ```
 
-### 动态更新 tooltip 数据
+### Dynamically Update Tooltip Data
 
 ```javascript
 graph.on('node:pointerover', async (event) => {

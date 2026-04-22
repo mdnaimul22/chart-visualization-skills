@@ -1,19 +1,16 @@
 ---
 id: "g6-node-diamond-ellipse-hexagon"
-title: "G6 多边形节点（Diamond / Ellipse / Hexagon）"
+title: "G6 Polygon Nodes (Diamond / Ellipse / Hexagon)"
 description: |
-  使用菱形（diamond）、椭圆（ellipse）、六边形（hexagon）节点创建图可视化。
-  适合流程图决策节点、强调纵向关系、蜂窝布局等场景。
+  Create graph visualizations using diamond, ellipse, and hexagon nodes.
+  Suitable for flowchart decision nodes, emphasizing vertical relationships, honeycomb layouts, and similar scenarios.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
-  - "菱形"
-  - "椭圆"
-  - "六边形"
+  - "node"
   - "diamond"
   - "ellipse"
   - "hexagon"
@@ -24,9 +21,9 @@ related:
   - "g6-state-overview"
 
 use_cases:
-  - "流程图决策节点（diamond）"
-  - "蜂窝/蜂巢布局（hexagon）"
-  - "强调纵向关系（ellipse）"
+  - "Flowchart decision nodes (diamond)"
+  - "Honeycomb/hive layouts (hexagon)"
+  - "Emphasizing vertical relationships (ellipse)"
 
 difficulty: "beginner"
 completeness: "full"
@@ -34,9 +31,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 菱形节点（diamond）
+## Diamond Node (diamond)
 
-菱形节点常用于流程图中的决策节点（判断分支）。
+The diamond node is commonly used in flowcharts as a decision node (judgment branch).
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -47,19 +44,19 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 'start', data: { label: '开始' } },
-       { id: 'decision', data: { label: '是否满足条件？' } },
-       { id: 'yes', data: { label: '执行A' } },
-       { id: 'no', data: { label: '执行B' } },
+       { id: 'start', data: { label: 'Start' } },
+       { id: 'decision', data: { label: 'Does it meet the condition?' } },
+       { id: 'yes', data: { label: 'Execute A' } },
+       { id: 'no', data: { label: 'Execute B' } },
     ],
     edges: [
        { source: 'start', target: 'decision' },
-       { source: 'decision', target: 'yes', data: { label: '是' } },
-       { source: 'decision', target: 'no', data: { label: '否' } },
+       { source: 'decision', target: 'yes', data: { label: 'Yes' } },
+       { source: 'decision', target: 'no', data: { label: 'No' } },
     ],
   },
   node: {
-    // 通过回调按节点 id 指定不同类型
+    // Specify different types by node id through callback
     type: (d) => (d.id === 'decision' ? 'diamond' : 'rect'),
     style: {
       size: (d) => (d.id === 'decision' ? 60 : [100, 40]),
@@ -86,26 +83,26 @@ const graph = new Graph({
 graph.render();
 ```
 
-### diamond 样式属性
+### diamond Style Properties
 
-| 属性 | 类型 | 说明 |
+| Property | Type | Description |
 |------|------|------|
-| `size` | `number` | 节点整体尺寸，控制宽高 |
-| `fill` | `string` | 填充颜色 |
-| `stroke` | `string` | 描边颜色 |
-| `lineWidth` | `number` | 描边宽度 |
+| `size` | `number` | Overall node size, controls width and height |
+| `fill` | `string` | Fill color |
+| `stroke` | `string` | Stroke color |
+| `lineWidth` | `number` | Stroke width |
 
 ---
 
-## 椭圆节点（ellipse）
+## Ellipse Node (ellipse)
 
-椭圆节点默认尺寸 [45, 35]，适合数据库实体（ER 图）等场景。
+The ellipse node has a default size of [45, 35], suitable for scenarios such as database entities (ER diagrams).
 
 ```javascript
 node: {
   type: 'ellipse',
   style: {
-    size: [80, 50],          // [宽, 高]
+    size: [80, 50],          // [width, height]
     fill: '#722ED1',
     stroke: '#fff',
     lineWidth: 2,
@@ -116,17 +113,17 @@ node: {
 },
 ```
 
-### ellipse 特有属性
+### Ellipse-specific Attributes
 
-| 属性 | 类型 | 说明 |
+| Attribute | Type | Description |
 |------|------|------|
-| `size` | `[number, number]` | `[宽度, 高度]`，分别对应 rx×2, ry×2 |
+| `size` | `[number, number]` | `[width, height]`, corresponding to rx×2, ry×2 respectively |
 
 ---
 
-## 六边形节点（hexagon）
+## Hexagon Node (hexagon)
 
-六边形节点适合蜂窝布局，具有良好的空间利用率。
+Hexagon nodes are suitable for honeycomb layouts, offering excellent space utilization.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -138,14 +135,14 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 12 }, (_, i) => ({
       id: `h${i}`,
-           { label: `区域${i + 1}`, value: Math.random() * 100 },
+      data: { label: `Area${i + 1}`, value: Math.random() * 100 },
     })),
     edges: [],
   },
   node: {
     type: 'hexagon',
     style: {
-      size: 60,              // 外接圆半径 * 2
+      size: 60,              // Circumscribed circle radius * 2
       fill: (d) => {
         const level = Math.floor(d.data.value / 33);
         return ['#52c41a', '#faad14', '#ff4d4f'][level] || '#1783FF';
@@ -165,32 +162,32 @@ const graph = new Graph({
 graph.render();
 ```
 
-### hexagon 特有属性
+### Hexagon-specific Properties
 
-| 属性 | 类型 | 说明 |
+| Property | Type | Description |
 |------|------|------|
-| `size` | `number` | 等价于 `outerR * 2`（外接圆直径） |
+| `size` | `number` | Equivalent to `outerR * 2` (diameter of the circumscribed circle) |
 
 ---
 
-## 常见错误
+## Common Errors
 
-### 错误：为 diamond/hexagon 设置数组 size
+### Error: Setting array size for diamond/hexagon
 
 ```javascript
-// ❌ diamond/hexagon/star/triangle 只接受单个数值
+// ❌ diamond/hexagon/star/triangle only accept a single number
 node: {
   type: 'diamond',
   style: { size: [60, 40] },
 }
 
-// ✅ 正确
+// ✅ Correct
 node: {
   type: 'diamond',
   style: { size: 60 },
 }
 
-// 只有 ellipse/rect 支持 [width, height] 数组
+// Only ellipse/rect support [width, height] array
 node: {
   type: 'ellipse',
   style: { size: [80, 50] },

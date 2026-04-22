@@ -1,20 +1,19 @@
 ---
 id: "g6-behavior-hover-activate"
-title: "G6 悬停激活交互（Hover Activate）"
+title: "G6 Hover Activate Interaction"
 description: |
-  使用 hover-activate 行为实现鼠标悬停时高亮节点和关联边，
-  提升图的可读性。
+  Use the hover-activate behavior to highlight nodes and associated edges when the mouse hovers over them,
+  improving the readability of the graph.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "highlight"
 tags:
-  - "交互"
-  - "悬停"
+  - "interaction"
   - "hover"
   - "hover-activate"
-  - "高亮"
+  - "highlight"
   - "activate"
 
 related:
@@ -22,12 +21,12 @@ related:
   - "g6-state-overview"
 
 use_cases:
-  - "边密集时高亮当前节点关联边"
-  - "知识图谱探索"
-  - "关系图分析"
+  - "Highlighting associated edges of the current node when edges are dense"
+  - "Knowledge graph exploration"
+  - "Relationship graph analysis"
 
 anti_patterns:
-  - "边较少时 hover-activate 意义不大"
+  - "Hover-activate has limited significance when there are fewer edges"
 
 difficulty: "beginner"
 completeness: "full"
@@ -37,7 +36,7 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/behavior/hover-activate"
 ---
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -102,9 +101,9 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'hover-activate',
-      degree: 1,              // 高亮几跳邻居（1=直接邻居）
-      state: 'active',        // 激活状态名
-      inactiveState: 'inactive',  // 其他元素的状态名
+      degree: 1,              // Highlight how many hops of neighbors (1 = direct neighbors)
+      state: 'active',        // Active state name
+      inactiveState: 'inactive',  // State name for other elements
     },
   ],
 });
@@ -112,13 +111,13 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface HoverActivateOptions {
-  degree?: number;              // 邻居跳数，默认 1
-  state?: string;               // 激活元素状态，默认 'active'
-  inactiveState?: string;       // 未激活元素状态，默认 'inactive'
+  degree?: number;              // Neighbor hops, default 1
+  state?: string;               // Active element state, default 'active'
+  inactiveState?: string;       // Inactive element state, default 'inactive'
   enable?: boolean | ((event) => boolean);
 }
 ```

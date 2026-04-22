@@ -1,21 +1,19 @@
 ---
 id: "g6-edge-line"
-title: "G6 直线边（Line Edge）"
+title: "G6 Line Edge"
 description: |
-  使用直线边（line）连接节点，是最简单的边类型。
-  支持箭头、标签、虚线等样式配置。
+  The line edge is the simplest type of edge, used to connect nodes with a straight line.
+  It supports various style configurations such as arrows, labels, and dashed lines.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "edges"
 tags:
-  - "边"
-  - "直线"
-  - "line"
   - "edge"
-  - "箭头"
-  - "有向图"
+  - "line"
+  - "arrow"
+  - "directed graph"
 
 related:
   - "g6-edge-cubic"
@@ -23,14 +21,14 @@ related:
   - "g6-node-circle"
 
 use_cases:
-  - "简单网络图"
-  - "拓扑图"
-  - "有向图"
-  - "流程图（配合折线边）"
+  - "Simple network graphs"
+  - "Topology diagrams"
+  - "Directed graphs"
+  - "Flowcharts (combined with polyline edges)"
 
 anti_patterns:
-  - "节点较近且边较多时直线容易重叠，考虑用 cubic 或 quadratic"
-  - "平行边场景（同源同目标多条边）使用 process-parallel-edges 变换"
+  - "When nodes are close and there are many edges, lines can overlap; consider using cubic or quadratic edges instead"
+  - "For parallel edge scenarios (multiple edges with the same source and target), use the process-parallel-edges transform"
 
 difficulty: "beginner"
 completeness: "full"
@@ -40,18 +38,18 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/edge/line"
 ---
 
-## 核心概念
+## Core Concepts
 
-直线边（`line`）是 G6 中最简单的边类型，直接连接两个节点，不带任何弯曲。
+The straight line edge (`line`) is the simplest edge type in G6, directly connecting two nodes without any curvature.
 
-**主要样式属性：**
-- `stroke`：边颜色
-- `lineWidth`：边宽度
-- `endArrow`：终点箭头（`true` 或箭头配置对象）
-- `startArrow`：起点箭头
-- `lineDash`：虚线配置
+**Main Style Attributes:**
+- `stroke`: Edge color
+- `lineWidth`: Edge width
+- `endArrow`: End arrow (`true` or arrow configuration object)
+- `startArrow`: Start arrow
+- `lineDash`: Dashed line configuration
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -67,7 +65,7 @@ const graph = new Graph({
        { id: 'n3', data: { label: 'C' } },
     ],
     edges: [
-       { id: 'e1', source: 'n1', target: 'n2', data: { label: '连接' } },
+       { id: 'e1', source: 'n1', target: 'n2', data: { label: 'Connection' } },
        { id: 'e2', source: 'n2', target: 'n3' },
     ],
   },
@@ -86,7 +84,7 @@ const graph = new Graph({
     style: {
       stroke: '#999',
       lineWidth: 1.5,
-      endArrow: true,              // 显示箭头
+      endArrow: true,              // Display arrow
       labelText: (d) => d.data.label,
     },
   },
@@ -97,16 +95,16 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 带权重的边（宽度映射）
+### Weighted Edges (Width Mapping)
 
 ```javascript
 edge: {
   type: 'line',
   style: {
     stroke: '#aaa',
-    lineWidth: (d) => Math.max(1, d.data.weight / 10),  // 按权重设置宽度
+    lineWidth: (d) => Math.max(1, d.data.weight / 10),  // Set width based on weight
     endArrow: true,
     labelText: (d) => d.data.weight ? `${d.data.weight}` : '',
     labelFontSize: 12,
@@ -115,7 +113,7 @@ edge: {
 },
 ```
 
-### 虚线边
+### Dashed Edge
 
 ```javascript
 edge: {
@@ -123,13 +121,13 @@ edge: {
   style: {
     stroke: '#aaa',
     lineWidth: 1.5,
-    lineDash: [4, 4],        // 虚线：[实线长度, 间隔长度]
+    lineDash: [4, 4],        // Dashed line: [solid length, gap length]
     endArrow: true,
   },
 },
 ```
 
-### 自定义箭头
+### Custom Arrow
 
 ```javascript
 edge: {
@@ -153,7 +151,7 @@ edge: {
 },
 ```
 
-### 按边类型着色
+### Color by Edge Type
 
 ```javascript
 edge: {
@@ -176,10 +174,10 @@ edge: {
 },
 ```
 
-### 处理平行边
+### Handling Parallel Edges
 
 ```javascript
-// 同一对节点之间有多条边时，使用 process-parallel-edges 变换
+// Use the process-parallel-edges transform when there are multiple edges between the same pair of nodes
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
@@ -192,15 +190,15 @@ const graph = new Graph({
        { id: 'b', data: { label: 'B' } },
     ],
     edges: [
-       { id: 'e1', source: 'a', target: 'b', data: { label: '调用' } },
-       { id: 'e2', source: 'a', target: 'b', data: { label: '回调' } },
-       { id: 'e3', source: 'b', target: 'a', data: { label: '返回' } },
+       { id: 'e1', source: 'a', target: 'b', data: { label: 'Call' } },
+       { id: 'e2', source: 'a', target: 'b', data: { label: 'Callback' } },
+       { id: 'e3', source: 'b', target: 'a', data: { label: 'Return' } },
     ],
   },
-  // 使用变换处理平行边
+  // Use transform to handle parallel edges
   transforms: ['process-parallel-edges'],
   edge: {
-    type: 'quadratic',          // 平行边用曲线更美观
+    type: 'quadratic',          // Curves are more aesthetically pleasing for parallel edges
     style: {
       stroke: '#aaa',
       endArrow: true,
@@ -212,7 +210,7 @@ const graph = new Graph({
 });
 ```
 
-## 边状态样式
+## Edge State Styles
 
 ```javascript
 edge: {
@@ -238,36 +236,36 @@ edge: {
 },
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：边标签不显示
+### Error 1: Edge Labels Not Displayed
 
 ```javascript
-// ❌ 数据中有 label，但没有配置 labelText
-const edges = [{ source: 'n1', target: 'n2', data: { label: '关系' } }];
-edge: { type: 'line', style: { stroke: '#aaa' } }  // 没有 labelText
+// ❌ Data contains label, but labelText is not configured
+const edges = [{ source: 'n1', target: 'n2', data: { label: 'relation' } }];
+edge: { type: 'line', style: { stroke: '#aaa' } }  // labelText is missing
 
-// ✅ 需要配置 labelText
+// ✅ labelText needs to be configured
 edge: {
   type: 'line',
   style: {
     stroke: '#aaa',
-    labelText: (d) => d.data.label || '',  // 从 data 中读取
+    labelText: (d) => d.data.label || '',  // Read from data
   },
 },
 ```
 
-### 错误2：箭头方向不符合预期
+### Error 2: Arrow Direction Does Not Match Expectations
 
 ```javascript
-// ❌ 以为 startArrow 是在 source 端，但实际渲染位置混淆
-// 明确：endArrow 在 target（终点）端，startArrow 在 source（起点）端
+// ❌ Assumed startArrow is at the source end, but actual rendering position is confused
+// Clarification: endArrow is at the target (end) end, startArrow is at the source (start) end
 
-// ✅ 有向图使用 endArrow
+// ✅ Directed graph using endArrow
 edge: {
   type: 'line',
   style: {
-    endArrow: true,    // 箭头在 target 端
+    endArrow: true,    // Arrow at the target end
   },
 },
 ```

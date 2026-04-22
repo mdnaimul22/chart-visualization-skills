@@ -1,56 +1,56 @@
-# G6 v5 图可视化代码生成技能
+# G6 v5 Graph Visualization Code Generation Skills
 
-## 核心约束（必须遵守）
+## Core Constraints (Must Comply)
 
-### 初始化规范
-- `container` 参数必填，传入 DOM 元素 ID 字符串或 DOM 元素对象
-- 使用 `new Graph({...})` 构造函数，**不得使用** `new G6.Graph()` (v4 写法)
-- 所有配置在构造函数中一次性完成，不得事后多次调用配置方法覆盖
-- `graph.render()` 返回 Promise，异步渲染；若需等待完成请 `await graph.render()`
+### Initialization Specifications
+- `container` parameter is required, pass in a DOM element ID string or a DOM element object
+- Use `new Graph({...})` constructor, **do not use** `new G6.Graph()` (v4 syntax)
+- All configurations must be completed in the constructor at once, do not override them later with multiple configuration method calls
+- `graph.render()` returns a Promise, rendering asynchronously; if you need to wait for completion, use `await graph.render()`
 
-### 数据结构规范
-- 数据格式：`{ nodes: [...], edges: [...], combos?: [...] }`
-- 每个节点必须有唯一 `id`（字符串）；业务数据放在 `data` 字段
-- 边必须有 `source` 和 `target`，值为节点 `id`
-- **禁止**使用 v4 的 `graph.data()` 方法传数据
+### Data Structure Specification
+- Data format: `{ nodes: [...], edges: [...], combos?: [...] }`
+- Each node must have a unique `id` (string); business data is stored in the `data` field
+- Edges must have `source` and `target`, with values being node `id`s
+- **Prohibited**: Using the v4 `graph.data()` method to pass data
 
-### 节点/边样式规范
-- 样式通过 `node.style` / `edge.style` 配置，支持静态值和回调函数
-- 回调函数签名：`(datum: NodeData | EdgeData) => value`
-- 标签文本通过 `style.labelText` 设置（**不是** `label` 或 `labelCfg`）
-- 节点大小通过 `style.size` 设置（单个数值或 [width, height] 数组）
+### Node/Edge Style Specification
+- Styles are configured via `node.style` / `edge.style`, supporting both static values and callback functions
+- Callback function signature: `(datum: NodeData | EdgeData) => value`
+- Label text is set via `style.labelText` (**not** `label` or `labelCfg`)
+- Node size is set via `style.size` (a single numeric value or a `[width, height]` array)
 
-### 布局规范
-- `layout` 配置放在 Graph 选项中：`{ type: 'force', ... }`
-- `force` 布局**不支持** `preventOverlap` / `nodeSize`（G6 v4 参数，v5 静默忽略）；防重叠请改用 `d3-force` + `collide`
-- 树形布局（mindmap, compact-box, dendrogram, indented）需要树形数据或 `treeToGraphData()` 转换
-- 力导向布局异步运行，`graph.render()` 后会持续迭代
+### Layout Specifications
+- `layout` configuration is placed in Graph options: `{ type: 'force', ... }`
+- `force` layout **does not support** `preventOverlap` / `nodeSize` (G6 v4 parameters, silently ignored in v5); for overlap prevention, use `d3-force` + `collide` instead
+- Tree layouts (mindmap, compact-box, dendrogram, indented) require tree data or `treeToGraphData()` conversion
+- Force-directed layout runs asynchronously and continues iterating after `graph.render()`
 
-### 交互行为规范
-- `behaviors` 为字符串数组或配置对象数组
-- 常用行为字符串简写：`'drag-canvas'`, `'zoom-canvas'`, `'drag-element'`, `'click-select'`
-- G6 v5 **移除了 Mode（模式）概念**，所有 behavior 直接在数组中配置
-- 复杂配置使用对象形式：`{ type: 'click-select', multiple: true }`
+### Interaction Behavior Specifications
+- `behaviors` is a string array or an array of configuration objects
+- Common behavior string abbreviations: `'drag-canvas'`, `'zoom-canvas'`, `'drag-element'`, `'click-select'`
+- G6 v5 **removed the Mode concept**, all behaviors are configured directly in the array
+- Complex configurations use object form: `{ type: 'click-select', multiple: true }`
 
-### 插件规范
-- `plugins` 为数组，与 `behaviors` 类似
-- 简写：`'minimap'`, `'grid-line'`, `'tooltip'`
-- 复杂配置：`{ type: 'tooltip', getContent: (e, items) => '...' }`
+### Plugin Specifications
+- `plugins` is an array, similar to `behaviors`
+- Shorthand: `'minimap'`, `'grid-line'`, `'tooltip'`
+- Complex configuration: `{ type: 'tooltip', getContent: (e, items) => '...' }`
 
 ---
 
-## 禁止的错误模式
+## Prohibited Error Patterns
 
-### ❌ 使用 v4 API
+### ❌ Using v4 API
 
 ```javascript
-// 错误：v4 chainable API
+// Error: v4 chainable API
 const graph = new G6.Graph({ ... });
 graph.data(data);
 graph.render();
-graph.node((node) => ({ ... }));  // v4 回调
+graph.node((node) => ({ ... }));  // v4 callback
 
-// 正确：v5 构造函数
+// Correct: v5 constructor
 const graph = new Graph({
   container: 'container',
   data: { nodes: [...], edges: [...] },
@@ -59,25 +59,25 @@ const graph = new Graph({
 graph.render();
 ```
 
-### ❌ 错误的节点 data 结构
+### ❌ Incorrect Node Data Structure
 
 ```javascript
-// 错误：直接在顶层放业务属性
+// Incorrect: Directly placing business attributes at the top level
 { id: 'node1', label: 'Node 1', value: 100 }
 
-// 正确：业务属性放在 data 字段
+// Correct: Business attributes placed in the data field
 { id: 'node1', data: { label: 'Node 1', value: 100 } }
 ```
 
-### ❌ 错误的标签配置
+### ❌ Incorrect Label Configuration
 
 ```javascript
-// 错误：v4 labelCfg
+// Incorrect: v4 labelCfg
 node: {
   labelCfg: { style: { fill: '#333' } }
 }
 
-// 正确：v5 style.labelText
+// Correct: v5 style.labelText
 node: {
   style: {
     labelText: (d) => d.data.label,
@@ -87,56 +87,56 @@ node: {
 }
 ```
 
-### ❌ behaviors 使用 Mode 概念
+### ❌ behaviors Using Mode Concept
 
 ```javascript
-// 错误：v4 modes
+// Incorrect: v4 modes
 modes: {
   default: ['drag-canvas', 'zoom-canvas'],
   edit: ['create-edge'],
 }
 
-// 正确：v5 直接 behaviors 数组
+// Correct: v5 directly uses behaviors array
 behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
 ```
 
-### ❌ 自定义节点 render() 中读取 attributes.data → 白屏
+### ❌ Reading attributes.data in Custom Node render() → Blank Screen
 
 ```javascript
-// 错误：attributes 是计算后的样式对象，不含节点 data，访问 data.color 抛 TypeError
+// Error: attributes is a computed style object, does not contain node data, accessing data.color throws TypeError
 render(attributes, container) {
   const { data } = attributes;       // undefined
-  const fill = data.color;           // TypeError → 白屏
+  const fill = data.color;           // TypeError → Blank Screen
 }
 
-// 正确：通过 node.style 回调把 data 字段映射为自定义样式属性
-// ① Graph 配置
+// Correct: Map data fields to custom style properties via node.style callback
+// ① Graph Configuration
 node: {
   type: 'my-node',
   style: { color: (d) => d.data.color },
 },
-// ② render() 中直接从 attributes 读取
+// ② Directly read from attributes in render()
 render(attributes, container) {
   const { color = '#1783FF' } = attributes;  // ✅
 }
 ```
 
-### ❌ 使用 extend 注册自定义节点
+### ❌ Using extend to Register Custom Nodes
 
 ```javascript
-// 错误：extend 已从 G6 v5 正式版移除，导入后调用会报 "extend is not a function"
+// Error: extend has been officially removed from G6 v5, and calling it after import will result in "extend is not a function"
 import { Graph, extend } from '@antv/g6';
 const extendedGraph = extend(Graph, {
   nodes: { 'my-node': MyNodeFn },
 });
 
-// 错误：v4 的 group.addShape() API
+// Error: v4's group.addShape() API
 const MyNode = (node) => (model) => {
   const group = node.group();
   group.addShape('circle', { attrs: { r: 20 } });
 };
 
-// 正确：BaseNode 类 + register()
+// Correct: BaseNode class + register()
 import { BaseNode, Circle, ExtensionCategory, Graph, register } from '@antv/g6';
 class MyNode extends BaseNode {
   render(attributes, container) {
@@ -148,32 +148,32 @@ register(ExtensionCategory.NODE, 'my-node', MyNode);
 const graph = new Graph({ node: { type: 'my-node' } });
 ```
 
-### ❌ 缺少 container
+### ❌ Missing container
 
 ```javascript
-// 错误：遗漏 container
+// Error: Missing container
 const graph = new Graph({ width: 800, height: 600 });
 
-// 正确：container 必填，值为字符串 ID 或 DOM 元素
+// Correct: container is required, value should be a string ID or DOM element
 const graph = new Graph({ container: 'container', width: 800, height: 600 });
-// 或传入 DOM 元素
+// Or pass a DOM element
 const graph = new Graph({ container: document.getElementById('container'), width: 800, height: 600 });
 ```
 
-> 常见变体错误：`container: container`（把字符串 ID 当变量名使用，变量未定义 → ReferenceError → 白屏）
+> Common variant error: `container: container` (using a string ID as a variable name, variable is undefined → ReferenceError → blank screen)
 
-### ❌ autoFit: 'view' 配合异步力导向布局导致白屏
+### ❌ autoFit: 'view' with Asynchronous Force-Directed Layout Causes White Screen
 
 ```javascript
-// 错误：combo-combined / force / d3-force 等布局是异步迭代的
-// autoFit 在布局迭代开始前执行，节点全堆在原点，包围盒为零 → 缩放异常 → 白屏
+// Error: Layouts like combo-combined, force, d3-force are asynchronous iterations
+// autoFit executes before layout iteration starts, all nodes pile up at the origin, bounding box is zero → abnormal scaling → white screen
 const graph = new Graph({
-  autoFit: 'view',          // ❌ 异步布局下不能在此设置
+  autoFit: 'view',          // ❌ Cannot set this under asynchronous layout
   layout: { type: 'combo-combined' },
 });
 graph.render();
 
-// 正确：不设置 autoFit，在 AFTER_LAYOUT 事件后调用 fitView
+// Correct: Do not set autoFit, call fitView after AFTER_LAYOUT event
 import { Graph, GraphEvent } from '@antv/g6';
 const graph = new Graph({
   layout: { type: 'combo-combined' },
@@ -182,36 +182,36 @@ graph.on(GraphEvent.AFTER_LAYOUT, () => graph.fitView({ padding: 20 }));
 graph.render();
 ```
 
-> 同步布局（`dagre`、`grid`、`circular` 等）不受此影响，可以直接用 `autoFit: 'view'`。
+> Synchronous layouts (`dagre`, `grid`, `circular`, etc.) are not affected by this issue and can directly use `autoFit: 'view'`.
 
 ---
 
-## 基础结构模板
+## Basic Structure Template
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
-  // 1. 容器
-  container: 'container',       // DOM id 或 HTMLElement
+  // 1. Container
+  container: 'container',       // DOM id or HTMLElement
   width: 800,
   height: 600,
-  autoFit: 'view',              // 可选：'center' | 'view' | false
+  autoFit: 'view',              // Optional: 'center' | 'view' | false
 
-  // 2. 数据
+  // 2. Data
   data: {
     nodes: [
-       { id: 'n1', data: { label: '节点1' } },
-       { id: 'n2', data: { label: '节点2' } },
+       { id: 'n1', data: { label: 'Node 1' } },
+       { id: 'n2', data: { label: 'Node 2' } },
     ],
     edges: [
        { source: 'n1', target: 'n2' },
     ],
   },
 
-  // 3. 节点样式
+  // 3. Node Style
   node: {
-    type: 'circle',             // 节点类型
+    type: 'circle',             // Node type
     style: {
       size: 40,
       fill: '#1783FF',
@@ -222,7 +222,7 @@ const graph = new Graph({
     },
   },
 
-  // 4. 边样式
+  // 4. Edge Style
   edge: {
     type: 'line',
     style: {
@@ -232,20 +232,20 @@ const graph = new Graph({
     },
   },
 
-  // 5. 布局
+  // 5. Layout
   layout: {
     type: 'force',
     preventOverlap: true,
     nodeSize: 40,
   },
 
-  // 6. 交互
+  // 6. Interactions
   behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
 
-  // 7. 插件（可选）
+  // 7. Plugins (Optional)
   plugins: ['grid-line'],
 
-  // 8. 主题（可选）
+  // 8. Theme (Optional)
   theme: 'light',               // 'light' | 'dark'
 });
 
@@ -254,126 +254,126 @@ graph.render();
 
 ---
 
-## 图类型选择指南
+## Chart Type Selection Guide
 
-| 图类型 | 推荐布局 | 典型场景 |
-|--------|----------|----------|
-| 网络图/关系图 | `force` / `fruchterman` | 社交网络、知识图谱 |
-| 层次/流程图 | `dagre` / `antv-dagre` | 组织架构、工作流 |
-| 树形图 | `compact-box` / `mindmap` | 文件树、思维导图 |
-| 环形图 | `circular` | 循环依赖、环形关系 |
-| 网格图 | `grid` | 棋盘布局、矩阵关系 |
-| 同心圆 | `concentric` | 中心辐射关系 |
-| 辐射布局 | `radial` | 以某节点为中心的辐射 |
+| Chart Type | Recommended Layout | Typical Scenarios |
+|------------|--------------------|-------------------|
+| Network/Relationship Graph | `force` / `fruchterman` | Social Networks, Knowledge Graphs |
+| Hierarchical/Flow Chart | `dagre` / `antv-dagre` | Organizational Structures, Workflows |
+| Tree Graph | `compact-box` / `mindmap` | File Trees, Mind Maps |
+| Circular Graph | `circular` | Circular Dependencies, Circular Relationships |
+| Grid Graph | `grid` | Chessboard Layouts, Matrix Relationships |
+| Concentric Circles | `concentric` | Center-Radiating Relationships |
+| Radial Layout | `radial` | Radiation Centered on a Specific Node |
 
 ---
 
-## 内置节点类型
+## Built-in Node Types
 
-| 类型名 | 形状 | 适用场景 |
+| Type Name | Shape | Applicable Scenarios |
 |--------|------|----------|
-| `circle` | 圆形 | 通用节点，网络图 |
-| `rect` | 矩形 | 流程图、UML |
-| `ellipse` | 椭圆 | 通用，强调纵向 |
-| `diamond` | 菱形 | 决策节点 |
-| `hexagon` | 六边形 | 蜂窝布局 |
-| `triangle` | 三角形 | 特殊标记 |
-| `star` | 五角星 | 特殊标记、评分 |
-| `donut` | 环形 | 带进度的节点 |
-| `image` | 图片 | 头像、图标节点 |
-| `html` | HTML | 富文本自定义节点 |
+| `circle` | Circle | General nodes, network graphs |
+| `rect` | Rectangle | Flowcharts, UML |
+| `ellipse` | Ellipse | General, emphasizing vertical orientation |
+| `diamond` | Diamond | Decision nodes |
+| `hexagon` | Hexagon | Honeycomb layouts |
+| `triangle` | Triangle | Special markers |
+| `star` | Star | Special markers, ratings |
+| `donut` | Donut | Nodes with progress |
+| `image` | Image | Avatars, icon nodes |
+| `html` | HTML | Rich text custom nodes |
 
 ---
 
-## 内置边类型
+## Built-in Edge Types
 
-| 类型名 | 形状 | 适用场景 |
+| Type Name | Shape | Applicable Scenarios |
 |--------|------|----------|
-| `line` | 直线 | 简单图、拓扑图 |
-| `cubic` | 三次贝塞尔曲线 | 通用，弧形效果 |
-| `cubic-horizontal` | 水平三次曲线 | 水平流程图 |
-| `cubic-vertical` | 垂直三次曲线 | 垂直流程图 |
-| `quadratic` | 二次贝塞尔曲线 | 轻量弧形边 |
-| `polyline` | 折线 | 正交布局 |
-| `loop` | 自环 | 节点自身的循环 |
+| `line` | Straight Line | Simple Graphs, Topology Diagrams |
+| `cubic` | Cubic Bezier Curve | General, Arc Effect |
+| `cubic-horizontal` | Horizontal Cubic Curve | Horizontal Flowcharts |
+| `cubic-vertical` | Vertical Cubic Curve | Vertical Flowcharts |
+| `quadratic` | Quadratic Bezier Curve | Lightweight Arc Edge |
+| `polyline` | Polyline | Orthogonal Layout |
+| `loop` | Loop | Node Self-Loop |
 
 ---
 
-## 内置布局算法
+## Built-in Layout Algorithms
 
-| 布局名 | 类型 | 特点 |
-|--------|------|------|
-| `force` | 力导向 | 物理模拟，自然分布 |
-| `d3-force` | 力导向 | 基于 D3，可配置力类型 |
-| `fruchterman` | 力导向 | 快速，支持 GPU 加速 |
-| `force-atlas2` | 力导向 | 大规模图，聚类效果好 |
-| `dagre` | 层次 | DAG，自动分层 |
-| `antv-dagre` | 层次 | AntV 优化版 Dagre |
-| `circular` | 环形 | 节点排列为圆形 |
-| `concentric` | 同心圆 | 按属性值分环 |
-| `grid` | 网格 | 规则网格排列 |
-| `radial` | 辐射 | 以某节点为中心辐射 |
-| `mds` | 降维 | 保持节点相对距离 |
-| `random` | 随机 | 调试用 |
-| `compact-box` | 树形 | 紧凑树，节省空间 |
-| `mindmap` | 树形 | 思维导图风格 |
-| `dendrogram` | 树形 | 树状图 |
-| `indented` | 树形 | 缩进树 |
-
----
-
-## 内置交互行为
-
-| 行为名 | 描述 |
-|--------|------|
-| `drag-canvas` | 拖拽画布 |
-| `zoom-canvas` | 滚轮缩放画布 |
-| `scroll-canvas` | 滚轮平移画布 |
-| `drag-element` | 拖拽节点/边/combo |
-| `drag-element-force` | 力导向图中拖拽节点 |
-| `click-select` | 点击选中元素 |
-| `brush-select` | 框选元素 |
-| `lasso-select` | 套索选择 |
-| `hover-activate` | 悬停激活元素 |
-| `collapse-expand` | 折叠/展开节点（树图） |
-| `create-edge` | 交互式创建边 |
-| `focus-element` | 聚焦元素（缩放到指定元素） |
-| `fix-element-size` | 缩放时保持元素大小不变 |
-| `auto-adapt-label` | 自动显示/隐藏标签（防重叠） |
-| `optimize-viewport-transform` | 大规模图视口优化 |
+| Layout Name | Type | Features |
+|-------------|------|----------|
+| `force` | Force-directed | Physical simulation, natural distribution |
+| `d3-force` | Force-directed | Based on D3, configurable force types |
+| `fruchterman` | Force-directed | Fast, supports GPU acceleration |
+| `force-atlas2` | Force-directed | Large-scale graphs, good clustering effect |
+| `dagre` | Hierarchical | DAG, automatic layering |
+| `antv-dagre` | Hierarchical | AntV optimized version of Dagre |
+| `circular` | Circular | Nodes arranged in a circle |
+| `concentric` | Concentric | Rings divided by attribute values |
+| `grid` | Grid | Regular grid arrangement |
+| `radial` | Radial | Radiates from a specific node |
+| `mds` | Dimensionality Reduction | Preserves relative node distances |
+| `random` | Random | For debugging |
+| `compact-box` | Tree | Compact tree, saves space |
+| `mindmap` | Tree | Mind map style |
+| `dendrogram` | Tree | Dendrogram |
+| `indented` | Tree | Indented tree |
 
 ---
 
-## 内置插件
+## Built-in Interaction Behaviors
 
-| 插件名 | 描述 |
-|--------|------|
-| `grid-line` | 网格背景线 |
-| `background` | 背景颜色/图片 |
-| `watermark` | 水印 |
-| `minimap` | 缩略图导航 |
-| `legend` | 图例 |
-| `tooltip` | 元素提示框 |
-| `toolbar` | 工具栏（缩放、撤销等） |
-| `contextmenu` | 右键菜单 |
-| `history` | 撤销/重做 |
-| `timebar` | 时间轴过滤 |
-| `fisheye` | 鱼眼放大效果 |
-| `edge-bundling` | 边捆绑 |
-| `edge-filter-lens` | 边过滤镜头 |
-| `hull` | 元素轮廓包围 |
-| `bubble-sets` | 气泡集合 |
-| `snapline` | 对齐辅助线 |
-| `fullscreen` | 全屏 |
+| Behavior Name | Description |
+|---------------|-------------|
+| `drag-canvas` | Drag canvas |
+| `zoom-canvas` | Zoom canvas with mouse wheel |
+| `scroll-canvas` | Pan canvas with mouse wheel |
+| `drag-element` | Drag node/edge/combo |
+| `drag-element-force` | Drag node in force-directed graph |
+| `click-select` | Click to select element |
+| `brush-select` | Box select elements |
+| `lasso-select` | Lasso select |
+| `hover-activate` | Hover to activate element |
+| `collapse-expand` | Collapse/expand node (tree graph) |
+| `create-edge` | Interactively create edge |
+| `focus-element` | Focus on element (zoom to specified element) |
+| `fix-element-size` | Maintain element size during zoom |
+| `auto-adapt-label` | Automatically show/hide labels (prevent overlap) |
+| `optimize-viewport-transform` | Large-scale graph viewport optimization |
 
 ---
 
-## 元素状态（States）
+## Built-in Plugins
 
-G6 v5 内置 5 种状态：`selected`、`active`、`highlight`、`inactive`、`disabled`
+| Plugin Name | Description |
+|-------------|-------------|
+| `grid-line` | Grid background lines |
+| `background` | Background color/image |
+| `watermark` | Watermark |
+| `minimap` | Minimap navigation |
+| `legend` | Legend |
+| `tooltip` | Element tooltip |
+| `toolbar` | Toolbar (zoom, undo, etc.) |
+| `contextmenu` | Context menu |
+| `history` | Undo/Redo |
+| `timebar` | Timeline filter |
+| `fisheye` | Fisheye magnification effect |
+| `edge-bundling` | Edge bundling |
+| `edge-filter-lens` | Edge filter lens |
+| `hull` | Element contour hull |
+| `bubble-sets` | Bubble sets |
+| `snapline` | Alignment guide lines |
+| `fullscreen` | Fullscreen |
+
+---
+
+## Element States (States)
+
+G6 v5 has 5 built-in states: `selected`, `active`, `highlight`, `inactive`, `disabled`
 
 ```javascript
-// 在 Graph 配置中为状态设置样式
+// Set styles for states in Graph configuration
 node: {
   style: {
     fill: '#1783FF',
@@ -390,52 +390,52 @@ node: {
   },
 },
 
-// 动态设置状态
+// Dynamically set states
 graph.setElementState('node1', 'selected');
 graph.setElementState('node1', ['selected', 'highlight']);
-graph.setElementState('node1', []);  // 清除所有状态
+graph.setElementState('node1', []);  // Clear all states
 ```
 
 ---
 
-## 主题系统
+## Theme System
 
 ```javascript
-// 内置主题
+// Built-in Themes
 const graph = new Graph({
-  theme: 'light',   // 默认
+  theme: 'light',   // Default
   // theme: 'dark',
 });
 
-// 动态切换主题
+// Dynamically Switch Themes
 graph.setTheme('dark');
 graph.render();
 ```
 
 ---
 
-## 数据操作 API
+## Data Manipulation API
 
 ```javascript
-// 添加元素
-graph.addNodeData([{ id: 'n3', data: { label: '新节点' } }]);
+// Add elements
+graph.addNodeData([{ id: 'n3', data: { label: 'New Node' } }]);
 graph.addEdgeData([{ source: 'n1', target: 'n3' }]);
 
-// 更新元素
+// Update elements
 graph.updateNodeData([{ id: 'n1', style: { fill: 'red' } }]);
 
-// 删除元素
+// Remove elements
 graph.removeNodeData(['n3']);
 
-// 更新数据后需要重新渲染
+// Re-render after updating data
 graph.draw();
 ```
 
 ---
 
-## 常见使用模式
+## Common Usage Patterns
 
-### 数据驱动样式（推荐）
+### Data-Driven Styling (Recommended)
 
 ```javascript
 node: {
@@ -450,19 +450,19 @@ node: {
 },
 ```
 
-### 调色板（Palette）映射
+### Palette Mapping
 
 ```javascript
 node: {
   palette: {
-    type: 'group',       // 按分类映射颜色
-    field: 'category',   // 数据中的分类字段
-    color: 'tableau10',  // 内置色板名
+    type: 'group',       // Map colors by category
+    field: 'category',   // Category field in the data
+    color: 'tableau10',  // Built-in palette name
   },
 },
 ```
 
-### 连续数值映射节点大小
+### Continuous Numerical Mapping of Node Size
 
 ```javascript
 transforms: [
@@ -474,7 +474,7 @@ transforms: [
 ],
 ```
 
-### 平行边处理
+### Parallel Edge Processing
 
 ```javascript
 transforms: [
@@ -490,125 +490,125 @@ edge: {
 
 ---
 
-## 数据操作 API 速查
+## Data Manipulation API Quick Reference
 
 ```javascript
-// 增
-graph.addNodeData([{ id: 'n3', data: { label: '新节点' } }]);
+// Add
+graph.addNodeData([{ id: 'n3', data: { label: 'New Node' } }]);
 graph.addEdgeData([{ source: 'n1', target: 'n3' }]);
 graph.draw();
 
-// 删
-graph.removeNodeData(['n3']);   // 关联边自动删除
+// Remove
+graph.removeNodeData(['n3']);   // Associated edges are automatically deleted
 graph.draw();
 
-// 改
-graph.updateNodeData([{ id: 'n1', data: { label: '更新' } }]);
+// Update
+graph.updateNodeData([{ id: 'n1', data: { label: 'Updated' } }]);
 graph.draw();
 
-// 查
+// Query
 const node = graph.getNodeData('n1');
 const selected = graph.getElementDataByState('node', 'selected');
 const zoom = graph.getZoom();
 
-// 视口
+// Viewport
 await graph.fitView({ padding: 20 });
 await graph.focusElement('n1', { duration: 500 });
 await graph.zoomTo(1.5);
 
-// 状态
+// State
 graph.setElementState('n1', 'selected');
-graph.setElementState('n1', []);          // 清除
+graph.setElementState('n1', []);          // Clear
 
-// 销毁
+// Destroy
 graph.destroy();
 ```
 
 ---
 
-## 事件监听速查
+## Event Listening Quick Reference
 
 ```javascript
-// 元素事件（node/edge/combo + 事件类型）
+// Element events (node/edge/combo + event type)
 graph.on('node:click', (e) => console.log(e.target.id));
 graph.on('edge:pointerover', (e) => graph.setElementState(e.target.id, 'active'));
-graph.on('canvas:click', () => { /* 点击空白 */ });
+graph.on('canvas:click', () => { /* Click on blank area */ });
 
-// 生命周期事件
+// Lifecycle events
 import { GraphEvent } from '@antv/g6';
-graph.on(GraphEvent.AFTER_RENDER, () => console.log('渲染完成'));
-graph.on(GraphEvent.AFTER_LAYOUT, () => console.log('布局完成'));
+graph.on(GraphEvent.AFTER_RENDER, () => console.log('Rendering complete'));
+graph.on(GraphEvent.AFTER_LAYOUT, () => console.log('Layout complete'));
 ```
 
 ---
 
-## Reference 文档索引
+## Reference Document Index
 
-### 核心
-- [`g6-core-graph-init`](references/core/g6-core-graph-init.md)：Graph 初始化完整配置
-- [`g6-core-data-structure`](references/core/g6-core-data-structure.md)：数据结构规范
-- [`g6-core-graph-api`](references/core/g6-core-graph-api.md)：Graph 实例 API（增删改查、视口、状态）
-- [`g6-core-events`](references/core/g6-core-events.md)：事件系统（元素事件、画布事件、生命周期）
-- [`g6-core-custom-element`](references/core/g6-core-custom-element.md)：自定义节点/边（register + BaseNode/BaseEdge）
-- [`g6-core-transforms-animation`](references/core/g6-core-transforms-animation.md)：数据变换（map-node-size）与动画配置
+### Core
+- [`g6-core-graph-init`](references/core/g6-core-graph-init.md): Complete configuration for Graph initialization
+- [`g6-core-data-structure`](references/core/g6-core-data-structure.md): Data structure specifications
+- [`g6-core-graph-api`](references/core/g6-core-graph-api.md): Graph instance API (CRUD, viewport, states)
+- [`g6-core-events`](references/core/g6-core-events.md): Event system (element events, canvas events, lifecycle)
+- [`g6-core-custom-element`](references/core/g6-core-custom-element.md): Custom nodes/edges (register + BaseNode/BaseEdge)
+- [`g6-core-transforms-animation`](references/core/g6-core-transforms-animation.md): Data transformations (map-node-size) and animation configurations
 
-### 节点类型
-- [`g6-node-circle`](references/elements/nodes/g6-node-circle.md)：圆形（通用）
-- [`g6-node-rect`](references/elements/nodes/g6-node-rect.md)：矩形（流程图）
-- [`g6-node-image`](references/elements/nodes/g6-node-image.md)：图片节点
-- [`g6-node-diamond-ellipse-hexagon`](references/elements/nodes/g6-node-diamond-ellipse-hexagon.md)：菱形/椭圆/六边形
-- [`g6-node-star-triangle-donut`](references/elements/nodes/g6-node-star-triangle-donut.md)：五角星/三角形/环形进度
-- [`g6-node-html`](references/elements/nodes/g6-node-html.md)：HTML 富文本节点
-- [`g6-node-react`](references/elements/nodes/g6-node-react.md)：React/Vue 自定义节点（@antv/g6-extension-react）
+### Node Types
+- [`g6-node-circle`](references/elements/nodes/g6-node-circle.md): Circle (General)
+- [`g6-node-rect`](references/elements/nodes/g6-node-rect.md): Rectangle (Flowchart)
+- [`g6-node-image`](references/elements/nodes/g6-node-image.md): Image Node
+- [`g6-node-diamond-ellipse-hexagon`](references/elements/nodes/g6-node-diamond-ellipse-hexagon.md): Diamond/Ellipse/Hexagon
+- [`g6-node-star-triangle-donut`](references/elements/nodes/g6-node-star-triangle-donut.md): Star/Triangle/Donut
+- [`g6-node-html`](references/elements/nodes/g6-node-html.md): HTML Rich Text Node
+- [`g6-node-react`](references/elements/nodes/g6-node-react.md): React/Vue Custom Node (@antv/g6-extension-react)
 
 ### Combo
-- [`g6-combo-overview`](references/elements/combos/g6-combo-overview.md)：Combo 分组（circle/rect，折叠展开）
+- [`g6-combo-overview`](references/elements/combos/g6-combo-overview.md)：Combo Grouping (circle/rect, collapse/expand)
 
-### 边类型
-- [`g6-edge-line`](references/elements/edges/g6-edge-line.md)：直线边
-- [`g6-edge-cubic`](references/elements/edges/g6-edge-cubic.md)：三次贝塞尔曲线边
-- [`g6-edge-cubic-directional`](references/elements/edges/g6-edge-cubic-directional.md)：有向三次曲线（cubic-horizontal 水平 / cubic-vertical 垂直）
-- [`g6-edge-polyline`](references/elements/edges/g6-edge-polyline.md)：折线边
-- [`g6-edge-quadratic-loop`](references/elements/edges/g6-edge-quadratic-loop.md)：二次曲线与自环边
+### Edge Types
+- [`g6-edge-line`](references/elements/edges/g6-edge-line.md)：Straight line edge
+- [`g6-edge-cubic`](references/elements/edges/g6-edge-cubic.md)：Cubic Bézier curve edge
+- [`g6-edge-cubic-directional`](references/elements/edges/g6-edge-cubic-directional.md)：Directed cubic curve (cubic-horizontal horizontal / cubic-vertical vertical)
+- [`g6-edge-polyline`](references/elements/edges/g6-edge-polyline.md)：Polyline edge
+- [`g6-edge-quadratic-loop`](references/elements/edges/g6-edge-quadratic-loop.md)：Quadratic curve and loop edge
 
-### 布局
-- [`g6-layout-force`](references/layouts/g6-layout-force.md)：力导向（force/d3-force）
-- [`g6-layout-dagre`](references/layouts/g6-layout-dagre.md)：层次/流程图（dagre）
-- [`g6-layout-circular`](references/layouts/g6-layout-circular.md)：环形
-- [`g6-layout-grid`](references/layouts/g6-layout-grid.md)：网格
-- [`g6-layout-mindmap`](references/layouts/g6-layout-mindmap.md)：思维导图
-- [`g6-layout-advanced`](references/layouts/g6-layout-advanced.md)：同心圆/辐射/mds/fruchterman
-- [`g6-layout-combo-fishbone`](references/layouts/g6-layout-combo-fishbone.md)：复合布局（combo-combined）+ 鱼骨布局（fishbone）
+### Layout
+- [`g6-layout-force`](references/layouts/g6-layout-force.md)：Force-directed (force/d3-force)
+- [`g6-layout-dagre`](references/layouts/g6-layout-dagre.md)：Hierarchical/Flowchart (dagre)
+- [`g6-layout-circular`](references/layouts/g6-layout-circular.md)：Circular
+- [`g6-layout-grid`](references/layouts/g6-layout-grid.md)：Grid
+- [`g6-layout-mindmap`](references/layouts/g6-layout-mindmap.md)：Mind Map
+- [`g6-layout-advanced`](references/layouts/g6-layout-advanced.md)：Concentric/Radial/MDS/Fruchterman
+- [`g6-layout-combo-fishbone`](references/layouts/g6-layout-combo-fishbone.md)：Combo Layout (combo-combined) + Fishbone Layout (fishbone)
 
-### 数据变换
-- [`g6-core-transforms-animation`](references/core/g6-core-transforms-animation.md)：map-node-size 与动画配置
-- [`g6-transform-parallel-edges-radial`](references/transforms/g6-transform-parallel-edges-radial.md)：平行边处理（process-parallel-edges）+ 径向标签（place-radial-labels）
+### Data Transformations
+- [`g6-core-transforms-animation`](references/core/g6-core-transforms-animation.md): map-node-size and animation configuration
+- [`g6-transform-parallel-edges-radial`](references/transforms/g6-transform-parallel-edges-radial.md): process-parallel-edges + place-radial-labels
 
-### 交互行为
-- [`g6-behavior-click-select`](references/behaviors/g6-behavior-click-select.md)：点击选中
-- [`g6-behavior-drag-element`](references/behaviors/g6-behavior-drag-element.md)：拖拽节点
-- [`g6-behavior-canvas-nav`](references/behaviors/g6-behavior-canvas-nav.md)：画布拖拽+缩放
-- [`g6-behavior-hover-activate`](references/behaviors/g6-behavior-hover-activate.md)：悬停激活
-- [`g6-behavior-lasso-collapse`](references/behaviors/g6-behavior-lasso-collapse.md)：套索选择 + 折叠展开
-- [`g6-behavior-create-edge-focus`](references/behaviors/g6-behavior-create-edge-focus.md)：创建边 + 聚焦元素
+### Interaction Behaviors
+- [`g6-behavior-click-select`](references/behaviors/g6-behavior-click-select.md)：Click to Select
+- [`g6-behavior-drag-element`](references/behaviors/g6-behavior-drag-element.md)：Drag Node
+- [`g6-behavior-canvas-nav`](references/behaviors/g6-behavior-canvas-nav.md)：Canvas Drag + Zoom
+- [`g6-behavior-hover-activate`](references/behaviors/g6-behavior-hover-activate.md)：Hover to Activate
+- [`g6-behavior-lasso-collapse`](references/behaviors/g6-behavior-lasso-collapse.md)：Lasso Select + Collapse/Expand
+- [`g6-behavior-create-edge-focus`](references/behaviors/g6-behavior-create-edge-focus.md)：Create Edge + Focus Element
 - [`g6-behavior-advanced`](references/behaviors/g6-behavior-advanced.md)：fix-element-size / auto-adapt-label / drag-element-force
 
-### 插件
-- [`g6-plugin-tooltip`](references/plugins/g6-plugin-tooltip.md)：悬停提示框
-- [`g6-plugin-minimap`](references/plugins/g6-plugin-minimap.md)：缩略图
-- [`g6-plugin-contextmenu-toolbar`](references/plugins/g6-plugin-contextmenu-toolbar.md)：右键菜单 + 工具栏
-- [`g6-plugin-history-legend`](references/plugins/g6-plugin-history-legend.md)：撤销重做 + 图例
-- [`g6-plugin-fisheye-hull-watermark`](references/plugins/g6-plugin-fisheye-hull-watermark.md)：鱼眼放大 + 轮廓包围 + 水印
-- [`g6-plugin-timebar-gridline`](references/plugins/g6-plugin-timebar-gridline.md)：时间轴 + 网格线
-- [`g6-plugin-background-snapline`](references/plugins/g6-plugin-background-snapline.md)：画布背景（background）+ 对齐线（snapline）
-- [`g6-plugin-edge-bundling-bubble`](references/plugins/g6-plugin-edge-bundling-bubble.md)：边绑定（edge-bundling）+ 气泡集（bubble-sets）
-- [`g6-plugin-fullscreen-title`](references/plugins/g6-plugin-fullscreen-title.md)：全屏（fullscreen）+ 图标题（title）
+### Plugins
+- [`g6-plugin-tooltip`](references/plugins/g6-plugin-tooltip.md)：Tooltip
+- [`g6-plugin-minimap`](references/plugins/g6-plugin-minimap.md)：Minimap
+- [`g6-plugin-contextmenu-toolbar`](references/plugins/g6-plugin-contextmenu-toolbar.md)：Context Menu + Toolbar
+- [`g6-plugin-history-legend`](references/plugins/g6-plugin-history-legend.md)：Undo/Redo + Legend
+- [`g6-plugin-fisheye-hull-watermark`](references/plugins/g6-plugin-fisheye-hull-watermark.md)：Fish Eye + Hull + Watermark
+- [`g6-plugin-timebar-gridline`](references/plugins/g6-plugin-timebar-gridline.md)：Time Bar + Grid Line
+- [`g6-plugin-background-snapline`](references/plugins/g6-plugin-background-snapline.md)：Background + Snapline
+- [`g6-plugin-edge-bundling-bubble`](references/plugins/g6-plugin-edge-bundling-bubble.md)：Edge Bundling + Bubble Sets
+- [`g6-plugin-fullscreen-title`](references/plugins/g6-plugin-fullscreen-title.md)：Fullscreen + Title
 
-### 状态与主题
-- [`g6-state-overview`](references/states/g6-state-overview.md)：元素状态系统
-- [`g6-theme-overview`](references/themes/g6-theme-overview.md)：主题系统
+### State and Theme
+- [`g6-state-overview`](references/states/g6-state-overview.md)：Element State System
+- [`g6-theme-overview`](references/themes/g6-theme-overview.md)：Theme System
 
-### 场景模板
-- [`g6-pattern-network-graph`](references/patterns/g6-pattern-network-graph.md)：网络关系图
-- [`g6-pattern-tree-graph`](references/patterns/g6-pattern-tree-graph.md)：树形图/组织架构
-- [`g6-pattern-flow-chart`](references/patterns/g6-pattern-flow-chart.md)：流程图
+### Scene Templates
+- [`g6-pattern-network-graph`](references/patterns/g6-pattern-network-graph.md)：Network Graph
+- [`g6-pattern-tree-graph`](references/patterns/g6-pattern-tree-graph.md)：Tree Graph/Organizational Structure
+- [`g6-pattern-flow-chart`](references/patterns/g6-pattern-flow-chart.md)：Flow Chart

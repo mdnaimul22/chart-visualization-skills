@@ -1,28 +1,25 @@
 ---
 id: "g6-theme-overview"
-title: "G6 主题系统"
+title: "G6 Theme System"
 description: |
-  G6 5.x 的主题系统，包含内置亮色/暗色主题的使用方法和动态切换。
+  The G6 5.x theme system, including usage methods for built-in light/dark themes and dynamic switching.
 
 library: "g6"
 version: "5.x"
 category: "themes"
 subcategory: "overview"
 tags:
-  - "主题"
   - "theme"
   - "dark"
   - "light"
-  - "暗色"
-  - "亮色"
 
 related:
   - "g6-state-overview"
   - "g6-core-graph-init"
 
 use_cases:
-  - "支持明暗两种模式的图可视化"
-  - "统一图的视觉风格"
+  - "Graph visualization supporting both light and dark modes"
+  - "Unified visual style for graphs"
 
 difficulty: "beginner"
 completeness: "full"
@@ -32,35 +29,35 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/theme/overview"
 ---
 
-## 核心概念
+## Core Concepts
 
-G6 v5 主题是 Graph Options 的子集，包含：
-- 背景色（`background`）
-- 节点默认样式（`node`）
-- 边默认样式（`edge`）
-- Combo 默认样式（`combo`）
+G6 v5 themes are a subset of Graph Options, including:
+- Background color (`background`)
+- Default node style (`node`)
+- Default edge style (`edge`)
+- Default combo style (`combo`)
 
-每个部分都包含：基础样式、调色板、状态样式、动画配置。
+Each section contains: basic style, color palette, state style, and animation configuration.
 
-**重要限制：** 主题中只支持静态值，不支持回调函数。
+**Important Limitation:** Only static values are supported in themes, callback functions are not supported.
 
-## 使用内置主题
+## Using Built-in Themes
 
 ```javascript
 import { Graph } from '@antv/g6';
 
-// 亮色主题（默认）
+// Light theme (default)
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
   data: { nodes: [...], edges: [...] },
-  theme: 'light',               // 默认值
+  theme: 'light',               // Default value
   layout: { type: 'force' },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
 
-// 暗色主题
+// Dark theme
 const graphDark = new Graph({
   container: 'container-dark',
   theme: 'dark',
@@ -70,10 +67,10 @@ const graphDark = new Graph({
 graph.render();
 ```
 
-## 动态切换主题
+## Dynamic Theme Switching
 
 ```javascript
-// 初始化
+// Initialization
 const graph = new Graph({
   container: 'container',
   theme: 'light',
@@ -81,7 +78,7 @@ const graph = new Graph({
 });
 await graph.render();
 
-// 切换主题
+// Theme Switching
 document.getElementById('theme-toggle').addEventListener('click', async () => {
   const currentTheme = graph.getTheme();
   await graph.setTheme(currentTheme === 'light' ? 'dark' : 'light');
@@ -89,28 +86,28 @@ document.getElementById('theme-toggle').addEventListener('click', async () => {
 });
 ```
 
-## 调色板（Palette）
+## Palette
 
-主题中的调色板用于按分类字段自动分配颜色：
+The palette in the theme is used to automatically assign colors based on the categorical field:
 
 ```javascript
 node: {
-  // 使用调色板自动按类别着色
+  // Use palette to automatically color by category
   palette: {
-    type: 'group',        // 'group'=按分类 | 'value'=按数值连续映射
-    field: 'category',    // 数据中的字段名
-    color: 'tableau10',   // 内置色板名
-    // 可选：自定义颜色列表
+    type: 'group',        // 'group'=categorical | 'value'=continuous mapping by value
+    field: 'category',    // Field name in the data
+    color: 'tableau10',   // Built-in palette name
+    // Optional: Custom color list
     // color: ['#ff4d4f', '#1783FF', '#52c41a', '#fa8c16'],
   },
 },
 ```
 
-**内置色板：** `tableau10`、`spectral`、`blues`、`greens`、`oranges`、`reds`、`purples`
+**Built-in Palettes:** `tableau10`、`spectral`、`blues`、`greens`、`oranges`、`reds`、`purples`
 
-## 常见组合
+## Common Combinations
 
-### 暗色主题 + 力导向图
+### Dark Theme + Force-Directed Graph
 
 ```javascript
 const graph = new Graph({
@@ -118,7 +115,7 @@ const graph = new Graph({
   width: 900,
   height: 600,
   theme: 'dark',
-    { nodes: [...], edges: [...] },
+  data: { nodes: [...], edges: [...] },
   node: {
     style: {
       labelText: (d) => d.data.label,

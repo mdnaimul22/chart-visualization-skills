@@ -1,20 +1,17 @@
 ---
 id: "g6-plugin-fisheye-hull-watermark"
-title: "G6 鱼眼放大（fisheye）、轮廓包围（hull）与水印（watermark）"
+title: "G6 Fisheye, Hull, and Watermark"
 description: |
-  fisheye：鼠标位置的焦点+上下文放大镜效果。
-  hull：对一组节点绘制包围轮廓（凸包/凹包）。
-  watermark：在画布上添加文字或图片水印。
+  fisheye: Focus at mouse position + context magnifier effect.
+  hull: Draw a bounding contour (convex/concave hull) around a set of nodes.
+  watermark: Add text or image watermark to the canvas.
 
 library: "g6"
 version: "5.x"
 category: "plugins"
 subcategory: "display"
 tags:
-  - "插件"
-  - "鱼眼"
-  - "轮廓"
-  - "水印"
+  - "plugin"
   - "fisheye"
   - "hull"
   - "watermark"
@@ -29,9 +26,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 鱼眼放大（fisheye）
+## Fisheye Magnification (fisheye)
 
-鱼眼镜头在鼠标附近放大局部区域，同时保持全局上下文可见。
+The fisheye lens magnifies a local area near the mouse while keeping the global context visible.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -43,7 +40,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 50 }, (_, i) => ({
       id: `n${i}`,
-           { label: `N${i}` },
+      label: `N${i}`,
     })),
     edges: Array.from({ length: 60 }, (_, i) => ({
       source: `n${i % 25}`,
@@ -67,17 +64,17 @@ const graph = new Graph({
     {
       type: 'fisheye',
       trigger: 'pointermove',        // 'pointermove' | 'drag' | 'click'
-      r: 120,                        // 鱼眼镜头半径（px）
-      d: 1.5,                        // 放大畸变系数（值越大放大越强）
-      // 通过滚轮调整半径
+      r: 120,                        // Fisheye lens radius (px)
+      d: 1.5,                        // Magnification distortion factor (higher values result in stronger magnification)
+      // Adjust radius via mouse wheel
       scaleRBy: 'wheel',
-      // 镜头样式
+      // Lens style
       style: {
         fill: 'rgba(255,255,255,0.1)',
         stroke: '#1783FF',
         lineWidth: 1,
       },
-      // 放大区域内节点样式覆盖
+      // Node style override within magnified area
       nodeStyle: {
         labelFontSize: 14,
         labelFontWeight: 'bold',
@@ -89,41 +86,41 @@ const graph = new Graph({
 graph.render();
 ```
 
-### fisheye 配置参数
+### fisheye Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `trigger` | `string` | `'pointermove'` | 触发移动鱼眼的事件 |
-| `r` | `number` | `120` | 镜头半径（px） |
-| `d` | `number` | `1.5` | 畸变系数，越大放大倍数越高 |
-| `scaleRBy` | `'wheel' \| 'drag'` | — | 滚轮/拖拽调整半径 |
-| `scaleDBy` | `'wheel' \| 'drag'` | — | 滚轮/拖拽调整畸变 |
-| `style` | `Partial<CircleStyleProps>` | — | 镜头外观样式 |
-| `nodeStyle` | `NodeStyle \| ((d) => NodeStyle)` | — | 放大区域内节点样式 |
+| `trigger` | `string` | `'pointermove'` | Event that triggers the fisheye movement |
+| `r` | `number` | `120` | Lens radius (px) |
+| `d` | `number` | `1.5` | Distortion coefficient, higher values result in greater magnification |
+| `scaleRBy` | `'wheel' \| 'drag'` | — | Adjust radius by wheel/drag |
+| `scaleDBy` | `'wheel' \| 'drag'` | — | Adjust distortion by wheel/drag |
+| `style` | `Partial<CircleStyleProps>` | — | Lens appearance style |
+| `nodeStyle` | `NodeStyle \| ((d) => NodeStyle)` | — | Node style within the magnified area |
 
 ---
 
-## 轮廓包围（hull）
+## Hull
 
-对指定节点集合绘制凸包或凹包轮廓，适合分组可视化。
+Draws convex or concave hulls around specified node sets, suitable for group visualization.
 
 ```javascript
 plugins: [
   {
     type: 'hull',
-    // 定义一个或多个 hull
+    // Define one or more hulls
     hulls: [
       {
         id: 'hull-team-a',
-        members: ['n1', 'n2', 'n3'],   // 节点 id 列表
+        members: ['n1', 'n2', 'n3'],   // List of node IDs
         type: 'smooth-convex',          // 'convex' | 'smooth-convex' | 'concave'
-        padding: 20,                    // 轮廓外扩距离
+        padding: 20,                    // Hull expansion distance
         style: {
           fill: 'rgba(23, 131, 255, 0.1)',
           stroke: '#1783FF',
           lineWidth: 2,
         },
-        labelText: '团队A',
+        labelText: 'Team A',
         labelPlacement: 'top',
       },
       {
@@ -136,40 +133,40 @@ plugins: [
           stroke: '#52c41a',
           lineWidth: 2,
         },
-        labelText: '团队B',
+        labelText: 'Team B',
       },
     ],
   },
 ],
 ```
 
-### hull 类型说明
+### Hull Type Description
 
-| 类型 | 说明 |
+| Type | Description |
 |------|------|
-| `convex` | 最小凸包，贴合边界 |
-| `smooth-convex` | 平滑凸包（默认，推荐） |
-| `concave` | 凹包，可绕过内部空洞 |
+| `convex` | Minimum convex hull, fits the boundary |
+| `smooth-convex` | Smooth convex hull (default, recommended) |
+| `concave` | Concave hull, can bypass internal holes |
 
 ---
 
-## 水印（watermark）
+## Watermark
 
 ```javascript
 plugins: [
-  // 文字水印
+  // Text Watermark
   {
     type: 'watermark',
-    text: '内部文件 · 禁止外传',
+    text: 'Internal Document · Confidential',
     textFill: '#ccc',
     textFontSize: 14,
     textFontFamily: 'Arial',
     opacity: 0.3,
-    rotate: -Math.PI / 6,   // 旋转角度（弧度）
+    rotate: -Math.PI / 6,   // Rotation angle (in radians)
     width: 200,
     height: 100,
   },
-  // 图片水印（两者二选一）
+  // Image Watermark (choose one of the two)
   // {
   //   type: 'watermark',
   //   imageURL: 'https://example.com/logo.png',
@@ -180,15 +177,15 @@ plugins: [
 ],
 ```
 
-### watermark 配置参数
+### watermark Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `text` | `string` | — | 文字水印内容（与 `imageURL` 二选一） |
-| `imageURL` | `string` | — | 图片水印 URL |
-| `textFill` | `string` | `'#000'` | 文字颜色 |
-| `textFontSize` | `number` | `14` | 字体大小 |
-| `opacity` | `number` | `0.2` | 水印透明度 |
-| `rotate` | `number` | `Math.PI/12` | 旋转角度（弧度） |
-| `width` | `number` | `200` | 单个水印宽度 |
-| `height` | `number` | `100` | 单个水印高度 |
+| `text` | `string` | — | Text watermark content (either `text` or `imageURL` must be provided) |
+| `imageURL` | `string` | — | Image watermark URL |
+| `textFill` | `string` | `'#000'` | Text color |
+| `textFontSize` | `number` | `14` | Font size |
+| `opacity` | `number` | `0.2` | Watermark opacity |
+| `rotate` | `number` | `Math.PI/12` | Rotation angle (in radians) |
+| `width` | `number` | `200` | Width of a single watermark |
+| `height` | `number` | `100` | Height of a single watermark |

@@ -1,20 +1,20 @@
 ---
 id: "g6-behavior-drag-element"
-title: "G6 拖拽元素交互（Drag Element）"
+title: "G6 Drag Element Interaction"
 description: |
-  使用 drag-element 和 drag-element-force 实现节点拖拽。
-  普通拖拽用于固定布局，force 版用于力导向图保持物理模拟。
+  Implement node dragging using drag-element and drag-element-force.
+  Regular dragging is used for fixed layouts, while the force version is used for force-directed graphs to maintain physical simulation.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "dragging"
 tags:
-  - "交互"
-  - "拖拽"
+  - "interaction"
+  - "drag"
   - "drag-element"
   - "behavior"
-  - "移动节点"
+  - "move node"
 
 related:
   - "g6-behavior-click-select"
@@ -22,13 +22,13 @@ related:
   - "g6-layout-force"
 
 use_cases:
-  - "手动调整节点位置"
-  - "交互式力导向图"
-  - "可编辑图表"
+  - "Manually adjust node positions"
+  - "Interactive force-directed graphs"
+  - "Editable charts"
 
 anti_patterns:
-  - "力导向布局中不要用普通 drag-element，要用 drag-element-force"
-  - "生成边数据时不要使用随机方式，避免产生重复边导致 Edge already exists 错误"
+  - "Do not use regular drag-element in force-directed layouts; use drag-element-force instead"
+  - "Avoid using random methods when generating edge data to prevent duplicate edges causing 'Edge already exists' errors"
 
 difficulty: "beginner"
 completeness: "full"
@@ -38,30 +38,30 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/behavior/drag-element"
 ---
 
-## 核心概念
+## Core Concepts
 
-- `drag-element`：拖拽节点到指定位置，其他节点不动（适合非力导向布局）
-- `drag-element-force`：拖拽时物理模拟继续（适合力导向布局）
+- `drag-element`: Drag a node to a specified position, while other nodes remain stationary (suitable for non-force-directed layouts)
+- `drag-element-force`: Physical simulation continues during dragging (suitable for force-directed layouts)
 
-## 重要注意事项
+## Important Notes
 
-### 边数据不能重复
+### Edge Data Cannot Be Duplicated
 
-G6 中每条边必须唯一（相同 source + target 的边不能重复添加），否则会抛出 `Edge already exists: {source}-{target}` 错误。
+In G6, each edge must be unique (edges with the same source + target cannot be added repeatedly), otherwise it will throw an `Edge already exists: {source}-{target}` error.
 
-**生成边数据时必须做去重处理**，不能使用随机方式直接 push 边，需要用 Set 或 Map 记录已存在的边。
+**Duplicate removal must be performed when generating edge data**, and edges cannot be directly pushed using a random method. A Set or Map should be used to record existing edges.
 
 ```javascript
-// ❌ 错误：随机生成边，可能产生重复
+// ❌ Incorrect: Randomly generating edges may result in duplicates
 const edges = [];
 for (let i = 0; i < 34; i++) {
   for (let j = 0; j < 3; j++) {
     const target = Math.floor(Math.random() * 34);
-    edges.push({ source: `${i}`, target: `${target}` }); // 可能重复！
+    edges.push({ source: `${i}`, target: `${target}` }); // May duplicate!
   }
 }
 
-// ✅ 正确：用 Set 去重
+// ✅ Correct: Using Set for duplicate removal
 const edges = [];
 const edgeSet = new Set();
 for (let i = 0; i < 34; i++) {
@@ -77,11 +77,11 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-### 数据应直接使用题目提供的数据
+### Data should directly use the data provided in the title
 
-当题目提供了具体的节点和边数据时，应直接使用，不要自行随机生成，避免重复边等问题。
+When the title provides specific node and edge data, it should be used directly, and random generation should not be performed to avoid issues such as duplicate edges.
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -126,20 +126,20 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 力导向图中的拖拽
+### Dragging in Force-Directed Graphs
 
 ```javascript
 behaviors: [
   'drag-canvas',
   'zoom-canvas',
-  'drag-element-force',       // 力导向布局必须用 force 版
+  'drag-element-force',       // Force-directed layout must use the force version
 ],
 layout: { type: 'force', preventOverlap: true },
 ```
 
-### 完整配置
+### Complete Configuration
 
 ```javascript
 behaviors: [
@@ -147,19 +147,19 @@ behaviors: [
   'zoom-canvas',
   {
     type: 'drag-element',
-    // 是否启用，默认可拖拽节点和 Combo
+    // Whether to enable, default is to drag nodes and Combos
     enable: (event) => ['node', 'combo'].includes(event.targetType),
-    // 拖拽动画
+    // Drag animation
     animation: true,
-    // 拖拽结束后的操作效果：'move' | 'link' | 'none'
+    // Operation effect after drag ends: 'move' | 'link' | 'none'
     dropEffect: 'move',
-    // 拖拽时隐藏关联边（提升性能）：'none' | 'out' | 'in' | 'both' | 'all'
+    // Hide associated edges during drag (improve performance): 'none' | 'out' | 'in' | 'both' | 'all'
     hideEdge: 'none',
-    // 拖拽时显示幽灵节点（影子节点）
+    // Display ghost node (shadow node) during drag
     shadow: true,
-    // 拖拽状态名
+    // Drag state name
     state: 'selected',
-    // 自定义鼠标样式
+    // Custom mouse style
     cursor: {
       default: 'default',
       grab: 'grab',
@@ -169,10 +169,10 @@ behaviors: [
 ],
 ```
 
-### 多选后批量拖拽
+### Multi-select and Batch Drag
 
 ```javascript
-// 配合 click-select 实现多选拖拽
+// Implement multi-select drag in conjunction with click-select
 behaviors: [
   'drag-canvas',
   'zoom-canvas',
@@ -183,62 +183,62 @@ behaviors: [
   },
   {
     type: 'drag-element',
-    // 拖拽时会同时移动所有 selected 状态的节点
+    // Dragging will move all nodes in the 'selected' state simultaneously
     state: 'selected',
   },
 ],
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误1：力导向图用普通 drag-element
+### Error 1: Using Regular `drag-element` in Force-Directed Graphs
 
 ```javascript
-// ❌ 力导向图中拖拽后节点不参与物理模拟
+// ❌ Nodes do not participate in physics simulation after dragging in force-directed graphs
 layout: { type: 'force' },
-behaviors: ['drag-element'],   // 错误！
+behaviors: ['drag-element'],   // Incorrect!
 
-// ✅ 力导向图使用 drag-element-force
+// ✅ Use `drag-element-force` for force-directed graphs
 layout: { type: 'force' },
 behaviors: ['drag-element-force'],
 ```
 
-### 错误2：随机生成边导致重复边报错
+### Error 2: Random Edge Generation Causes Duplicate Edge Errors
 
-**错误现象**：`Edge already exists: 12-20`
+**Error Description**: `Edge already exists: 12-20`
 
-**原因**：使用随机方式生成边数据时，可能产生相同 source + target 的重复边，G6 不允许重复边存在。
+**Cause**: When generating edge data randomly, duplicate edges with the same source + target may occur. G6 does not allow duplicate edges.
 
 ```javascript
-// ❌ 错误：随机生成可能产生重复边
+// ❌ Error: Random generation may produce duplicate edges
 const edges = [];
 for (let i = 0; i < 34; i++) {
   const numEdges = 2 + Math.floor(Math.random() * 2);
   for (let j = 0; j < numEdges; j++) {
     const target = Math.floor(Math.random() * 34);
     if (target !== i) {
-      edges.push({ source: `${i}`, target: `${target}` }); // 可能重复！
+      edges.push({ source: `${i}`, target: `${target}` }); // May duplicate!
     }
   }
 }
 
-// ✅ 正确方案1：直接使用题目提供的固定数据
+// ✅ Correct Solution 1: Directly use the fixed data provided in the problem
 const data = {
   nodes: [{ id: '0' }, { id: '1' }, /* ... */ { id: '33' }],
   edges: [
     { source: '0', target: '1' },
     { source: '0', target: '2' },
-    // ... 使用确定的、不重复的边数据
+    // ... Use deterministic, non-duplicate edge data
   ],
 };
 
-// ✅ 正确方案2：生成时用 Set 去重
+// ✅ Correct Solution 2: Use a Set to deduplicate during generation
 const edges = [];
 const edgeSet = new Set();
 for (let i = 0; i < 34; i++) {
   for (let j = i + 1; j < 34; j++) {
-    // 按顺序生成，天然不重复
-    if (Math.random() < 0.1) { // 控制边的密度
+    // Generate in order, naturally avoiding duplicates
+    if (Math.random() < 0.1) { // Control edge density
       edgeSet.add(`${i}-${j}`);
       edges.push({ source: `${i}`, target: `${j}` });
     }
@@ -246,33 +246,33 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-### 错误3：节点数据中 label 字段位置错误
+### Error 3: Incorrect Position of the `label` Field in Node Data
 
-G6 5.x 中节点的 label 通过样式配置，不是在 data 字段中：
+In G6 5.x, the node's `label` is configured through style settings, not in the `data` field:
 
 ```javascript
-// ❌ 错误：G6 5.x 不支持直接在 data 中配置 label
+// ❌ Incorrect: G6 5.x does not support configuring `label` directly in `data`
 nodes: [{ id: 'n1', label: 'A' }]
 
-// ✅ 正确：通过 node.style.labelText 配置
+// ✅ Correct: Configure through `node.style.labelText`
 node: {
   style: {
-    labelText: (d) => d.id,  // 或 d.data?.label
+    labelText: (d) => d.id,  // or d.data?.label
     labelPlacement: 'center',
     labelFill: '#fff',
   },
 },
 ```
 
-### 错误4：treeToGraphData 未导入
+### Error 4: treeToGraphData Not Imported
 
-如果使用树形数据需要转换为图数据，必须从 `@antv/g6` 中导入 `treeToGraphData`：
+If you need to convert tree data to graph data, you must import `treeToGraphData` from `@antv/g6`:
 
 ```javascript
-// ❌ 错误：直接使用未导入的函数
+// ❌ Error: Using an unimported function directly
 data: treeToGraphData(treeData),  // ReferenceError: treeToGraphData is not defined
 
-// ✅ 正确：先导入再使用
+// ✅ Correct: Import before use
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const graph = new Graph({

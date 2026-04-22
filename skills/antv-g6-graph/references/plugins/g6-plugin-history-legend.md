@@ -1,19 +1,19 @@
 ---
 id: "g6-plugin-history-legend"
-title: "G6 撤销重做（history）与图例（legend）"
+title: "G6 Undo/Redo (history) and Legend (legend)"
 description: |
-  history：记录图操作历史，支持 undo/redo，适合图编辑场景。
-  legend：自动从节点/边数据生成图例，支持点击过滤。
+  history: Records the operation history of the graph, supports undo/redo, suitable for graph editing scenarios.
+  legend: Automatically generates legends from node/edge data, supports click filtering.
 
 library: "g6"
 version: "5.x"
 category: "plugins"
 subcategory: "display"
 tags:
-  - "插件"
-  - "历史"
-  - "撤销"
-  - "图例"
+  - "plugin"
+  - "history"
+  - "undo"
+  - "legend"
   - "history"
   - "legend"
 
@@ -27,7 +27,7 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 撤销重做（history）
+## Undo/Redo (history)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -57,14 +57,14 @@ const graph = new Graph({
   plugins: [
     {
       type: 'history',
-      stackSize: 50,           // 最大历史记录数，0 = 不限
+      stackSize: 50,           // Maximum history size, 0 = unlimited
     },
   ],
 });
 
 graph.render();
 
-// 注册快捷键 Ctrl+Z / Ctrl+Y
+// Register shortcuts Ctrl+Z / Ctrl+Y
 document.addEventListener('keydown', (e) => {
   const plugin = graph.getPluginInstance('history');
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
@@ -77,45 +77,45 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// 监听历史变化更新 UI
+// Listen for history changes to update UI
 const plugin = graph.getPluginInstance('history');
-// 或通过 key 获取
+// Or retrieve by key
 // plugins: [{ type: 'history', key: 'myHistory', stackSize: 50 }]
 
-// 批量操作合并为一条历史记录
+// Batch operations merged into a single history entry
 graph.batch(() => {
   graph.addNodeData([{ id: 'n3', data: { label: 'C' } }]);
   graph.addEdgeData([{ source: 'n1', target: 'n3' }]);
 });
 graph.draw();
-// 上述两步操作通过 batch 合并，undo 时一次性回滚
+// The above two operations are merged via batch, and will be rolled back together on undo
 ```
 
-### history 配置参数
+### History Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `stackSize` | `number` | `0` | 历史栈大小，0 表示不限制 |
-| `beforeAddCommand` | `(cmd, revert) => boolean \| void` | — | 添加命令前拦截，返回 false 取消 |
-| `afterAddCommand` | `(cmd, revert) => void` | — | 添加命令后回调 |
+| `stackSize` | `number` | `0` | History stack size, 0 means no limit |
+| `beforeAddCommand` | `(cmd, revert) => boolean \| void` | — | Intercept before adding a command, return false to cancel |
+| `afterAddCommand` | `(cmd, revert) => void` | — | Callback after adding a command |
 
 ### history API
 
 ```javascript
 const history = graph.getPluginInstance('history-plugin-key');
 
-history.undo();          // 撤销
-history.redo();          // 重做
-history.canUndo();       // 是否可撤销（boolean）
-history.canRedo();       // 是否可重做（boolean）
-history.clear();         // 清空历史
+history.undo();          // Undo
+history.redo();          // Redo
+history.canUndo();       // Can undo (boolean)
+history.canRedo();       // Can redo (boolean)
+history.clear();         // Clear history
 ```
 
 ---
 
-## 图例（legend）
+## Legend
 
-根据节点/边数据字段自动生成交互式图例。
+Automatically generate an interactive legend based on node/edge data fields.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -126,14 +126,14 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'n1', data: { label: 'A', type: '工程师' } },
-       { id: 'n2', data: { label: 'B', type: '产品' } },
-       { id: 'n3', data: { label: 'C', type: '工程师' } },
-       { id: 'n4', data: { label: 'D', type: '设计师' } },
+       { id: 'n1', data: { label: 'A', type: 'Engineer' } },
+       { id: 'n2', data: { label: 'B', type: 'Product' } },
+       { id: 'n3', data: { label: 'C', type: 'Engineer' } },
+       { id: 'n4', data: { label: 'D', type: 'Designer' } },
     ],
     edges: [
-       { source: 'n1', target: 'n2', data: { relation: '协作' } },
-       { source: 'n1', target: 'n3', data: { relation: '上下级' } },
+       { source: 'n1', target: 'n2', data: { relation: 'Collaboration' } },
+       { source: 'n1', target: 'n3', data: { relation: 'Subordinate' } },
     ],
   },
   node: {
@@ -145,7 +145,7 @@ const graph = new Graph({
     },
     palette: {
       type: 'group',
-      field: 'type',           // 图例按此字段分类
+      field: 'type',           // Legend categorizes by this field
     },
   },
   edge: {
@@ -159,13 +159,13 @@ const graph = new Graph({
   plugins: [
     {
       type: 'legend',
-      position: 'bottom-left',       // 图例位置
-      trigger: 'click',              // 'hover' | 'click'（点击过滤）
-      // 节点图例的分类字段
+      position: 'bottom-left',       // Legend position
+      trigger: 'click',              // 'hover' | 'click' (click to filter)
+      // Categorization field for node legend
       nodeField: 'type',
-      // 边图例的分类字段
+      // Categorization field for edge legend
       edgeField: 'relation',
-      // 图例方向
+      // Legend orientation
       orientation: 'horizontal',     // 'horizontal' | 'vertical'
     },
   ],
@@ -174,14 +174,14 @@ const graph = new Graph({
 graph.render();
 ```
 
-### legend 配置参数
+### Legend Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `position` | `CardinalPlacement` | `'bottom'` | 图例位置 |
-| `trigger` | `'hover' \| 'click'` | `'hover'` | 交互触发方式 |
-| `nodeField` | `string \| ((d) => string)` | — | 节点分类字段 |
-| `edgeField` | `string \| ((d) => string)` | — | 边分类字段 |
-| `comboField` | `string \| ((d) => string)` | — | combo 分类字段 |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | 图例排列方向 |
-| `container` | `HTMLElement \| string` | — | 自定义容器 |
+| `position` | `CardinalPlacement` | `'bottom'` | Legend position |
+| `trigger` | `'hover' \| 'click'` | `'hover'` | Interaction trigger method |
+| `nodeField` | `string \| ((d) => string)` | — | Node classification field |
+| `edgeField` | `string \| ((d) => string)` | — | Edge classification field |
+| `comboField` | `string \| ((d) => string)` | — | Combo classification field |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Legend arrangement direction |
+| `container` | `HTMLElement \| string` | — | Custom container |

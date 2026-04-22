@@ -1,9 +1,9 @@
 ---
 id: "g6-core-transforms-animation"
-title: "G6 数据变换（Transforms）与动画系统"
+title: "G6 Data Transforms and Animation System"
 description: |
-  Transforms：在渲染前对图数据进行处理（节点大小映射、平行边处理等）。
-  动画：元素进入/退出/更新动画，视口动画，自定义动画配置。
+  Transforms: Process graph data before rendering (node size mapping, parallel edge processing, etc.).
+  Animation: Element enter/exit/update animations, viewport animations, custom animation configurations.
 
 library: "g6"
 version: "5.x"
@@ -11,7 +11,7 @@ category: "core"
 subcategory: "data"
 tags:
   - "transforms"
-  - "动画"
+  - "animation"
   - "map-node-size"
   - "process-parallel-edges"
   - "animation"
@@ -26,13 +26,13 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 数据变换（Transforms）
+## Data Transformations (Transforms)
 
-Transforms 是在数据绑定到图元素前的处理管道，用于数据到可视属性的映射。
+Transforms are the processing pipelines that occur before data is bound to chart elements, used for mapping data to visual attributes.
 
-### map-node-size（节点大小映射）
+### map-node-size (Node Size Mapping)
 
-将节点数据字段映射到节点尺寸区间：
+Map node data fields to node size ranges:
 
 ```javascript
 const graph = new Graph({
@@ -50,18 +50,18 @@ const graph = new Graph({
        { source: 'n2', target: 'n3' },
     ],
   },
-  // transforms 在 Graph 配置顶层
+  // transforms at the top level of Graph configuration
   transforms: [
     {
       type: 'map-node-size',
-      field: 'value',          // 映射的数据字段（从 node.data 中读取）
-      range: [16, 60],         // 映射到的尺寸范围 [最小, 最大]（px）
+      field: 'value',          // Data field to map (read from node.data)
+      range: [16, 60],         // Size range to map to [min, max] (px)
     },
   ],
   node: {
     type: 'circle',
     style: {
-      // size 不需要再手动设置，transform 自动计算
+      // size does not need to be manually set, transform calculates it automatically
       fill: '#1783FF',
       stroke: '#fff',
       labelText: (d) => d.data.label,
@@ -75,20 +75,20 @@ const graph = new Graph({
 graph.render();
 ```
 
-### process-parallel-edges（平行边处理）
+### process-parallel-edges (Parallel Edge Processing)
 
-当两个节点之间存在多条边时，自动将它们错开展示：
+When there are multiple edges between two nodes, they are automatically staggered for display:
 
 ```javascript
 transforms: [
   {
     type: 'process-parallel-edges',
-    offset: 15,                // 平行边之间的间距（px）
-    // 只对有平行关系的边应用曲线
+    offset: 15,                // Spacing between parallel edges (px)
+    // Apply curves only to edges with parallel relationships
   },
 ],
 edge: {
-  type: 'quadratic',           // 推荐与 quadratic 配合使用
+  type: 'quadratic',           // Recommended to use with quadratic
   style: {
     stroke: '#aaa',
     endArrow: true,
@@ -96,33 +96,33 @@ edge: {
 },
 ```
 
-### 内置 Transforms 列表
+### Built-in Transforms List
 
-| 类型 | 说明 | 常用参数 |
-|------|------|---------|
-| `map-node-size` | 数据驱动节点大小 | `field`, `range` |
-| `process-parallel-edges` | 平行边错开展示 | `offset` |
-| `place-radial-labels` | 径向布局标签自动定位 | — |
-| `arrange-draw-order` | 调整元素渲染顺序 | `nodeBeforeEdge` |
-| `get-edge-actual-ends` | 计算边的实际端点（端口支持） | — |
-| `update-related-edge` | 节点移动时更新关联边 | — |
+| Type | Description | Common Parameters |
+|------|-------------|---------------|
+| `map-node-size` | Data-driven node size | `field`, `range` |
+| `process-parallel-edges` | Offset parallel edges for display | `offset` |
+| `place-radial-labels` | Automatic positioning of labels in radial layouts | — |
+| `arrange-draw-order` | Adjust element rendering order | `nodeBeforeEdge` |
+| `get-edge-actual-ends` | Calculate actual edge endpoints (port support) | — |
+| `update-related-edge` | Update related edges when a node moves | — |
 
 ---
 
-## 动画系统
+## Animation System
 
-### 全局动画开关
+### Global Animation Switch
 
 ```javascript
 const graph = new Graph({
   container: 'container',
-  // 禁用所有动画（提升大图性能）
+  // Disable all animations (improve performance for large graphs)
   animation: false,
   // ...
 });
 ```
 
-### 元素进入/退出/更新动画
+### Element Enter/Exit/Update Animation
 
 ```javascript
 const graph = new Graph({
@@ -131,19 +131,19 @@ const graph = new Graph({
   node: {
     type: 'circle',
     style: { size: 40, fill: '#1783FF' },
-    // 动画配置（每个阶段独立）
+    // Animation configuration (each stage is independent)
     animation: {
-      // 节点初始进入动画
+      // Initial node enter animation
       enter: [
         {
-          fields: ['opacity'],         // 动画属性
-          from: { opacity: 0 },        // 起始值
-          to: { opacity: 1 },          // 结束值
+          fields: ['opacity'],         // Animation properties
+          from: { opacity: 0 },        // Starting value
+          to: { opacity: 1 },          // Ending value
           duration: 500,
           easing: 'ease-in',
         },
       ],
-      // 节点更新动画（数据变化时）
+      // Node update animation (when data changes)
       update: [
         {
           fields: ['fill', 'size'],
@@ -151,7 +151,7 @@ const graph = new Graph({
           easing: 'linear',
         },
       ],
-      // 节点退出动画（删除时）
+      // Node exit animation (when deleted)
       exit: [
         {
           fields: ['opacity'],
@@ -164,15 +164,15 @@ const graph = new Graph({
 });
 ```
 
-### 视口动画配置
+### Viewport Animation Configuration
 
-所有视口操作（fitView, focusElement, zoomTo, translateTo）都支持动画参数：
+All viewport operations (`fitView`, `focusElement`, `zoomTo`, `translateTo`) support animation parameters:
 
 ```javascript
 // ViewportAnimationEffectTiming
 await graph.fitView({
   padding: 20,
-  // 动画配置
+  // Animation configuration
   easing: 'ease-in-out',
   duration: 600,
 });
@@ -188,32 +188,32 @@ await graph.focusElement('n1', {
 });
 ```
 
-### 常用 easing 值
+### Common easing values
 
-| 值 | 说明 |
+| Value | Description |
 |----|------|
-| `'linear'` | 匀速 |
-| `'ease'` | 先慢后快再慢 |
-| `'ease-in'` | 先慢后快 |
-| `'ease-out'` | 先快后慢 |
-| `'ease-in-out'` | 先慢快慢 |
-| `'cubic-bezier(...)` | 自定义三次贝塞尔 |
+| `'linear'` | Constant speed |
+| `'ease'` | Slow, then fast, then slow |
+| `'ease-in'` | Slow, then fast |
+| `'ease-out'` | Fast, then slow |
+| `'ease-in-out'` | Slow, fast, slow |
+| `'cubic-bezier(...)` | Custom cubic Bézier |
 
 ---
 
-## 性能优化建议
+## Performance Optimization Suggestions
 
 ```javascript
-// 1. 大规模图（> 1000 节点）禁用动画
+// 1. Disable animations for large graphs (> 1000 nodes)
 animation: false,
 
-// 2. 使用 optimize-viewport-transform 行为减少渲染
+// 2. Use optimize-viewport-transform behavior to reduce rendering
 behaviors: [
   'drag-canvas',
   'zoom-canvas',
   {
     type: 'optimize-viewport-transform',
-    // 视口变换时隐藏细节（标签等），提升帧率
+    // Hide details (labels, etc.) during viewport transformation to improve frame rate
     shapes: (id, elementType) => {
       if (elementType === 'node') return ['label', 'icon', 'halo'];
       return ['label'];
@@ -221,10 +221,10 @@ behaviors: [
   },
 ],
 
-// 3. 布局完成后停止力导向迭代
+// 3. Stop force-directed iteration after layout completion
 layout: {
   type: 'force',
-  maxIteration: 300,           // 限制最大迭代次数
-  minMovement: 0.5,            // 收敛阈值
+  maxIteration: 300,           // Limit maximum number of iterations
+  minMovement: 0.5,            // Convergence threshold
 },
 ```

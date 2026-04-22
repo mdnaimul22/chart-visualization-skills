@@ -1,19 +1,19 @@
 ---
 id: "g6-pattern-tree-graph"
-title: "G6 树形图模式"
+title: "G6 Tree Graph Pattern"
 description: |
-  使用 G6 创建树形可视化的完整示例，包含思维导图、组织架构图、
-  文件树等常见树形图模式，支持折叠/展开。
+  A complete example of creating tree visualizations using G6, including common tree graph patterns such as mind maps, organizational charts,
+  and file trees, with support for collapsing/expanding.
 
 library: "g6"
 version: "5.x"
 category: "patterns"
 subcategory: "tree"
 tags:
-  - "模式"
-  - "树形图"
-  - "思维导图"
-  - "组织架构"
+  - "pattern"
+  - "tree graph"
+  - "mindmap"
+  - "organizational structure"
   - "tree"
   - "mindmap"
   - "hierarchy"
@@ -26,10 +26,10 @@ related:
   - "g6-node-rect"
 
 use_cases:
-  - "组织架构图"
-  - "思维导图"
-  - "文件目录树"
-  - "层次分类展示"
+  - "Organizational Chart"
+  - "Mind Map"
+  - "File Directory Tree"
+  - "Hierarchical Classification Display"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -38,37 +38,37 @@ updated: "2026-04-15"
 author: "antv-team"
 ---
 
-## 思维导图（水平展开）
+## Mind Map (Horizontal Expansion)
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const treeData = {
   id: 'root',
-       { label: '核心主题', level: 0 },
+  data: { label: 'Core Theme', level: 0 },
   children: [
     {
       id: 'branch-a',
-           { label: '分支A', level: 1 },
+      data: { label: 'Branch A', level: 1 },
       children: [
-         { id: 'leaf-a1', data: { label: '子项A1', level: 2 } },
-         { id: 'leaf-a2', data: { label: '子项A2', level: 2 } },
-         { id: 'leaf-a3', data: { label: '子项A3', level: 2 } },
+        { id: 'leaf-a1', data: { label: 'Subitem A1', level: 2 } },
+        { id: 'leaf-a2', data: { label: 'Subitem A2', level: 2 } },
+        { id: 'leaf-a3', data: { label: 'Subitem A3', level: 2 } },
       ],
     },
     {
       id: 'branch-b',
-           { label: '分支B', level: 1 },
+      data: { label: 'Branch B', level: 1 },
       children: [
-         { id: 'leaf-b1', data: { label: '子项B1', level: 2 } },
-         { id: 'leaf-b2', data: { label: '子项B2', level: 2 } },
+        { id: 'leaf-b1', data: { label: 'Subitem B1', level: 2 } },
+        { id: 'leaf-b2', data: { label: 'Subitem B2', level: 2 } },
       ],
     },
     {
       id: 'branch-c',
-           { label: '分支C', level: 1 },
+      data: { label: 'Branch C', level: 1 },
       children: [
-         { id: 'leaf-c1', data: { label: '子项C1', level: 2 } },
+        { id: 'leaf-c1', data: { label: 'Subitem C1', level: 2 } },
       ],
     },
   ],
@@ -85,9 +85,7 @@ const graph = new Graph({
   width: 1000,
   height: 600,
   autoFit: 'view',
-
-   treeToGraphData(treeData),
-
+  data: treeToGraphData(treeData),
   node: {
     type: 'rect',
     style: {
@@ -107,7 +105,6 @@ const graph = new Graph({
       cursor: 'pointer',
     },
   },
-
   edge: {
     type: 'cubic-horizontal',
     style: {
@@ -115,7 +112,6 @@ const graph = new Graph({
       lineWidth: 1.5,
     },
   },
-
   layout: {
     type: 'mindmap',
     direction: 'H',
@@ -124,7 +120,6 @@ const graph = new Graph({
     getHGap: () => 50,
     getVGap: () => 8,
   },
-
   behaviors: [
     'drag-canvas',
     'zoom-canvas',
@@ -139,33 +134,33 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 组织架构图（从上到下）
+## Organizational Structure Chart (Top to Bottom)
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const orgData = {
   id: 'ceo',
-       { name: '李总', title: 'CEO', dept: '董事会' },
+  data: { name: 'Li Zong', title: 'CEO', dept: 'Board of Directors' },
   children: [
     {
       id: 'cto',
-           { name: '张总', title: 'CTO', dept: '技术部' },
+      data: { name: 'Zhang Zong', title: 'CTO', dept: 'Technology Department' },
       children: [
-         { id: 'fe-lead', data: { name: '王工', title: '前端负责人', dept: '前端组' } },
-         { id: 'be-lead', data: { name: '陈工', title: '后端负责人', dept: '后端组' } },
+        { id: 'fe-lead', data: { name: 'Wang Gong', title: 'Front-end Lead', dept: 'Front-end Team' } },
+        { id: 'be-lead', data: { name: 'Chen Gong', title: 'Back-end Lead', dept: 'Back-end Team' } },
       ],
     },
     {
       id: 'cmo',
-           { name: '刘总', title: 'CMO', dept: '市场部' },
+      data: { name: 'Liu Zong', title: 'CMO', dept: 'Marketing Department' },
       children: [
-         { id: 'marketing1', data: { name: '赵策划', title: '市场专员', dept: '市场部' } },
+        { id: 'marketing1', data: { name: 'Zhao Ce Hua', title: 'Marketing Specialist', dept: 'Marketing Department' } },
       ],
     },
     {
       id: 'cfo',
-           { name: '钱总', title: 'CFO', dept: '财务部' },
+      data: { name: 'Qian Zong', title: 'CFO', dept: 'Finance Department' },
     },
   ],
 };
@@ -175,9 +170,7 @@ const graph = new Graph({
   width: 900,
   height: 600,
   autoFit: 'view',
-
-   treeToGraphData(orgData),
-
+  data: treeToGraphData(orgData),
   node: {
     type: 'rect',
     style: {
@@ -186,7 +179,7 @@ const graph = new Graph({
       fill: '#f0f5ff',
       stroke: '#adc6ff',
       lineWidth: 1,
-      // 主标题：name
+      // Main title: name
       labelText: (d) => `${d.data.name}\n${d.data.title}`,
       labelPlacement: 'center',
       labelFontSize: 13,
@@ -202,7 +195,6 @@ const graph = new Graph({
       },
     },
   },
-
   edge: {
     type: 'cubic-vertical',
     style: {
@@ -210,7 +202,6 @@ const graph = new Graph({
       lineWidth: 1.5,
     },
   },
-
   layout: {
     type: 'compact-box',
     direction: 'TB',
@@ -219,14 +210,13 @@ const graph = new Graph({
     getVGap: () => 50,
     getHGap: () => 20,
   },
-
   behaviors: [
     'drag-canvas',
     'zoom-canvas',
     'click-select',
     {
       type: 'collapse-expand',
-      trigger: 'dblclick',      // 双击折叠/展开
+      trigger: 'dblclick',      // Double-click to collapse/expand
     },
   ],
 });
@@ -234,27 +224,27 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 关键说明
+## Key Notes
 
-| 场景 | 推荐布局 | 推荐边类型 | 特点 |
-|------|----------|------------|------|
-| 思维导图 | `mindmap` | `cubic-horizontal` | 双向展开，H方向 |
-| 组织架构图 | `compact-box` | `cubic-vertical` | 从上到下，TB方向 |
-| 文件树 | `indented` | `line` | 缩进展示 |
-| 知识树 | `dendrogram` | `cubic-vertical` | 叶节点对齐 |
+| Scenario       | Recommended Layout | Recommended Edge Type | Features               |
+|----------------|--------------------|-----------------------|------------------------|
+| Mind Map       | `mindmap`          | `cubic-horizontal`    | Bidirectional expansion, H direction |
+| Organizational Chart | `compact-box`    | `cubic-vertical`      | Top-to-bottom, TB direction |
+| File Tree      | `indented`         | `line`                | Indented display       |
+| Knowledge Tree | `dendrogram`       | `cubic-vertical`      | Leaf nodes aligned     |
 
-## 折叠展开
+## Collapse and Expand
 
 ```javascript
-// 程序控制折叠
-graph.collapse('branch-a');    // 折叠节点（隐藏子树）
-graph.expand('branch-a');      // 展开节点
+// Programmatically control collapse
+graph.collapse('branch-a');    // Collapse node (hide subtree)
+graph.expand('branch-a');      // Expand node
 
-// 监听折叠事件
+// Listen for collapse events
 graph.on('node:collapse', (event) => {
-  console.log('折叠：', event.target.id);
+  console.log('Collapsed:', event.target.id);
 });
 graph.on('node:expand', (event) => {
-  console.log('展开：', event.target.id);
+  console.log('Expanded:', event.target.id);
 });
 ```

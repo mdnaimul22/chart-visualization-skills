@@ -1,21 +1,19 @@
 ---
 id: "g6-node-circle"
-title: "G6 圆形节点（Circle Node）"
+title: "G6 Circle Node"
 description: |
-  使用圆形节点（circle）创建图可视化。圆形是最通用的节点形状，
-  支持标签、图标、徽标、端口和多种状态。
+  Create graph visualizations using circle nodes. The circle is the most common node shape,
+  supporting labels, icons, badges, ports, and multiple states.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
-  - "圆形"
-  - "circle"
   - "node"
-  - "网络图"
-  - "社交网络"
+  - "circle"
+  - "network graph"
+  - "social network"
 
 related:
   - "g6-node-rect"
@@ -24,14 +22,14 @@ related:
   - "g6-core-graph-init"
 
 use_cases:
-  - "网络拓扑图"
-  - "社交关系图"
-  - "知识图谱"
-  - "通用节点场景"
+  - "Network topology"
+  - "Social relationship graph"
+  - "Knowledge graph"
+  - "General node scenarios"
 
 anti_patterns:
-  - "节点数量极多时（>1000）考虑性能优化，避免复杂样式"
-  - "需要显示复杂内容时改用 html 或 react 节点"
+  - "When the number of nodes is extremely large (>1000), consider performance optimization and avoid complex styles"
+  - "Use html or react nodes when displaying complex content"
 
 difficulty: "beginner"
 completeness: "full"
@@ -41,19 +39,19 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/node/circle"
 ---
 
-## 核心概念
+## Core Concepts
 
-圆形节点（`circle`）是 G6 默认的节点类型，外形对称，适合表示无方向性的实体。
+Circular nodes (`circle`) are the default node type in G6, with a symmetrical shape suitable for representing undirected entities.
 
-**主要样式属性：**
-- `size`：节点直径（px），默认 32
-- `fill`：填充颜色
-- `stroke`：边框颜色
-- `lineWidth`：边框宽度
-- `labelText`：标签文本（回调函数）
-- `labelPlacement`：标签位置（`'center'` | `'top'` | `'bottom'` | `'left'` | `'right'`）
+**Main Style Attributes:**
+- `size`: Node diameter (px), default 32
+- `fill`: Fill color
+- `stroke`: Stroke color
+- `lineWidth`: Stroke width
+- `labelText`: Label text (callback function)
+- `labelPlacement`: Label position (`'center'` | `'top'` | `'bottom'` | `'left'` | `'right'`)
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -64,9 +62,9 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 'n1', data: { label: '用户A' } },
-       { id: 'n2', data: { label: '用户B' } },
-       { id: 'n3', data: { label: '用户C' } },
+       { id: 'n1', data: { label: 'User A' } },
+       { id: 'n2', data: { label: 'User B' } },
+       { id: 'n3', data: { label: 'User C' } },
     ],
     edges: [
        { source: 'n1', target: 'n2' },
@@ -93,9 +91,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 按类别着色（Palette）
+### Color by Category (Palette)
 
 ```javascript
 node: {
@@ -107,21 +105,21 @@ node: {
   },
   palette: {
     type: 'group',
-    field: 'category',        // 数据中的分类字段
-    color: 'tableau10',       // 内置色板
+    field: 'category',        // Category field in the data
+    color: 'tableau10',       // Built-in color palette
   },
 },
 ```
 
-### 数值映射节点大小
+### Mapping Node Size to Numerical Values
 
 ```javascript
-// 使用 transform 映射节点大小
+// Using transform to map node size
 transforms: [
   {
     type: 'map-node-size',
-    field: 'value',           // 数据中的数值字段
-    range: [20, 80],          // 映射到的尺寸范围
+    field: 'value',           // Numerical field in the data
+    range: [20, 80],          // Size range to map to
   },
 ],
 node: {
@@ -132,7 +130,7 @@ node: {
 },
 ```
 
-### 带图标的节点
+### Nodes with Icons
 
 ```javascript
 node: {
@@ -140,9 +138,9 @@ node: {
   style: {
     size: 48,
     fill: '#1783FF',
-    // 图标（需要引入 iconfont 或使用 Unicode）
+    // Icon (requires importing iconfont or using Unicode)
     iconText: '\ue6a7',          // iconfont unicode
-    iconFontFamily: 'iconfont',  // 字体名称
+    iconFontFamily: 'iconfont',  // font family name
     iconFill: '#fff',
     iconFontSize: 20,
     labelText: (d) => d.data.label,
@@ -151,7 +149,7 @@ node: {
 },
 ```
 
-### 带徽标（Badge）
+### With Badge
 
 ```javascript
 node: {
@@ -160,11 +158,11 @@ node: {
     size: 40,
     fill: '#1783FF',
     labelText: (d) => d.data.label,
-    // 徽标配置
+    // Badge configuration
     badges: [
       {
         text: '!',
-        placement: 'right-top',  // 徽标位置
+        placement: 'right-top',  // Badge position
         fill: '#ff4d4f',
         textFill: '#fff',
         fontSize: 10,
@@ -174,10 +172,10 @@ node: {
 },
 ```
 
-### 带端口（Port）
+### With Ports (Port)
 
 ```javascript
-// 端口用于精确控制边的连接位置
+// Ports are used to precisely control the connection positions of edges
 node: {
   type: 'circle',
   style: {
@@ -193,7 +191,7 @@ node: {
 },
 ```
 
-### 节点状态样式
+### Node State Styles
 
 ```javascript
 node: {
@@ -208,7 +206,7 @@ node: {
       fill: '#ff7875',
       stroke: '#ff4d4f',
       lineWidth: 3,
-      // 光晕效果
+      // Halo effect
       haloFill: '#ff7875',
       haloLineWidth: 12,
       haloOpacity: 0.25,
@@ -222,84 +220,84 @@ node: {
     },
   },
 },
-// 配合 hover-activate behavior
+// Works with hover-activate behavior
 behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element', 'hover-activate'],
 ```
 
-## 完整 Style 属性参考
+## Complete Style Property Reference
 
 ```typescript
-// 节点通用样式属性
+// Common Node Style Properties
 interface CircleNodeStyle {
-  // 形状
-  size?: number;                    // 节点大小（直径）
+  // Shape
+  size?: number;                    // Node size (diameter)
   
-  // 填充与描边
-  fill?: string;                    // 填充颜色
-  fillOpacity?: number;             // 填充透明度 0~1
-  stroke?: string;                  // 描边颜色
-  lineWidth?: number;               // 描边宽度
-  lineDash?: number[];              // 虚线描边 [实线长, 间隔长]
-  opacity?: number;                 // 整体透明度 0~1
+  // Fill and Stroke
+  fill?: string;                    // Fill color
+  fillOpacity?: number;             // Fill opacity 0~1
+  stroke?: string;                  // Stroke color
+  lineWidth?: number;               // Stroke width
+  lineDash?: number[];              // Dashed stroke [solid length, gap length]
+  opacity?: number;                 // Overall opacity 0~1
   
-  // 阴影
+  // Shadow
   shadowColor?: string;
   shadowBlur?: number;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
   
-  // 光晕（hover/select 效果）
-  halo?: boolean;                   // 是否显示光晕
+  // Halo (hover/select effect)
+  halo?: boolean;                   // Whether to display halo
   haloFill?: string;
   haloLineWidth?: number;
   haloOpacity?: number;
   
-  // 标签
+  // Label
   labelText?: string | ((d: NodeData) => string);
   labelPlacement?: 'center' | 'top' | 'bottom' | 'left' | 'right';
   labelFill?: string;
   labelFontSize?: number;
   labelFontWeight?: string | number;
-  labelBackground?: boolean;        // 是否显示标签背景
+  labelBackground?: boolean;        // Whether to display label background
   labelBackgroundFill?: string;
   labelBackgroundOpacity?: number;
   labelOffsetX?: number;
   labelOffsetY?: number;
-  labelMaxWidth?: number;           // 标签最大宽度（超出省略）
-  labelWordWrap?: boolean;          // 是否自动换行
+  labelMaxWidth?: number;           // Maximum label width (truncate if exceeded)
+  labelWordWrap?: boolean;          // Whether to automatically wrap text
   
-  // 图标
-  iconText?: string;                // 图标文字/unicode
-  iconFontFamily?: string;          // 图标字体
+  // Icon
+  iconText?: string;                // Icon text/unicode
+  iconFontFamily?: string;          // Icon font family
   iconFill?: string;
   iconFontSize?: number;
   iconWidth?: number;
   iconHeight?: number;
   
-  // 徽标
+  // Badges
   badges?: BadgeStyle[];
   
-  // 端口
+  // Ports
   ports?: PortStyle[];
   
-  // 交互
-  cursor?: string;                  // 鼠标样式
+  // Interaction
+  cursor?: string;                  // Mouse cursor style
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：使用 v4 的 label 属性
+### Error 1: Using the label property from v4
 
 ```javascript
-// ❌ 错误：v4 写法
+// ❌ Incorrect: v4 syntax
 node: {
   labelCfg: {
     style: { fill: '#333', fontSize: 14 }
   }
 }
 
-// ✅ 正确：v5 写法
+// ✅ Correct: v5 syntax
 node: {
   style: {
     labelText: (d) => d.data.label,
@@ -309,39 +307,39 @@ node: {
 }
 ```
 
-### 错误2：直接在数据中设置 label 且忘记配置 labelText
+### Error 2: Directly Setting `label` in Data and Forgetting to Configure `labelText`
 
 ```javascript
-// ❌ 节点数据中有 label，但忘记在样式中引用
-const nodes = [{ id: 'n1', data: { label: '节点1' } }];
-// 没有配置 node.style.labelText，节点不会显示标签
+// ❌ Label exists in node data, but forgotten to reference it in style
+const nodes = [{ id: 'n1', data: { label: 'Node 1' } }];
+// Without configuring `node.style.labelText`, the node label will not be displayed
 
-// ✅ 正确
+// ✅ Correct
 node: {
   style: {
-    labelText: (d) => d.data.label,  // 从 data 中读取 label
+    labelText: (d) => d.data.label,  // Read label from data
   },
 },
 ```
 
-### 错误3：size 设置了数组但节点类型不支持
+### Error 3: Array size set for unsupported node type
 
 ```javascript
-// ❌ 对 circle 节点设置 [width, height] 数组
+// ❌ Setting [width, height] array for circle node
 node: {
   type: 'circle',
-  style: { size: [60, 40] },  // circle 只接受单个数值
+  style: { size: [60, 40] },  // circle only accepts a single value
 }
 
-// ✅ circle 节点使用单个数值
+// ✅ Using a single value for circle node
 node: {
   type: 'circle',
   style: { size: 60 },
 }
 
-// rect 节点可以使用数组
+// rect node can use an array
 node: {
   type: 'rect',
-  style: { size: [120, 60] },  // [宽, 高]
+  style: { size: [120, 60] },  // [width, height]
 }
 ```

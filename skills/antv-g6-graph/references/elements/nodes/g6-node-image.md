@@ -1,21 +1,19 @@
 ---
 id: "g6-node-image"
-title: "G6 图片节点（Image Node）"
+title: "G6 Image Node"
 description: |
-  使用图片节点（image）展示头像、图标等图片内容。
-  支持圆形裁切、标签、状态等。
+  Use image nodes to display avatars, icons, and other image content.
+  Supports circular cropping, labels, states, etc.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
-  - "图片"
+  - "node"
   - "image"
-  - "头像"
-  - "icon"
   - "avatar"
+  - "icon"
 
 related:
   - "g6-node-circle"
@@ -23,13 +21,13 @@ related:
   - "g6-core-data-structure"
 
 use_cases:
-  - "用户头像社交关系图"
-  - "带 Logo 的企业关系图"
-  - "图标化的系统架构图"
+  - "Social relationship graph with user avatars"
+  - "Enterprise relationship graph with logos"
+  - "Icon-based system architecture diagram"
 
 anti_patterns:
-  - "图片过多时注意性能，避免加载大图"
-  - "无网络时图片节点可能显示空白，需要设置兜底样式"
+  - "Pay attention to performance when using too many images, avoid loading large images"
+  - "Image nodes may display blank when offline, fallback styles need to be set"
 
 difficulty: "beginner"
 completeness: "full"
@@ -39,16 +37,16 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/node/image"
 ---
 
-## 核心概念
+## Core Concepts
 
-图片节点（`image`）将节点渲染为图片，支持 URL 图片、Base64 图片等。
+Image nodes (`image`) render nodes as images, supporting URL images, Base64 images, etc.
 
-**主要属性：**
-- `src`：图片 URL（回调函数从 data 中获取）
-- `size`：节点大小
-- `labelText`：标签文字
+**Main Properties:**
+- `src`: Image URL (callback function retrieves from data)
+- `size`: Node size
+- `labelText`: Label text
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -62,27 +60,27 @@ const graph = new Graph({
       {
         id: 'n1',
         data: {
-          name: '张三',
+          name: 'Zhang San',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
         },
       },
       {
         id: 'n2',
         data: {
-          name: '李四',
+          name: 'Li Si',
           avatar: 'https://gw.alipayobjects.com/zos/antfincdn/YXH2wo1%26Kb/Avatar.png',
         },
       },
     ],
     edges: [
-       { source: 'n1', target: 'n2' },
+      { source: 'n1', target: 'n2' },
     ],
   },
   node: {
     type: 'image',
     style: {
       size: 60,
-      src: (d) => d.data.avatar,         // 从 data 中获取图片 URL
+      src: (d) => d.data.avatar,         // Retrieve image URL from data
       labelText: (d) => d.data.name,
       labelPlacement: 'bottom',
     },
@@ -94,9 +92,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 圆形头像（裁剪为圆形）
+### Circular Avatar (Cropped to Circle)
 
 ```javascript
 node: {
@@ -104,9 +102,9 @@ node: {
   style: {
     size: 60,
     src: (d) => d.data.avatar,
-    // 圆形裁切：通过设置 clipCfg 实现
+    // Circular cropping: achieved by setting clipCfg
     clipType: 'circle',
-    clipR: 30,           // 与 size/2 相同
+    clipR: 30,           // Same as size/2
     labelText: (d) => d.data.name,
     labelPlacement: 'bottom',
     stroke: '#91caff',
@@ -115,7 +113,7 @@ node: {
 },
 ```
 
-### 带状态标记的图片节点
+### Image Node with Status Indicator
 
 ```javascript
 node: {
@@ -125,7 +123,7 @@ node: {
     src: (d) => d.data.avatar,
     labelText: (d) => d.data.name,
     labelPlacement: 'bottom',
-    // 右上角徽标（状态指示器）
+    // Badge (status indicator) in the upper-right corner
     badges: [
       {
         text: (d) => d.data.online ? '●' : '○',
@@ -138,7 +136,7 @@ node: {
 },
 ```
 
-### 混合本地与远程图片
+### Mixed Local and Remote Images
 
 ```javascript
 const graph = new Graph({
@@ -151,7 +149,7 @@ const graph = new Graph({
         id: 'github',
         data: {
           name: 'GitHub',
-          // 使用在线 icon
+          // Use online icon
           icon: 'https://github.githubassets.com/favicons/favicon.svg',
         },
       },
@@ -179,32 +177,32 @@ const graph = new Graph({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：src 写成静态字符串
+### Error 1: `src` Written as a Static String
 
 ```javascript
-// ❌ 所有节点显示同一张图片
+// ❌ All nodes display the same image
 node: {
   type: 'image',
   style: {
-    src: 'https://example.com/avatar.png',  // 静态值，所有节点相同
+    src: 'https://example.com/avatar.png',  // Static value, same for all nodes
   },
 }
 
-// ✅ 使用回调函数从数据中获取
+// ✅ Use a callback function to retrieve from data
 node: {
   type: 'image',
   style: {
-    src: (d) => d.data.avatar,  // 每个节点使用自己的图片
+    src: (d) => d.data.avatar,  // Each node uses its own image
   },
 }
 ```
 
-### 错误2：图片加载失败导致空白
+### Error 2: Blank Space Due to Image Loading Failure
 
 ```javascript
-// ✅ 提供默认图片兜底
+// ✅ Provide a default fallback image
 node: {
   type: 'image',
   style: {

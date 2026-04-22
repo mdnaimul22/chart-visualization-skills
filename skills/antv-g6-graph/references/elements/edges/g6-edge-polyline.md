@@ -1,21 +1,19 @@
 ---
 id: "g6-edge-polyline"
-title: "G6 折线边（Polyline Edge）"
+title: "G6 Polyline Edge"
 description: |
-  使用折线边（polyline）连接节点，自动避开节点障碍，
-  适合正交布局和流程图场景。
+  Connect nodes using polyline edges, automatically avoiding node obstacles,
+  suitable for orthogonal layouts and flowchart scenarios.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "edges"
 tags:
-  - "边"
-  - "折线"
+  - "edge"
   - "polyline"
-  - "正交"
   - "orthogonal"
-  - "流程图"
+  - "flowchart"
 
 related:
   - "g6-edge-line"
@@ -23,14 +21,14 @@ related:
   - "g6-layout-dagre"
 
 use_cases:
-  - "正交布局图"
-  - "流程图"
-  - "UML 类图"
-  - "模块依赖图"
+  - "Orthogonal layout graphs"
+  - "Flowcharts"
+  - "UML class diagrams"
+  - "Module dependency graphs"
 
 anti_patterns:
-  - "折线在节点密集时容易绕路，考虑用 cubic 或 line"
-  - "折线计算路径较慢，节点极多时注意性能"
+  - "Polylines tend to detour in node-dense areas, consider using cubic or line edges instead"
+  - "Polyline path calculation is slower, pay attention to performance with a large number of nodes"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -40,16 +38,16 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/edge/polyline"
 ---
 
-## 核心概念
+## Core Concepts
 
-折线边（`polyline`）自动计算折点，使边以直角折线形式连接节点，视觉整洁。
+Polyline edges (`polyline`) automatically calculate breakpoints, connecting nodes with right-angled polylines for a visually clean appearance.
 
-**特点：**
-- 自动避障：自动计算路径绕开节点
-- 正交折线：边只有水平和垂直线段
-- 可设置 `radius` 让折角变为圆角
+**Features:**
+- **Automatic Obstacle Avoidance:** Automatically calculates paths to bypass nodes
+- **Orthogonal Polylines:** Edges consist only of horizontal and vertical segments
+- **Configurable `radius`:** Allows corners to be rounded
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -60,10 +58,10 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'n1', data: { label: '步骤1' } },
-       { id: 'n2', data: { label: '步骤2' } },
-       { id: 'n3', data: { label: '步骤3' } },
-       { id: 'n4', data: { label: '步骤4' } },
+       { id: 'n1', data: { label: 'Step 1' } },
+       { id: 'n2', data: { label: 'Step 2' } },
+       { id: 'n3', data: { label: 'Step 3' } },
+       { id: 'n4', data: { label: 'Step 4' } },
     ],
     edges: [
        { source: 'n1', target: 'n2' },
@@ -88,7 +86,7 @@ const graph = new Graph({
     style: {
       stroke: '#adc6ff',
       lineWidth: 1.5,
-      radius: 8,                  // 折角圆角
+      radius: 8,                  // Corner radius
       endArrow: true,
     },
   },
@@ -104,16 +102,16 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：polyline 在 force 布局中效果差
+### Error 1: Poor Performance of Polyline in Force Layout
 
 ```javascript
-// ❌ polyline 在 force 布局（随机位置）下路径计算不准确
+// ❌ Polyline path calculation is inaccurate in force layout (random positions)
 layout: { type: 'force' },
 edge: { type: 'polyline' },
 
-// ✅ polyline 适合正交/层次布局
+// ✅ Polyline is suitable for orthogonal/hierarchical layouts
 layout: { type: 'dagre', rankdir: 'LR' },
 edge: { type: 'polyline' },
 ```

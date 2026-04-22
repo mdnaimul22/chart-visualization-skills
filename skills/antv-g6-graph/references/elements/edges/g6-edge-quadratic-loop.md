@@ -1,18 +1,18 @@
 ---
 id: "g6-edge-quadratic-loop"
-title: "G6 二次贝塞尔边（Quadratic）与自环边（Loop）"
+title: "G6 Quadratic Bezier Edge and Loop Edge"
 description: |
-  使用 quadratic 边实现轻量弧形效果；使用 loop 边处理节点自身连接。
-  quadratic 比 cubic 控制点少，性能更好。
+  Use quadratic edges to achieve lightweight arc effects; use loop edges to handle self-connections of nodes.
+  Quadratic edges have fewer control points than cubic edges, resulting in better performance.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "edges"
 tags:
-  - "边"
-  - "二次曲线"
-  - "自环"
+  - "edge"
+  - "quadratic curve"
+  - "loop"
   - "quadratic"
   - "loop"
 
@@ -26,9 +26,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 二次贝塞尔边（quadratic）
+## Quadratic Bézier Edge (quadratic)
 
-`quadratic` 是比 `cubic` 更轻量的弧形边，只有一个控制点。
+`quadratic` is a lighter-weight curved edge compared to `cubic`, with only one control point.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -44,9 +44,9 @@ const graph = new Graph({
        { id: 'c', data: { label: 'C' } },
     ],
     edges: [
-       { source: 'a', target: 'b', data: { label: '正向' } },
-       { source: 'b', target: 'a', data: { label: '反向' } },  // 反向平行边
-       { source: 'a', target: 'c', data: { label: '直达' } },
+       { source: 'a', target: 'b', data: { label: 'Forward' } },
+       { source: 'b', target: 'a', data: { label: 'Reverse' } },  // Reverse parallel edge
+       { source: 'a', target: 'c', data: { label: 'Direct' } },
     ],
   },
   node: {
@@ -66,9 +66,9 @@ const graph = new Graph({
       stroke: '#aaa',
       lineWidth: 1.5,
       endArrow: true,
-      // curveOffset：控制弧度大小（正值向右弯，负值向左弯）
+      // curveOffset: Controls the curvature (positive values bend right, negative values bend left)
       curveOffset: 30,
-      // curvePosition：控制点在路径上的相对位置（0~1），默认 0.5
+      // curvePosition: Controls the relative position of the control point on the path (0~1), default is 0.5
       curvePosition: 0.5,
       labelText: (d) => d.data.label,
       labelBackground: true,
@@ -81,19 +81,19 @@ const graph = new Graph({
 graph.render();
 ```
 
-### quadratic 特有属性
+### Quadratic Unique Properties
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `curveOffset` | `number` | `30` | 控制点偏移距离（px），控制弧度 |
-| `curvePosition` | `number` | `0.5` | 控制点在线段上的比例位置（0~1） |
-| `controlPoint` | `[number, number]` | — | 直接指定控制点坐标（覆盖 curveOffset/curvePosition） |
+| `curveOffset` | `number` | `30` | Control point offset distance (px), controls curvature |
+| `curvePosition` | `number` | `0.5` | Proportional position of the control point on the line segment (0~1) |
+| `controlPoint` | `[number, number]` | — | Directly specifies the control point coordinates (overrides curveOffset/curvePosition) |
 
 ---
 
-## 自环边（loop）
+## Loop Edge
 
-当边的 `source` 和 `target` 相同时，G6 自动渲染为自环。
+When the `source` and `target` of an edge are the same, G6 automatically renders it as a loop.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -104,14 +104,14 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 'n1', data: { label: '状态A' } },
-       { id: 'n2', data: { label: '状态B' } },
+       { id: 'n1', data: { label: 'State A' } },
+       { id: 'n2', data: { label: 'State B' } },
     ],
     edges: [
-       { source: 'n1', target: 'n2', data: { label: '转换' } },
-      // 自环：source === target
-       { source: 'n1', target: 'n1', data: { label: '自循环' } },
-       { source: 'n2', target: 'n2', data: { label: '保持' } },
+       { source: 'n1', target: 'n2', data: { label: 'Transition' } },
+      // Loop: source === target
+       { source: 'n1', target: 'n1', data: { label: 'Self-Loop' } },
+       { source: 'n2', target: 'n2', data: { label: 'Stay' } },
     ],
   },
   node: {
@@ -127,16 +127,16 @@ const graph = new Graph({
     },
   },
   edge: {
-    type: 'line',                   // 普通边用 line，自环由 G6 自动处理
+    type: 'line',                   // Regular edges use 'line', loops are handled automatically by G6
     style: {
       stroke: '#aaa',
       lineWidth: 1.5,
       endArrow: true,
       labelText: (d) => d.data.label,
       labelBackground: true,
-      // 自环样式属性
-      loopPlacement: 'top',         // 'top' | 'bottom' | 'left' | 'right' 等
-      loopClockwise: true,          // 顺时针
+      // Loop style properties
+      loopPlacement: 'top',         // 'top' | 'bottom' | 'left' | 'right', etc.
+      loopClockwise: true,          // Clockwise
     },
   },
   layout: { type: 'circular', radius: 100 },
@@ -146,28 +146,28 @@ const graph = new Graph({
 graph.render();
 ```
 
-### loop 样式属性（当 source === target 时生效）
+### loop Style Properties (Effective when source === target)
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `loopPlacement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'top-left' \| ...` | `'top'` | 自环方向 |
-| `loopClockwise` | `boolean` | `true` | 顺时针方向 |
-| `loopDist` | `number` | `20` | 自环距离节点的偏移距离 |
+| `loopPlacement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'top-left' \| ...` | `'top'` | Loop direction |
+| `loopClockwise` | `boolean` | `true` | Clockwise direction |
+| `loopDist` | `number` | `20` | Offset distance of the loop from the node |
 
 ---
 
-## 平行边处理
+## Parallel Edge Processing
 
-同向的多条边默认重叠，使用 `process-parallel-edges` transform 自动分开：
+Multiple edges in the same direction overlap by default. Use the `process-parallel-edges` transform to automatically separate them:
 
 ```javascript
 transforms: [
   {
     type: 'process-parallel-edges',
-    offset: 15,                     // 平行边间距
+    offset: 15,                     // Parallel edge spacing
   },
 ],
 edge: {
-  type: 'quadratic',                // 推荐用 quadratic 展示平行边
+  type: 'quadratic',                // Recommended to use quadratic for displaying parallel edges
 },
 ```

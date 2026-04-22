@@ -1,18 +1,18 @@
 ---
 id: "g6-behavior-create-edge-focus"
-title: "G6 创建边（create-edge）与聚焦元素（focus-element）"
+title: "G6 Create Edge (create-edge) and Focus Element (focus-element)"
 description: |
-  create-edge：交互式在两个节点间创建新边。
-  focus-element：点击/快捷键触发视口动画聚焦到指定元素。
+  create-edge: Interactively create a new edge between two nodes.
+  focus-element: Trigger viewport animation to focus on a specified element via click or shortcut key.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "interaction"
 tags:
-  - "交互"
-  - "创建边"
-  - "聚焦"
+  - "interaction"
+  - "create-edge"
+  - "focus"
   - "create-edge"
   - "focus-element"
 
@@ -26,9 +26,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 交互式创建边（create-edge）
+## Interactive Edge Creation (create-edge)
 
-允许用户通过拖拽或点击在两个节点之间创建新边。
+Allows users to create new edges between two nodes by dragging or clicking.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -55,7 +55,7 @@ const graph = new Graph({
       labelText: (d) => d.data.label,
       labelPlacement: 'center',
       labelFill: '#fff',
-      // 端口（精确连接点）
+      // Ports (precise connection points)
       ports: [
          { key: 'top',    placement: 'top' },
          { key: 'bottom', placement: 'bottom' },
@@ -79,27 +79,28 @@ const graph = new Graph({
     'drag-element',
     {
       type: 'create-edge',
-      trigger: 'drag',             // 'drag'（拖拽）| 'click'（点击源→点击目标）
+      trigger: 'drag',             // 'drag' | 'click' (source → target)
       style: {
-        // 创建过程中临时边的样式
+        // Temporary edge style during creation
         stroke: '#1783FF',
         lineWidth: 2,
         lineDash: [4, 2],
         endArrow: true,
       },
-      // 边创建完成的回调
+      // Callback when edge creation is finished
       onFinish: (edgeData) => {
-        console.log('新建边:', edgeData.source, '->', edgeData.target);
-        // 可在此为新边追加业务数据
+        console.log('New edge:', edgeData.source, '->', edgeData.target);
+        // Add business data for the new edge here
         graph.updateEdgeData([{
           ...edgeData,
-             { weight: 1, label: '新连接' },
+          weight: 1,
+          label: 'New Connection',
         }]);
         graph.draw();
       },
-      // 返回 undefined 取消创建，返回修改后的 data 允许创建
+      // Return undefined to cancel creation, return modified data to allow creation
       onCreate: (edgeData) => {
-        if (edgeData.source === edgeData.target) return undefined; // 禁止自环
+        if (edgeData.source === edgeData.target) return undefined; // Prohibit self-loops
         return edgeData;
       },
     },
@@ -109,21 +110,21 @@ const graph = new Graph({
 graph.render();
 ```
 
-### create-edge 配置参数
+### create-edge Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `trigger` | `'drag' \| 'click'` | `'drag'` | 触发方式 |
-| `style` | `EdgeStyleProps` | — | 创建中的临时边样式 |
-| `onFinish` | `(edge: EdgeData) => void` | — | 边创建完成回调 |
-| `onCreate` | `(edge: EdgeData) => EdgeData \| undefined` | — | 创建拦截，返回 undefined 取消 |
-| `enable` | `boolean \| ((event) => boolean)` | `true` | 是否启用 |
+| `trigger` | `'drag' \| 'click'` | `'drag'` | Trigger method |
+| `style` | `EdgeStyleProps` | — | Temporary edge style during creation |
+| `onFinish` | `(edge: EdgeData) => void` | — | Callback when edge creation is complete |
+| `onCreate` | `(edge: EdgeData) => EdgeData \| undefined` | — | Creation interceptor, return `undefined` to cancel |
+| `enable` | `boolean \| ((event) => boolean)` | `true` | Whether to enable |
 
 ---
 
-## 聚焦元素（focus-element）
+## Focus Element (focus-element)
 
-点击元素后平滑动画将视口移动到该元素的中心位置。
+After clicking an element, a smooth animation moves the viewport to the center of that element.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -135,7 +136,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 30 }, (_, i) => ({
       id: `n${i}`,
-           { label: `节点${i}`, x: Math.random() * 2000, y: Math.random() * 2000 },
+      data: { label: `Node${i}`, x: Math.random() * 2000, y: Math.random() * 2000 },
     })),
     edges: [],
   },
@@ -155,12 +156,12 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'focus-element',
-      // 动画配置
+      // Animation configuration
       animation: {
         easing: 'ease-in-out',
         duration: 600,
       },
-      // 启用条件（默认点击任意元素均触发聚焦）
+      // Enable condition (default: focus is triggered by clicking any element)
       enable: true,
     },
   ],
@@ -169,16 +170,16 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 通过 API 聚焦元素
+### Focus on Elements via API
 
 ```javascript
-// 以动画方式将视口移动到指定节点
+// Animate the viewport to move to the specified node
 await graph.focusElement('n5', {
   easing: 'ease-in-out',
   duration: 500,
 });
 
-// 搜索后聚焦
+// Focus after search
 document.getElementById('search').addEventListener('input', async (e) => {
   const keyword = e.target.value;
   const node = graph.getNodeData().find(n => n.data.label.includes(keyword));
@@ -189,9 +190,9 @@ document.getElementById('search').addEventListener('input', async (e) => {
 });
 ```
 
-### focus-element 配置参数
+### focus-element Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `animation` | `ViewportAnimationEffectTiming` | `{ easing: 'ease-in', duration: 500 }` | 视口动画配置 |
-| `enable` | `boolean \| ((event) => boolean)` | `true` | 是否启用 |
+| `animation` | `ViewportAnimationEffectTiming` | `{ easing: 'ease-in', duration: 500 }` | Viewport animation configuration |
+| `enable` | `boolean \| ((event) => boolean)` | `true` | Whether to enable |

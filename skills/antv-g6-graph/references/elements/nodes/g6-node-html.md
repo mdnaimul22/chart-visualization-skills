@@ -1,19 +1,19 @@
 ---
 id: "g6-node-html"
-title: "G6 HTML 节点"
+title: "G6 HTML Node"
 description: |
-  使用 html 类型节点在图中渲染任意 HTML 内容，适合富文本、按钮、
-  表单等复杂 UI 节点场景。
+  Use html type nodes to render arbitrary HTML content in the graph, suitable for rich text, buttons,
+  forms, and other complex UI node scenarios.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
+  - "node"
   - "html"
-  - "富文本"
-  - "自定义节点"
+  - "rich text"
+  - "custom node"
   - "HTML"
 
 related:
@@ -22,13 +22,13 @@ related:
   - "g6-core-custom-element"
 
 use_cases:
-  - "卡片式节点（含图片、文字、按钮）"
-  - "节点内嵌 input/select 表单"
-  - "复杂多行文本展示"
+  - "Card-style nodes (with images, text, buttons)"
+  - "Nodes with embedded input/select forms"
+  - "Complex multi-line text display"
 
 anti_patterns:
-  - "节点数量多（>500）时 HTML 节点性能较差，考虑改用 canvas 节点 + 自定义形状"
-  - "不要在 innerHTML 中使用用户输入内容（XSS 风险）"
+  - "HTML nodes perform poorly with a large number of nodes (>500), consider using canvas nodes + custom shapes instead"
+  - "Do not use user input content in innerHTML (XSS risk)"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -36,16 +36,16 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 核心概念
+## Core Concepts
 
-`html` 节点使用 `foreignObject`（SVG）或 DOM overlay 来渲染 HTML 内容。
+The `html` node uses `foreignObject` (SVG) or DOM overlay to render HTML content.
 
-**关键属性：**
-- `innerHTML`：必填，HTML 字符串或 `HTMLElement`
-- `size`：节点尺寸 `[width, height]`，默认 `[160, 80]`
-- `dx`/`dy`：水平/垂直偏移
+**Key Properties:**
+- `innerHTML`: Required, HTML string or `HTMLElement`
+- `size`: Node dimensions `[width, height]`, default `[160, 80]`
+- `dx`/`dy`: Horizontal/Vertical offset
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -58,17 +58,17 @@ const graph = new Graph({
     nodes: [
       {
         id: 'card1',
-         {
-          name: '张三',
-          role: '前端工程师',
+        data: {
+          name: 'Zhang San',
+          role: 'Front-end Engineer',
           avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=1',
         },
       },
       {
         id: 'card2',
         data: {
-          name: '李四',
-          role: '后端工程师',
+          name: 'Li Si',
+          role: 'Back-end Engineer',
           avatar: 'https://api.dicebear.com/7.x/miniavs/svg?seed=2',
         },
       },
@@ -79,7 +79,7 @@ const graph = new Graph({
     type: 'html',
     style: {
       size: [160, 80],
-      // innerHTML 接收回调函数，动态生成 HTML
+      // innerHTML accepts a callback function to dynamically generate HTML
       innerHTML: (d) => `
         <div style="
           display: flex;
@@ -114,9 +114,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 带状态高亮的 HTML 节点
+### HTML Node with State Highlighting
 
 ```javascript
 node: {
@@ -140,7 +140,7 @@ node: {
 },
 ```
 
-### 节点内嵌按钮（处理 DOM 事件）
+### Node Embedded Button (Handling DOM Events)
 
 ```javascript
 node: {
@@ -153,12 +153,12 @@ node: {
       div.innerHTML = `<div>${d.data.label}</div>`;
       
       const btn = document.createElement('button');
-      btn.textContent = '详情';
+      btn.textContent = 'Details';
       btn.style.cssText = 'margin-top:8px;padding:2px 12px;cursor:pointer;';
-      // 阻止事件冒泡到图画布，避免触发拖拽等行为
+      // Prevent event bubbling to the chart canvas to avoid triggering drag behavior, etc.
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        console.log('节点详情:', d.id);
+        console.log('Node Details:', d.id);
       });
       div.appendChild(btn);
       return div;
@@ -167,25 +167,25 @@ node: {
 },
 ```
 
-## 参数参考
+## Parameter Reference
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `innerHTML` | `string \| HTMLElement \| ((d: NodeData) => string \| HTMLElement)` | — | **必填**，HTML 内容 |
-| `size` | `[number, number]` | `[160, 80]` | 节点宽高 |
-| `dx` | `number` | `0` | 水平偏移 |
-| `dy` | `number` | `0` | 垂直偏移 |
-| `pointerEvents` | `string` | `'auto'` | 鼠标事件穿透控制 |
+| Property | Type | Default Value | Description |
+|----------|------|---------------|-------------|
+| `innerHTML` | `string \| HTMLElement \| ((d: NodeData) => string \| HTMLElement)` | — | **Required**, HTML content |
+| `size` | `[number, number]` | `[160, 80]` | Node width and height |
+| `dx` | `number` | `0` | Horizontal offset |
+| `dy` | `number` | `0` | Vertical offset |
+| `pointerEvents` | `string` | `'auto'` | Mouse event penetration control |
 
-## 常见错误
+## Common Errors
 
-### 错误1：innerHTML 中使用用户输入（XSS）
+### Error 1: Using User Input in innerHTML (XSS)
 
 ```javascript
-// ❌ 危险：直接插入用户输入
+// ❌ Dangerous: Directly inserting user input
 innerHTML: (d) => `<div>${d.data.userInput}</div>`
 
-// ✅ 使用 textContent 或转义
+// ✅ Use textContent or escape
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
@@ -194,21 +194,21 @@ function escapeHtml(str) {
 innerHTML: (d) => `<div>${escapeHtml(d.data.userInput)}</div>`
 ```
 
-### 错误2：忘记设置 size 导致节点过小
+### Error 2: Forgetting to Set Size, Resulting in Nodes Being Too Small
 
 ```javascript
-// ❌ 默认 size 可能不够容纳内容
+// ❌ Default size may not be sufficient to contain the content
 node: {
   type: 'html',
-  style: { innerHTML: '<div style="padding:20px">大量内容...</div>' },
+  style: { innerHTML: '<div style="padding:20px">Large amount of content...</div>' },
 }
 
-// ✅ 明确设置 size
+// ✅ Explicitly set size
 node: {
   type: 'html',
   style: {
     size: [240, 120],
-    innerHTML: '<div style="padding:20px">大量内容...</div>',
+    innerHTML: '<div style="padding:20px">Large amount of content...</div>',
   },
 }
 ```

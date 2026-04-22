@@ -1,19 +1,19 @@
 ---
 id: "g6-behavior-canvas-nav"
-title: "G6 画布导航交互（拖拽/缩放/滚动）"
+title: "G6 Canvas Navigation Interaction (Drag/Zoom/Scroll)"
 description: |
-  使用 drag-canvas、zoom-canvas、scroll-canvas 实现画布的拖拽、缩放和滚动导航。
-  是几乎所有图可视化的基础交互配置。
+  Use drag-canvas, zoom-canvas, and scroll-canvas to implement canvas dragging, zooming, and scrolling navigation.
+  It is the foundational interaction configuration for almost all graph visualizations.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "navigation"
 tags:
-  - "交互"
-  - "画布"
-  - "拖拽"
-  - "缩放"
+  - "interaction"
+  - "canvas"
+  - "drag"
+  - "zoom"
   - "drag-canvas"
   - "zoom-canvas"
   - "scroll-canvas"
@@ -25,12 +25,12 @@ related:
   - "g6-plugin-minimap"
 
 use_cases:
-  - "大图导航"
-  - "基础图交互"
-  - "所有图可视化场景"
+  - "Large graph navigation"
+  - "Basic graph interaction"
+  - "All graph visualization scenarios"
 
 anti_patterns:
-  - "移动端场景需要特别处理触摸事件"
+  - "Mobile scenarios require special handling of touch events"
 
 difficulty: "beginner"
 completeness: "full"
@@ -40,14 +40,14 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/behavior/drag-canvas"
 ---
 
-## 核心概念
+## Core Concepts
 
-三种画布导航行为：
-- `drag-canvas`：鼠标拖拽移动画布
-- `zoom-canvas`：滚轮缩放画布
-- `scroll-canvas`：滚轮滚动画布（替代 zoom，适合有滚动条的页面）
+Three canvas navigation behaviors:
+- `drag-canvas`: Mouse drag to move the canvas
+- `zoom-canvas`: Mouse wheel to zoom the canvas
+- `scroll-canvas`: Mouse wheel to scroll the canvas (alternative to zoom, suitable for pages with scrollbars)
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -78,19 +78,19 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用配置
+## Common Configurations
 
-### 完整参数配置
+### Complete Parameter Configuration
 
 ```javascript
 behaviors: [
   {
     type: 'drag-canvas',
-    // 允许拖拽的方向
+    // Allowed drag direction
     direction: 'both',          // 'both' | 'x' | 'y'
-    // 拖拽边界限制
-    range: Infinity,            // 超出边界的距离限制
-    // 按键触发
+    // Drag boundary limit
+    range: Infinity,            // Distance limit beyond the boundary
+    // Key trigger
     trigger: {
       up: ['ArrowUp'],
       down: ['ArrowDown'],
@@ -100,28 +100,28 @@ behaviors: [
   },
   {
     type: 'zoom-canvas',
-    // 缩放范围
-    range: [0.1, 10],           // [最小缩放, 最大缩放]
-    // 动画
+    // Zoom range
+    range: [0.1, 10],           // [Minimum zoom, Maximum zoom]
+    // Animation
     animation: { duration: 200 },
   },
 ],
 ```
 
-### 防止拖拽画布时误触节点
+### Preventing Accidental Node Interaction During Canvas Dragging
 
 ```javascript
 behaviors: [
   {
     type: 'drag-canvas',
-    // 只在画布背景上拖拽（避免与节点拖拽冲突）
+    // Only drag on the canvas background (to avoid conflicts with node dragging)
     enable: (event) => event.targetType === 'canvas',
   },
   'drag-element',
 ],
 ```
 
-### 键盘方向键移动画布
+### Keyboard Arrow Keys to Move Canvas
 
 ```javascript
 behaviors: [
@@ -138,76 +138,76 @@ behaviors: [
 ],
 ```
 
-### 适配有页面滚动条的场景
+### Adapt to Scenarios with Page Scrollbars
 
 ```javascript
-// 页面有滚动条时，滚轮默认滚动页面而不是缩放图
-// 使用 scroll-canvas 替代 zoom-canvas
+// When the page has a scrollbar, the mouse wheel scrolls the page by default instead of zooming the chart
+// Use scroll-canvas instead of zoom-canvas
 behaviors: [
   'drag-canvas',
-  'scroll-canvas',    // 滚轮滚动画布（上下左右）
-  // 按住 Ctrl 时缩放
+  'scroll-canvas',    // Scroll the canvas with the mouse wheel (up, down, left, right)
+  // Zoom when holding Ctrl
   {
     type: 'zoom-canvas',
-    key: 'ctrl',      // 按住 Ctrl + 滚轮 才缩放
+    key: 'ctrl',      // Zoom only when holding Ctrl + scrolling
   },
   'drag-element',
 ],
 ```
 
-## 程序控制视口
+## Program Control Viewport
 
 ```javascript
-// 缩放到指定比例
+// Zoom to a specified ratio
 graph.zoomTo(1.5);
-graph.zoomTo(1.5, true);   // 带动画
+graph.zoomTo(1.5, true);   // With animation
 
-// 恢复默认缩放
+// Restore default zoom
 graph.zoomTo(1);
 
-// 平移画布
-graph.translateBy(100, 50);    // 相对移动
-graph.translateTo([400, 300]); // 移动到绝对位置
+// Pan the canvas
+graph.translateBy(100, 50);    // Relative movement
+graph.translateTo([400, 300]); // Move to absolute position
 
-// 自适应视图
-graph.fitView();               // 缩放到全图可见
-graph.fitCenter();             // 居中但不缩放
+// Auto-fit view
+graph.fitView();               // Zoom to make the entire graph visible
+graph.fitCenter();             // Center without zooming
 
-// 聚焦某个节点
+// Focus on a specific node
 graph.focusElement('node1');
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误1：边数据缺少唯一 id 导致重复边冲突
+### Error 1: Missing Unique IDs in Edge Data Causes Duplicate Edge Conflicts
 
-**错误现象**：`Edge already exists: 12-20`
+**Error Description**: `Edge already exists: 12-20`
 
-**原因分析**：G6 5.x 中，如果边数据没有显式指定 `id`，系统会自动以 `${source}-${target}` 作为边的 ID。当通过随机数生成边时，可能产生相同 source-target 组合的重复边，导致 ID 冲突报错。
+**Root Cause Analysis**: In G6 5.x, if edge data does not explicitly specify an `id`, the system automatically uses `${source}-${target}` as the edge ID. When edges are generated using random numbers, duplicate edges with the same source-target combination may occur, leading to ID conflicts and errors.
 
 ```javascript
-// ❌ 错误示例：随机生成边，可能产生重复的 source-target 组合
+// ❌ Incorrect Example: Randomly generated edges may produce duplicate source-target combinations
 const edges = [];
 for (let i = 0; i < 34; i++) {
   const target = Math.floor(Math.random() * 34);
   if (target !== i) {
     edges.push({ source: `${i}`, target: `${target}` });
-    // 如果同一 source-target 被添加两次，ID "i-target" 重复，报错
+    // If the same source-target is added twice, the ID "i-target" is duplicated, causing an error
   }
 }
 ```
 
-**修正方案1**：为每条边显式指定唯一 `id`
+**Solution 1**: Explicitly assign a unique `id` to each edge
 
 ```javascript
-// ✅ 正确示例：为每条边指定唯一 id
+// ✅ Correct Example: Assign a unique id to each edge
 const edges = [];
 let edgeIndex = 0;
 for (let i = 0; i < 34; i++) {
   const target = Math.floor(Math.random() * 34);
   if (target !== i) {
     edges.push({
-      id: `edge-${edgeIndex++}`,  // 显式指定唯一 id
+      id: `edge-${edgeIndex++}`,  // Explicitly assign a unique id
       source: `${i}`,
       target: `${target}`,
     });
@@ -215,10 +215,10 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-**修正方案2**：生成边时去重，避免相同 source-target 重复出现
+**Solution 2**: Deduplicate edges during generation to avoid duplicate source-target combinations
 
 ```javascript
-// ✅ 正确示例：用 Set 去重，避免重复边
+// ✅ Correct Example: Use a Set to deduplicate edges
 const edgeSet = new Set();
 const edges = [];
 for (let i = 0; i < 34; i++) {
@@ -231,38 +231,38 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-**修正方案3（推荐）**：直接使用明确的静态数据，不依赖随机生成
+**Solution 3 (Recommended)**: Use explicit static data instead of relying on random generation
 
 ```javascript
-// ✅ 推荐：使用确定性数据，避免随机带来的不确定性
+// ✅ Recommended: Use deterministic data to avoid randomness
 const data = {
   nodes: Array.from({ length: 34 }, (_, i) => ({ id: `${i}` })),
   edges: [
     { source: '0', target: '1' },
     { source: '0', target: '2' },
     { source: '1', target: '3' },
-    // ... 明确指定的边列表，无重复
+    // ... Explicitly specified edge list with no duplicates
   ],
 };
 ```
 
-### 错误2：最小示例代码语法错误
+### Error 2: Syntax Error in Minimal Example Code
 
-**错误现象**：代码中 `data` 字段缺失或语法不完整导致空白渲染。
+**Error Description**: Missing or incomplete `data` field in the code results in blank rendering.
 
-**原因**：`Graph` 构造函数中 `data` 字段是必须的，且必须包含 `nodes` 和 `edges` 数组。
+**Cause**: The `data` field is mandatory in the `Graph` constructor and must include `nodes` and `edges` arrays.
 
 ```javascript
-// ❌ 错误示例：缺少 data 字段
+// ❌ Incorrect Example: Missing data field
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  { nodes: [...], edges: [...] },  // 语法错误，缺少 data: 键名
+  { nodes: [...], edges: [...] },  // Syntax error, missing data: key
   behaviors: ['drag-canvas'],
 });
 
-// ✅ 正确示例
+// ✅ Correct Example
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -275,17 +275,17 @@ const graph = new Graph({
 });
 ```
 
-### 错误3：treeToGraphData 未定义
+### Error 3: treeToGraphData is not defined
 
-**错误现象**：`treeToGraphData is not defined`
+**Error Description**: `treeToGraphData is not defined`
 
-**原因**：`treeToGraphData` 是 G6 提供的工具函数，用于将树形结构数据转换为图数据，需要从 `@antv/g6` 中显式导入，不能直接使用。
+**Cause**: `treeToGraphData` is a utility function provided by G6, used to convert tree-structured data into graph data. It needs to be explicitly imported from `@antv/g6` and cannot be used directly.
 
 ```javascript
-// ❌ 错误示例：未导入直接使用
+// ❌ Incorrect Example: Using without importing
 const data = treeToGraphData(treeData);
 
-// ✅ 正确示例：先导入再使用
+// ✅ Correct Example: Import before use
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const data = treeToGraphData(treeData);
@@ -297,17 +297,17 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 错误4：画布渲染空白
+### Error 4: Canvas Rendering Blank
 
-**常见原因及修正**：
+**Common Causes and Fixes**:
 
-1. **容器尺寸为 0**：确保容器 DOM 元素有明确的宽高，或在 Graph 配置中指定 `width` 和 `height`。
-2. **data 为空**：确保 `data.nodes` 数组不为空。
-3. **未调用 render()**：必须显式调用 `graph.render()` 才会渲染。
-4. **autoFit 配置**：使用 `autoFit: 'view'` 可自动适配视图，避免图形超出画布范围不可见。
+1. **Container Size is 0**: Ensure the container DOM element has explicit width and height, or specify `width` and `height` in the Graph configuration.
+2. **Data is Empty**: Ensure the `data.nodes` array is not empty.
+3. **render() Not Called**: Explicitly call `graph.render()` to trigger rendering.
+4. **autoFit Configuration**: Use `autoFit: 'view'` to automatically fit the view, preventing the graph from being invisible due to exceeding the canvas boundaries.
 
 ```javascript
-// ✅ 完整可运行示例
+// ✅ Complete Runnable Example
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({

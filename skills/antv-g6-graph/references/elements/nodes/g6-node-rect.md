@@ -1,21 +1,20 @@
 ---
 id: "g6-node-rect"
-title: "G6 矩形节点（Rect Node）"
+title: "G6 Rectangle Node (Rect Node)"
 description: |
-  使用矩形节点（rect）创建图可视化。矩形节点适合展示模块、组件、流程步骤等，
-  支持设置宽高比、圆角、标签等。
+  Create graph visualizations using rectangle nodes (rect). Rectangle nodes are suitable for displaying modules, components, process steps, etc.,
+  and support setting aspect ratios, rounded corners, labels, and more.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "nodes"
 tags:
-  - "节点"
-  - "矩形"
-  - "rect"
   - "node"
-  - "流程图"
-  - "组织架构"
+  - "rectangle"
+  - "rect"
+  - "flowchart"
+  - "organizational chart"
   - "UML"
 
 related:
@@ -24,15 +23,15 @@ related:
   - "g6-state-overview"
 
 use_cases:
-  - "流程图节点"
-  - "组织架构图"
-  - "UML 图"
-  - "文件树"
-  - "架构图"
+  - "Flowchart nodes"
+  - "Organizational charts"
+  - "UML diagrams"
+  - "File trees"
+  - "Architecture diagrams"
 
 anti_patterns:
-  - "不适合表示无方向性的实体（改用 circle）"
-  - "节点内容极其复杂时改用 html 节点"
+  - "Not suitable for representing undirected entities (use circle instead)"
+  - "Use HTML nodes instead when node content is extremely complex"
 
 difficulty: "beginner"
 completeness: "full"
@@ -42,16 +41,16 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/node/rect"
 ---
 
-## 核心概念
+## Core Concepts
 
-矩形节点（`rect`）有清晰的边界，适合表示模块、组件、流程步骤等需要区分方向性的实体。
+Rectangular nodes (`rect`) have clear boundaries, making them suitable for representing entities that require directional distinction, such as modules, components, and process steps.
 
-**与 circle 的主要区别：**
-- `size` 接受 `[width, height]` 数组，支持不同宽高
-- 可设置 `radius` 实现圆角矩形
-- 内容区域更大，适合显示多行信息
+**Main differences from circle:**
+- `size` accepts a `[width, height]` array, supporting different widths and heights
+- Can set `radius` to achieve rounded rectangles
+- Larger content area, suitable for displaying multi-line information
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -62,10 +61,10 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'start', data: { label: '开始' } },
-       { id: 'process1', data: { label: '处理数据' } },
-       { id: 'decision', data: { label: '是否通过?' } },
-       { id: 'end', data: { label: '结束' } },
+       { id: 'start', data: { label: 'Start' } },
+       { id: 'process1', data: { label: 'Process Data' } },
+       { id: 'decision', data: { label: 'Is it Approved?' } },
+       { id: 'end', data: { label: 'End' } },
     ],
     edges: [
        { source: 'start', target: 'process1' },
@@ -76,19 +75,19 @@ const graph = new Graph({
   node: {
     type: 'rect',
     style: {
-      size: [120, 40],           // [宽, 高]
-      radius: 4,                 // 圆角
+      size: [120, 40],           // [width, height]
+      radius: 4,                 // rounded corners
       fill: '#f0f5ff',
       stroke: '#adc6ff',
       lineWidth: 1,
       labelText: (d) => d.data.label,
-      labelPlacement: 'center',  // 标签居中
+      labelPlacement: 'center',  // label centered
       labelFill: '#333',
     },
   },
   layout: {
     type: 'dagre',
-    rankdir: 'TB',               // 从上到下
+    rankdir: 'TB',               // top to bottom
     ranksep: 50,
     nodesep: 30,
   },
@@ -105,28 +104,28 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 组织架构图
+### Organizational Structure Chart
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const orgData = {
   id: 'ceo',
-      data: { label: 'CEO', dept: '董事会' },
+      data: { label: 'CEO', dept: 'Board of Directors' },
   children: [
     {
       id: 'cto',
-      data: { label: 'CTO', dept: '技术部' },
+      data: { label: 'CTO', dept: 'Technology Department' },
       children: [
-         { id: 'dev1', data: { label: '前端负责人', dept: '前端组' } },
-         { id: 'dev2', data: { label: '后端负责人', dept: '后端组' } },
+         { id: 'dev1', data: { label: 'Front-end Lead', dept: 'Front-end Team' } },
+         { id: 'dev2', data: { label: 'Back-end Lead', dept: 'Back-end Team' } },
       ],
     },
     {
       id: 'cmo',
-      data: { label: 'CMO', dept: '市场部' },
+      data: { label: 'CMO', dept: 'Marketing Department' },
     },
   ],
 };
@@ -168,7 +167,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 不同颜色区分类型
+### Different Colors to Distinguish Types
 
 ```javascript
 node: {
@@ -200,13 +199,13 @@ node: {
 },
 ```
 
-### 带子标题的矩形节点
+### Rectangle Node with Subtitle
 
 ```javascript
-// 使用自定义 HTML 节点显示多行内容
+// Use custom HTML node to display multi-line content
 import { Graph, ExtensionCategory, register } from '@antv/g6';
 
-// 或者使用 labelText 换行
+// Alternatively, use labelText for line breaks
 node: {
   type: 'rect',
   style: {
@@ -214,7 +213,7 @@ node: {
     radius: 8,
     fill: '#f0f5ff',
     stroke: '#adc6ff',
-    // 主标题
+    // Main title
     labelText: (d) => d.data.title,
     labelPlacement: 'center',
     labelOffsetY: -10,
@@ -224,61 +223,61 @@ node: {
 },
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：对 rect 使用单个数字 size
+### Error 1: Using a Single Numeric Size for `rect`
 
 ```javascript
-// ❌ 可运行，但只设置了宽度，高度将为默认值
+// ❌ Runnable, but only sets width; height will default
 node: {
   type: 'rect',
   style: { size: 100 },
 }
 
-// ✅ 推荐：明确设置宽和高
+// ✅ Recommended: Explicitly set width and height
 node: {
   type: 'rect',
-  style: { size: [120, 40] },  // [宽, 高]
+  style: { size: [120, 40] },  // [width, height]
 }
 ```
 
-### 错误2：标签超出节点边界
+### Error 2: Label Exceeds Node Boundaries
 
 ```javascript
-// ❌ 长标签溢出节点
+// ❌ Long label overflows node
 node: {
   type: 'rect',
   style: {
     size: [80, 30],
-    labelText: (d) => d.data.longDescription,  // 过长
+    labelText: (d) => d.data.longDescription,  // Too long
   },
 }
 
-// ✅ 设置最大宽度和省略
+// ✅ Set maximum width and ellipsis
 node: {
   type: 'rect',
   style: {
     size: [120, 40],
     labelText: (d) => d.data.label,
-    labelMaxWidth: 100,       // 最大宽度
-    labelWordWrap: false,     // 超出省略
+    labelMaxWidth: 100,       // Maximum width
+    labelWordWrap: false,     // Ellipsis on overflow
   },
 }
 ```
 
-### 错误3：与 dagre 布局搭配时忘设置节点大小
+### Error 3: Forgetting to Set Node Size When Using Dagre Layout
 
 ```javascript
-// ❌ 未设置节点大小，dagre 无法正确计算间距
+// ❌ Node size not set, dagre cannot calculate spacing correctly
 layout: {
   type: 'dagre',
 },
-// 没有设置 nodeSize
+// nodeSize not set
 
-// ✅ 告诉 dagre 节点尺寸
+// ✅ Inform dagre of node dimensions
 layout: {
   type: 'dagre',
-  nodeSize: [120, 40],  // 与节点 size 一致
+  nodeSize: [120, 40],  // Consistent with node size
   ranksep: 50,
   nodesep: 20,
 },

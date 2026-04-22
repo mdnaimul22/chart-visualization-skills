@@ -1,21 +1,21 @@
 ---
 id: "g6-core-custom-element"
-title: "G6 自定义节点与自定义边"
+title: "G6 Custom Nodes and Custom Edges"
 description: |
-  通过继承 BaseNode / BaseEdge 并调用 register() 注册自定义元素类型，
-  实现复杂业务形状的图节点和边。
+  By inheriting BaseNode / BaseEdge and calling register() to register custom element types,
+  implement graph nodes and edges with complex business shapes.
 
 library: "g6"
 version: "5.x"
 category: "core"
 subcategory: "customization"
 tags:
-  - "自定义节点"
-  - "自定义边"
+  - "custom node"
+  - "custom edge"
   - "register"
   - "BaseNode"
   - "BaseEdge"
-  - "扩展"
+  - "extension"
 
 related:
   - "g6-node-circle"
@@ -24,13 +24,13 @@ related:
   - "g6-core-graph-api"
 
 use_cases:
-  - "业务卡片节点（带图表的节点）"
-  - "带标注的特殊形状边"
-  - "自定义连接点逻辑"
+  - "Business card nodes (nodes with charts)"
+  - "Specially shaped edges with annotations"
+  - "Custom connection point logic"
 
 anti_patterns:
-  - "能用内置节点 + 样式配置实现的，不要自定义"
-  - "频繁更新数据时避免在自定义节点中做复杂 DOM 操作"
+  - "Avoid customizing if it can be achieved with built-in nodes + style configurations"
+  - "Avoid complex DOM operations in custom nodes when frequently updating data"
 
 difficulty: "advanced"
 completeness: "full"
@@ -38,9 +38,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 自定义节点
+## Custom Nodes
 
-### 基础结构
+### Basic Structure
 
 ```javascript
 import {
@@ -55,8 +55,8 @@ import {
 
 class StatusNode extends BaseNode {
   /**
-   * 绘制节点主体
-   * 重写 render() 获得完全控制权，需自行管理所有子形状
+   * Draw the node body
+   * Override render() to gain full control, need to manage all child shapes manually
    */
   render(attributes, container) {
     super.render(attributes, container);
@@ -64,8 +64,8 @@ class StatusNode extends BaseNode {
     const [width, height] = this.getSize(attributes);
     const { status, label } = attributes;
     
-    // 使用 upsert 方法创建/更新形状（第一参数为 key，第二参数为构造函数，第三参数为属性）
-    // 主体矩形（会替代默认的 key 形状）
+    // Use upsert method to create/update shapes (first parameter is key, second is constructor, third is attributes)
+    // Main rectangle (replaces the default key shape)
     this.upsert('key', Rect, {
       x: -width / 2,
       y: -height / 2,
@@ -77,7 +77,7 @@ class StatusNode extends BaseNode {
       radius: 6,
     }, container);
     
-    // 状态指示点
+    // Status indicator dot
     this.upsert('status-dot', Circle, {
       cx: width / 2 - 8,
       cy: -height / 2 + 8,
@@ -85,7 +85,7 @@ class StatusNode extends BaseNode {
       fill: status === 'online' ? '#52c41a' : '#ff4d4f',
     }, container);
     
-    // 标签（覆盖默认标签行为）
+    // Label (overrides default label behavior)
     this.upsert('label', Text, {
       x: 0,
       y: 0,
@@ -103,16 +103,16 @@ class StatusNode extends BaseNode {
     return colors[status] || '#1783FF';
   }
   
-  // 返回节点默认大小
+  // Return default node size
   getDefaultStyle() {
     return { size: [120, 50] };
   }
 }
 
-// 注册自定义节点类型
+// Register custom node type
 register(ExtensionCategory.NODE, 'status-node', StatusNode);
 
-// 使用
+// Usage
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -132,7 +132,7 @@ const graph = new Graph({
     type: 'status-node',
     style: {
       size: [130, 50],
-      // 自定义属性通过 style 回调映射
+      // Custom attributes mapped through style callback
       status: (d) => d.data.status,
       label: (d) => d.data.label,
     },
@@ -144,35 +144,35 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 关键 API
+### Key APIs
 
 ```typescript
-// upsert(key, Shape, attrs, container) - 创建或更新子形状
+// upsert(key, Shape, attrs, container) - Create or update child shapes
 this.upsert('shape-key', Rect, { x, y, width, height, fill }, container);
 
-// 获取节点尺寸
+// Get node dimensions
 const [width, height] = this.getSize(attributes);
 
-// 获取 shapeMap（已渲染的所有形状）
+// Get shapeMap (all rendered shapes)
 const allShapes = this.shapeMap;
 
-// 节点中心坐标（世界坐标系）
+// Node center coordinates (world coordinate system)
 const { x, y } = this.getPosition();
 ```
 
 ---
 
-## 继承内置节点扩展（推荐）
+## Inheriting Built-in Node Extensions (Recommended)
 
-对于简单的样式扩展（如添加动画、光晕效果），推荐继承内置节点（如 `Circle`、`Rect`）而非 `BaseNode`，可以复用内置节点的绘制逻辑：
+For simple style extensions (such as adding animations or halo effects), it is recommended to inherit from built-in nodes (like `Circle`, `Rect`) rather than `BaseNode`, to reuse the built-in node's rendering logic:
 
 ```javascript
 import { Circle, ExtensionCategory, Graph, register } from '@antv/g6';
 
-// 继承内置 Circle 节点，添加呼吸动画光晕
+// Inherit from built-in Circle node, adding a breathing animation halo
 class BreathingCircle extends Circle {
-  // onCreate 在元素完成创建并执行完入场动画后调用
-  // 适合启动循环动画，避免与入场动画冲突
+  // onCreate is called after the element is created and its entrance animation is complete
+  // Suitable for starting loop animations, avoiding conflicts with entrance animations
   onCreate() {
     const halo = this.shapeMap.halo;
     if (halo) {
@@ -203,7 +203,7 @@ const graph = new Graph({
     type: 'breathing-circle',
     style: {
       size: 50,
-      halo: true,  // 开启光晕形状
+      halo: true,  // Enable halo shape
     },
     palette: ['#3875f6', '#efb041', '#ec5b56', '#72c240'],
   },
@@ -216,19 +216,19 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 生命周期钩子
+### Lifecycle Hooks
 
-自定义节点/边支持以下生命周期钩子：
+Custom nodes/edges support the following lifecycle hooks:
 
 ```typescript
 class MyNode extends BaseNode {
   /**
-   * 在元素完成创建并执行完入场动画后调用
-   * 适合启动循环动画、绑定事件等一次性初始化操作
+   * Called after the element is created and its entrance animation is complete.
+   * Suitable for one-time initialization operations such as starting loop animations, binding events, etc.
    */
   onCreate() {
     const keyShape = this.shapeMap['key'];
-    // 启动呼吸动画
+    // Start breathing animation
     keyShape.animate(
       [{ r: 20 }, { r: 25 }, { r: 20 }],
       { duration: 2000, iterations: Infinity }
@@ -236,14 +236,14 @@ class MyNode extends BaseNode {
   }
 
   /**
-   * 在元素更新并执行完过渡动画后调用
+   * Called after the element is updated and its transition animation is complete.
    */
   onUpdate() {
     console.log('Node updated:', this.id);
   }
 
   /**
-   * 在元素完成退场动画并销毁后调用
+   * Called after the element completes its exit animation and is destroyed.
    */
   onDestroy() {
     console.log('Node destroyed:', this.id);
@@ -253,7 +253,7 @@ class MyNode extends BaseNode {
 
 ---
 
-## 自定义边
+## Custom Edge
 
 ```javascript
 import {
@@ -266,11 +266,11 @@ import {
 
 class ArrowEdge extends BaseEdge {
   /**
-   * 返回边的 SVG Path 数据（必须实现）
-   * 使用 this.getEndpoints(attributes) 获取起点和终点坐标
+   * Returns the SVG Path data for the edge (must be implemented)
+   * Use this.getEndpoints(attributes) to get the start and end coordinates
    */
   getKeyPath(attributes) {
-    // 获取起点和终点坐标（已考虑连接桩、节点边界等因素）
+    // Get start and end coordinates (considering connection points, node boundaries, etc.)
     const [sourcePoint, targetPoint] = this.getEndpoints(attributes, false);
     
     if (!sourcePoint || !targetPoint) return [['M', 0, 0]];
@@ -278,7 +278,7 @@ class ArrowEdge extends BaseEdge {
     const [sx, sy] = sourcePoint;
     const [tx, ty] = targetPoint;
     
-    // 折线路径：水平 -> 垂直 -> 水平
+    // Polyline path: horizontal -> vertical -> horizontal
     const midX = (sx + tx) / 2;
     
     return [
@@ -305,9 +305,9 @@ const graph = new Graph({
 });
 ```
 
-### 自定义边动画（蚂蚁线）
+### Custom Edge Animation (Ant Line)
 
-`super.render()` 后通过 `this.shapeMap['key']` 拿到主形状，再调用 Web Animations API：
+After `super.render()`, obtain the main shape through `this.shapeMap['key']`, and then call the Web Animations API:
 
 ```javascript
 import { BaseEdge, ExtensionCategory, Graph, register } from '@antv/g6';
@@ -327,7 +327,7 @@ class DashEdge extends BaseEdge {
     const keyShape = this.shapeMap['key'];
     if (keyShape) {
       keyShape.style.lineDash = [10, 10];
-      // 蚂蚁线：通过 lineDashOffset 偏移实现流动效果
+      // Ant Line: Achieve flowing effect through lineDashOffset offset
       keyShape.animate(
         [{ lineDashOffset: 0 }, { lineDashOffset: -20 }],
         { duration: 1000, iterations: Infinity },
@@ -343,8 +343,8 @@ const graph = new Graph({
   width: 800, height: 600,
   data: {
     nodes: [
-      { id: 'n1', data: { label: '开始' } },
-      { id: 'n2', data: { label: '结束' } },
+      { id: 'n1', data: { label: 'Start' } },
+      { id: 'n2', data: { label: 'End' } },
     ],
     edges: [{ source: 'n1', target: 'n2' }],
   },
@@ -359,47 +359,47 @@ graph.render();
 
 ---
 
-## 注册类型汇总
+## Summary of Registered Types
 
 ```javascript
 import { ExtensionCategory, register } from '@antv/g6';
 
-// 注册自定义节点
+// Register custom node
 register(ExtensionCategory.NODE, 'my-node', MyNodeClass);
 
-// 注册自定义边
+// Register custom edge
 register(ExtensionCategory.EDGE, 'my-edge', MyEdgeClass);
 
-// 注册自定义 combo
+// Register custom combo
 register(ExtensionCategory.COMBO, 'my-combo', MyComboClass);
 
-// 注册自定义布局
+// Register custom layout
 register(ExtensionCategory.LAYOUT, 'my-layout', MyLayoutClass);
 
-// 注册自定义行为
+// Register custom behavior
 register(ExtensionCategory.BEHAVIOR, 'my-behavior', MyBehaviorClass);
 
-// 注册自定义插件
+// Register custom plugin
 register(ExtensionCategory.PLUGIN, 'my-plugin', MyPluginClass);
 ```
 
 ---
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误：在 render() 中启动循环动画导致白屏或动画异常
+### Error: Starting Loop Animation in render() Causes White Screen or Abnormal Animation
 
 ```javascript
-// ❌ render() 在元素创建和更新时都会被调用，在此处启动动画会导致：
-//    1. 动画重复启动，性能问题
-//    2. 与入场动画冲突，可能导致白屏
-//    3. 更新时动画被重置
+// ❌ render() is called both when the element is created and updated. Starting the animation here can lead to:
+//    1. Repeated animation starts, causing performance issues
+//    2. Conflicts with entrance animations, potentially causing a white screen
+//    3. Animation reset during updates
 class BreathingNode extends BaseNode {
   render(attributes, container) {
     super.render(attributes, container);
     const circle = this.upsert('key', Circle, { cx: 0, cy: 0, r: 30 }, container);
     
-    // 错误：在 render 中启动动画
+    // Error: Starting animation in render
     circle.animate(
       [{ r: 30 }, { r: 40 }, { r: 30 }],
       { duration: 2000, iterations: Infinity }
@@ -407,7 +407,7 @@ class BreathingNode extends BaseNode {
   }
 }
 
-// ✅ 使用 onCreate 生命周期钩子，在入场动画完成后启动循环动画
+// ✅ Use the onCreate lifecycle hook to start the loop animation after the entrance animation is complete
 class BreathingNode extends BaseNode {
   render(attributes, container) {
     super.render(attributes, container);
@@ -423,7 +423,7 @@ class BreathingNode extends BaseNode {
   }
 }
 
-// ✅ 或者继承内置节点，利用内置的 halo 形状实现呼吸效果（推荐）
+// ✅ Alternatively, inherit from a built-in node and use the built-in halo shape to achieve the breathing effect (recommended)
 class BreathingCircle extends Circle {
   onCreate() {
     const halo = this.shapeMap.halo;
@@ -437,112 +437,112 @@ class BreathingCircle extends Circle {
 }
 ```
 
-### 错误：使用已移除的 extend API
+### Error: Using the Removed `extend` API
 
 ```javascript
-// ❌ extend 已从 G6 v5 正式版移除，调用报 "extend is not a function"
+// ❌ `extend` has been officially removed from G6 v5, causing "extend is not a function" error
 import { Graph, extend } from '@antv/g6';
 const ExtGraph = extend(Graph, { nodes: { 'my-node': MyNodeFn } });
 
-// ✅ 使用 BaseNode + register
+// ✅ Use `BaseNode` + `register`
 import { BaseNode, ExtensionCategory, register } from '@antv/g6';
 class MyNode extends BaseNode { /* ... */ }
 register(ExtensionCategory.NODE, 'my-node', MyNode);
 ```
 
-### 错误：忘记调用 register 就使用自定义类型
+### Error: Using a Custom Type Without Calling `register`
 
 ```javascript
-// ❌ 没有 register，G6 不认识 'my-node'
+// ❌ Without register, G6 does not recognize 'my-node'
 const graph = new Graph({
   node: { type: 'my-node' },
 });
 
-// ✅ 先 register，再使用
+// ✅ Register first, then use
 register(ExtensionCategory.NODE, 'my-node', MyNode);
 const graph = new Graph({
   node: { type: 'my-node' },
 });
 ```
 
-### 错误：在 render 中直接操作 DOM（应使用 upsert）
+### Error: Directly Manipulating DOM in render (Should Use upsert)
 
 ```javascript
-// ❌ 直接操作 DOM 不受 G6 渲染周期管理
+// ❌ Direct DOM manipulation is not managed by G6 rendering cycle
 render(attributes, container) {
   const div = document.createElement('div');
   container.appendChild(div);
 }
 
-// ✅ 使用 upsert 管理形状生命周期
+// ✅ Use upsert to manage shape lifecycle
 render(attributes, container) {
   this.upsert('my-shape', Rect, { x: 0, y: 0 }, container);
 }
 ```
 
-### 错误：在 render 中通过 attributes.data 读取节点业务数据 → 白屏
+### Error: Reading Node Business Data via `attributes.data` in `render` → Blank Screen
 
 ```javascript
-// ❌ attributes 是计算后的样式属性集合，不包含节点的 data 字段
-// attributes.data 为 undefined，访问 data.color 抛 TypeError → 白屏
+// ❌ attributes is a collection of computed style properties, does not contain the node's data field
+// attributes.data is undefined, accessing data.color throws TypeError → Blank Screen
 render(attributes, container) {
-  const { data } = attributes;        // undefined！
+  const { data } = attributes;        // undefined!
   const color = data.color;           // TypeError: Cannot read properties of undefined
 }
 
-// ✅ 通过 node.style 回调把 data 映射为样式属性，在 attributes 中直接读取
-// 第一步：在 Graph 配置的 node.style 中把数据映射为自定义属性
+// ✅ Map data to style properties via node.style callback, read directly from attributes
+// Step 1: Map data to custom properties in node.style configuration of Graph
 node: {
   type: 'my-node',
   style: {
-    color: (d) => d.data.color,   // 映射为 attributes.color
-    label: (d) => d.data.label,   // 映射为 attributes.label
+    color: (d) => d.data.color,   // Mapped to attributes.color
+    label: (d) => d.data.label,   // Mapped to attributes.label
   },
 },
-// 第二步：在 render() 里直接解构 attributes
+// Step 2: Directly destructure attributes in render()
 render(attributes, container) {
-  const { color = '#1783FF', label } = attributes;  // ✅ 正确读取
+  const { color = '#1783FF', label } = attributes;  // ✅ Correctly read
 }
 ```
 
-### 错误：upsert key 与默认形状冲突导致双重渲染
+### Error: Conflict between upsert key and default shape causes double rendering
 
 ```javascript
-// ❌ key 不是 'key'，super.render() 已创建默认 'key' 形状，
-//    再 upsert('circle', ...) 会叠加一个额外圆形
+// ❌ key is not 'key', super.render() has created a default 'key' shape,
+//    calling upsert('circle', ...) will overlay an additional circle
 render(attributes, container) {
   super.render(attributes, container);
-  this.upsert('circle', Circle, { cx: 0, cy: 0, r: 20 }, container);  // 双圆！
+  this.upsert('circle', Circle, { cx: 0, cy: 0, r: 20 }, container);  // Double circles!
 }
 
-// ✅ 使用 'key' 替换默认主形状
+// ✅ Replace the default main shape with 'key'
 render(attributes, container) {
   super.render(attributes, container);
-  this.upsert('key', Circle, { cx: 0, cy: 0, r: 20 }, container);  // 替换默认形状
+  this.upsert('key', Circle, { cx: 0, cy: 0, r: 20 }, container);  // Replace default shape
 }
 ```
 
-### 错误：动画使用 CSS 属性（scale）而非形状属性
+### Error: Animation uses CSS property (scale) instead of shape property
 
 ```javascript
-// ❌ scale 是 CSS transform，@antv/g 形状 animate() 使用形状自身的属性名
+// ❌ scale is a CSS transform, @antv/g shape animate() uses the shape's own property names
 circle.animate(
-  [{ scale: 1 }, { scale: 1.1 }, { scale: 1 }],  // 静默忽略，无任何效果
+  [{ scale: 1 }, { scale: 1.1 }, { scale: 1 }],  // Silently ignored, no effect
   { duration: 2000, iterations: Infinity }
 );
 
-// ✅ 动画 Circle 形状时使用 r / fill / stroke 等形状属性
+// ✅ Use shape properties like r / fill / stroke when animating Circle shapes
 circle.animate(
   [{ r: 20 }, { r: 25 }, { r: 20 }],
   { duration: 2000, iterations: Infinity }
 );
 ```
 
-### 错误：自定义边中直接访问 attributes.sourcePoint → 白屏
+### Error: Direct Access to `attributes.sourcePoint` in Custom Edge → White Screen
 
 ```javascript
-// ❌ attributes 中不存在 sourcePoint / targetPoint 属性
-// 直接访问返回 undefined，解构赋值后计算会抛出异常导致白屏
+// ❌ `sourcePoint` / `targetPoint` properties do not exist in `attributes`
+// Direct access returns `undefined`, and destructuring assignment throws an exception, causing a white screen
 class MyEdge extends BaseEdge {
   getKeyPath(attributes) {
     const { sourcePoint, targetPoint } = attributes;  // undefined!
@@ -551,7 +551,7 @@ class MyEdge extends BaseEdge {
   }
 }
 
-// ✅ 使用 this.getEndpoints(attributes) 获取起点和终点
+// ✅ Use `this.getEndpoints(attributes)` to retrieve start and end points
 class MyEdge extends BaseEdge {
   getKeyPath(attributes) {
     const [sourcePoint, targetPoint] = this.getEndpoints(attributes, false);
@@ -561,4 +561,3 @@ class MyEdge extends BaseEdge {
   }
 }
 ```
-</skill>

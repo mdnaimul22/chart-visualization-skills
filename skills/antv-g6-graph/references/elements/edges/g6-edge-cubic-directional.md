@@ -1,10 +1,10 @@
 ---
 id: "g6-edge-cubic-directional"
-title: "G6 有向三次贝塞尔曲线边（cubic-horizontal / cubic-vertical）"
+title: "G6 Directed Cubic Bezier Curve Edge (cubic-horizontal / cubic-vertical)"
 description: |
-  cubic-horizontal：水平方向三次贝塞尔曲线，控制点沿水平方向分布，适合水平流程图（LR 方向）。
-  cubic-vertical：垂直方向三次贝塞尔曲线，控制点沿垂直方向分布，适合垂直层次图（TB 方向）。
-  两者是 cubic 边的方向性变体，分别与 dagre/antv-dagre 的 LR 和 TB 方向布局配合使用。
+  cubic-horizontal: Horizontal cubic Bezier curve, with control points distributed horizontally, suitable for horizontal flowcharts (LR direction).
+  cubic-vertical: Vertical cubic Bezier curve, with control points distributed vertically, suitable for vertical hierarchy charts (TB direction).
+  Both are directional variants of the cubic edge, used in conjunction with the LR and TB direction layouts of dagre/antv-dagre, respectively.
 
 library: "g6"
 version: "5.x"
@@ -13,10 +13,10 @@ subcategory: "edges"
 tags:
   - "cubic-horizontal"
   - "cubic-vertical"
-  - "贝塞尔曲线"
-  - "有向边"
-  - "流程图边"
-  - "层次图边"
+  - "Bezier curve"
+  - "directed edge"
+  - "flowchart edge"
+  - "hierarchy chart edge"
 
 related:
   - "g6-edge-cubic"
@@ -29,19 +29,19 @@ created: "2026-04-16"
 updated: "2026-04-16"
 ---
 
-## 边类型对比
+## Edge Type Comparison
 
-| 类型 | 方向 | 控制点轴 | 最佳配合布局 |
+| Type | Direction | Control Point Axis | Best Matching Layout |
 |------|------|---------|-------------|
-| `cubic` | 任意 | 两端点间距 | 通用 |
-| `cubic-horizontal` | 水平（左→右） | X 轴 | dagre `rankdir: 'LR'` |
-| `cubic-vertical` | 垂直（上→下） | Y 轴 | dagre `rankdir: 'TB'` |
+| `cubic` | Arbitrary | Distance between endpoints | General |
+| `cubic-horizontal` | Horizontal (Left→Right) | X-axis | dagre `rankdir: 'LR'` |
+| `cubic-vertical` | Vertical (Top→Bottom) | Y-axis | dagre `rankdir: 'TB'` |
 
 ---
 
-## 水平三次贝塞尔曲线（cubic-horizontal）
+## Horizontal Cubic Bezier Curve (cubic-horizontal)
 
-控制点主要沿 X 轴方向分布，忽略 Y 轴变化，产生水平 S 形曲线效果。适合水平方向流程图。
+Control points are primarily distributed along the X-axis, ignoring changes along the Y-axis, resulting in a horizontal S-shaped curve effect. Suitable for horizontal flowcharts.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -52,10 +52,10 @@ const graph = new Graph({
   height: 500,
   data: {
     nodes: [
-      { id: 'start', data: { label: '开始' } },
-      { id: 'process', data: { label: '处理' } },
-      { id: 'decision', data: { label: '判断' } },
-      { id: 'end', data: { label: '结束' } },
+      { id: 'start', data: { label: 'Start' } },
+      { id: 'process', data: { label: 'Process' } },
+      { id: 'decision', data: { label: 'Decision' } },
+      { id: 'end', data: { label: 'End' } },
     ],
     edges: [
       { source: 'start', target: 'process' },
@@ -72,12 +72,12 @@ const graph = new Graph({
       radius: 4,
       labelText: (d) => d.data.label,
       labelPlacement: 'center',
-      // 连接点设置为左右两侧
+      // Set connection points to the left and right sides
       ports: [{ placement: 'right' }, { placement: 'left' }],
     },
   },
   edge: {
-    type: 'cubic-horizontal',    // 水平三次贝塞尔曲线
+    type: 'cubic-horizontal',    // Horizontal cubic Bezier curve
     style: {
       stroke: '#1783FF',
       lineWidth: 1.5,
@@ -88,7 +88,7 @@ const graph = new Graph({
   },
   layout: {
     type: 'antv-dagre',
-    rankdir: 'LR',           // 从左到右，与 cubic-horizontal 配合
+    rankdir: 'LR',           // From left to right, combined with cubic-horizontal
     nodesep: 20,
     ranksep: 100,
   },
@@ -98,30 +98,30 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 样式配置参数
+### Style Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `curvePosition` | `number \| [number, number]` | `[0.5, 0.5]` | 控制点在端点连线上的相对位置（0-1） |
-| `curveOffset` | `number \| [number, number]` | `[0, 0]` | 控制点距端点连线的偏移距离（px） |
+| `curvePosition` | `number \| [number, number]` | `[0.5, 0.5]` | Relative position of the control point on the line connecting the endpoints (0-1) |
+| `curveOffset` | `number \| [number, number]` | `[0, 0]` | Offset distance of the control point from the line connecting the endpoints (px) |
 
-通用边样式参数（继承自 BaseEdge）：
+Common Edge Style Parameters (Inherited from BaseEdge):
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `stroke` | `string` | — | 边颜色 |
-| `lineWidth` | `number` | `1` | 线宽 |
-| `endArrow` | `boolean` | `false` | 是否显示终点箭头 |
-| `startArrow` | `boolean` | `false` | 是否显示起点箭头 |
-| `lineDash` | `number[]` | — | 虚线样式 |
-| `labelText` | `string \| Function` | — | 标签文字 |
-| `labelBackground` | `boolean` | `false` | 是否显示标签背景 |
+| `stroke` | `string` | — | Edge color |
+| `lineWidth` | `number` | `1` | Line width |
+| `endArrow` | `boolean` | `false` | Whether to display the end arrow |
+| `startArrow` | `boolean` | `false` | Whether to display the start arrow |
+| `lineDash` | `number[]` | — | Dashed line style |
+| `labelText` | `string \| Function` | — | Label text |
+| `labelBackground` | `boolean` | `false` | Whether to display the label background |
 
 ---
 
-## 垂直三次贝塞尔曲线（cubic-vertical）
+## Vertical Cubic Bezier Curve (cubic-vertical)
 
-控制点主要沿 Y 轴方向分布，忽略 X 轴变化，产生垂直 S 形曲线效果。适合垂直方向层次图、组织架构图。
+Control points are primarily distributed along the Y-axis, ignoring changes along the X-axis, resulting in a vertical S-shaped curve effect. Suitable for vertical hierarchical charts and organizational structure diagrams.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -135,9 +135,9 @@ const graph = new Graph({
       { id: 'ceo', data: { label: 'CEO' } },
       { id: 'cto', data: { label: 'CTO' } },
       { id: 'cfo', data: { label: 'CFO' } },
-      { id: 'dev1', data: { label: '前端团队' } },
-      { id: 'dev2', data: { label: '后端团队' } },
-      { id: 'finance', data: { label: '财务部' } },
+      { id: 'dev1', data: { label: 'Frontend Team' } },
+      { id: 'dev2', data: { label: 'Backend Team' } },
+      { id: 'finance', data: { label: 'Finance Department' } },
     ],
     edges: [
       { source: 'ceo', target: 'cto' },
@@ -156,12 +156,12 @@ const graph = new Graph({
       radius: 4,
       labelText: (d) => d.data.label,
       labelPlacement: 'center',
-      // 连接点设置为上下两侧
+      // Set connection points to top and bottom sides
       ports: [{ placement: 'top' }, { placement: 'bottom' }],
     },
   },
   edge: {
-    type: 'cubic-vertical',    // 垂直三次贝塞尔曲线
+    type: 'cubic-vertical',    // Vertical cubic Bezier curve
     style: {
       stroke: '#52c41a',
       lineWidth: 1.5,
@@ -170,7 +170,7 @@ const graph = new Graph({
   },
   layout: {
     type: 'antv-dagre',
-    rankdir: 'TB',          // 从上到下，与 cubic-vertical 配合
+    rankdir: 'TB',          // Top to bottom, coordinated with cubic-vertical
     nodesep: 40,
     ranksep: 80,
   },
@@ -182,25 +182,25 @@ graph.render();
 
 ---
 
-## 调整弯曲度
+## Adjust Curvature
 
 ```javascript
 edge: {
   type: 'cubic-horizontal',
   style: {
-    // curvePosition: 控制点位置（0-1），0.5 为两端点中点
-    curvePosition: 0.3,        // 单值：两个控制点相同位置
-    // curvePosition: [0.4, 0.6], // 数组：分别控制两个控制点
+    // curvePosition: Control point position (0-1), 0.5 is the midpoint between the two endpoints
+    curvePosition: 0.3,        // Single value: both control points at the same position
+    // curvePosition: [0.4, 0.6], // Array: control the two control points separately
 
-    // curveOffset: 控制点偏移（px），正值向一侧偏，负值向另一侧
-    curveOffset: 30,           // 增大弯曲程度
+    // curveOffset: Control point offset (px), positive value offsets to one side, negative to the other
+    curveOffset: 30,           // Increase curvature
   },
 }
 ```
 
 ---
 
-## 状态样式
+## State Styles
 
 ```javascript
 edge: {
@@ -231,20 +231,20 @@ edge: {
 
 ---
 
-## 选型指南
+## Selection Guide
 
 ```javascript
-// 水平流程图（左→右）
+// Horizontal Flowchart (Left → Right)
 // dagre rankdir: 'LR' + edge type: 'cubic-horizontal'
-// 节点 ports: [{placement:'right'}, {placement:'left'}]
+// Node ports: [{placement:'right'}, {placement:'left'}]
 
-// 垂直层次图（上→下）
+// Vertical Hierarchy Chart (Top → Bottom)
 // dagre rankdir: 'TB' + edge type: 'cubic-vertical'
-// 节点 ports: [{placement:'top'}, {placement:'bottom'}]
+// Node ports: [{placement:'top'}, {placement:'bottom'}]
 
-// 通用弧形连接（不依赖方向）
-// edge type: 'cubic'（默认）
+// General Curved Connection (Direction-Independent)
+// edge type: 'cubic' (default)
 
-// 正交折线（流程图风格）
+// Orthogonal Polyline (Flowchart Style)
 // edge type: 'polyline'
 ```

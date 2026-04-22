@@ -1,21 +1,19 @@
 ---
 id: "g6-layout-mindmap"
-title: "G6 思维导图布局（Mindmap Layout）"
+title: "G6 Mindmap Layout"
 description: |
-  使用思维导图布局（mindmap）展示树形数据，
-  根节点居中，子节点向两侧展开。
+  Use the mindmap layout to display tree data,
+  with the root node centered and child nodes expanding to both sides.
 
 library: "g6"
 version: "5.x"
 category: "layouts"
 subcategory: "tree"
 tags:
-  - "布局"
-  - "思维导图"
+  - "layout"
   - "mindmap"
-  - "树形"
   - "tree"
-  - "分支"
+  - "branch"
 
 related:
   - "g6-core-data-structure"
@@ -23,14 +21,14 @@ related:
   - "g6-behavior-collapse-expand"
 
 use_cases:
-  - "思维导图"
-  - "知识树"
-  - "分类目录"
-  - "决策树"
+  - "Mindmap"
+  - "Knowledge Tree"
+  - "Category Directory"
+  - "Decision Tree"
 
 anti_patterns:
-  - "非树形数据不要用 mindmap 布局（需先用 treeToGraphData 转换）"
-  - "深度超过 5 层时节点会过于密集"
+  - "Do not use mindmap layout for non-tree data (convert using treeToGraphData first)"
+  - "Nodes become too dense when depth exceeds 5 levels"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -40,41 +38,41 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/layout/mindmap"
 ---
 
-## 核心概念
+## Core Concepts
 
-思维导图布局将树形数据以根节点为中心向两侧（或单侧）展开，是知识图谱和分类展示的经典布局。
+The mind map layout expands tree data from the root node to both sides (or a single side), making it a classic layout for knowledge graphs and hierarchical displays.
 
-**使用前提：** 需要树形数据，使用 `treeToGraphData()` 转换后传入。
+**Prerequisites:** Requires tree data, which should be converted using `treeToGraphData()` before being passed in.
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const treeData = {
   id: 'root',
-  data: { label: '中心主题' },
+  data: { label: 'Central Theme' },
   children: [
     {
       id: 'branch1',
-      data: { label: '分支1' },
+      data: { label: 'Branch 1' },
       children: [
-         { id: 'leaf1', data: { label: '子项1.1' } },
-         { id: 'leaf2', data: { label: '子项1.2' } },
+         { id: 'leaf1', data: { label: 'Subitem 1.1' } },
+         { id: 'leaf2', data: { label: 'Subitem 1.2' } },
       ],
     },
     {
       id: 'branch2',
-      data: { label: '分支2' },
+      data: { label: 'Branch 2' },
       children: [
-         { id: 'leaf3', data: { label: '子项2.1' } },
-         { id: 'leaf4', data: { label: '子项2.2' } },
-         { id: 'leaf5', data: { label: '子项2.3' } },
+         { id: 'leaf3', data: { label: 'Subitem 2.1' } },
+         { id: 'leaf4', data: { label: 'Subitem 2.2' } },
+         { id: 'leaf5', data: { label: 'Subitem 2.3' } },
       ],
     },
     {
       id: 'branch3',
-      data: { label: '分支3' },
+      data: { label: 'Branch 3' },
     },
   ],
 };
@@ -88,7 +86,7 @@ const graph = new Graph({
     type: 'rect',
     style: {
       size: [120, 36],
-      radius: 18,                // 圆角矩形
+      radius: 18,                // Rounded rectangle
       fill: (d) => d.id === 'root' ? '#1783FF' : '#f0f5ff',
       stroke: (d) => d.id === 'root' ? '#1783FF' : '#adc6ff',
       lineWidth: 1,
@@ -106,30 +104,30 @@ const graph = new Graph({
   },
   layout: {
     type: 'mindmap',
-    direction: 'H',             // 'H'=水平展开，'V'=垂直展开
-    getWidth: () => 120,        // 节点宽度（用于计算间距）
-    getHeight: () => 36,        // 节点高度
-    getHGap: () => 40,          // 水平间距
-    getVGap: () => 10,          // 垂直间距
+    direction: 'H',             // 'H'=Horizontal, 'V'=Vertical
+    getWidth: () => 120,        // Node width (for spacing calculation)
+    getHeight: () => 36,        // Node height
+    getHGap: () => 40,          // Horizontal gap
+    getVGap: () => 10,          // Vertical gap
   },
   behaviors: [
     'drag-canvas',
     'zoom-canvas',
-    'collapse-expand',          // 支持折叠/展开
+    'collapse-expand',          // Supports collapse/expand
   ],
 });
 
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 向右展开的单侧树
+### Unilateral Tree Expanding to the Right
 
 ```javascript
 layout: {
   type: 'mindmap',
-  direction: 'LR',           // 从左到右单侧展开
+  direction: 'LR',           // Unilateral expansion from left to right
   getWidth: () => 120,
   getHeight: () => 36,
   getHGap: () => 50,
@@ -140,12 +138,12 @@ edge: {
 },
 ```
 
-### 垂直展开的树
+### Vertically Expanded Tree
 
 ```javascript
 layout: {
   type: 'mindmap',
-  direction: 'V',            // 垂直展开
+  direction: 'V',            // Vertical expansion
   getWidth: () => 100,
   getHeight: () => 36,
   getHGap: () => 20,
@@ -156,7 +154,7 @@ edge: {
 },
 ```
 
-### 带折叠展开功能
+### With Collapse/Expand Functionality
 
 ```javascript
 const graph = new Graph({
@@ -166,14 +164,14 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'collapse-expand',
-      trigger: 'click',          // 点击触发折叠/展开
-      animation: true,           // 带动画
+      trigger: 'click',          // Trigger collapse/expand on click
+      animation: true,           // With animation
     },
   ],
 });
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface MindmapLayoutOptions {
@@ -182,17 +180,17 @@ interface MindmapLayoutOptions {
   getHeight?: (node: NodeData) => number;
   getHGap?: (node: NodeData) => number;
   getVGap?: (node: NodeData) => number;
-  getSide?: (node: NodeData) => 'left' | 'right';  // 控制节点在哪侧
+  getSide?: (node: NodeData) => 'left' | 'right';  // Control which side the node is on
   workerEnabled?: boolean;
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：直接使用树形数据而不转换
+### Error 1: Directly Using Tree Data Without Conversion
 
 ```javascript
-// ❌ 直接传入树形结构
+// ❌ Directly passing tree structure
 const graph = new Graph({
   data: {
     id: 'root',
@@ -201,7 +199,7 @@ const graph = new Graph({
   layout: { type: 'mindmap' },
 });
 
-// ✅ 使用 treeToGraphData 转换
+// ✅ Using treeToGraphData for conversion
 import { treeToGraphData } from '@antv/g6';
 const graph = new Graph({
   data: treeToGraphData(treeData),
@@ -209,17 +207,17 @@ const graph = new Graph({
 });
 ```
 
-### 错误2：getWidth/getHeight 未设置导致节点重叠
+### Error 2: Overlapping Nodes Due to Unset getWidth/getHeight
 
 ```javascript
-// ❌ 未告知布局节点大小
+// ❌ Node size not provided to the layout
 layout: { type: 'mindmap' },
 
-// ✅ 提供节点大小给布局算法
+// ✅ Provide node size to the layout algorithm
 layout: {
   type: 'mindmap',
-  getWidth: () => 120,   // 与 node.style.size[0] 一致
-  getHeight: () => 36,   // 与 node.style.size[1] 一致
+  getWidth: () => 120,   // Consistent with node.style.size[0]
+  getHeight: () => 36,   // Consistent with node.style.size[1]
   getHGap: () => 40,
   getVGap: () => 10,
 },

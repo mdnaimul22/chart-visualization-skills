@@ -1,42 +1,44 @@
 ---
 id: g6-mds-layout-cluster-graph
-title: G6 MDS 布局聚类图谱可视化
-description: 使用 G6 的 MDS（多维尺度分析）布局构建图谱可视化，节点根据聚类（cluster）字段显示不同颜色，支持画布缩放、拖拽及元素拖动等交互行为。涵盖数据格式规范、节点样式映射、色板配置及常见错误修正。
+title: G6 MDS Layout Cluster Graph Visualization
+description: Build graph visualization using G6's MDS (Multidimensional Scaling) layout, where nodes display different colors based on the cluster field. Supports canvas zoom, drag, and element drag interactions. Covers data format specifications, node style mappings, color palette configurations, and common error fixes.
 library: G6
 version: 5.x
 category: layout
 tags:
   - mds
-  - 布局
-  - 聚类
-  - 图谱
-  - 交互
-  - 色板
+  - layout
+  - cluster
+  - graph
+  - interaction
+  - color palette
   - palette
 ---
 
-# G6 MDS 布局聚类图谱可视化
+# G6 MDS Layout Clustering Visualization
 
-## 概述
+(Note: The original content provided only contained a header. The translation maintains the same structure and syntax as instructed.)
 
-MDS（Multidimensional Scaling，多维尺度分析）布局通过构造节点间的距离矩阵，在二维空间中尽可能还原节点在高维空间中的相对距离关系，适合展示节点间的相似度或结构关系。
+## Overview
 
-本 skill 介绍如何：
-1. 正确组织 G6 图数据格式（`nodes` + `edges` 顶层结构）
-2. 配置 MDS 布局
-3. 使用 `palette` 根据节点的 `cluster` 字段自动映射颜色
-4. 启用画布缩放、拖拽及元素拖动交互
+MDS (Multidimensional Scaling) layout constructs a distance matrix between nodes and attempts to preserve the relative distances between nodes in high-dimensional space within a two-dimensional space. It is suitable for displaying the similarity or structural relationships between nodes.
+
+This skill introduces how to:
+1. Properly organize G6 graph data format (`nodes` + `edges` top-level structure)
+2. Configure MDS layout
+3. Use `palette` to automatically map colors based on the node's `cluster` field
+4. Enable canvas zoom, drag, and element drag interactions
 
 ---
 
-## 关键知识点
+## Key Knowledge Points
 
-### 1. 数据格式
+### 1. Data Format
 
-G6 的 `data` 配置项必须包含顶层的 `nodes` 和 `edges` 数组，**不能直接传入节点数组**：
+G6's `data` configuration item must contain top-level `nodes` and `edges` arrays, **and cannot directly pass in a node array**:
 
 ```js
-// ✅ 正确
+// ✅ Correct
 const graph = new Graph({
   data: {
     nodes: [ { id: '0', data: { cluster: 'a' } }, ... ],
@@ -44,42 +46,42 @@ const graph = new Graph({
   },
 });
 
-// ❌ 错误 —— 直接传入节点数组
+// ❌ Incorrect —— Directly passing in a node array
 const graph = new Graph({
   data: [ { id: '0', data: { cluster: 'a' } }, ... ],
 });
 ```
 
-### 2. MDS 布局配置
+### 2. MDS Layout Configuration
 
 ```js
 layout: {
   type: 'mds',
-  linkDistance: 100,  // 节点间理想距离，默认 50
-  // center 可选，默认 [0, 0]
+  linkDistance: 100,  // Ideal distance between nodes, default is 50
+  // center optional, default is [0, 0]
 }
 ```
 
-### 3. 节点颜色按聚类映射（palette）
+### 3. Node Color Mapping by Cluster (palette)
 
-使用 `node.palette` 可根据节点数据字段自动分配颜色，无需手动枚举每个 cluster 的颜色：
+Use `node.palette` to automatically assign colors based on node data fields, eliminating the need to manually enumerate colors for each cluster:
 
 ```js
 node: {
   palette: {
-    field: 'cluster',   // 根据 data.cluster 字段分组
-    color: 'tableau',   // 使用内置色板，也可传入颜色数组
+    field: 'cluster',   // Group by the data.cluster field
+    color: 'tableau',   // Use built-in color palette, or pass in a color array
   },
 }
 ```
 
-### 4. 内置交互行为
+### 4. Built-in Interaction Behaviors
 
-| 行为名称         | 说明             |
+| Behavior Name    | Description          |
 | ---------------- | ---------------- |
-| `drag-canvas`    | 拖拽画布         |
-| `zoom-canvas`    | 滚轮缩放画布     |
-| `drag-element`   | 拖拽节点/边      |
+| `drag-canvas`    | Drag canvas       |
+| `zoom-canvas`    | Zoom canvas with mouse wheel |
+| `drag-element`   | Drag node/edge    |
 
 ```js
 behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
@@ -87,7 +89,7 @@ behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
 
 ---
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```js
 import { Graph } from '@antv/g6';
@@ -205,7 +207,7 @@ const graph = new Graph({
       labelPlacement: 'center',
       labelFontSize: 10,
     },
-    // 根据 cluster 字段自动分配颜色
+    // Automatically assign colors based on the 'cluster' field
     palette: {
       field: 'cluster',
       color: 'tableau',
@@ -224,45 +226,45 @@ graph.render();
 
 ---
 
-## 完整配置说明
+## Complete Configuration Guide
 
-### Graph 配置项
+### Graph Configuration Options
 
-| 配置项      | 说明                                         | 类型                    | 示例值                              |
-| ----------- | -------------------------------------------- | ----------------------- | ----------------------------------- |
-| `container` | 挂载容器的 DOM id 或 HTMLElement             | `string \| HTMLElement` | `'container'`                       |
-| `autoFit`   | 自动适配视口，`'view'` 表示缩放至全部可见    | `'view' \| 'center'`    | `'view'`                            |
-| `padding`   | 自适应时的内边距（像素）                     | `number \| number[]`    | `20`                                |
-| `data`      | 图数据，必须包含 `nodes` 和 `edges` 顶层字段 | `GraphData`             | `{ nodes: [...], edges: [...] }`    |
-| `node`      | 节点全局配置（样式、色板等）                 | `NodeOptions`           | 见下方                              |
-| `layout`    | 布局算法配置                                 | `LayoutOptions`         | `{ type: 'mds', linkDistance: 100 }`|
-| `behaviors` | 交互行为列表                                 | `string[]`              | `['drag-element', 'drag-canvas', 'zoom-canvas']` |
+| Configuration Item | Description                                          | Type                    | Example Value                              |
+| ------------------ | ---------------------------------------------------- | ----------------------- | ------------------------------------------ |
+| `container`        | DOM id or HTMLElement of the mounting container      | `string \| HTMLElement` | `'container'`                              |
+| `autoFit`          | Auto-fit viewport, `'view'` means scaling to full visibility | `'view' \| 'center'`    | `'view'`                                   |
+| `padding`          | Inner padding (in pixels) during auto-fit            | `number \| number[]`    | `20`                                       |
+| `data`             | Graph data, must include top-level fields `nodes` and `edges` | `GraphData`             | `{ nodes: [...], edges: [...] }`           |
+| `node`             | Global node configuration (style, color palette, etc.) | `NodeOptions`           | See below                                  |
+| `layout`           | Layout algorithm configuration                       | `LayoutOptions`         | `{ type: 'mds', linkDistance: 100 }`       |
+| `behaviors`        | List of interaction behaviors                        | `string[]`              | `['drag-element', 'drag-canvas', 'zoom-canvas']` |
 
-### MDS 布局配置项
+### MDS Layout Configuration Options
 
-| 配置项         | 说明                         | 类型     | 默认值 |
-| -------------- | ---------------------------- | -------- | ------ |
-| `type`         | 布局类型，固定为 `'mds'`     | `string` | -      |
-| `linkDistance` | 节点间理想距离               | `number` | `50`   |
-| `center`       | 布局中心坐标 `[x, y]`        | `number[]` | `[0, 0]` |
+| Configuration Item | Description                      | Type      | Default Value |
+| ------------------ | -------------------------------- | --------- | ------------- |
+| `type`             | Layout type, fixed as `'mds'`    | `string`  | -             |
+| `linkDistance`     | Ideal distance between nodes     | `number`  | `50`          |
+| `center`           | Layout center coordinates `[x, y]` | `number[]` | `[0, 0]`      |
 
-### 节点 palette 配置项
+### Node Palette Configuration
 
-| 配置项  | 说明                                                   | 类型                    | 示例值      |
-| ------- | ------------------------------------------------------ | ----------------------- | ----------- |
-| `field` | 用于分组的数据字段名（对应 `node.data` 中的字段）      | `string`                | `'cluster'` |
-| `color` | 色板名称或颜色数组                                     | `string \| string[]`    | `'tableau'` |
+| Configuration | Description                                                  | Type                    | Example Value  |
+| ------------- | ------------------------------------------------------------ | ----------------------- | -------------- |
+| `field`       | Data field name used for grouping (corresponds to the field in `node.data`) | `string`                | `'cluster'`    |
+| `color`       | Color palette name or array of colors                        | `string \| string[]`    | `'tableau'`    |
 
 ---
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：直接传入节点数组而非 GraphData 对象
+### Error 1: Directly Passing a Node Array Instead of a GraphData Object
 
-**错误原因**：查询描述中提供的参考数据是一个节点数组（如 `[{"id":"0","data":{"cluster":"a"}},...]`），LLM 可能直接将其赋值给 `data`，导致 G6 无法识别数据格式。
+**Cause of Error**: The reference data provided in the query description is a node array (e.g., `[{"id":"0","data":{"cluster":"a"}},...]`), and the LLM may directly assign it to `data`, causing G6 to fail to recognize the data format.
 
 ```js
-// ❌ 错误写法 —— data 直接是节点数组
+// ❌ Incorrect Usage —— data is directly a node array
 const graph = new Graph({
   data: [
     { id: '0', data: { cluster: 'a' } },
@@ -273,7 +275,7 @@ const graph = new Graph({
 ```
 
 ```js
-// ✅ 正确写法 —— data 必须是包含 nodes/edges 的对象
+// ✅ Correct Usage —— data must be an object containing nodes/edges
 const graph = new Graph({
   data: {
     nodes: [
@@ -289,12 +291,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 2：节点颜色硬编码而非使用 palette 映射
+### Error 2: Hardcoding Node Colors Instead of Using Palette Mapping
 
-**错误原因**：手动在 `style.fill` 中用 `if/switch` 判断 cluster 值，代码冗余且不易维护。
+**Cause of Error**: Manually using `if/switch` statements in `style.fill` to determine cluster values leads to code redundancy and difficulty in maintenance.
 
 ```js
-// ❌ 不推荐 —— 手动枚举颜色
+// ❌ Not Recommended —— Manual Color Enumeration
 node: {
   style: {
     fill: (d) => {
@@ -308,32 +310,32 @@ node: {
 ```
 
 ```js
-// ✅ 推荐 —— 使用 palette 自动映射
+// ✅ Recommended —— Using Palette for Automatic Mapping
 node: {
   palette: {
-    field: 'cluster',   // 指定分组字段
-    color: 'tableau',   // 使用内置色板
+    field: 'cluster',   // Specify grouping field
+    color: 'tableau',   // Use built-in color palette
   },
 },
 ```
 
-### 错误 3：缺少 edges 字段导致布局异常
+### Error 3: Missing `edges` Field Causes Layout Abnormalities
 
-**错误原因**：MDS 布局依赖边的连接关系构建距离矩阵，若 `data` 中缺少 `edges`，布局结果可能退化为随机分布。
+**Cause of Error**: The MDS layout relies on the connection relationships of edges to construct a distance matrix. If `edges` are missing in `data`, the layout result may degenerate into a random distribution.
 
 ```js
-// ❌ 错误 —— 缺少 edges
+// ❌ Incorrect —— Missing edges
 const graph = new Graph({
   data: {
     nodes: [ ... ],
-    // 未提供 edges
+    // edges not provided
   },
   layout: { type: 'mds' },
 });
 ```
 
 ```js
-// ✅ 正确 —— 提供完整的 nodes 和 edges
+// ✅ Correct —— Providing complete nodes and edges
 const graph = new Graph({
   data: {
     nodes: [ ... ],
@@ -343,12 +345,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 4：标签显示在节点外部而非居中
+### Error 4: Label Displayed Outside Node Instead of Centered
 
-**错误原因**：默认 `labelPlacement` 为 `'bottom'`，若希望标签显示在节点内部，需显式设置为 `'center'`，同时调整 `labelFill` 颜色以保证可读性。
+**Cause of Error**: The default `labelPlacement` is `'bottom'`. To display the label inside the node, explicitly set it to `'center'` and adjust `labelFill` color to ensure readability.
 
 ```js
-// ❌ 标签显示在节点下方（默认行为）
+// ❌ Label displayed below the node (default behavior)
 node: {
   style: {
     labelText: (d) => d.id,
@@ -357,12 +359,12 @@ node: {
 ```
 
 ```js
-// ✅ 标签居中显示在节点内部
+// ✅ Label centered inside the node
 node: {
   style: {
     labelText: (d) => d.id,
-    labelPlacement: 'center',  // 标签居中
-    labelFill: '#fff',          // 白色文字，与节点填充色形成对比
+    labelPlacement: 'center',  // Center the label
+    labelFill: '#fff',          // White text, contrasting with node fill color
     labelFontSize: 10,
   },
 },
@@ -370,12 +372,12 @@ node: {
 
 ---
 
-## 扩展：动态切换布局
+## Extension: Dynamic Layout Switching
 
-如需在运行时切换到其他布局（如 Force），可使用 `graph.setLayout`：
+To switch to another layout (e.g., Force) at runtime, use `graph.setLayout`:
 
 ```js
-// 切换为力导向布局
+// Switch to force-directed layout
 graph.setLayout({
   type: 'force',
   gravity: 10,
@@ -386,10 +388,10 @@ await graph.layout();
 
 ---
 
-## 参考文档
+## Reference Documents
 
-- [MDS 布局文档](/manual/layout/mds-layout)
-- [布局总览](/manual/layout/overview)
-- [节点通用配置项](/manual/element/node/base-node)
-- [图数据格式](/manual/data)
-- [Graph 配置项](/manual/graph/option)
+- [MDS Layout Documentation](/manual/layout/mds-layout)
+- [Layout Overview](/manual/layout/overview)
+- [Common Node Configuration Items](/manual/element/node/base-node)
+- [Graph Data Format](/manual/data)
+- [Graph Configuration Items](/manual/graph/option)

@@ -1,19 +1,19 @@
 ---
 id: "g6-edge-cubic"
-title: "G6 三次贝塞尔曲线边（Cubic Edge）"
+title: "G6 Cubic Bezier Curve Edge (Cubic Edge)"
 description: |
-  使用三次贝塞尔曲线边（cubic）连接节点，曲线平滑，适用于任意布局。
-  提供 cubic、cubic-horizontal、cubic-vertical 三种变体。
+  Connect nodes using cubic Bezier curve edges (cubic), with smooth curves suitable for any layout.
+  Provides three variants: cubic, cubic-horizontal, and cubic-vertical.
 
 library: "g6"
 version: "5.x"
 category: "elements"
 subcategory: "edges"
 tags:
-  - "边"
-  - "曲线"
+  - "edge"
+  - "curve"
   - "cubic"
-  - "贝塞尔"
+  - "Bezier"
   - "bezier"
   - "edge"
 
@@ -23,14 +23,14 @@ related:
   - "g6-layout-dagre"
 
 use_cases:
-  - "通用图形（各种布局皆适用）"
-  - "层次图的边（cubic-vertical 配合 dagre TB）"
-  - "水平流程图（cubic-horizontal 配合 dagre LR）"
-  - "平行边场景"
+  - "General graphs (suitable for various layouts)"
+  - "Edges in hierarchical graphs (cubic-vertical with dagre TB)"
+  - "Horizontal flowcharts (cubic-horizontal with dagre LR)"
+  - "Parallel edge scenarios"
 
 anti_patterns:
-  - "树形图用 cubic-vertical 或 cubic-horizontal，不要用 polyline"
-  - "边非常密集时曲线会增加视觉复杂度，考虑 edge-bundling 插件"
+  - "For tree graphs, use cubic-vertical or cubic-horizontal instead of polyline"
+  - "When edges are very dense, curves increase visual complexity; consider the edge-bundling plugin"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -40,21 +40,21 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/edge/cubic"
 ---
 
-## 核心概念
+## Core Concepts
 
-`cubic` 使用三次贝塞尔曲线连接两点，比直线更美观，适用于任意节点位置。
+`cubic` uses cubic Bezier curves to connect two points, providing a more aesthetically pleasing result than straight lines and is suitable for any node position.
 
-**三种变体：**
-- `cubic`：通用曲线，适合所有布局
-- `cubic-horizontal`：水平方向的 S 形曲线，配合 LR/RL 方向布局
-- `cubic-vertical`：垂直方向的 S 形曲线，配合 TB/BT 方向布局
+**Three Variants:**
+- `cubic`: General-purpose curve, suitable for all layouts
+- `cubic-horizontal`: Horizontal S-shaped curve, works well with LR/RL direction layouts
+- `cubic-vertical`: Vertical S-shaped curve, works well with TB/BT direction layouts
 
-**控制曲率的关键参数：**
-- `curveOffset`：曲线弯曲程度（正负值控制方向）
-- `curvePosition`：控制点位置（0~1）
-- `controlPoints`：自定义控制点坐标
+**Key Parameters for Controlling Curvature:**
+- `curveOffset`: Degree of curve bending (positive/negative values control direction)
+- `curvePosition`: Control point position (0~1)
+- `controlPoints`: Custom control point coordinates
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -72,7 +72,7 @@ const graph = new Graph({
     edges: [
        { source: 'n1', target: 'n2' },
        { source: 'n2', target: 'n3' },
-       { source: 'n3', target: 'n1' },  // 回环边
+       { source: 'n3', target: 'n1' },  // loop edge
     ],
   },
   node: {
@@ -86,7 +86,7 @@ const graph = new Graph({
     },
   },
   edge: {
-    type: 'cubic',                 // 通用曲线
+    type: 'cubic',                 // general curve
     style: {
       stroke: '#aaa',
       lineWidth: 1.5,
@@ -100,9 +100,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 垂直层次图（配合 dagre TB）
+### Vertical Hierarchy Graph (with dagre TB)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -113,10 +113,10 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'root', data: { label: '根节点' } },
-       { id: 'a', data: { label: '子节点A' } },
-       { id: 'b', data: { label: '子节点B' } },
-       { id: 'c', data: { label: '子节点C' } },
+       { id: 'root', data: { label: 'Root Node' } },
+       { id: 'a', data: { label: 'Child Node A' } },
+       { id: 'b', data: { label: 'Child Node B' } },
+       { id: 'c', data: { label: 'Child Node C' } },
     ],
     edges: [
        { source: 'root', target: 'a' },
@@ -136,7 +136,7 @@ const graph = new Graph({
     },
   },
   edge: {
-    type: 'cubic-vertical',       // 垂直 S 形曲线
+    type: 'cubic-vertical',       // Vertical S-shaped curve
     style: {
       stroke: '#adc6ff',
       endArrow: true,
@@ -152,11 +152,11 @@ const graph = new Graph({
 });
 ```
 
-### 水平流程图（配合 dagre LR）
+### Horizontal Flowchart (with dagre LR)
 
 ```javascript
 edge: {
-  type: 'cubic-horizontal',      // 水平 S 形曲线
+  type: 'cubic-horizontal',      // Horizontal S-shaped curve
   style: {
     stroke: '#91caff',
     lineWidth: 2,
@@ -173,23 +173,23 @@ edge: {
 },
 layout: {
   type: 'dagre',
-  rankdir: 'LR',                  // 从左到右
+  rankdir: 'LR',                  // From left to right
   ranksep: 80,
   nodesep: 30,
 },
 ```
 
-### 辐射布局中的曲线边
+### Curved Edges in Radial Layout
 
 ```javascript
-// 辐射布局中 cubic 效果最好
+// Cubic edges work best in radial layouts
 edge: {
   type: 'cubic',
   style: {
     stroke: '#ccc',
     lineWidth: 1,
     endArrow: false,
-    curveOffset: 30,              // 控制弯曲幅度
+    curveOffset: 30,              // Controls the curvature
   },
 },
 layout: {
@@ -199,47 +199,47 @@ layout: {
 },
 ```
 
-### 渐变色边
+### Gradient Edge
 
 ```javascript
-// 使用线性渐变（需要 @antv/g 的渐变支持）
+// Using linear gradient (requires @antv/g gradient support)
 edge: {
   type: 'cubic',
   style: {
-    stroke: 'l(0) 0:#1783FF 1:#FF6B6B',  // 渐变色
+    stroke: 'l(0) 0:#1783FF 1:#FF6B6B',  // Gradient color
     lineWidth: 2,
     endArrow: true,
   },
 },
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：方向不匹配
+### Error 1: Direction Mismatch
 
 ```javascript
-// ❌ dagre LR 布局用 cubic-vertical（垂直曲线）
+// ❌ dagre LR layout with cubic-vertical (vertical curve)
 layout: { type: 'dagre', rankdir: 'LR' },
-edge: { type: 'cubic-vertical' },   // 方向不匹配，曲线不美观
+edge: { type: 'cubic-vertical' },   // Direction mismatch, curve is not aesthetically pleasing
 
-// ✅ LR 布局用 cubic-horizontal
+// ✅ LR layout with cubic-horizontal
 layout: { type: 'dagre', rankdir: 'LR' },
 edge: { type: 'cubic-horizontal' },
 
-// ✅ TB 布局用 cubic-vertical
+// ✅ TB layout with cubic-vertical
 layout: { type: 'dagre', rankdir: 'TB' },
 edge: { type: 'cubic-vertical' },
 ```
 
-### 错误2：curveOffset 方向混淆
+### Error 2: curveOffset Direction Confusion
 
 ```javascript
-// curveOffset 正值向右/上弯，负值向左/下弯
+// Positive curveOffset bends right/up, negative bends left/down
 edge: {
   type: 'cubic',
   style: {
-    curveOffset: 50,   // 正值向一侧弯
-    // curveOffset: -50,  // 负值向另一侧弯
+    curveOffset: 50,   // Positive value bends to one side
+    // curveOffset: -50,  // Negative value bends to the other side
   },
 },
 ```

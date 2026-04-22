@@ -1,18 +1,18 @@
 ---
 id: "g6-plugin-timebar-gridline"
-title: "G6 时间轴（timebar）与网格线（grid-line）"
+title: "G6 Timebar and Grid Line"
 description: |
-  timebar：通过时间轴过滤或播放图数据的时序变化。
-  grid-line：在画布背景绘制网格辅助线，支持跟随画布缩放平移。
+  timebar: Filter or play the temporal changes of graph data through a time axis.
+  grid-line: Draw grid auxiliary lines on the canvas background, supporting canvas zoom and pan.
 
 library: "g6"
 version: "5.x"
 category: "plugins"
 subcategory: "display"
 tags:
-  - "插件"
-  - "时间轴"
-  - "网格"
+  - "plugin"
+  - "timebar"
+  - "grid"
   - "timebar"
   - "grid-line"
 
@@ -25,25 +25,25 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 时间轴（timebar）
+## Timebar
 
-timebar 允许按时间范围过滤节点/边，或自动播放时序数据。
+The timebar allows filtering nodes/edges by time range or automatically playing sequential data.
 
 ```javascript
 import { Graph } from '@antv/g6';
 
-// 节点/边数据中包含时间戳字段
+// Node/edge data contains timestamp field
 const data = {
   nodes: [
-     { id: 'n1', data: { label: 'A', timestamp: 1000 } },
-     { id: 'n2', data: { label: 'B', timestamp: 2000 } },
-     { id: 'n3', data: { label: 'C', timestamp: 3000 } },
-     { id: 'n4', data: { label: 'D', timestamp: 4000 } },
+    { id: 'n1', data: { label: 'A', timestamp: 1000 } },
+    { id: 'n2', data: { label: 'B', timestamp: 2000 } },
+    { id: 'n3', data: { label: 'C', timestamp: 3000 } },
+    { id: 'n4', data: { label: 'D', timestamp: 4000 } },
   ],
   edges: [
-     { source: 'n1', target: 'n2', data: { timestamp: 1500 } },
-     { source: 'n2', target: 'n3', data: { timestamp: 2500 } },
-     { source: 'n3', target: 'n4', data: { timestamp: 3500 } },
+    { source: 'n1', target: 'n2', data: { timestamp: 1500 } },
+    { source: 'n2', target: 'n3', data: { timestamp: 2500 } },
+    { source: 'n3', target: 'n4', data: { timestamp: 3500 } },
   ],
 };
 
@@ -66,28 +66,28 @@ const graph = new Graph({
   plugins: [
     {
       type: 'timebar',
-      // 时间数据：等间隔刻度
-       [1000, 1500, 2000, 2500, 3000, 3500, 4000],
-      // 从数据中提取时间值的函数
+      // Time data: equally spaced ticks
+      ticks: [1000, 1500, 2000, 2500, 3000, 3500, 4000],
+      // Function to extract time value from data
       getTime: (datum) => datum.data.timestamp,
-      // 初始显示时间范围
+      // Initial visible time range
       values: [1000, 2500],
-      // 作用的元素类型
+      // Affected element types
       elementTypes: ['node', 'edge'],
-      // 过滤模式
-      mode: 'modify',          // 'modify'（修改可见性）| 'visibility'（display none）
-      // 时间轴类型
-      timebarType: 'time',     // 'time' | 'chart'（趋势折线图）
-      // 位置
+      // Filtering mode
+      mode: 'modify',          // 'modify' (change visibility) | 'visibility' (display none)
+      // Timebar type
+      timebarType: 'time',     // 'time' | 'chart' (trend line chart)
+      // Position
       position: 'bottom',      // 'bottom' | 'top'
-      // 尺寸
+      // Dimensions
       width: 600,
       height: 60,
-      // 时间标签格式化
+      // Time label formatting
       labelFormatter: (t) => new Date(t).toLocaleDateString(),
-      // 变化回调
+      // Change callback
       onChange: (values) => {
-        console.log('时间范围:', values);
+        console.log('Time range:', values);
       },
     },
   ],
@@ -96,52 +96,52 @@ const graph = new Graph({
 graph.render();
 ```
 
-### timebar 配置参数
+### timebar Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `data` | `number[] \| { time, value }[]` | — | **必填**，时间刻度数据 |
-| `getTime` | `(datum) => number` | — | **必填**，从元素数据提取时间值 |
-| `values` | `number \| [number, number]` | — | 初始时间范围 |
-| `elementTypes` | `ElementType[]` | `['node']` | 过滤的元素类型 |
-| `mode` | `'modify' \| 'visibility'` | `'modify'` | 过滤方式 |
-| `timebarType` | `'time' \| 'chart'` | `'time'` | 时间轴样式类型 |
-| `position` | `'bottom' \| 'top'` | `'bottom'` | 位置 |
-| `width` | `number` | `450` | 宽度 |
-| `height` | `number` | `60` | 高度 |
-| `labelFormatter` | `(time) => string` | — | 时间标签格式化 |
-| `loop` | `boolean` | `false` | 播放时循环 |
+| `data` | `number[] \| { time, value }[]` | — | **Required**, time scale data |
+| `getTime` | `(datum) => number` | — | **Required**, extract time value from element data |
+| `values` | `number \| [number, number]` | — | Initial time range |
+| `elementTypes` | `ElementType[]` | `['node']` | Filtered element types |
+| `mode` | `'modify' \| 'visibility'` | `'modify'` | Filtering mode |
+| `timebarType` | `'time' \| 'chart'` | `'time'` | Time axis style type |
+| `position` | `'bottom' \| 'top'` | `'bottom'` | Position |
+| `width` | `number` | `450` | Width |
+| `height` | `number` | `60` | Height |
+| `labelFormatter` | `(time) => string` | — | Time label formatter |
+| `loop` | `boolean` | `false` | Loop during playback |
 
-### timebar 播放控制 API
+### Timebar Playback Control API
 
 ```javascript
 const timebar = graph.getPluginInstance('timebar-key');
-timebar.play();      // 自动播放
-timebar.pause();     // 暂停
-timebar.forward();   // 前进一帧
-timebar.backward();  // 后退一帧
-timebar.reset();     // 重置到起始
+timebar.play();      // Auto play
+timebar.pause();     // Pause
+timebar.forward();   // Move forward one frame
+timebar.backward();  // Move backward one frame
+timebar.reset();     // Reset to start
 ```
 
 ---
 
-## 网格线（grid-line）
+## Grid Line (grid-line)
 
-在画布背景绘制参考网格，辅助对齐和排版。
+Draws a reference grid on the canvas background to assist with alignment and layout.
 
 ```javascript
 plugins: [
   {
     type: 'grid-line',
-    size: 20,                  // 网格单元格大小（px）
-    stroke: '#0001',           // 网格线颜色（默认极淡）
+    size: 20,                  // Grid cell size (px)
+    stroke: '#0001',           // Grid line color (default very light)
     lineWidth: 1,
-    // 是否随画布平移/缩放而跟随
+    // Whether to follow canvas translation/zoom
     follow: {
-      translate: true,         // 随平移跟随
-      zoom: false,             // 不随缩放变化（保持像素尺寸）
+      translate: true,         // Follow translation
+      zoom: false,             // Do not follow zoom (maintain pixel size)
     },
-    // 边框
+    // Border
     border: true,
     borderStroke: '#e8e8e8',
     borderLineWidth: 1,
@@ -150,17 +150,17 @@ plugins: [
 ],
 ```
 
-### grid-line 配置参数
+### grid-line Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `20` | 网格单元格大小（px） |
-| `stroke` | `string` | `'#0001'` | 网格线颜色 |
-| `lineWidth` | `number \| string` | `1` | 网格线宽度 |
-| `follow` | `boolean \| { translate?, zoom? }` | `false` | 是否跟随画布变换 |
-| `border` | `boolean` | `true` | 是否绘制边框 |
-| `borderStroke` | `string` | `'#eee'` | 边框颜色 |
-| `borderLineWidth` | `number` | `1` | 边框宽度 |
+| `size` | `number` | `20` | Grid cell size (px) |
+| `stroke` | `string` | `'#0001'` | Grid line color |
+| `lineWidth` | `number \| string` | `1` | Grid line width |
+| `follow` | `boolean \| { translate?, zoom? }` | `false` | Whether to follow canvas transformations |
+| `border` | `boolean` | `true` | Whether to draw the border |
+| `borderStroke` | `string` | `'#eee'` | Border color |
+| `borderLineWidth` | `number` | `1` | Border width |
 
-> **提示：** `follow: true` 等同于 `{ translate: true, zoom: true }`，网格会随画布缩放，
-> 使网格始终覆盖可见区域且间距固定。`follow: false`（默认）网格固定在初始位置。
+> **Note:** `follow: true` is equivalent to `{ translate: true, zoom: true }`, the grid will scale with the canvas,  
+> ensuring the grid always covers the visible area with fixed spacing. `follow: false` (default) fixes the grid at its initial position.

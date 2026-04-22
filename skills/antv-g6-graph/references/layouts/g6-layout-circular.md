@@ -1,20 +1,19 @@
 ---
 id: "g6-layout-circular"
-title: "G6 环形布局（Circular Layout）"
+title: "G6 Circular Layout"
 description: |
-  使用环形布局（circular）将节点均匀排列在圆形上。
-  适合展示循环关系、对比关系、对等网络。
+  Use the circular layout to evenly arrange nodes on a circle.
+  Suitable for displaying cyclic relationships, comparative relationships, and peer-to-peer networks.
 
 library: "g6"
 version: "5.x"
 category: "layouts"
 subcategory: "circular"
 tags:
-  - "布局"
-  - "环形"
+  - "layout"
   - "circular"
   - "circle"
-  - "环状"
+  - "ring"
 
 related:
   - "g6-layout-force"
@@ -22,14 +21,14 @@ related:
   - "g6-node-circle"
 
 use_cases:
-  - "循环依赖图"
-  - "对等网络拓扑"
-  - "环状组织结构"
-  - "节点数量较少的关系图"
+  - "Cyclic dependency graphs"
+  - "Peer-to-peer network topologies"
+  - "Ring organizational structures"
+  - "Relationship graphs with fewer nodes"
 
 anti_patterns:
-  - "节点数量过多时圆周太长影响可读性"
-  - "需要显示层次关系时改用 dagre"
+  - "Circumference becomes too long and affects readability when there are too many nodes"
+  - "Switch to dagre when hierarchical relationships need to be displayed"
 
 difficulty: "beginner"
 completeness: "full"
@@ -39,14 +38,14 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/layout/circular"
 ---
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const nodes = Array.from({ length: 8 }, (_, i) => ({
   id: `n${i}`,
-  data: { label: `节点${i + 1}` },
+  data: { label: `Node${i + 1}` },
 }));
 
 const edges = nodes.map((n, i) => ({
@@ -74,7 +73,7 @@ const graph = new Graph({
   },
   layout: {
     type: 'circular',
-    radius: 200,          // 圆半径（px）
+    radius: 200,          // Circle radius (px)
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
@@ -82,34 +81,34 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 顺时针/逆时针排列
-
-```javascript
-layout: {
-  type: 'circular',
-  radius: 200,
-  startAngle: 0,          // 起始角度（弧度）
-  endAngle: Math.PI * 2,  // 结束角度
-  clockwise: true,        // 顺时针（false=逆时针）
-},
-```
-
-### 按属性排序节点
+### Clockwise/Counterclockwise Arrangement
 
 ```javascript
 layout: {
   type: 'circular',
   radius: 200,
-  // 按节点数据中的某个字段排序
-  ordering: 'degree',     // 按度数排序，可选 'topology' | 'degree' | null
+  startAngle: 0,          // Start angle (in radians)
+  endAngle: Math.PI * 2,  // End angle
+  clockwise: true,        // Clockwise (false = counterclockwise)
 },
 ```
 
-### 使用已有数据（推荐写法）
+### Sort Nodes by Attribute
 
-当数据已经给定时，直接使用原始数据，不要动态随机生成边：
+```javascript
+layout: {
+  type: 'circular',
+  radius: 200,
+  // Sort nodes based on a specific field in the node data
+  ordering: 'degree',     // Sort by degree, options: 'topology' | 'degree' | null
+},
+```
+
+### Using Existing Data (Recommended Approach)
+
+When the data is already provided, directly use the original data and avoid dynamically generating edges randomly:
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -145,42 +144,42 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface CircularLayoutOptions {
-  radius?: number;           // 圆半径，默认根据画布大小计算
-  startAngle?: number;       // 起始角度（弧度），默认 0
-  endAngle?: number;         // 结束角度（弧度），默认 2π
-  clockwise?: boolean;       // 顺时针，默认 true
-  divisions?: number;        // 将圆分成几段
-  ordering?: 'topology' | 'degree' | null;  // 排序方式，默认 null
-  angleRatio?: number;       // 节点间角度比例，默认 1
+  radius?: number;           // Radius of the circle, default calculated based on canvas size
+  startAngle?: number;       // Start angle (in radians), default 0
+  endAngle?: number;         // End angle (in radians), default 2π
+  clockwise?: boolean;       // Clockwise direction, default true
+  divisions?: number;        // Number of segments to divide the circle into
+  ordering?: 'topology' | 'degree' | null;  // Ordering method, default null
+  angleRatio?: number;       // Angle ratio between nodes, default 1
   workerEnabled?: boolean;
 }
 ```
 
-## 边的 ID 规则与重复边问题
+## Edge ID Rules and Duplicate Edge Issues
 
-⚠️ **重要**：G6 中边的 ID 规则如下：
-- 若边数据中**显式指定了 `id`**，则使用该 `id`。
-- 若边数据中**未指定 `id`**，G6 会自动以 `"${source}-${target}"` 作为边的 ID。
+⚠️ **Important**: The edge ID rules in G6 are as follows:
+- If the edge data **explicitly specifies an `id`**, that `id` is used.
+- If the edge data **does not specify an `id`**, G6 automatically uses `"${source}-${target}"` as the edge ID.
 
-因此，**同一对 source-target 之间不能存在多条未指定 id 的边**，否则会报错：
+Therefore, **multiple edges without a specified id cannot exist between the same source-target pair**, otherwise an error will occur:
 ```
 Edge already exists: 12-20
 ```
 
-**解决方案**：
-1. **去重**：确保边数组中不存在重复的 source-target 组合。
-2. **显式指定 id**：为每条边指定唯一 id，例如 `{ id: 'e-0-1', source: '0', target: '1' }`。
+**Solutions**:
+1. **Deduplication**: Ensure that the edge array does not contain duplicate source-target combinations.
+2. **Explicitly specify id**: Assign a unique id to each edge, for example `{ id: 'e-0-1', source: '0', target: '1' }`.
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 错误：随机生成边导致重复，触发 "Edge already exists"
+### ❌ Error: Randomly Generated Edges Cause Duplicates, Triggering "Edge already exists"
 
 ```javascript
-// ❌ 错误写法：随机生成边，可能产生重复的 source-target 对
+// ❌ Incorrect Approach: Randomly generating edges may produce duplicate source-target pairs
 const edges = [];
 for (let i = 0; i < 34; i++) {
   const numEdges = 2 + Math.floor(Math.random() * 2);
@@ -188,14 +187,14 @@ for (let i = 0; i < 34; i++) {
     const target = Math.floor(Math.random() * 34);
     if (target !== i) {
       edges.push({ source: `${i}`, target: `${target}` });
-      // 若 source-target 重复，G6 自动生成的 ID 也重复，报错！
+      // If source-target pairs are duplicated, G6 will generate duplicate IDs, causing errors!
     }
   }
 }
 ```
 
 ```javascript
-// ✅ 正确写法1：使用 Set 去重，避免重复边
+// ✅ Correct Approach 1: Use a Set to eliminate duplicates and avoid repeated edges
 const edgeSet = new Set();
 const edges = [];
 for (let i = 0; i < 34; i++) {
@@ -212,7 +211,7 @@ for (let i = 0; i < 34; i++) {
 ```
 
 ```javascript
-// ✅ 正确写法2：为每条边显式指定唯一 id（即使有重复 source-target 也不会冲突）
+// ✅ Correct Approach 2: Explicitly assign a unique id to each edge (prevents conflicts even with duplicate source-target pairs)
 const edges = [];
 let edgeIndex = 0;
 for (let i = 0; i < 34; i++) {
@@ -227,24 +226,24 @@ for (let i = 0; i < 34; i++) {
 ```
 
 ```javascript
-// ✅ 正确写法3（最推荐）：题目已给定数据时，直接使用原始数据，不要自行随机生成边
-// 当 query 中提供了参考数据（nodes/edges），应直接使用，不要替换为随机生成逻辑
+// ✅ Correct Approach 3 (Most Recommended): When provided with data, use the original data directly instead of randomly generating edges
+// If the query provides reference data (nodes/edges), use it directly and avoid replacing it with random generation logic
 const data = {
   nodes: [ { id: '0' }, { id: '1' }, /* ... */ ],
   edges: [ { source: '0', target: '1' }, /* ... */ ],
 };
 ```
 
-### ❌ 错误：`sortBy` 字段不存在
+### ❌ Error: `sortBy` Field Does Not Exist
 
 ```javascript
-// ❌ 错误：circular 布局没有 sortBy 参数
+// ❌ Error: The circular layout does not have a sortBy parameter
 layout: {
   type: 'circular',
-  sortBy: 'degree',   // 不存在此参数！
+  sortBy: 'degree',   // This parameter does not exist!
 }
 
-// ✅ 正确：使用 ordering 参数
+// ✅ Correct: Use the ordering parameter
 layout: {
   type: 'circular',
   ordering: 'degree', // 'topology' | 'degree' | null

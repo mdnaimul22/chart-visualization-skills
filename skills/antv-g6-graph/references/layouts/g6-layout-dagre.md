@@ -1,22 +1,22 @@
 ---
 id: "g6-layout-dagre"
-title: "G6 Dagre 层次布局"
+title: "G6 Dagre Hierarchical Layout"
 description: |
-  使用 Dagre 布局自动对 DAG（有向无环图）进行层次排列。
-  支持上下/左右方向，适合流程图、组织架构图、依赖关系图。
+  Automatically arrange DAGs (Directed Acyclic Graphs) in a hierarchical manner using the Dagre layout.
+  Supports vertical/horizontal directions, suitable for flowcharts, organizational charts, and dependency graphs.
 
 library: "g6"
 version: "5.x"
 category: "layouts"
 subcategory: "hierarchical"
 tags:
-  - "布局"
-  - "层次"
+  - "layout"
+  - "hierarchical"
   - "dagre"
-  - "有向图"
+  - "directed graph"
   - "DAG"
-  - "流程图"
-  - "组织架构"
+  - "flowchart"
+  - "organizational chart"
 
 related:
   - "g6-node-rect"
@@ -25,16 +25,16 @@ related:
   - "g6-layout-force"
 
 use_cases:
-  - "流程图"
-  - "依赖关系图"
-  - "工作流图"
-  - "构建依赖图"
-  - "状态机图"
+  - "Flowchart"
+  - "Dependency Graph"
+  - "Workflow Diagram"
+  - "Build Dependency Graph"
+  - "State Machine Diagram"
 
 anti_patterns:
-  - "有环图不适合 dagre（会忽略反向边）"
-  - "树形数据推荐用 compact-box 或 mindmap"
-  - "节点数量超过 500 时 dagre 计算较慢"
+  - "Cyclic graphs are not suitable for dagre (reverse edges will be ignored)"
+  - "Tree data is recommended to use compact-box or mindmap"
+  - "Dagre calculation is slow for node counts exceeding 500"
 
 difficulty: "beginner"
 completeness: "full"
@@ -44,15 +44,15 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/layout/dagre"
 ---
 
-## 核心概念
+## Core Concepts
 
-Dagre 布局自动将有向无环图（DAG）分层排列：
-- **rankdir**：排列方向（TB=从上到下，LR=从左到右）
-- **ranksep**：层间距
-- **nodesep**：同层节点间距
-- **ranker**：排名算法（影响节点在层中的分配）
+Dagre layout automatically arranges Directed Acyclic Graphs (DAG) in layers:
+- **rankdir**: Arrangement direction (TB=top to bottom, LR=left to right)
+- **ranksep**: Inter-layer spacing
+- **nodesep**: Intra-layer node spacing
+- **ranker**: Ranking algorithm (affects node allocation within layers)
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -63,11 +63,11 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'start', data: { label: '开始' } },
-       { id: 'step1', data: { label: '步骤1' } },
-       { id: 'step2', data: { label: '步骤2' } },
-       { id: 'step3', data: { label: '步骤3' } },
-       { id: 'end', data: { label: '结束' } },
+       { id: 'start', data: { label: 'Start' } },
+       { id: 'step1', data: { label: 'Step 1' } },
+       { id: 'step2', data: { label: 'Step 2' } },
+       { id: 'step3', data: { label: 'Step 3' } },
+       { id: 'end', data: { label: 'End' } },
     ],
     edges: [
        { source: 'start', target: 'step1' },
@@ -97,9 +97,9 @@ const graph = new Graph({
   },
   layout: {
     type: 'dagre',
-    rankdir: 'TB',         // 从上到下
-    ranksep: 60,           // 层间距
-    nodesep: 20,           // 节点间距
+    rankdir: 'TB',         // Top to Bottom
+    ranksep: 60,           // Layer spacing
+    nodesep: 20,           // Node spacing
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
@@ -107,20 +107,20 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 从左到右的流程图
+### Flowchart from Left to Right
 
 ```javascript
 layout: {
   type: 'dagre',
-  rankdir: 'LR',            // 从左到右
+  rankdir: 'LR',            // From left to right
   ranksep: 80,
   nodesep: 30,
-  align: 'UL',              // 节点对齐方式
+  align: 'UL',              // Node alignment
 },
 edge: {
-  type: 'cubic-horizontal', // 配合 LR 方向
+  type: 'cubic-horizontal', // Matches LR direction
   style: {
     stroke: '#91caff',
     endArrow: true,
@@ -128,10 +128,10 @@ edge: {
 },
 ```
 
-### AntV Dagre（更优的节点排名算法）
+### AntV Dagre (Optimized Node Ranking Algorithm)
 
 ```javascript
-// antv-dagre 是 AntV 团队优化的 Dagre，更适合 Combo 场景
+// antv-dagre is an optimized version of Dagre by the AntV team, more suitable for Combo scenarios
 layout: {
   type: 'antv-dagre',
   rankdir: 'TB',
@@ -141,20 +141,20 @@ layout: {
 },
 ```
 
-### 配合折线边的正交流程图
+### Flowchart with Polyline Edges
 
 ```javascript
 node: {
   type: 'rect',
   style: {
     size: [120, 40],
-    radius: 0,               // 直角矩形
+    radius: 0,               // Right-angled rectangle
     fill: '#fff',
     stroke: '#1783FF',
     lineWidth: 1.5,
     labelText: (d) => d.data.label,
     labelPlacement: 'center',
-    // 配置端口
+    // Configure ports
     ports: [
        { key: 'top', placement: 'top' },
        { key: 'bottom', placement: 'bottom' },
@@ -162,7 +162,7 @@ node: {
   },
 },
 edge: {
-  type: 'polyline',          // 折线边
+  type: 'polyline',          // Polyline edge
   style: {
     stroke: '#1783FF',
     lineWidth: 1.5,
@@ -175,11 +175,11 @@ layout: {
   rankdir: 'TB',
   ranksep: 60,
   nodesep: 30,
-  controlPoints: true,      // 保留控制点
+  controlPoints: true,      // Retain control points
 },
 ```
 
-### 带 Combo 的层次图
+### Hierarchical Graph with Combo
 
 ```javascript
 const graph = new Graph({
@@ -188,17 +188,17 @@ const graph = new Graph({
   height: 600,
   data: {
     nodes: [
-       { id: 'n1', combo: 'group1', data: { label: '模块A' } },
-       { id: 'n2', combo: 'group1', data: { label: '模块B' } },
-       { id: 'n3', combo: 'group2', data: { label: '模块C' } },
+       { id: 'n1', combo: 'group1', data: { label: 'Module A' } },
+       { id: 'n2', combo: 'group1', data: { label: 'Module B' } },
+       { id: 'n3', combo: 'group2', data: { label: 'Module C' } },
     ],
     edges: [
        { source: 'n1', target: 'n3' },
        { source: 'n2', target: 'n3' },
     ],
     combos: [
-       { id: 'group1', data: { label: '子系统1' } },
-       { id: 'group2', data: { label: '子系统2' } },
+       { id: 'group1', data: { label: 'Subsystem 1' } },
+       { id: 'group2', data: { label: 'Subsystem 2' } },
     ],
   },
   combo: {
@@ -211,7 +211,7 @@ const graph = new Graph({
     },
   },
   layout: {
-    type: 'antv-dagre',     // antv-dagre 更好地支持 Combo
+    type: 'antv-dagre',     // antv-dagre provides better support for Combo
     rankdir: 'LR',
     ranksep: 60,
     nodesep: 20,
@@ -219,73 +219,73 @@ const graph = new Graph({
 });
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface DagreLayoutOptions {
-  rankdir?: 'TB' | 'BT' | 'LR' | 'RL';     // 布局方向，默认 'TB'
-  align?: 'UL' | 'UR' | 'DL' | 'DR';        // 节点对齐方式
-  nodesep?: number;                           // 同层节点间距，默认 50
-  ranksep?: number;                           // 层间距，默认 100
+  rankdir?: 'TB' | 'BT' | 'LR' | 'RL';     // Layout direction, default 'TB'
+  align?: 'UL' | 'UR' | 'DL' | 'DR';        // Node alignment
+  nodesep?: number;                           // Node spacing within the same layer, default 50
+  ranksep?: number;                           // Layer spacing, default 100
   ranker?: 'network-simplex' | 'tight-tree' | 'longest-path';
-  nodeSize?: number | [number, number];        // 节点尺寸（用于计算间距）
-  controlPoints?: boolean;                    // 是否保留边控制点
-  workerEnabled?: boolean;                    // 是否在 Web Worker 中运行
+  nodeSize?: number | [number, number];        // Node size (used for spacing calculation)
+  controlPoints?: boolean;                    // Whether to retain edge control points
+  workerEnabled?: boolean;                    // Whether to run in Web Worker
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：有环图用 dagre 导致边丢失
+### Error 1: Using Dagre for Cyclic Graphs Causes Edge Loss
 
 ```javascript
-// ❌ 有环图（如状态机）用 dagre 会忽略反向边
+// ❌ Cyclic graphs (e.g., state machines) using Dagre ignore reverse edges
 const edges = [
    { source: 'a', target: 'b' },
    { source: 'b', target: 'c' },
-   { source: 'c', target: 'a' },  // 形成环，dagre 会忽略
+   { source: 'c', target: 'a' },  // Forms a cycle, Dagre ignores
 ];
 
-// ✅ 有环图使用 force 布局
+// ✅ Use force layout for cyclic graphs
 layout: { type: 'force', preventOverlap: true },
 ```
 
-### 错误2：节点大小与布局 nodeSize 不一致
+### Error 2: Node Size Inconsistent with Layout `nodeSize`
 
 ```javascript
-// ❌ 节点实际大小与 dagre 的 nodeSize 参数不一致，导致节点重叠
+// ❌ Node actual size does not match the `nodeSize` parameter in dagre, causing node overlap
 node: {
   type: 'rect',
-  style: { size: [200, 60] },   // 实际大小 200x60
+  style: { size: [200, 60] },   // Actual size 200x60
 },
 layout: {
   type: 'dagre',
-  nodeSize: 40,   // 参数太小，不匹配
+  nodeSize: 40,   // Parameter too small, mismatch
 },
 
-// ✅ nodeSize 与节点 size 一致
+// ✅ `nodeSize` matches node size
 node: {
   type: 'rect',
   style: { size: [120, 40] },
 },
 layout: {
   type: 'dagre',
-  nodeSize: [120, 40],   // 与节点大小一致
+  nodeSize: [120, 40],   // Matches node size
   ranksep: 60,
 },
 ```
 
-### 错误3：边类型与方向不匹配
+### Error 3: Edge Type and Direction Mismatch
 
 ```javascript
-// ❌ TB 方向用了水平曲线边
+// ❌ Horizontal curve edge used in TB direction
 layout: { type: 'dagre', rankdir: 'TB' },
-edge: { type: 'cubic-horizontal' },   // 水平曲线在 TB 方向不美观
+edge: { type: 'cubic-horizontal' },   // Horizontal curve is not aesthetically pleasing in TB direction
 
-// ✅ 匹配方向
+// ✅ Matching direction
 layout: { type: 'dagre', rankdir: 'TB' },
-edge: { type: 'cubic-vertical' },    // 垂直曲线配合 TB
+edge: { type: 'cubic-vertical' },    // Vertical curve complements TB
 
 layout: { type: 'dagre', rankdir: 'LR' },
-edge: { type: 'cubic-horizontal' },  // 水平曲线配合 LR
+edge: { type: 'cubic-horizontal' },  // Horizontal curve complements LR
 ```

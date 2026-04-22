@@ -1,19 +1,19 @@
 ---
 id: "g6-core-graph-init"
-title: "G6 图实例初始化"
+title: "G6 Graph Instance Initialization"
 description: |
-  使用 new Graph({...}) 创建图实例的完整配置指南。
-  包含容器、尺寸、数据、样式、布局、交互的一次性配置方式。
+  Comprehensive configuration guide for creating a graph instance using new Graph({...}).
+  Includes one-time configuration for container, size, data, style, layout, and interactions.
 
 library: "g6"
 version: "5.x"
 category: "core"
 subcategory: "init"
 tags:
-  - "初始化"
+  - "initialization"
   - "Graph"
-  - "容器"
-  - "配置"
+  - "container"
+  - "configuration"
   - "graph init"
   - "container"
   - "new Graph"
@@ -24,12 +24,12 @@ related:
   - "g6-layout-force"
 
 use_cases:
-  - "创建任意类型的图可视化"
-  - "配置图的基本外观和行为"
+  - "Create any type of graph visualization"
+  - "Configure basic appearance and behavior of the graph"
 
 anti_patterns:
-  - "不要使用 v4 的 new G6.Graph() 和 graph.data() 方式"
-  - "不要在构造函数外多次修改基础配置"
+  - "Do not use the v4 method new G6.Graph() and graph.data()"
+  - "Avoid modifying basic configurations multiple times outside the constructor"
 
 difficulty: "beginner"
 completeness: "full"
@@ -39,30 +39,30 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/graph/graph"
 ---
 
-## 核心概念
+## Core Concepts
 
-Graph 是 G6 的核心容器，管理所有元素（节点、边、Combo）和操作（交互、渲染）。
+Graph is the core container of G6, managing all elements (nodes, edges, Combos) and operations (interactions, rendering).
 
-**G6 v5 与 v4 的关键区别：**
-- 所有配置在 `new Graph({...})` 中一次完成
-- 数据在构造函数中通过 `data` 字段传入（不再使用 `graph.data()`）
-- 节点标签通过 `style.labelText` 回调配置（不再用 `label` 或 `labelCfg`）
-- `behaviors` 直接是数组（不再有 Mode 模式概念）
+**Key differences between G6 v5 and v4:**
+- All configurations are completed in `new Graph({...})` at once
+- Data is passed through the `data` field in the constructor (no longer using `graph.data()`)
+- Node labels are configured through the `style.labelText` callback (no longer using `label` or `labelCfg`)
+- `behaviors` is directly an array (no longer has the Mode concept)
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
-  container: 'container',   // 必填：DOM 元素 id 或 HTMLElement
+  container: 'container',   // Required: DOM element id or HTMLElement
   width: 800,
   height: 600,
   data: {
     nodes: [
-      { id: 'node1', data: { label: '节点1' } },
-      { id: 'node2', data: { label: '节点2' } },
-      { id: 'node3', data: { label: '节点3' } },
+      { id: 'node1', data: { label: 'Node 1' } },
+      { id: 'node2', data: { label: 'Node 2' } },
+      { id: 'node3', data: { label: 'Node 3' } },
     ],
     edges: [
       { id: 'e1', source: 'node1', target: 'node2' },
@@ -76,58 +76,58 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 完整配置说明
+## Complete Configuration Guide
 
-### 容器与尺寸
+### Container and Dimensions
 
 ```javascript
 const graph = new Graph({
-  container: 'container',         // 字符串 id 或 DOM 元素
-  width: 800,                     // 画布宽度（px）
-  height: 600,                    // 画布高度（px）
-  autoFit: 'view',                // 自动适配：'center' | 'view' | false
-  padding: [20, 20, 20, 20],      // 内边距 [top, right, bottom, left]
-  devicePixelRatio: 2,            // 设备像素比，高清屏设置
+  container: 'container',         // String id or DOM element
+  width: 800,                     // Canvas width (px)
+  height: 600,                    // Canvas height (px)
+  autoFit: 'view',                // Auto-fit: 'center' | 'view' | false
+  padding: [20, 20, 20, 20],      // Padding [top, right, bottom, left]
+  devicePixelRatio: 2,            // Device pixel ratio, for high-DPI screens
 });
 ```
 
-### 渲染器配置
+### Renderer Configuration
 
 ```javascript
 const graph = new Graph({
   container: 'container',
-  renderer: () => new CanvasRenderer(),    // 默认 Canvas 渲染器
-  // renderer: () => new SVGRenderer(),    // SVG 渲染器（需单独引入）
-  // renderer: () => new WebGLRenderer(),  // WebGL 渲染器（需单独引入）
+  renderer: () => new CanvasRenderer(),    // Default Canvas renderer
+  // renderer: () => new SVGRenderer(),    // SVG renderer (requires separate import)
+  // renderer: () => new WebGLRenderer(),  // WebGL renderer (requires separate import)
 });
 ```
 
-### 完整示例（包含所有常用配置）
+### Complete Example (Includes All Common Configurations)
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
-  // 容器
+  // Container
   container: 'container',
   width: 960,
   height: 600,
   autoFit: 'view',
 
-  // 数据
+  // Data
   data: {
     nodes: [
-      { id: 'n1', data: { label: '产品', type: 'product', value: 80 } },
-      { id: 'n2', data: { label: '用户', type: 'user', value: 50 } },
-      { id: 'n3', data: { label: '订单', type: 'order', value: 30 } },
+      { id: 'n1', data: { label: 'Product', type: 'product', value: 80 } },
+      { id: 'n2', data: { label: 'User', type: 'user', value: 50 } },
+      { id: 'n3', data: { label: 'Order', type: 'order', value: 30 } },
     ],
     edges: [
-      { id: 'e1', source: 'n1', target: 'n2', data: { label: '购买' } },
-      { id: 'e2', source: 'n2', target: 'n3', data: { label: '生成' } },
+      { id: 'e1', source: 'n1', target: 'n2', data: { label: 'Purchase' } },
+      { id: 'e2', source: 'n2', target: 'n3', data: { label: 'Generate' } },
     ],
   },
 
-  // 节点配置
+  // Node Configuration
   node: {
     type: 'circle',
     style: {
@@ -141,7 +141,7 @@ const graph = new Graph({
     },
   },
 
-  // 边配置
+  // Edge Configuration
   edge: {
     type: 'line',
     style: {
@@ -152,7 +152,7 @@ const graph = new Graph({
     },
   },
 
-  // 布局
+  // Layout
   layout: {
     type: 'force',
     preventOverlap: true,
@@ -160,55 +160,55 @@ const graph = new Graph({
     linkDistance: 100,
   },
 
-  // 主题
+  // Theme
   theme: 'light',
 
-  // 交互行为
+  // Interaction Behaviors
   behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element', 'click-select'],
 
-  // 插件
+  // Plugins
   plugins: ['grid-line', 'minimap'],
 
-  // 动画
+  // Animation
   animation: true,
 });
 
 await graph.render();
 ```
 
-## 边数据的 ID 规则
+## Edge Data ID Rules
 
-**⚠️ 重要：边的 ID 自动生成规则**
+**⚠️ Important: Edge ID Auto-Generation Rules**
 
-当边数据中未指定 `id` 时，G6 会自动以 `${source}-${target}` 格式生成边 ID。
+When an `id` is not specified in the edge data, G6 automatically generates an edge ID in the format `${source}-${target}`.
 
-**这意味着：如果两条边的 source 和 target 相同（即平行边），它们会生成相同的 ID，导致 `Edge already exists` 错误。**
+**This means: If two edges have the same source and target (i.e., parallel edges), they will generate the same ID, resulting in an `Edge already exists` error.**
 
 ```javascript
-// ❌ 错误：两条边 source/target 相同，自动生成的 id 均为 "A-B"，报错
+// ❌ Error: Two edges with the same source/target, auto-generated id is "A-B" for both, causing an error
 edges: [
   { source: 'A', target: 'B' },
-  { source: 'A', target: 'B' },  // 重复！
+  { source: 'A', target: 'B' },  // Duplicate!
 ]
 
-// ✅ 正确：为每条边显式指定唯一 id
+// ✅ Correct: Explicitly specify a unique id for each edge
 edges: [
   { id: 'e1', source: 'A', target: 'B' },
   { id: 'e2', source: 'A', target: 'B' },
 ]
 ```
 
-**最佳实践：始终为边数据显式指定唯一 `id`，避免自动生成 ID 冲突。**
+**Best Practice: Always explicitly specify a unique `id` for edge data to avoid auto-generated ID conflicts.**
 
 ```javascript
-// ✅ 推荐写法：每条边都有唯一 id
+// ✅ Recommended: Each edge has a unique id
 const edges = [
   { id: 'e-0-1', source: '0', target: '1' },
   { id: 'e-0-2', source: '0', target: '2' },
   { id: 'e-1-2', source: '1', target: '2' },
 ];
 
-// ✅ 动态生成边时，使用索引确保 id 唯一
+// ✅ When dynamically generating edges, use an index to ensure unique ids
 const edges = rawEdges.map((e, i) => ({
   id: `edge-${i}`,
   source: e.source,
@@ -216,66 +216,66 @@ const edges = rawEdges.map((e, i) => ({
 }));
 ```
 
-## 生命周期方法
+## Lifecycle Methods
 
 ```javascript
-// 渲染（必须调用）
+// Render (must be called)
 await graph.render();
 
-// 更新数据后重绘
+// Redraw after updating data
 graph.draw();
 
-// 适配视图
+// Adapt view
 graph.fitView();
 graph.fitCenter();
 
-// 销毁
+// Destroy
 graph.destroy();
 
-// 监听事件
+// Listen for events
 graph.on('node:click', (event) => {
   const { target } = event;
-  console.log('点击节点:', target.id);
+  console.log('Node clicked:', target.id);
 });
 
-// 获取渲染状态
+// Get rendering status
 console.log(graph.rendered);   // boolean
 console.log(graph.destroyed);  // boolean
 ```
 
-## 动态操作
+## Dynamic Operations
 
 ```javascript
-// 添加节点
-graph.addNodeData([{ id: 'n4', data: { label: '新节点' } }]);
+// Add node
+graph.addNodeData([{ id: 'n4', data: { label: 'New Node' } }]);
 await graph.draw();
 
-// 删除节点（关联边也会删除）
+// Remove node (associated edges will also be removed)
 graph.removeNodeData(['n4']);
 await graph.draw();
 
-// 更新元素样式
+// Update element style
 graph.updateNodeData([{ id: 'n1', style: { fill: 'red' } }]);
 await graph.draw();
 
-// 设置元素状态
+// Set element state
 graph.setElementState('n1', 'selected');
-graph.setElementState('n1', []);  // 清除状态
+graph.setElementState('n1', []);  // Clear state
 
-// 缩放
+// Zoom
 graph.zoomTo(1.5);
-graph.zoomTo(1, true);  // 带动画
+graph.zoomTo(1, true);  // With animation
 
-// 移动视口
+// Move viewport
 graph.translateTo([400, 300]);
 
-// 定位到某元素
+// Focus on an element
 graph.focusElement('n1');
 ```
 
-## 树形数据转换
+## Tree Data Transformation
 
-如果数据是树形结构（有父子层级关系），需要使用 `treeToGraphData` 工具函数将其转换为 G6 标准图数据格式后再传入 `data`。
+If the data is in a tree structure (with parent-child hierarchical relationships), the `treeToGraphData` utility function must be used to convert it into the G6 standard graph data format before passing it to `data`.
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
@@ -292,7 +292,7 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  data: treeToGraphData(treeData),   // ✅ 必须转换后传入
+  data: treeToGraphData(treeData),   // ✅ Must be converted before passing
   layout: { type: 'compact-box' },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
@@ -300,29 +300,29 @@ const graph = new Graph({
 graph.render();
 ```
 
-> ⚠️ `treeToGraphData` 需从 `@antv/g6` 中显式导入，不可直接调用未导入的函数。
+> ⚠️ `treeToGraphData` must be explicitly imported from `@antv/g6` and cannot be called directly without being imported.
 
-## 常见错误
+## Common Errors
 
-### 错误1：缺少 container
+### Error 1: Missing container
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const graph = new Graph({ width: 800, height: 600 });
 
-// ✅ 正确
+// ✅ Correct
 const graph = new Graph({ container: 'container', width: 800, height: 600 });
 ```
 
-### 错误2：使用 v4 的 graph.data() 方式
+### Error 2: Using v4's graph.data() Method
 
 ```javascript
-// ❌ 错误（v4 写法）
+// ❌ Incorrect (v4 Syntax)
 const graph = new G6.Graph({ container: 'container', width: 800, height: 600 });
 graph.data({ nodes: [...], edges: [...] });
 graph.render();
 
-// ✅ 正确（v5 写法）
+// ✅ Correct (v5 Syntax)
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -332,15 +332,15 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 错误3：数据中直接写标签
+### Error 3: Directly Writing Labels in Data
 
 ```javascript
-// ❌ 错误：节点数据直接写 label
+// ❌ Incorrect: Label directly written in node data
 { id: 'node1', label: 'Node 1' }
 
-// ✅ 正确：业务数据放在 data 字段
+// ✅ Correct: Business data placed in the `data` field
 { id: 'node1', data: { label: 'Node 1' } }
-// 然后在样式中：
+// Then in the style:
 node: {
   style: {
     labelText: (d) => d.data.label,
@@ -348,51 +348,51 @@ node: {
 }
 ```
 
-### 错误4：使用 v4 的 modes 配置
+### Error 4: Using v4 `modes` Configuration
 
 ```javascript
-// ❌ 错误（v4 modes）
+// ❌ Incorrect (v4 modes)
 modes: { default: ['drag-canvas', 'zoom-canvas'] }
 
-// ✅ 正确（v5 behaviors）
+// ✅ Correct (v5 behaviors)
 behaviors: ['drag-canvas', 'zoom-canvas']
 ```
 
-### 错误5：autoFit 与固定尺寸冲突
+### Error 5: Conflict Between autoFit and Fixed Dimensions
 
 ```javascript
-// ❌ autoFit: true 同时设置 width/height 会产生不可预期结果
+// ❌ Setting autoFit: true along with width/height will produce unpredictable results
 const graph = new Graph({
-  autoFit: true,   // 旧写法
+  autoFit: true,   // Old syntax
   width: 800,
   height: 600,
 });
 
-// ✅ 正确：使用 'view' 或 'center'
+// ✅ Correct: Use 'view' or 'center'
 const graph = new Graph({
-  autoFit: 'view',   // 或 'center'，或 false（手动控制）
+  autoFit: 'view',   // or 'center', or false (manual control)
   width: 800,
   height: 600,
 });
 ```
 
-### 错误6：边 ID 冲突导致 "Edge already exists"
+### Error 6: Edge ID Conflict Causes "Edge already exists"
 
-当动态生成边数据时，若多条边的 source 和 target 相同（平行边），未指定 id 会导致自动生成的 id 重复，抛出 `Edge already exists` 错误。
+When dynamically generating edge data, if multiple edges have the same source and target (parallel edges), and no id is specified, it will result in duplicate automatically generated ids, throwing the `Edge already exists` error.
 
 ```javascript
-// ❌ 错误：随机生成边时可能产生重复的 source-target 对
+// ❌ Error: Randomly generating edges may produce duplicate source-target pairs
 const edges = [];
 for (let i = 0; i < 34; i++) {
   for (let j = 0; j < 3; j++) {
     const target = Math.floor(Math.random() * 34);
     if (target !== i) {
-      edges.push({ source: `${i}`, target: `${target}` }); // 没有 id，可能重复！
+      edges.push({ source: `${i}`, target: `${target}` }); // No id, may duplicate!
     }
   }
 }
 
-// ✅ 正确方案1：为每条边指定唯一 id（推荐）
+// ✅ Correct Solution 1: Assign a unique id to each edge (recommended)
 const edges = [];
 let edgeIndex = 0;
 for (let i = 0; i < 34; i++) {
@@ -404,7 +404,7 @@ for (let i = 0; i < 34; i++) {
   }
 }
 
-// ✅ 正确方案2：对已有边数组去重后添加 id
+// ✅ Correct Solution 2: Deduplicate existing edge array and add ids
 const edgeSet = new Set();
 const edges = [];
 let edgeIndex = 0;
@@ -420,20 +420,20 @@ for (let i = 0; i < 34; i++) {
 }
 ```
 
-### 错误7：树形数据未转换直接传入
+### Error 7: Tree Data Passed Directly Without Conversion
 
 ```javascript
-// ❌ 错误：树形结构数据不能直接传给 data
+// ❌ Error: Tree structure data cannot be passed directly to data
 const graph = new Graph({
-  data: { id: 'root', children: [...] },  // 错误！
+  data: { id: 'root', children: [...] },  // Error!
 });
 
-// ❌ 错误：treeToGraphData 未导入就使用
+// ❌ Error: Using treeToGraphData without importing it
 const graph = new Graph({
   data: treeToGraphData(treeData),  // ReferenceError: treeToGraphData is not defined
 });
 
-// ✅ 正确：从 @antv/g6 导入后使用
+// ✅ Correct: Import from @antv/g6 and use
 import { Graph, treeToGraphData } from '@antv/g6';
 const graph = new Graph({
   data: treeToGraphData(treeData),

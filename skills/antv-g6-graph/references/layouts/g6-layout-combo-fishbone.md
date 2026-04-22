@@ -1,9 +1,9 @@
 ---
 id: "g6-layout-combo-fishbone"
-title: "G6 复合布局 + 鱼骨布局（combo-combined / fishbone）"
+title: "G6 Composite Layout + Fishbone Layout (combo-combined / fishbone)"
 description: |
-  combo-combined：专为含 Combo 分组的图设计，外层节点用力导向，Combo 内部用同心圆等布局。
-  fishbone：鱼骨图布局，适合层次结构、因果分析、故障分析等场景。
+  combo-combined: Designed specifically for graphs containing Combo groups, using force-directed layout for outer nodes and layouts like concentric circles within Combos.
+  fishbone: Fishbone diagram layout, suitable for hierarchical structures, causal analysis, fault analysis, and other scenarios.
 
 library: "g6"
 version: "5.x"
@@ -12,10 +12,10 @@ subcategory: "hierarchical"
 tags:
   - "combo-combined"
   - "fishbone"
-  - "复合布局"
-  - "鱼骨图"
-  - "因果分析"
-  - "Combo布局"
+  - "composite layout"
+  - "fishbone diagram"
+  - "causal analysis"
+  - "Combo layout"
 
 related:
   - "g6-combo-overview"
@@ -28,13 +28,13 @@ created: "2026-04-16"
 updated: "2026-04-16"
 ---
 
-## 复合布局（combo-combined）
+## Combo-Combined Layout
 
-专为含有 Combo 分组的图设计，默认外层使用力导向（gForce），Combo 内部使用同心圆布局（Concentric），兼顾整体稳定性与内部结构清晰度。
+Specifically designed for graphs containing Combo groups, this layout uses a force-directed layout (gForce) for the outer layer by default and a concentric layout (Concentric) for the inside of Combos, balancing overall stability with internal structural clarity.
 
-> ⚠️ **autoFit 白屏陷阱**：`combo-combined` 外层默认 `gForce` 为异步力导向布局。在 Graph config 中直接设置 `autoFit: 'view'` 时，`fitView` 会在力导向开始迭代之前执行，节点全部堆在原点，包围盒面积为零，导致缩放比例异常 → **白屏**。
->
-> 正确做法：**不在 config 中设置 `autoFit`**，改为监听 `GraphEvent.AFTER_LAYOUT` 再调用 `fitView()`。
+> ⚠️ **autoFit White Screen Trap**: The outer layer of `combo-combined` defaults to an asynchronous force-directed layout (`gForce`). When `autoFit: 'view'` is directly set in the Graph config, `fitView` is executed before the force-directed iteration begins, causing all nodes to pile up at the origin, resulting in a bounding box area of zero and an abnormal zoom ratio → **white screen**.  
+>  
+> Correct approach: **Do not set `autoFit` in the config**. Instead, listen for `GraphEvent.AFTER_LAYOUT` and then call `fitView()`.
 
 ```javascript
 import { Graph, GraphEvent } from '@antv/g6';
@@ -43,15 +43,15 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  // ❌ 不要在此设置 autoFit: 'view'，会在力导向迭代前触发导致白屏
-   {
+  // ❌ Do not set autoFit: 'view' here, as it triggers before force-directed iteration and causes a white screen
+  data: {
     nodes: [
-      { id: 'n1', combo: 'c1', data: { label: '节点1' } },
-      { id: 'n2', combo: 'c1',  { label: '节点2' } },
-      { id: 'n3', combo: 'c1',  { label: '节点3' } },
-      { id: 'n4', combo: 'c2',  { label: '节点4' } },
-      { id: 'n5', combo: 'c2', data: { label: '节点5' } },
-      { id: 'n6', data: { label: '游离节点' } },
+      { id: 'n1', combo: 'c1', data: { label: 'Node 1' } },
+      { id: 'n2', combo: 'c1', data: { label: 'Node 2' } },
+      { id: 'n3', combo: 'c1', data: { label: 'Node 3' } },
+      { id: 'n4', combo: 'c2', data: { label: 'Node 4' } },
+      { id: 'n5', combo: 'c2', data: { label: 'Node 5' } },
+      { id: 'n6', data: { label: 'Free Node' } },
     ],
     edges: [
       { source: 'n1', target: 'n4' },
@@ -59,8 +59,8 @@ const graph = new Graph({
       { source: 'n5', target: 'n6' },
     ],
     combos: [
-      { id: 'c1',  { label: '分组A' } },
-      { id: 'c2', data: { label: '分组B' } },
+      { id: 'c1', data: { label: 'Group A' } },
+      { id: 'c2', data: { label: 'Group B' } },
     ],
   },
   node: {
@@ -76,21 +76,21 @@ const graph = new Graph({
   combo: {
     type: 'rect',
     style: {
-      labelText: (d) => d.data.label,  // ✅ 业务数据从 data 字段读取，不要放在 style 字段
+      labelText: (d) => d.data.label,  // ✅ Read business data from the `data` field, not the `style` field
       labelPlacement: 'top',
       padding: 20,
     },
   },
   layout: {
     type: 'combo-combined',
-    comboPadding: 10,    // Combo 内 padding（影响力计算，建议与视觉 padding 一致）
-    nodeSize: 24,        // 节点大小（用于碰撞检测）
-    spacing: 8,          // 防止重叠的最小间距
+    comboPadding: 10,    // Padding inside Combo (used for force calculation, recommended to match visual padding)
+    nodeSize: 24,        // Node size (used for collision detection)
+    spacing: 8,          // Minimum spacing to prevent overlap
   },
   behaviors: ['drag-element', 'drag-canvas', 'zoom-canvas'],
 });
 
-// ✅ 力导向布局完成后再 fitView，避免白屏
+// ✅ Call fitView after the force-directed layout completes to avoid white screen
 graph.on(GraphEvent.AFTER_LAYOUT, () => {
   graph.fitView({ padding: 20 });
 });
@@ -99,33 +99,33 @@ graph.render();
 ```
 ---
 
-## 鱼骨布局（fishbone）
+## Fishbone Layout (fishbone)
 
-鱼骨图布局，将层次结构数据排列成鱼骨形状。适合展示因果关系（石川图/鱼骨图）、故障分析、多因素分析等场景。
+The fishbone layout arranges hierarchical data into a fishbone shape. It is suitable for displaying cause-and-effect relationships (Ishikawa diagram/fishbone diagram), fault analysis, multi-factor analysis, and other scenarios.
 
-> 注意：fishbone 需要树形数据，通常配合 `treeToGraphData()` 使用。
+> Note: fishbone requires tree-structured data and is typically used in conjunction with `treeToGraphData()`.
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const treeData = {
-  id: '结果',
+  id: 'Result',
   children: [
     {
-      id: '原因A',
+      id: 'Cause A',
       children: [
-        { id: '子因A1' },
-        { id: '子因A2' },
+        { id: 'Sub-cause A1' },
+        { id: 'Sub-cause A2' },
       ],
     },
     {
-      id: '原因B',
+      id: 'Cause B',
       children: [
-        { id: '子因B1' },
-        { id: '子因B2', children: [{ id: '孙因B2-1' }] },
+        { id: 'Sub-cause B1' },
+        { id: 'Sub-cause B2', children: [{ id: 'Sub-sub-cause B2-1' }] },
       ],
     },
-    { id: '原因C' },
+    { id: 'Cause C' },
   ],
 };
 
@@ -134,7 +134,7 @@ const graph = new Graph({
   width: 900,
   height: 500,
   autoFit: 'view',
-   treeToGraphData(treeData),
+  data: treeToGraphData(treeData),
   node: {
     type: 'rect',
     style: {
@@ -155,9 +155,9 @@ const graph = new Graph({
   },
   layout: {
     type: 'fishbone',
-    direction: 'LR',   // 'LR'：鱼头在左；'RL'：鱼头在右（默认）
-    hGap: 60,          // 水平间距
-    vGap: 40,          // 垂直间距
+    direction: 'LR',   // 'LR': fish head on the left; 'RL': fish head on the right (default)
+    hGap: 60,          // Horizontal gap
+    vGap: 40,          // Vertical gap
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
 });
@@ -165,25 +165,25 @@ const graph = new Graph({
 graph.render();
 ```
 
-### fishbone 配置参数
+### Fishbone Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `type` | `string` | `'fishbone'` | 布局类型 |
-| `direction` | `'LR' \| 'RL'` | `'RL'` | 方向：LR 鱼头在左，RL 鱼头在右 |
-| `hGap` | `number` | — | 水平间距 |
-| `vGap` | `number` | — | 垂直间距 |
-| `getRibSep` | `(node) => number` | `() => 60` | 鱼骨间距回调 |
-| `nodeSize` | `number \| [number, number] \| Function` | — | 节点大小 |
-| `nodeFilter` | `(node) => boolean` | — | 参与布局的节点过滤器 |
-| `preLayout` | `boolean` | — | 是否在初始化前预计算布局 |
+| `type` | `string` | `'fishbone'` | Layout type |
+| `direction` | `'LR' \| 'RL'` | `'RL'` | Direction: LR for fish head on the left, RL for fish head on the right |
+| `hGap` | `number` | — | Horizontal spacing |
+| `vGap` | `number` | — | Vertical spacing |
+| `getRibSep` | `(node) => number` | `() => 60` | Fishbone spacing callback |
+| `nodeSize` | `number \| [number, number] \| Function` | — | Node size |
+| `nodeFilter` | `(node) => boolean` | — | Node filter for layout participation |
+| `preLayout` | `boolean` | — | Whether to pre-compute layout before initialization |
 
-### 6M 鱼骨图（石川图）示例
+### 6M Fishbone Diagram (Ishikawa Diagram) Example
 
 ```javascript
 import { Graph } from '@antv/g6';
 
-// 直接使用带 depth 和 children 字段的扁平数据（G6 fishbone 支持此格式）
+// Directly use flat data with depth and children fields (G6 fishbone supports this format)
 const graph = new Graph({
   container: 'container',
   width: 1000,
@@ -191,29 +191,29 @@ const graph = new Graph({
   autoFit: 'view',
   data: {
     nodes: [
-      { id: '质量问题', depth: 0, children: ['人', '机', '料', '法', '环', '测'] },
-      { id: '人', depth: 1, children: ['培训不足', '操作失误'] },
-      { id: '培训不足', depth: 2 },
-      { id: '操作失误', depth: 2 },
-      { id: '机', depth: 1, children: ['设备老化'] },
-      { id: '设备老化', depth: 2 },
-      { id: '料', depth: 1 },
-      { id: '法', depth: 1, children: ['流程缺失'] },
-      { id: '流程缺失', depth: 2 },
-      { id: '环', depth: 1 },
-      { id: '测', depth: 1 },
+      { id: 'Quality Issue', depth: 0, children: ['Man', 'Machine', 'Material', 'Method', 'Environment', 'Measurement'] },
+      { id: 'Man', depth: 1, children: ['Insufficient Training', 'Operational Error'] },
+      { id: 'Insufficient Training', depth: 2 },
+      { id: 'Operational Error', depth: 2 },
+      { id: 'Machine', depth: 1, children: ['Equipment Aging'] },
+      { id: 'Equipment Aging', depth: 2 },
+      { id: 'Material', depth: 1 },
+      { id: 'Method', depth: 1, children: ['Process Missing'] },
+      { id: 'Process Missing', depth: 2 },
+      { id: 'Environment', depth: 1 },
+      { id: 'Measurement', depth: 1 },
     ],
     edges: [
-      { source: '质量问题', target: '人' },
-      { source: '质量问题', target: '机' },
-      { source: '质量问题', target: '料' },
-      { source: '质量问题', target: '法' },
-      { source: '质量问题', target: '环' },
-      { source: '质量问题', target: '测' },
-      { source: '人', target: '培训不足' },
-      { source: '人', target: '操作失误' },
-      { source: '机', target: '设备老化' },
-      { source: '法', target: '流程缺失' },
+      { source: 'Quality Issue', target: 'Man' },
+      { source: 'Quality Issue', target: 'Machine' },
+      { source: 'Quality Issue', target: 'Material' },
+      { source: 'Quality Issue', target: 'Method' },
+      { source: 'Quality Issue', target: 'Environment' },
+      { source: 'Quality Issue', target: 'Measurement' },
+      { source: 'Man', target: 'Insufficient Training' },
+      { source: 'Man', target: 'Operational Error' },
+      { source: 'Machine', target: 'Equipment Aging' },
+      { source: 'Method', target: 'Process Missing' },
     ],
   },
   node: {

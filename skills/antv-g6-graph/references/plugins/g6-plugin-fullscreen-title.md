@@ -1,9 +1,9 @@
 ---
 id: "g6-plugin-fullscreen-title"
-title: "G6 全屏插件 + 标题插件（fullscreen / title）"
+title: "G6 Fullscreen Plugin + Title Plugin (fullscreen / title)"
 description: |
-  fullscreen：将图可视化扩展到整个屏幕，支持快捷键触发和编程控制。
-  title：为图添加主标题和副标题，支持自定义位置、字体和样式。
+  fullscreen: Expands the graph visualization to the entire screen, supporting shortcut key triggers and programmatic control.
+  title: Adds a main title and subtitle to the graph, supporting custom positioning, fonts, and styles.
 
 library: "g6"
 version: "5.x"
@@ -27,9 +27,9 @@ created: "2026-04-16"
 updated: "2026-04-16"
 ---
 
-## 标题插件（title）
+## Title Plugin (title)
 
-为图画布添加主标题和副标题，支持自定义字体、颜色、对齐方式等样式。
+Adds a main title and subtitle to the graph canvas, supporting custom styles such as font, color, and alignment.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -38,10 +38,10 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-   {
+  data: {
     nodes: [
-      { id: 'n1',  { label: '节点1' } },
-      { id: 'n2',  { label: '节点2' } },
+      { id: 'n1', label: 'Node 1' },
+      { id: 'n2', label: 'Node 2' },
     ],
     edges: [{ source: 'n1', target: 'n2' }],
   },
@@ -51,12 +51,12 @@ const graph = new Graph({
     {
       type: 'title',
       key: 'chart-title',
-      title: '知识图谱',         // 主标题文字
-      subtitle: '数据来源：内部系统', // 副标题文字
+      title: 'Knowledge Graph',         // Main title text
+      subtitle: 'Data Source: Internal System', // Subtitle text
       align: 'left',           // 'left' | 'center' | 'right'
-      size: 48,                // 标题区域高度（px），默认 44
+      size: 48,                // Title area height (px), default 44
       padding: [16, 24, 0, 24], // [top, right, bottom, left]
-      spacing: 8,              // 主副标题间距（px）
+      spacing: 8,              // Spacing between main and subtitle (px)
     },
   ],
 });
@@ -64,41 +64,41 @@ const graph = new Graph({
 graph.render();
 ```
 
-### title 配置参数
+### Title Configuration Parameters
 
-**容器配置：**
+**Container Configuration:**
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `type` | `string` | `'title'` | 插件类型 |
-| `key` | `string` | — | 唯一标识 |
-| `title` | `string` | — | **必填**：主标题文字 |
-| `subtitle` | `string` | — | 副标题文字 |
-| `align` | `'left' \| 'center' \| 'right'` | `'left'` | 标题对齐方式 |
-| `size` | `number` | `44` | 标题区域高度（px） |
-| `padding` | `number \| number[]` | `[16,24,0,24]` | 内边距 |
-| `spacing` | `number` | `8` | 主副标题间距 |
+| `type` | `string` | `'title'` | Plugin type |
+| `key` | `string` | — | Unique identifier |
+| `title` | `string` | — | **Required**: Main title text |
+| `subtitle` | `string` | — | Subtitle text |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Title alignment |
+| `size` | `number` | `44` | Title area height (px) |
+| `padding` | `number \| number[]` | `[16,24,0,24]` | Inner padding |
+| `spacing` | `number` | `8` | Spacing between main and subtitle |
 
-**主标题样式（titleXxx）：**
+**Main Title Style (titleXxx):**
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `titleFontSize` | `number` | `16` | 字体大小 |
-| `titleFontWeight` | `number` | `bold` | 字体粗细 |
-| `titleFill` | `string` | `'#1D2129'` | 字体颜色 |
-| `titleFillOpacity` | `number` | `0.9` | 字体透明度 |
-| `titleFontFamily` | `string` | `'system-ui, sans-serif'` | 字体 |
+| `titleFontSize` | `number` | `16` | Font size |
+| `titleFontWeight` | `number` | `bold` | Font weight |
+| `titleFill` | `string` | `'#1D2129'` | Font color |
+| `titleFillOpacity` | `number` | `0.9` | Font opacity |
+| `titleFontFamily` | `string` | `'system-ui, sans-serif'` | Font family |
 
-**副标题样式（subtitleXxx）：**
+**Subtitle Style (subtitleXxx):**
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `subtitleFontSize` | `number` | `12` | 字体大小 |
-| `subtitleFontWeight` | `number` | `normal` | 字体粗细 |
-| `subtitleFill` | `string` | `'#1D2129'` | 字体颜色 |
-| `subtitleFillOpacity` | `number` | `0.65` | 字体透明度 |
+| `subtitleFontSize` | `number` | `12` | Font size |
+| `subtitleFontWeight` | `number` | `normal` | Font weight |
+| `subtitleFill` | `string` | `'#1D2129'` | Font color |
+| `subtitleFillOpacity` | `number` | `0.65` | Font opacity |
 
-### 完整样式示例
+### Complete Style Example
 
 ```javascript
 plugins: [
@@ -108,30 +108,30 @@ plugins: [
     align: 'center',
     size: 60,
     spacing: 4,
-    // 主标题
-    title: '组织架构图',
+    // Main Title
+    title: 'Organizational Structure Chart',
     titleFontSize: 20,
     titleFontWeight: 600,
     titleFill: '#262626',
-    // 副标题
-    subtitle: '2026 Q1 · 共 120 人',
+    // Subtitle
+    subtitle: '2026 Q1 · Total 120 People',
     subtitleFontSize: 13,
     subtitleFill: '#8c8c8c',
   },
 ]
 ```
 
-### 动态更新标题
+### Dynamic Title Update
 
 ```javascript
-graph.updatePlugin({ key: 'title', title: '新标题', subtitle: '更新时间：2026-04-16' });
+graph.updatePlugin({ key: 'title', title: 'New Title', subtitle: 'Updated on: 2026-04-16' });
 ```
 
 ---
 
-## 全屏插件（fullscreen）
+## Fullscreen Plugin (fullscreen)
 
-将图可视化扩展到全屏，支持快捷键触发或通过 API 编程控制，带有进入/退出回调。
+Expand the graph visualization to fullscreen, supporting both shortcut key triggers and programmatic control via API, with enter/exit callbacks.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -149,13 +149,13 @@ const graph = new Graph({
     {
       type: 'fullscreen',
       key: 'fullscreen',
-      autoFit: true,     // 全屏后自动适配画布尺寸
+      autoFit: true,     // Auto-fit canvas size after entering fullscreen
       trigger: {
-        request: 'F',    // 按 F 进入全屏
-        exit: 'Escape',  // 按 Esc 退出全屏
+        request: 'F',    // Press F to enter fullscreen
+        exit: 'Escape',  // Press Esc to exit fullscreen
       },
-      onEnter: () => console.log('进入全屏'),
-      onExit: () => console.log('退出全屏'),
+      onEnter: () => console.log('Enter fullscreen'),
+      onExit: () => console.log('Exit fullscreen'),
     },
   ],
 });
@@ -163,31 +163,31 @@ const graph = new Graph({
 graph.render();
 ```
 
-### fullscreen 配置参数
+### fullscreen Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `type` | `string` | `'fullscreen'` | 插件类型 |
-| `key` | `string` | — | 唯一标识（编程控制时必填） |
-| `autoFit` | `boolean` | `true` | 全屏后是否自动适配画布尺寸 |
-| `trigger` | `{ request?: string; exit?: string }` | — | 触发键盘快捷键 |
-| `onEnter` | `() => void` | — | 进入全屏的回调 |
-| `onExit` | `() => void` | — | 退出全屏的回调 |
+| `type` | `string` | `'fullscreen'` | Plugin type |
+| `key` | `string` | — | Unique identifier (required for programmatic control) |
+| `autoFit` | `boolean` | `true` | Whether to automatically adapt canvas size after entering fullscreen |
+| `trigger` | `{ request?: string; exit?: string }` | — | Trigger keyboard shortcuts |
+| `onEnter` | `() => void` | — | Callback when entering fullscreen |
+| `onExit` | `() => void` | — | Callback when exiting fullscreen |
 
-### 编程控制全屏
+### Programming Control for Fullscreen
 
 ```javascript
 const graph = new Graph({
   plugins: [{ type: 'fullscreen', key: 'fs' }],
 });
 
-// 通过 API 控制
+// Control via API
 const fsPlugin = graph.getPluginInstance('fs');
-fsPlugin.request();  // 进入全屏
-fsPlugin.exit();     // 退出全屏
+fsPlugin.request();  // Enter fullscreen
+fsPlugin.exit();     // Exit fullscreen
 ```
 
-### 配合工具栏使用
+### Use with Toolbar
 
 ```javascript
 plugins: [
@@ -210,7 +210,7 @@ plugins: [
 
 ---
 
-## 标题 + 全屏组合示例
+## Title + Fullscreen Combination Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -222,7 +222,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 15 }, (_, i) => ({
       id: `n${i}`,
-      data: { label: `节点${i}` },
+      data: { label: `Node${i}` },
     })),
     edges: Array.from({ length: 12 }, (_, i) => ({
       source: `n${i % 10}`,
@@ -240,8 +240,8 @@ const graph = new Graph({
   plugins: [
     {
       type: 'title',
-      title: '关系网络图',
-      subtitle: '基于力导向布局',
+      title: 'Relationship Network Graph',
+      subtitle: 'Based on Force-Directed Layout',
       align: 'center',
     },
     {

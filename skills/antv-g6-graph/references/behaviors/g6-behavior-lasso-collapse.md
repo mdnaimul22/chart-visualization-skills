@@ -1,22 +1,22 @@
 ---
 id: "g6-behavior-lasso-collapse"
-title: "G6 套索选择（lasso-select）与折叠展开（collapse-expand）"
+title: "G6 Lasso Select (lasso-select) and Collapse/Expand (collapse-expand)"
 description: |
-  lasso-select：自由绘制选区套索选中多个元素。
-  collapse-expand：点击/双击节点或 combo 折叠/展开其子树或内部节点。
+  lasso-select: Freely draw a selection lasso to select multiple elements.
+  collapse-expand: Click/Double-click a node or combo to collapse/expand its subtree or internal nodes.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "interaction"
 tags:
-  - "交互"
-  - "套索"
-  - "框选"
+  - "interaction"
+  - "lasso"
+  - "box select"
   - "lasso-select"
   - "collapse-expand"
-  - "折叠"
-  - "展开"
+  - "collapse"
+  - "expand"
 
 related:
   - "g6-behavior-click-select"
@@ -29,9 +29,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 套索选择（lasso-select）
+## Lasso Select (lasso-select)
 
-允许用户绘制自由曲线选区，圈住的元素被标记为 selected 状态。
+Allows users to draw a freehand selection area, marking enclosed elements as selected.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -43,7 +43,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 20 }, (_, i) => ({
       id: `n${i}`,
-       data: { label: `节点${i}` },
+      data: { label: `Node${i}` },
     })),
     edges: Array.from({ length: 15 }, (_, i) => ({
       source: `n${i % 10}`,
@@ -75,70 +75,70 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'lasso-select',
-      // 鼠标右键拖拽触发套索（避免与拖拽画布冲突）
+      // Trigger lasso selection on right mouse button drag (to avoid conflict with canvas drag)
       trigger: 'pointerdown',
-      // 套索样式
+      // Lasso style
       style: {
         fill: 'rgba(99, 149, 255, 0.1)',
         stroke: '#6395ff',
         lineWidth: 1,
         lineDash: [4, 2],
       },
-      // 选中状态名
+      // Selected state name
       state: 'selected',
-      // 实时更新（拖拽过程中动态高亮）
+      // Real-time update (dynamically highlight during drag)
       immediately: false,
-      // 被选范围内的元素类型
-      itemTypes: ['node'],         // 只选节点，不选边
+      // Element types within the selection area
+      itemTypes: ['node'],         // Select only nodes, not edges
     },
   ],
 });
 
 graph.render();
 
-// 获取所有选中节点
+// Get all selected nodes
 graph.on('canvas:pointerup', () => {
   const selectedNodes = graph.getElementDataByState('node', 'selected');
-  console.log('选中节点:', selectedNodes.map(n => n.id));
+  console.log('Selected nodes:', selectedNodes.map(n => n.id));
 });
 ```
 
-### lasso-select 配置参数
+### lasso-select Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `trigger` | `string` | `'pointerdown'` | 触发事件 |
-| `immediately` | `boolean` | `false` | 拖拽时实时更新选中状态 |
-| `state` | `string` | `'selected'` | 选中状态名 |
-| `itemTypes` | `('node' \| 'edge' \| 'combo')[]` | `['node', 'edge', 'combo']` | 参与选择的元素类型 |
-| `style` | `PathStyleProps` | — | 套索路径样式 |
+| `trigger` | `string` | `'pointerdown'` | Trigger event |
+| `immediately` | `boolean` | `false` | Real-time update of selection status during dragging |
+| `state` | `string` | `'selected'` | Selection state name |
+| `itemTypes` | `('node' \| 'edge' \| 'combo')[]` | `['node', 'edge', 'combo']` | Types of elements participating in the selection |
+| `style` | `PathStyleProps` | — | Lasso path style |
 
 ---
 
-## 折叠展开（collapse-expand）
+## Collapse-Expand
 
-点击/双击节点（树图）或 combo 折叠/展开子树。
+Click/double-click a node (tree graph) or combo to collapse/expand the subtree.
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const treeData = {
   id: 'root',
-   data: { label: '根节点' },
+  data: { label: 'Root Node' },
   children: [
     {
       id: 'branch1',
-       data: { label: '分支1' },
+      data: { label: 'Branch 1' },
       children: [
-        { id: 'leaf1', data: { label: '叶子1' } },
-        { id: 'leaf2', data: { label: '叶子2' } },
+        { id: 'leaf1', data: { label: 'Leaf 1' } },
+        { id: 'leaf2', data: { label: 'Leaf 2' } },
       ],
     },
     {
       id: 'branch2',
-      data: { label: '分支2' },
+      data: { label: 'Branch 2' },
       children: [
-        { id: 'leaf3', data: { label: '叶子3' } },
+        { id: 'leaf3', data: { label: 'Leaf 3' } },
       ],
     },
   ],
@@ -179,10 +179,10 @@ const graph = new Graph({
     {
       type: 'collapse-expand',
       trigger: 'click',              // 'click' | 'dblclick'
-      animation: true,               // 折叠时带动画
-      // 折叠/展开回调
-      onCollapse: (id) => console.log('折叠:', id),
-      onExpand: (id) => console.log('展开:', id),
+      animation: true,               // animate during collapse
+      // Collapse/expand callbacks
+      onCollapse: (id) => console.log('Collapsed:', id),
+      onExpand: (id) => console.log('Expanded:', id),
     },
   ],
 });
@@ -190,39 +190,39 @@ const graph = new Graph({
 graph.render();
 ```
 
-### collapse-expand 配置参数
+### collapse-expand Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `trigger` | `'click' \| 'dblclick'` | `'dblclick'` | 触发方式 |
-| `animation` | `boolean` | `true` | 折叠/展开动画 |
-| `enable` | `boolean \| ((event) => boolean)` | `true` | 是否启用 |
-| `align` | `boolean` | `true` | 折叠后是否自动居中 |
-| `onCollapse` | `(id: string) => void` | — | 折叠完成回调 |
-| `onExpand` | `(id: string) => void` | — | 展开完成回调 |
+| `trigger` | `'click' \| 'dblclick'` | `'dblclick'` | Trigger method |
+| `animation` | `boolean` | `true` | Collapse/expand animation |
+| `enable` | `boolean \| ((event) => boolean)` | `true` | Whether to enable |
+| `align` | `boolean` | `true` | Whether to automatically center after collapse |
+| `onCollapse` | `(id: string) => void` | — | Callback after collapse is complete |
+| `onExpand` | `(id: string) => void` | — | Callback after expand is complete |
 
-### 通过 API 控制折叠展开
+### Control Collapse/Expand via API
 
 ```javascript
-// 折叠节点及其子树
+// Collapse a node and its subtree
 await graph.collapseElement('branch1');
 
-// 展开
+// Expand
 await graph.expandElement('branch1');
 
-// 检查状态
+// Check status
 console.log(graph.isCollapsed('branch1')); // true/false
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误：在非树图中使用 collapse-expand
+### Error: Using collapse-expand in non-tree graphs
 
 ```javascript
-// collapse-expand 只适用于树形数据（每个节点有唯一父节点）
-// 在普通网络图中使用会导致意外行为
+// collapse-expand is only applicable to tree data (each node has a unique parent)
+// Using it in regular network graphs will result in unexpected behavior
 
-// ✅ 树图专用，配合 treeToGraphData 使用
+// ✅ Tree graph exclusive, use with treeToGraphData
 import { treeToGraphData } from '@antv/g6';
 data: treeToGraphData(treeData),
 behaviors: [{ type: 'collapse-expand' }],

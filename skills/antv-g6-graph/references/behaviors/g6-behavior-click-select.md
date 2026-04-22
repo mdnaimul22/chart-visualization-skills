@@ -1,21 +1,21 @@
 ---
 id: "g6-behavior-click-select"
-title: "G6 点击选中交互（Click Select）"
+title: "G6 Click Select Interaction"
 description: |
-  使用 click-select 行为实现点击节点/边选中，支持多选、邻居高亮、
-  状态联动等功能。
+  Use the click-select behavior to select nodes/edges by clicking, supporting multiple selection, neighbor highlighting,
+  and state synchronization.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "selection"
 tags:
-  - "交互"
-  - "点击"
-  - "选中"
+  - "interaction"
+  - "click"
+  - "select"
   - "click-select"
   - "behavior"
-  - "选择"
+  - "selection"
 
 related:
   - "g6-behavior-hover-activate"
@@ -23,12 +23,12 @@ related:
   - "g6-state-overview"
 
 use_cases:
-  - "点击节点查看详情"
-  - "选中节点高亮关联关系"
-  - "多选节点批量操作"
+  - "Click a node to view details"
+  - "Select a node to highlight associated relationships"
+  - "Multi-select nodes for batch operations"
 
 anti_patterns:
-  - "不需要选中时不要配置，否则影响点击事件处理"
+  - "Do not configure if selection is not needed, as it may affect click event handling"
 
 difficulty: "beginner"
 completeness: "full"
@@ -38,15 +38,15 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/behavior/click-select"
 ---
 
-## 核心概念
+## Core Concepts
 
-`click-select` 让用户通过点击选中节点/边，支持：
-- 选中状态标记（默认状态名 `selected`）
-- 邻居节点/边联动高亮
-- 多选（Shift/Ctrl + 点击）
-- 点击空白取消选中
+`click-select` allows users to select nodes/edges by clicking, supporting:
+- Selection state marking (default state name `selected`)
+- Neighbor node/edge linkage highlighting
+- Multi-select (Shift/Ctrl + click)
+- Click on blank area to cancel selection
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -90,16 +90,16 @@ const graph = new Graph({
   behaviors: [
     'drag-canvas',
     'zoom-canvas',
-    'click-select',              // 字符串简写
+    'click-select',              // String shorthand
   ],
 });
 
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 完整配置（含邻居高亮）
+### Complete Configuration (Including Neighbor Highlighting)
 
 ```javascript
 behaviors: [
@@ -107,28 +107,28 @@ behaviors: [
   'zoom-canvas',
   {
     type: 'click-select',
-    // 支持多选（按住 Shift 或 Ctrl 点击）
+    // Supports multiple selection (hold Shift or Ctrl and click)
     multiple: true,
-    // 触发方式
+    // Trigger method
     trigger: ['click'],           // 'click' | 'dblclick'
-    // 选中状态名
+    // Selected state name
     state: 'selected',
-    // 邻居状态名
+    // Neighbor state name
     neighborState: 'highlight',
-    // 未选中元素的状态名
+    // Unselected element state name
     unselectedState: 'inactive',
-    // 展开几跳的邻居（0=只选自身）
+    // Number of hops to expand neighbors (0 = select only itself)
     degree: 1,
-    // 点击回调
+    // Click callback
     onClick: (event) => {
       const { targetType, target } = event;
       if (targetType === 'node') {
-        console.log('选中节点:', target.id);
+        console.log('Selected node:', target.id);
       }
     },
   },
 ],
-// 配套状态样式
+// Corresponding state styles
 node: {
   state: {
     selected: { fill: '#ff4d4f', lineWidth: 3 },
@@ -144,15 +144,15 @@ edge: {
 },
 ```
 
-### 点击后展示详情面板
+### Display Detail Panel on Click
 
 ```javascript
-// 监听选中事件
+// Listen for node click events
 graph.on('node:click', (event) => {
   const nodeId = event.target.id;
   const nodeData = graph.getNodeData(nodeId);
   
-  // 更新 UI 面板
+  // Update UI panel
   document.getElementById('detail-panel').innerHTML = `
     <h3>${nodeData.data.name}</h3>
     <p>${nodeData.data.description}</p>
@@ -160,31 +160,31 @@ graph.on('node:click', (event) => {
 });
 ```
 
-### 通过 API 设置选中状态
+### Set Selected State via API
 
 ```javascript
-// 选中特定节点
+// Select a specific node
 graph.setElementState('n1', 'selected');
 
-// 多状态叠加
+// Multiple state overlays
 graph.setElementState('n1', ['selected', 'highlight']);
 
-// 清除状态
+// Clear state
 graph.setElementState('n1', []);
 
-// 获取当前选中节点
+// Get currently selected nodes
 const selectedNodes = graph.getElementDataByState('node', 'selected');
 ```
 
-## 常见错误
+## Common Errors
 
-### 错误1：配置了 click-select 但状态样式未定义
+### Error 1: `click-select` is configured but state style is not defined
 
 ```javascript
-// ❌ 只有行为，没有状态样式，节点点击后无视觉反馈
+// ❌ Only behavior is configured, no state style, no visual feedback after node is clicked
 behaviors: ['click-select'],
 
-// ✅ 同时配置状态样式
+// ✅ Configure state style simultaneously
 behaviors: ['click-select'],
 node: {
   state: {
@@ -196,16 +196,16 @@ node: {
 },
 ```
 
-### 错误2：point 事件与 click-select 冲突
+### Error 2: Conflict between point event and click-select
 
 ```javascript
-// click-select 内部会消费 click 事件
-// 若需要自定义 click 逻辑，使用 onClick 回调
+// click-select internally consumes the click event
+// If custom click logic is needed, use the onClick callback
 behaviors: [
   {
     type: 'click-select',
     onClick: (event) => {
-      // 自定义处理
+      // Custom handling
     },
   },
 ],

@@ -1,16 +1,15 @@
 ---
 id: "g6-state-overview"
-title: "G6 元素状态系统"
+title: "G6 Element State System"
 description: |
-  G6 5.x 的元素状态（States）系统，包含内置状态、自定义状态、
-  状态样式配置和状态 API 的完整指南。
+  The Element States system in G6 5.x, including built-in states, custom states,
+  state style configurations, and a complete guide to state APIs.
 
 library: "g6"
 version: "5.x"
 category: "states"
 subcategory: "overview"
 tags:
-  - "状态"
   - "state"
   - "selected"
   - "active"
@@ -24,14 +23,14 @@ related:
   - "g6-core-graph-init"
 
 use_cases:
-  - "高亮选中节点"
-  - "悬停效果"
-  - "禁用/激活节点"
-  - "多状态叠加"
+  - "Highlight selected nodes"
+  - "Hover effects"
+  - "Disable/activate nodes"
+  - "Multiple state overlays"
 
 anti_patterns:
-  - "状态样式中不要使用回调函数（状态样式只支持静态值）"
-  - "不要在状态中定义动态数据映射，那是全局样式的工作"
+  - "Do not use callback functions in state styles (state styles only support static values)"
+  - "Do not define dynamic data mappings in states; that is the job of global styles"
 
 difficulty: "beginner"
 completeness: "full"
@@ -41,16 +40,16 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/element/state"
 ---
 
-## 核心概念
+## Core Concepts
 
-G6 v5 元素状态的特点：
-- **多状态共存**：一个元素可以同时拥有多个状态
-- **样式叠加**：多个状态的样式会叠加（后设置的优先级更高）
-- **完全自定义**：除内置状态外可以定义任意自定义状态
+Characteristics of element states in G6 v5:
+- **Multiple states coexistence**: An element can have multiple states simultaneously
+- **Style overlay**: Styles of multiple states will be overlaid (later set styles have higher priority)
+- **Fully customizable**: Apart from built-in states, any custom state can be defined
 
-**内置状态名：** `selected`、`active`、`highlight`、`inactive`、`disabled`
+**Built-in state names:** `selected`、`active`、`highlight`、`inactive`、`disabled`
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -61,9 +60,9 @@ const graph = new Graph({
   height: 480,
   data: {
     nodes: [
-       { id: 'n1', data: { label: 'A' }, states: ['selected'] },  // 初始选中
+       { id: 'n1', data: { label: 'A' }, states: ['selected'] },  // Initially selected
        { id: 'n2', data: { label: 'B' } },
-       { id: 'n3', data: { label: 'C' }, states: ['disabled'] }, // 初始禁用
+       { id: 'n3', data: { label: 'C' }, states: ['disabled'] }, // Initially disabled
     ],
     edges: [
        { source: 'n1', target: 'n2' },
@@ -79,7 +78,7 @@ const graph = new Graph({
       labelPlacement: 'center',
       labelFill: '#fff',
     },
-    // 状态样式
+    // State styles
     state: {
       selected: {
         fill: '#ff4d4f',
@@ -122,48 +121,48 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 状态 API
+## State API
 
 ```javascript
-// 设置单个状态
+// Set a single state
 graph.setElementState('node1', 'selected');
 
-// 设置多个状态（叠加）
+// Set multiple states (overlay)
 graph.setElementState('node1', ['selected', 'highlight']);
 
-// 清除所有状态
+// Clear all states
 graph.setElementState('node1', []);
 
-// 清除特定状态（保留其他）
+// Clear specific states (retain others)
 const currentStates = graph.getElementState('node1');
 const newStates = currentStates.filter(s => s !== 'selected');
 graph.setElementState('node1', newStates);
 
-// 批量设置状态
+// Batch set states
 graph.setElementState({
   node1: 'selected',
   node2: ['highlight'],
   node3: [],
 });
 
-// 查询元素状态
+// Query element states
 const states = graph.getElementState('node1');
-// 返回: ['selected', 'highlight']
+// Returns: ['selected', 'highlight']
 
-// 按状态查找元素
+// Find elements by state
 const selectedNodes = graph.getElementDataByState('node', 'selected');
 const activeEdges = graph.getElementDataByState('edge', 'active');
 ```
 
-## 自定义状态
+## Custom States
 
 ```javascript
-// 可以使用任意自定义状态名
+// Any custom state name can be used
 node: {
   state: {
-    // 内置状态
+    // Built-in states
     selected: { fill: '#ff4d4f' },
-    // 自定义状态
+    // Custom states
     warning: {
       fill: '#faad14',
       stroke: '#d48806',
@@ -179,84 +178,84 @@ node: {
     },
     loading: {
       opacity: 0.6,
-      // 可配合 animation 实现动态效果
+      // Can be combined with animation to achieve dynamic effects
     },
   },
 },
 
-// 设置自定义状态
+// Set custom states
 graph.setElementState('node1', 'warning');
 graph.setElementState('node1', 'error');
 ```
 
-## 状态样式优先级
+## State Style Priority
 
 ```
-数据中的 style > 状态样式（后设置的 > 先设置的）> 全局 node/edge style > 主题样式
+Style in data > State style (later set > earlier set) > Global node/edge style > Theme style
 ```
 
 ```javascript
-// 示例：节点有 selected 和 highlight 两个状态
-// selected 样式 + highlight 样式 叠加，highlight 后设置的属性优先
+// Example: Node has two states: selected and highlight
+// selected style + highlight style are stacked, with highlight properties taking priority as they are set later
 graph.setElementState('n1', ['selected', 'highlight']);
 ```
 
-## 在渲染完成后操作状态
+## Operating State After Rendering Completion
 
-如果需要在图表渲染完成后执行状态相关操作，可以使用 `await graph.render()` 或监听生命周期事件：
+If you need to perform state-related operations after the chart rendering is complete, you can use `await graph.render()` or listen to lifecycle events:
 
 ```javascript
 import { Graph, GraphEvent } from '@antv/g6';
 
 const graph = new Graph({ /* ... */ });
 
-// 方式1：使用 await
+// Method 1: Using await
 await graph.render();
 graph.setElementState('node1', 'selected');
 
-// 方式2：使用 GraphEvent（需要从 @antv/g6 导入）
+// Method 2: Using GraphEvent (requires import from @antv/g6)
 graph.on(GraphEvent.AFTER_RENDER, () => {
   graph.setElementState('node1', 'selected');
 });
 
-// 方式3：使用字符串事件名（无需导入）
+// Method 3: Using string event name (no import needed)
 graph.on('afterrender', () => {
   graph.setElementState('node1', 'selected');
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误1：状态样式中使用回调函数
+### Error 1: Using Callback Functions in State Styles
 
 ```javascript
-// ❌ 错误：状态样式不支持回调函数
+// ❌ Incorrect: State styles do not support callback functions
 node: {
   state: {
     selected: {
-      fill: (d) => d.data.color,  // 不生效！
+      fill: (d) => d.data.color,  // Will not take effect!
     },
   },
 },
 
-// ✅ 状态样式只用静态值
+// ✅ Correct: State styles should only use static values
 node: {
   state: {
     selected: {
-      fill: '#ff4d4f',  // 静态颜色值
+      fill: '#ff4d4f',  // Static color value
     },
   },
 },
 ```
 
-### 错误2：设置状态后忘记定义对应样式
+### Error 2: Setting State Without Defining Corresponding Styles
 
 ```javascript
-// ❌ 设置了状态但没有样式，节点不会有视觉变化
+// ❌ State is set but no styles are defined, nodes will not have visual changes
 behaviors: ['click-select'],
-// node.state 没有配置
+// node.state is not configured
 
-// ✅ 设置状态时同时配置状态样式
+// ✅ Configure state styles when setting state
 behaviors: ['click-select'],
 node: {
   state: {
@@ -265,24 +264,24 @@ node: {
 },
 ```
 
-### 错误3：使用 GraphEvent 但未导入
+### Error 3: Using GraphEvent Without Importing
 
 ```javascript
-// ❌ 错误：GraphEvent 未定义
+// ❌ Error: GraphEvent is not defined
 import { Graph } from '@antv/g6';
 
 graph.on(GraphEvent.AFTER_RENDER, () => {  // GraphEvent is not defined
   // ...
 });
 
-// ✅ 正确：从 @antv/g6 导入 GraphEvent
+// ✅ Correct: Import GraphEvent from @antv/g6
 import { Graph, GraphEvent } from '@antv/g6';
 
 graph.on(GraphEvent.AFTER_RENDER, () => {
   // ...
 });
 
-// ✅ 或者使用字符串事件名（无需导入）
+// ✅ Alternatively, use string event names (no import needed)
 import { Graph } from '@antv/g6';
 
 graph.on('afterrender', () => {

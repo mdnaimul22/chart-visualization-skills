@@ -1,33 +1,32 @@
 ---
 id: "g6-plugin-minimap"
-title: "G6 缩略图插件（Minimap）"
+title: "G6 Minimap Plugin"
 description: |
-  使用 minimap 插件在画布角落显示全局缩略图，
-  帮助用户在大图中快速导航定位。
+  Use the minimap plugin to display a global thumbnail in the corner of the canvas,
+  helping users quickly navigate and locate positions in large graphs.
 
 library: "g6"
 version: "5.x"
 category: "plugins"
 subcategory: "navigation"
 tags:
-  - "插件"
-  - "缩略图"
-  - "minimap"
-  - "导航"
-  - "大图"
   - "plugin"
+  - "thumbnail"
+  - "minimap"
+  - "navigation"
+  - "large graph"
 
 related:
   - "g6-plugin-tooltip"
   - "g6-behavior-canvas-nav"
 
 use_cases:
-  - "大规模图的全局导航"
-  - "需要快速定位特定区域"
+  - "Global navigation for large-scale graphs"
+  - "Quickly locate specific areas"
 
 anti_patterns:
-  - "React 节点（html 类型）不支持 minimap 渲染"
-  - "节点数量较少时 minimap 意义不大"
+  - "React nodes (html type) do not support minimap rendering"
+  - "Minimap is less meaningful with a small number of nodes"
 
 difficulty: "beginner"
 completeness: "full"
@@ -37,7 +36,7 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/plugin/minimap"
 ---
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -46,14 +45,14 @@ const graph = new Graph({
   container: 'container',
   width: 900,
   height: 600,
-   data: { nodes: [...], edges: [...] },
+  data: { nodes: [...], edges: [...] },
   layout: { type: 'force' },
   behaviors: ['drag-canvas', 'zoom-canvas'],
   plugins: [
     {
       type: 'minimap',
-      size: [200, 120],           // 缩略图大小 [宽, 高]
-      position: 'right-bottom',   // 位置
+      size: [200, 120],           // Thumbnail size [width, height]
+      position: 'right-bottom',   // Position
     },
   ],
 });
@@ -61,43 +60,43 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 常用变体
+## Common Variants
 
-### 完整配置
+### Complete Configuration
 
 ```javascript
 plugins: [
   {
     type: 'minimap',
-    // 尺寸
+    // Size
     size: [240, 160],
-    // 位置：预设值或 [x, y] 坐标
+    // Position: Preset value or [x, y] coordinates
     position: 'right-bottom',     // 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom'
-    // 或自定义位置
-    // position: [20, 20],        // [right, bottom] 距离
-    // 缩略图渲染方式
-    shape: 'key',                 // 'key'=简化渲染（性能好）| 'delegate'=代理渲染
-    // 视口遮罩样式
+    // Or custom position
+    // position: [20, 20],        // [right, bottom] distance
+    // Thumbnail rendering method
+    shape: 'key',                 // 'key'=simplified rendering (better performance) | 'delegate'=proxy rendering
+    // Viewport mask style
     maskStyle: {
       fill: 'rgba(0, 0, 0, 0.1)',
       stroke: '#1783FF',
       lineWidth: 1,
     },
-    // 容器样式
+    // Container style
     containerStyle: {
       background: '#f5f5f5',
       border: '1px solid #d9d9d9',
       borderRadius: '4px',
     },
-    // 内边距
+    // Padding
     padding: 10,
-    // 刷新延迟（ms）
+    // Refresh delay (ms)
     delay: 200,
   },
 ],
 ```
 
-## 参数参考
+## Parameter Reference
 
 ```typescript
 interface MinimapOptions {
@@ -108,6 +107,6 @@ interface MinimapOptions {
   containerStyle?: CSSProperties;
   padding?: number;
   delay?: number;
-  filter?: (id: string, elementType: string) => boolean;  // 过滤不显示的元素
+  filter?: (id: string, elementType: string) => boolean;  // Filter elements not to be displayed
 }
 ```

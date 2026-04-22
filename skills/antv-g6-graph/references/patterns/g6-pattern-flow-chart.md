@@ -1,22 +1,20 @@
 ---
 id: "g6-pattern-flow-chart"
-title: "G6 流程图模式"
+title: "G6 Flow Chart Pattern"
 description: |
-  使用 G6 创建流程图，包含不同形状节点（开始/结束/判断/处理）、
-  dagre 层次布局、折线边等完整配置。
+  Create a flow chart using G6, including different shaped nodes (Start/End/Decision/Process),
+  dagre hierarchical layout, polyline edges, and complete configuration.
 
 library: "g6"
 version: "5.x"
 category: "patterns"
 subcategory: "flowchart"
 tags:
-  - "模式"
-  - "流程图"
+  - "pattern"
   - "flowchart"
   - "dagre"
-  - "有向图"
-  - "工作流"
-  - "pattern"
+  - "directed graph"
+  - "workflow"
 
 related:
   - "g6-layout-dagre"
@@ -25,10 +23,10 @@ related:
   - "g6-edge-cubic"
 
 use_cases:
-  - "业务流程图"
-  - "工作流编排"
-  - "状态机图"
-  - "决策流程"
+  - "Business Process Diagram"
+  - "Workflow Orchestration"
+  - "State Machine Diagram"
+  - "Decision Flow"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -37,33 +35,33 @@ updated: "2026-04-15"
 author: "antv-team"
 ---
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const data = {
   nodes: [
-     { id: 'start', data: { label: '开始', type: 'start' } },
-     { id: 'input', data: { label: '用户输入', type: 'process' } },
-     { id: 'validate', data: { label: '数据有效?', type: 'decision' } },
-     { id: 'process1', data: { label: '处理数据', type: 'process' } },
-     { id: 'error', data: { label: '返回错误', type: 'process' } },
-     { id: 'save', data: { label: '保存结果', type: 'process' } },
-     { id: 'end', data: { label: '结束', type: 'end' } },
+     { id: 'start', data: { label: 'Start', type: 'start' } },
+     { id: 'input', data: { label: 'User Input', type: 'process' } },
+     { id: 'validate', data: { label: 'Data Valid?', type: 'decision' } },
+     { id: 'process1', data: { label: 'Process Data', type: 'process' } },
+     { id: 'error', data: { label: 'Return Error', type: 'process' } },
+     { id: 'save', data: { label: 'Save Result', type: 'process' } },
+     { id: 'end', data: { label: 'End', type: 'end' } },
   ],
   edges: [
      { source: 'start', target: 'input' },
      { source: 'input', target: 'validate' },
-     { source: 'validate', target: 'process1', data: { label: '是' } },
-     { source: 'validate', target: 'error', data: { label: '否' } },
+     { source: 'validate', target: 'process1', data: { label: 'Yes' } },
+     { source: 'validate', target: 'error', data: { label: 'No' } },
      { source: 'process1', target: 'save' },
      { source: 'error', target: 'end' },
      { source: 'save', target: 'end' },
   ],
 };
 
-// 按节点类型配置样式
+// Configure styles by node type
 const NODE_STYLE = {
   start: { fill: '#f6ffed', stroke: '#52c41a', size: [100, 36] },
   end: { fill: '#fff1f0', stroke: '#ff4d4f', size: [100, 36] },
@@ -80,7 +78,7 @@ const graph = new Graph({
   data,
 
   node: {
-    // 根据 type 选择不同节点形状
+    // Select node shape based on type
     type: (d) => {
       if (d.data.type === 'decision') return 'diamond';
       return 'rect';
@@ -140,10 +138,10 @@ const graph = new Graph({
         const [item] = items;
         if (!item) return '';
         const typeLabel = {
-          start: '开始节点',
-          end: '结束节点',
-          process: '处理节点',
-          decision: '判断节点',
+          start: 'Start Node',
+          end: 'End Node',
+          process: 'Process Node',
+          decision: 'Decision Node',
         };
         return `<div style="padding:8px 12px">
           <div>${item.data.label}</div>
@@ -157,9 +155,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-## 关键说明
+## Key Notes
 
-- **节点形状多样化**：根据 `type` 字段选择 `rect`（矩形）、`diamond`（菱形）等
-- **dagre 布局**：`rankdir: 'TB'` 从上到下排列，`nodeSize` 与实际节点大小一致
-- **polyline 边**：正交折线边更符合流程图视觉习惯，`radius` 设置折角圆滑
-- **边标签背景**：`labelBackground: true` 让边上的条件标签清晰可读
+- **Diverse Node Shapes**: Select `rect` (rectangle), `diamond` (rhombus), etc., based on the `type` field
+- **Dagre Layout**: `rankdir: 'TB'` arranges nodes from top to bottom, `nodeSize` matches actual node size
+- **Polyline Edges**: Orthogonal polyline edges align better with flowchart visual conventions, `radius` sets corner rounding
+- **Edge Label Background**: `labelBackground: true` ensures condition labels on edges are clear and readable

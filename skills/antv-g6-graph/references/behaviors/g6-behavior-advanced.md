@@ -1,21 +1,21 @@
 ---
 id: "g6-behavior-advanced"
-title: "G6 高级交互行为（fix-element-size / auto-adapt-label / drag-element-force）"
+title: "G6 Advanced Interaction Behaviors (fix-element-size / auto-adapt-label / drag-element-force)"
 description: |
-  fix-element-size：缩放时保持指定元素（标签、边框等）尺寸不变。
-  auto-adapt-label：视口空间不足时自动隐藏重叠标签。
-  drag-element-force：在力导向布局中实时拖拽节点并更新布局。
+  fix-element-size: Maintain the size of specified elements (labels, borders, etc.) unchanged during scaling.
+  auto-adapt-label: Automatically hide overlapping labels when viewport space is insufficient.
+  drag-element-force: Real-time dragging of nodes and updating the layout in force-directed layouts.
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "interaction"
 tags:
-  - "交互"
+  - "interaction"
   - "fix-element-size"
   - "auto-adapt-label"
   - "drag-element-force"
-  - "性能优化"
+  - "performance optimization"
 
 related:
   - "g6-behavior-drag-element"
@@ -27,9 +27,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## 缩放时固定元素尺寸（fix-element-size）
+## Fix Element Size During Zoom (fix-element-size)
 
-当用户缩小画布时，保持标签、边框等关键视觉元素的绝对像素尺寸，防止字体变得过小难以阅读。
+When users zoom out the canvas, maintain the absolute pixel size of critical visual elements such as labels and borders to prevent fonts from becoming too small and unreadable.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -41,7 +41,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 20 }, (_, i) => ({
       id: `n${i}`,
-           { label: `节点${i}` },
+      label: `Node${i}`,
     })),
     edges: Array.from({ length: 15 }, (_, i) => ({
       source: `n${i % 10}`,
@@ -67,18 +67,18 @@ const graph = new Graph({
     'drag-element',
     {
       type: 'fix-element-size',
-      // 只在缩小时启用（zoom < 1）
+      // Enable only when zooming out (zoom < 1)
       enable: (event) => event.data.scale < 1,
-      // 固定节点的标签尺寸
+      // Fix node label size
       node: [
-         { shape: 'label' },                    // 固定标签（字号、位置不随缩放变化）
-         { shape: 'key', fields: ['lineWidth'] }, // 固定节点边框宽度
+        { shape: 'label' },                    // Fix label (font size and position do not change with zoom)
+        { shape: 'key', fields: ['lineWidth'] }, // Fix node border width
       ],
-      // 固定边的标签和线宽
+      // Fix edge label and line width
       edge: [
-         { shape: 'label' },
-         { shape: 'key', fields: ['lineWidth'] },
-         { shape: 'halo', fields: ['lineWidth'] },
+        { shape: 'label' },
+        { shape: 'key', fields: ['lineWidth'] },
+        { shape: 'halo', fields: ['lineWidth'] },
       ],
     },
   ],
@@ -87,29 +87,29 @@ const graph = new Graph({
 graph.render();
 ```
 
-### fix-element-size 配置参数
+### fix-element-size Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `enable` | `boolean \| ((event) => boolean)` | `(e) => e.data.scale < 1` | 启用条件 |
-| `node` | `FixShapeConfig[]` | — | 节点中要固定的形状列表 |
-| `edge` | `FixShapeConfig[]` | — | 边中要固定的形状列表 |
-| `combo` | `FixShapeConfig[]` | — | combo 中要固定的形状列表 |
-| `reset` | `boolean` | `false` | 是否在重绘时恢复原始样式 |
+| `enable` | `boolean \| ((event) => boolean)` | `(e) => e.data.scale < 1` | Enable condition |
+| `node` | `FixShapeConfig[]` | — | List of shapes to fix in nodes |
+| `edge` | `FixShapeConfig[]` | — | List of shapes to fix in edges |
+| `combo` | `FixShapeConfig[]` | — | List of shapes to fix in combos |
+| `reset` | `boolean` | `false` | Whether to restore the original style when redrawing |
 
-**FixShapeConfig：**
+**FixShapeConfig:**
 ```typescript
 interface FixShapeConfig {
-  shape: string;           // 形状名：'key' | 'label' | 'halo' | 'icon' | ...
-  fields?: string[];       // 只固定特定属性（如 lineWidth），不指定则固定所有
+  shape: string;           // Shape name: 'key' | 'label' | 'halo' | 'icon' | ...
+  fields?: string[];       // Fix only specific properties (e.g., lineWidth), all properties are fixed if not specified
 }
 ```
 
 ---
 
-## 自动隐藏重叠标签（auto-adapt-label）
+## Auto-Hide Overlapping Labels (auto-adapt-label)
 
-当视口空间不足时，根据节点重要性（中心度）自动隐藏低优先级标签，避免文字重叠。
+When viewport space is insufficient, automatically hide low-priority labels based on node importance (centrality) to avoid text overlap.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -121,7 +121,8 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 50 }, (_, i) => ({
       id: `n${i}`,
-           { label: `节点${i}`, degree: Math.floor(Math.random() * 10) },
+      label: `Node${i}`,
+      degree: Math.floor(Math.random() * 10),
     })),
     edges: Array.from({ length: 60 }, (_, i) => ({
       source: `n${i % 25}`,
@@ -145,14 +146,14 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'auto-adapt-label',
-      // 标签间距检测 padding（px）
+      // Label spacing detection padding (px)
       padding: 4,
-      // 节点重要性排序：使用中心度，度数高的节点标签优先显示
+      // Node importance sorting: Use centrality, nodes with higher degree are prioritized
       sortNode: {
         type: 'degree',              // 'degree' | 'betweenness' | 'closeness' | 'eigenvector'
         direction: 'both',           // 'in' | 'out' | 'both'
       },
-      // 防抖延迟（ms）
+      // Debounce delay (ms)
       throttle: 100,
     },
   ],
@@ -161,21 +162,21 @@ const graph = new Graph({
 graph.render();
 ```
 
-### auto-adapt-label 配置参数
+### auto-adapt-label Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `padding` | `number` | `0` | 标签碰撞检测额外间距 |
-| `sortNode` | `NodeCentralityOptions \| SortFn` | `{ type: 'degree' }` | 节点排序（决定哪些标签优先显示） |
-| `sortEdge` | `SortFn` | — | 边排序函数 |
-| `sortCombo` | `SortFn` | — | combo 排序函数 |
-| `throttle` | `number` | `100` | 防抖延迟（ms） |
+| `padding` | `number` | `0` | Additional spacing for label collision detection |
+| `sortNode` | `NodeCentralityOptions \| SortFn` | `{ type: 'degree' }` | Node sorting (determines which labels are displayed first) |
+| `sortEdge` | `SortFn` | — | Edge sorting function |
+| `sortCombo` | `SortFn` | — | Combo sorting function |
+| `throttle` | `number` | `100` | Debounce delay (ms) |
 
 ---
 
-## 力导向布局中拖拽节点（drag-element-force）
+## Dragging Nodes in Force-Directed Layout (drag-element-force)
 
-在 d3-force 布局运行时，拖拽节点同时更新布局力场，实现真实的物理效果。
+When the d3-force layout is running, dragging nodes simultaneously updates the layout force field, achieving realistic physical effects.
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -187,7 +188,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 20 }, (_, i) => ({
       id: `n${i}`,
-           { label: `N${i}` },
+      label: `N${i}`,
     })),
     edges: Array.from({ length: 25 }, (_, i) => ({
       source: `n${i % 15}`,
@@ -206,7 +207,7 @@ const graph = new Graph({
     },
   },
   layout: {
-    type: 'd3-force',              // 必须使用 d3-force 或 d3-force-3d
+    type: 'd3-force',              // Must use d3-force or d3-force-3d
     link: { distance: 80 },
     many: { strength: -200 },
   },
@@ -215,8 +216,8 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'drag-element-force',
-      // true：拖拽后节点固定在当前位置（不再参与布局）
-      // false：松开后继续参与布局力场
+      // true: Node is fixed in current position after dragging (no longer participates in layout)
+      // false: Continues to participate in the layout force field after release
       fixed: false,
     },
   ],
@@ -225,10 +226,10 @@ const graph = new Graph({
 graph.render();
 ```
 
-### drag-element-force 配置参数
+### drag-element-force Configuration Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `fixed` | `boolean` | `false` | 拖拽松开后节点是否固定 |
+| `fixed` | `boolean` | `false` | Whether the node is fixed after dragging and releasing |
 
-> **注意：** `drag-element-force` 只支持 `d3-force` / `d3-force-3d` 布局，与普通 `force` 布局不兼容。普通力导向图请使用 `drag-element`。
+> **Note:** `drag-element-force` only supports `d3-force` / `d3-force-3d` layouts and is not compatible with the regular `force` layout. For regular force-directed graphs, please use `drag-element`.

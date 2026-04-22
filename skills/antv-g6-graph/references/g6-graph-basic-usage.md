@@ -1,7 +1,7 @@
 ---
 id: g6-graph-basic-usage
-title: G6 图表基础用法
-description: 介绍如何使用 AntV G6 创建基础图表，包括节点、边、布局、交互行为和插件的配置方式，涵盖常见图类型的完整示例。
+title: Basic Usage of G6 Graphs
+description: Introduces how to create basic graphs using AntV G6, including configuration methods for nodes, edges, layouts, interaction behaviors, and plugins, covering complete examples of common graph types.
 library: G6
 version: 5.x
 category: basic
@@ -14,45 +14,45 @@ tags:
   - plugins
 ---
 
-# G6 图表基础用法
+# G6 Basic Chart Usage
 
-## 概述
+## Overview
 
-AntV G6 是一个图可视化引擎，支持多种布局算法、交互行为和插件。本文档介绍如何正确创建和配置 G6 图表实例。
+AntV G6 is a graph visualization engine that supports various layout algorithms, interaction behaviors, and plugins. This document explains how to correctly create and configure G6 graph instances.
 
-## 核心 API
+## Core API
 
-### Graph 实例创建
+### Graph Instance Creation
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
-  container: 'container', // 容器 ID 或 DOM 元素
-  width: 800,             // 可选，画布宽度
-  height: 600,            // 可选，画布高度
+  container: 'container', // Container ID or DOM element
+  width: 800,             // Optional, canvas width
+  height: 600,            // Optional, canvas height
   data: {
     nodes: [...],
     edges: [...],
   },
   layout: { type: 'grid' },
-  node: { /* 节点样式配置 */ },
-  edge: { /* 边样式配置 */ },
-  behaviors: [...],       // 交互行为
-  plugins: [...],         // 插件
+  node: { /* Node style configuration */ },
+  edge: { /* Edge style configuration */ },
+  behaviors: [...],       // Interaction behaviors
+  plugins: [...],         // Plugins
 });
 
 graph.render();
 ```
 
-### 数据格式
+### Data Format
 
 ```javascript
 const data = {
   nodes: [
     { id: 'node1' },
     { id: 'node2', style: { x: 100, y: 200 } },
-    { id: 'node3', data: { label: '节点3', value: 42 }, states: ['active'] },
+    { id: 'node3', data: { label: 'Node 3', value: 42 }, states: ['active'] },
   ],
   edges: [
     { source: 'node1', target: 'node2' },
@@ -64,40 +64,40 @@ const data = {
 };
 ```
 
-## 常用布局类型
+## Common Layout Types
 
-| 布局类型 | 说明 |
+| Layout Type | Description |
 |---------|------|
-| `grid` | 网格布局 |
-| `snake` | 蛇形布局 |
-| `radial` | 径向布局 |
-| `antv-dagre` | DAG 有向无环图布局 |
-| `fruchterman` | 力导向布局（Fruchterman） |
-| `d3-force` | D3 力导向布局 |
-| `indented` | 缩进树布局 |
-| `mindmap` | 脑图布局 |
+| `grid` | Grid Layout |
+| `snake` | Snake Layout |
+| `radial` | Radial Layout |
+| `antv-dagre` | DAG Directed Acyclic Graph Layout |
+| `fruchterman` | Force-Directed Layout (Fruchterman) |
+| `d3-force` | D3 Force-Directed Layout |
+| `indented` | Indented Tree Layout |
+| `mindmap` | Mind Map Layout |
 
-## 常用交互行为（behaviors）
+## Common Interaction Behaviors (behaviors)
 
 ```javascript
 behaviors: [
-  'drag-canvas',           // 拖拽画布
-  'zoom-canvas',           // 缩放画布
-  'drag-element',          // 拖拽元素
-  'drag-element-force',    // 力导向图中拖拽元素
-  'collapse-expand',       // 折叠/展开节点
-  'click-select',          // 点击选中
-  'focus-element',         // 聚焦元素
-  { type: 'scroll-canvas', direction: 'y' }, // 纵向滚动
+  'drag-canvas',           // Drag canvas
+  'zoom-canvas',           // Zoom canvas
+  'drag-element',          // Drag element
+  'drag-element-force',    // Drag element in force-directed graph
+  'collapse-expand',       // Collapse/Expand node
+  'click-select',          // Click to select
+  'focus-element',         // Focus element
+  { type: 'scroll-canvas', direction: 'y' }, // Vertical scroll
   {
-    type: 'brush-select',  // 刷选
+    type: 'brush-select',  // Brush select
     enable: true,
     trigger: [],
   },
 ]
 ```
 
-## 常用插件（plugins）
+## Common Plugins (plugins)
 
 ```javascript
 plugins: [
@@ -123,9 +123,9 @@ plugins: [
 ]
 ```
 
-## 最小可运行示例
+## Minimum Viable Example
 
-### 基础网格布局图
+### Basic Grid Layout Graph
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -156,7 +156,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 固定坐标节点图（带刷选）
+### Fixed Coordinate Node Graph (with Brush Selection)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -191,7 +191,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 蛇形布局链状图
+### Snake Layout Chain Graph
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -221,7 +221,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 径向布局图
+### Radial Layout Chart
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -264,7 +264,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### DAG 有向无环图（dagre 布局）
+### DAG Directed Acyclic Graph (dagre Layout)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -320,7 +320,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 带水印插件的图
+### Chart with Watermark Plugin
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -363,7 +363,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 带背景插件的图
+### Chart with Background Plugin
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -408,7 +408,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 带 Tooltip 插件的图
+### Chart with Tooltip Plugin
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -452,7 +452,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 带 Combo 的图
+### Chart with Combo
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -479,7 +479,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 边状态样式（dagre 布局 + cubic-horizontal 边）
+### Edge State Styles (dagre Layout + cubic-horizontal Edge)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -526,7 +526,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 平行边处理（process-parallel-edges）
+### Parallel Edge Processing (process-parallel-edges)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -578,7 +578,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### Fruchterman 力导向布局（带集群着色）
+### Fruchterman Force-Directed Layout (with Cluster Coloring)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -634,7 +634,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### D3 力导向布局（二维网格图）
+### D3 Force-Directed Layout (Two-Dimensional Grid Graph)
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -671,7 +671,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 自定义节点（呼吸动画圆形节点）
+### Custom Node (Breathing Animation Circle Node)
 
 ```javascript
 import { Circle, ExtensionCategory, Graph, register } from '@antv/g6';
@@ -711,7 +711,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 六边形节点（多状态展示）
+### Hexagon Node (Multi-State Display)
 
 ```javascript
 import { Graph, iconfont } from '@antv/g6';
@@ -773,7 +773,7 @@ const graph = new Graph({
 graph.render();
 ```
 
-### 静态网络图（带点击选中和画布重置）
+### Static Network Graph (with Click Selection and Canvas Reset)
 
 ```javascript
 import { CanvasEvent, Graph } from '@antv/g6';
@@ -826,47 +826,47 @@ graph.on(CanvasEvent.CLICK, () => {
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：调用不存在的工具 `list_references`
+### Error 1: Calling a Non-existent Tool `list_references`
 
-**错误现象**：渲染报错 `400 LLM is trying to invoke a non-exist tool: "list_references"`
+**Error Description**: Rendering error `400 LLM is trying to invoke a non-exist tool: "list_references"`
 
-**原因**：LLM 尝试调用不存在的工具来查询文档，导致无法生成代码。
+**Cause**: The LLM attempts to call a non-existent tool to query documentation, resulting in the inability to generate code.
 
-**修正**：直接使用 G6 标准 API 编写代码，无需调用外部工具。参考本文档中的示例即可。
-
----
-
-### 错误 2：忘记调用 `graph.render()`
-
-**错误示例**：
-```javascript
-const graph = new Graph({ container: 'container', data });
-// 缺少 graph.render()
-```
-
-**正确示例**：
-```javascript
-const graph = new Graph({ container: 'container', data });
-graph.render(); // 必须调用 render 才能渲染图表
-```
+**Fix**: Directly use the standard G6 API to write the code, without calling external tools. Refer to the examples in this document.
 
 ---
 
-### 错误 3：数据格式不正确
+### Error 2: Forgetting to Call `graph.render()`
 
-**错误示例**：
+**Error Example**:
 ```javascript
-// 错误：直接传入节点数组
+const graph = new Graph({ container: 'container', data });
+// Missing graph.render()
+```
+
+**Correct Example**:
+```javascript
+const graph = new Graph({ container: 'container', data });
+graph.render(); // Must call render to display the graph
+```
+
+---
+
+### Error 3: Incorrect Data Format
+
+**Error Example**:
+```javascript
+// Error: Directly passing a node array
 const graph = new Graph({
   data: [{ id: 'node1' }, { id: 'node2' }],
 });
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
-// 正确：data 必须包含 nodes 和 edges 字段
+// Correct: data must contain nodes and edges fields
 const graph = new Graph({
   data: {
     nodes: [{ id: 'node1' }, { id: 'node2' }],
@@ -877,53 +877,53 @@ const graph = new Graph({
 
 ---
 
-### 错误 4：节点坐标应放在 `style` 字段中
+### Error 4: Node Coordinates Should Be Placed in the `style` Field
 
-**错误示例**：
+**Incorrect Example**:
 ```javascript
-// 错误：直接在节点对象上设置 x/y
+// Incorrect: Directly setting x/y on the node object
 { id: 'node1', x: 100, y: 200 }
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
-// 正确：坐标放在 style 字段中
+// Correct: Coordinates placed in the style field
 { id: 'node1', style: { x: 100, y: 200 } }
 ```
 
 ---
 
-### 错误 5：布局类型名称错误
+### Error 5: Incorrect Layout Type Name
 
-**错误示例**：
+**Error Example**:
 ```javascript
-layout: { type: 'dagre' } // 错误，G6 v5 中应使用 'antv-dagre'
+layout: { type: 'dagre' } // Incorrect, in G6 v5, use 'antv-dagre'
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
-layout: { type: 'antv-dagre' } // G6 v5 中的正确写法
+layout: { type: 'antv-dagre' } // Correct syntax in G6 v5
 ```
 
 ---
 
-### 错误 6：自定义节点未注册就使用
+### Error 6: Using Unregistered Custom Nodes
 
-**错误示例**：
+**Error Example**:
 ```javascript
-// 错误：未注册直接使用自定义节点类型
+// Error: Using a custom node type without registration
 const graph = new Graph({
   node: { type: 'breathing-circle' },
 });
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
 import { Circle, ExtensionCategory, Graph, register } from '@antv/g6';
 
 class BreathingCircle extends Circle { /* ... */ }
 
-// 必须先注册
+// Registration is required
 register(ExtensionCategory.NODE, 'breathing-circle', BreathingCircle);
 
 const graph = new Graph({
@@ -933,21 +933,21 @@ const graph = new Graph({
 
 ---
 
-### 错误 7：树形数据未转换直接使用
+### Error 7: Direct Use of Tree Data Without Conversion
 
-**错误示例**：
+**Incorrect Example**:
 ```javascript
-// 错误：直接将树形数据传给 data
+// Incorrect: Directly passing tree data to data
 const graph = new Graph({
   data: { id: 'root', children: [...] },
 });
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
-// 正确：使用 treeToGraphData 转换
+// Correct: Using treeToGraphData for conversion
 const graph = new Graph({
   data: treeToGraphData({ id: 'root', children: [...] }),
 });
@@ -955,14 +955,14 @@ const graph = new Graph({
 
 ---
 
-### 错误 8：`scroll-canvas` 行为配置不完整
+### Error 8: Incomplete `scroll-canvas` Behavior Configuration
 
-**错误示例**：
+**Error Example**:
 ```javascript
-behaviors: ['scroll-canvas'] // 缺少方向配置
+behaviors: ['scroll-canvas'] // Missing direction configuration
 ```
 
-**正确示例**：
+**Correct Example**:
 ```javascript
-behaviors: [{ type: 'scroll-canvas', direction: 'y' }] // 指定滚动方向
+behaviors: [{ type: 'scroll-canvas', direction: 'y' }] // Specify scroll direction
 ```
