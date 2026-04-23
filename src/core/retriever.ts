@@ -11,6 +11,18 @@ const DEFAULT_LIBRARY = 'g2';
 const bm25Cache = new Map<string, BM25Index>();
 
 /**
+ * Return the list of libraries that have a built index on disk.
+ */
+export function availableLibraries(): string[] {
+  if (!fs.existsSync(DEFAULT_INDEX_DIR)) return [];
+  return fs
+    .readdirSync(DEFAULT_INDEX_DIR)
+    .filter((f) => f.endsWith('.index.json'))
+    .map((f) => f.replace('.index.json', ''))
+    .sort();
+}
+
+/**
  * Load the index JSON file.
  * @param library The library name.
  * @returns The skill index for the specified library.
@@ -19,7 +31,13 @@ export function loadIndex(library: string): SkillIndex {
   const indexFile = path.join(DEFAULT_INDEX_DIR, `${library}.index.json`);
 
   if (!fs.existsSync(indexFile)) {
-    throw new Error(`Index file not found: ${indexFile}. Run build first.`);
+    // Only scan the directory on the error path to build a helpful message.
+    const libs = availableLibraries();
+    throw new Error(
+      libs.length > 0
+        ? `Unknown library: "${library}". Available: ${libs.join(', ')}`
+        : `Index file not found for "${library}". Run build first.`
+    );
   }
 
   return JSON.parse(fs.readFileSync(indexFile, 'utf-8'));
@@ -47,10 +65,24 @@ function getBM25Index(library: string): BM25Index {
  * @param options Options to customize the retrieval.
  * @returns An array of skills matching the query.
  */
-export function retrieve(query: string, options: RetrieveOptions = {}): Skill[] {
-  const { library = DEFAULT_LIBRARY, topK = 7, content = false } = options;
-  const index = getBM25Index(library);
-  const skills = index.search(query, topK).map(({ skill }) => skill);
+export function retrieve(
+  query: string,
+  options: RetrieveOptions = {}
+): Skill[] {
+  const { library, topK = 7, content = false } = options;
+
+  let skills: Skill[];
+  if (library) {
+    skills = getBM25Index(library)
+      .search(query, topK)
+      .map((r) => r.skill);
+  } else {
+    skills = availableLibraries()
+      .flatMap((lib) => getBM25Index(lib).search(query, topK))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK)
+      .map((r) => r.skill);
+  }
 
   if (!content) {
     return skills.map(({ content, ...skill }) => skill);
@@ -69,20 +101,34 @@ export function getSkillInfo(library = DEFAULT_LIBRARY): SkillIndex['info'] {
 }
 
 /**
+ * Get a single skill by its exact ID, searching across all available libraries
+ * unless a specific library is provided.
+ * @param id The skill ID.
+ * @param library Optional library to restrict the search.
+ * @returns The skill (with content), or undefined if not found.
+ */
+export function getSkillById(id: string, library?: string): Skill | undefined {
+  const libs = library ? [library] : availableLibraries();
+  for (const lib of libs) {
+    const { skills } = loadIndex(lib);
+    const found = skills.find((s) => s.id === id);
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/**
  * List all the skills, optionally filtered by library, category, tags, or difficulty.
  * @param options Options to filter the skills.
  * @returns An array of skills matching the filters.
  */
 export function listSkills(options: ListOptions = {}): Skill[] {
-  const {
-    library = DEFAULT_LIBRARY,
-    category = null,
-    tags = [],
-    difficulty = null
-  } = options;
-  const { skills } = loadIndex(library);
+  const { library, category = null, tags = [], difficulty = null } = options;
 
-  return skills.filter((skill) => {
+  const libs = library ? [library] : availableLibraries();
+  const allSkills = libs.flatMap((lib) => loadIndex(lib).skills);
+
+  return allSkills.filter((skill) => {
     if (category && skill.category !== category) return false;
     if (difficulty && skill.difficulty !== difficulty) return false;
     if (tags.length > 0 && !tags.some((t) => skill.tags.includes(t)))
