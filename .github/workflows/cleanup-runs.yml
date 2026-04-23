@@ -11,17 +11,20 @@ jobs:
     permissions:
       actions: write
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Delete old workflow runs
         run: |
           # Keep the latest 20 runs, delete the rest
-          RUNS_TO_DELETE=$(gh run list --limit 100 --json databaseId --jq '.[20:].databaseId | .[]')
+          RUNS_TO_DELETE=$(gh run list --repo ${{ github.repository }} --limit 100 --json databaseId --jq '.[20:].databaseId | .[]')
           
           if [ -z "$RUNS_TO_DELETE" ]; then
             echo "No old runs to delete."
           else
             for run_id in $RUNS_TO_DELETE; do
               echo "Deleting run $run_id..."
-              gh run delete "$run_id"
+              gh run delete --repo ${{ github.repository }} "$run_id"
             done
           fi
         env:
