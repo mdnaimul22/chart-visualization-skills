@@ -9,30 +9,48 @@ export function registerListCommand(program: Command): void {
     .option('--library <lib>', 'Filter by library (g2 or g6)')
     .option('--category <cat>', 'Filter by category')
     .option('--tags <tags>', 'Filter by tags (comma-separated)')
-    .option('--difficulty <level>', 'Filter by difficulty (beginner|intermediate|advanced)')
-    .action((opts: { library?: string; category?: string; tags?: string; difficulty?: string }) => {
-      const skills = listSkills({
-        library: opts.library,
-        category: opts.category || null,
-        tags: opts.tags ? opts.tags.split(',').map(t => t.trim()) : [],
-        difficulty: opts.difficulty || null,
-      });
+    .option(
+      '--difficulty <level>',
+      'Filter by difficulty (beginner|intermediate|advanced)'
+    )
+    .option('--output <format>', 'Output format: json | text', 'text')
+    .action(
+      (opts: {
+        library?: string;
+        category?: string;
+        tags?: string;
+        difficulty?: string;
+        output: string;
+      }) => {
+        const skills = listSkills({
+          library: opts.library,
+          category: opts.category || null,
+          tags: opts.tags ? opts.tags.split(',').map((t) => t.trim()) : [],
+          difficulty: opts.difficulty || null
+        });
 
-      const summary = `Total skills found: ${skills.length}`;
-
-      const groupedByLibrary: Record<string, Skill[]> = skills.reduce((acc: Record<string, Skill[]>, skill) => {
-        if (!acc[skill.library]) {
-          acc[skill.library] = [];
+        if (opts.output === 'json') {
+          console.log(JSON.stringify(skills, null, 2));
+          return;
         }
-        acc[skill.library].push(skill);
-        return acc;
-      }, {});
 
-      const content = Object.entries(groupedByLibrary).map(([lib, libSkills]) => {
-        const skillList = libSkills.map(skill => `  - ${skill.id}: ${skill.title}`).join('\n');
-        return `${lib.toUpperCase()}, ${libSkills.length} documents found:\n${skillList}`;
-      }).join('\n\n');
+        const groupedByLibrary: Record<string, Skill[]> = skills.reduce(
+          (acc: Record<string, Skill[]>, skill) => {
+            if (!acc[skill.library]) acc[skill.library] = [];
+            acc[skill.library].push(skill);
+            return acc;
+          },
+          {}
+        );
 
-      console.log(`${summary}\n\n${content}`);
-    });
+        console.log(`Total skills found: ${skills.length}\n`);
+        for (const [lib, libSkills] of Object.entries(groupedByLibrary)) {
+          console.log(`${lib.toUpperCase()}  (${libSkills.length} skills)`);
+          for (const skill of libSkills) {
+            console.log(`  ${skill.id.padEnd(48)} ${skill.title}`);
+          }
+          console.log();
+        }
+      }
+    );
 }
