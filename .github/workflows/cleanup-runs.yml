@@ -17,7 +17,7 @@ jobs:
       - name: Delete old workflow runs
         run: |
           # Keep the latest 20 runs, delete the rest
-          RUNS_TO_DELETE=$(gh run list --repo ${{ github.repository }} --limit 100 --json databaseId --jq '.[20:].databaseId | .[]')
+          RUNS_TO_DELETE=$(gh run list --repo ${{ github.repository }} --limit 100 --json databaseId --jq '.[20:] | .[].databaseId')
           
           if [ -z "$RUNS_TO_DELETE" ]; then
             echo "No old runs to delete."
