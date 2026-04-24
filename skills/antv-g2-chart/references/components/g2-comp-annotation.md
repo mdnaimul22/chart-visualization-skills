@@ -21,7 +21,6 @@ tags:
 
 related:
   - "g2-core-view-composition"
-
 ## Horizontal Reference Line (lineY)
 
 ```javascript
