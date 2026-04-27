@@ -1,9 +1,9 @@
 ---
 id: "g2-comp-label-config"
-title: "G2 Data Label Configuration (labels)"
+title: "G2 数据标签配置（labels）"
 description: |
-  Detailed explanation of the labels field configuration in G2 v5 Spec mode, covering label text, position, formatting,
-  selectors (displaying only partial labels), and style customization. Note: Use labels (plural) in Spec mode.
+  详解 G2 v5 Spec 模式中 labels 字段的配置，涵盖标签文本、位置、格式化、
+  选择器（只显示部分标签）及样式定制。注意：Spec 模式中使用 labels（复数）。
 
 library: "g2"
 version: "5.x"
@@ -11,8 +11,8 @@ category: "components"
 tags:
   - "labels"
   - "label"
-  - "data labels"
-  - "text labels"
+  - "数据标签"
+  - "文字标签"
   - "position"
   - "formatter"
   - "spec"
@@ -23,9 +23,9 @@ related:
   - "g2-comp-annotation"
 
 use_cases:
-  - "Display values above bars"
-  - "Show series names at the end of lines"
-  - "Display percentages inside and outside pie sectors"
+  - "在柱体上方显示数值"
+  - "在折线末端显示系列名称"
+  - "在饼图扇区内外显示百分比"
 
 difficulty: "beginner"
 completeness: "full"
@@ -35,7 +35,7 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/component/label"
 ---
 
-## Basic Usage
+## 基本用法
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -48,8 +48,8 @@ chart.options({
   encode: { x: 'genre', y: 'sold' },
   labels: [
     {
-      text: 'sold',          // Display the value of which field (field name string or function)
-      position: 'outside',   // Label position
+      text: 'sold',          // 显示哪个字段的值（字段名字符串或函数）
+      position: 'outside',   // 标签位置
     },
   ],
 });
@@ -57,56 +57,72 @@ chart.options({
 chart.render();
 ```
 
-## Common Position Descriptions
+## 常用位置说明
 
-| position Value | Applicable Mark | Effect |
-|----------------|-----------------|---------|
-| `'outside'`    | interval        | Outside the top of the column (default) |
-| `'inside'`     | interval        | Center inside the column |
-| `'top'`        | interval        | Top of the column (adjacent to the top) |
-| `'right'`      | interval        | Right side of the column |
-| `'outside'`    | arc (pie chart) | Lead line outside the sector |
-| `'inside'`     | arc (pie chart) | Inside the sector |
-| `'top'`        | point           | Above the point |
-| `'right'`      | line            | Right side of the line end |
+| position 值 | 适用 Mark | 效果 |
+|-------------|-----------|------|
+| `'outside'` | interval | 柱体顶端外侧（默认） |
+| `'inside'` | interval | 柱体内部中央 |
+| `'top'` | interval | 柱体顶部（紧贴顶端） |
+| `'right'` | interval | 柱体右侧 |
+| `'outside'` | arc（饼图）| 扇区外侧引线 |
+| `'inside'` | arc（饼图）| 扇区内部 |
+| `'top'` | point | 点的上方 |
+| `'right'` | line | 折线末端右侧 |
 
-## Formatting Label Text
+## 格式化标签文本
 
 ```javascript
 labels: [
   {
-    // Function method: Access the complete data row
-    text: (d) => `${d.sold.toLocaleString()} million`,
+    // 推荐：text 函数方式，可访问完整数据行 datum
+    text: (d) => `${d.sold.toLocaleString()} 万`,
 
-    // Or string field name (automatically retrieves the value of the field)
+    // 或字符串字段名（自动取该字段的值）
     // text: 'sold',
   },
 ],
 ```
-## Complete label configuration
+
+## formatter 用法（仅格式化已取值的文本）
+
+`formatter` 接收的第一个参数是 `text` 已映射的值（非完整 datum），适合对数值进行简单格式化：
 
 ```javascript
 labels: [
   {
-    text: (d) => d.value.toFixed(1),  // Label text
-    position: 'outside',               // Position
+    text: 'yield_rate',              // 先映射字段 yield_rate 的值
+    formatter: (val) => `${val}%`,   // val 是 yield_rate 的值，非 datum 对象
+  },
+],
+```
 
-    // ── Style ─────────────────────────────────
+完整签名：`formatter(text, datum, index, data) => string`
+
+## 完整 label 配置项
+
+```javascript
+labels: [
+  {
+    text: (d) => d.value.toFixed(1),  // 标签文本（推荐用函数直接访问 datum）
+    position: 'outside',               // 位置
+
+    // ── 样式 ─────────────────────────────────
     style: {
       fontSize: 12,
       fill: '#333',
-      fontWeight: 'normal',
+      fontWeight: 'bold',
       textAlign: 'center',
-      dy: -4,                          // y-direction offset (px)
-      dx: 0,                           // x-direction offset
+      dy: -4,                          // y 方向偏移（px）
+      dx: 0,                           // x 方向偏移
     },
 
-    // ── Selector (display only partial labels) ──────────────
+    // ── 选择器（只显示部分标签）──────────────
     selector: 'last',                  // 'last' | 'first' | (data) => datum
-    // Filter (display labels only for data meeting the condition)
+    // 过滤（只对满足条件的数据显示标签）
     filter: (d) => d.value > 50,
 
-    // ── Connector (commonly used for pie chart external labels) ──────────
+    // ── 连接线（饼图外部标签时常用）──────────
     connector: true,
     connectorStroke: '#aaa',
     connectorLineWidth: 1,
@@ -114,18 +130,18 @@ labels: [
 ],
 ```
 
-## Line End Labels
+## 折线末端标签
 
 ```javascript
-// Display series name only at the last point of each line
+// 只在每条折线的最后一个点显示系列名称
 chart.options({
   type: 'line',
   data,
   encode: { x: 'month', y: 'value', color: 'type' },
   labels: [
     {
-      text: 'type',         // Display series name
-      selector: 'last',     // Show only at the last data point
+      text: 'type',         // 显示系列名
+      selector: 'last',     // 只在最后一个数据点显示
       position: 'right',
       style: { fontSize: 11 },
     },
@@ -133,7 +149,7 @@ chart.options({
 });
 ```
 
-## Stacked Column Center Labels
+## 堆叠柱中心标签
 
 ```javascript
 chart.options({
@@ -143,7 +159,7 @@ chart.options({
   transform: [{ type: 'stackY' }],
   labels: [
     {
-      text: (d) => d.value >= 30 ? d.value : '',  // Do not display when value is too small
+      text: (d) => d.value >= 30 ? d.value : '',  // 数值太小时不显示
       position: 'inside',
       style: { fill: 'white', fontSize: 11 },
     },
@@ -151,23 +167,43 @@ chart.options({
 });
 ```
 
-## Common Errors and Fixes
+## 常见错误与修正
 
-### Error: Written as label (singular) in Spec Mode
+### 错误：Spec 模式中写成 label（单数）
 ```javascript
-// ❌ Incorrect: The chained API is .label(), but in Spec mode, it is labels (plural and an array)
+// ❌ 错误：链式 API 是 .label()，但 Spec 模式是 labels（复数，且是数组）
 chart.options({ label: { text: 'value' } });
 
-// ✅ Correct: Use the labels array in Spec
+// ✅ 正确：Spec 中用 labels 数组
 chart.options({ labels: [{ text: 'value' }] });
 ```
 
-### Error: Numeric Constant Passed to `text`
+### 错误：text 传入了数字常量
 ```javascript
-// ❌ Error: `text` is a number (0), all labels display '0'
+// ❌ 错误：text 为数字 0，所有标签显示 '0'
 chart.options({ labels: [{ text: 0 }] });
 
-// ✅ Correct: `text` should be a field name string or a function
+// ✅ 正确：text 应为字段名字符串或函数
 chart.options({ labels: [{ text: 'value' }] });
 chart.options({ labels: [{ text: (d) => d.value.toFixed(1) }] });
+```
+
+### 错误：formatter 中把第一个参数当成 datum
+```javascript
+// ❌ 错误：formatter 的第一个参数是已映射的文本值，不是 datum
+labels: [{
+  text: 'yield_rate',
+  formatter: (d) => `${d.yield_rate}%`,  // d 是数值，d.yield_rate 为 undefined
+}]
+
+// ✅ 方案一：用 text 函数直接访问 datum（推荐）
+labels: [{
+  text: (d) => `${d.yield_rate}%`,
+}]
+
+// ✅ 方案二：formatter 正确用法（参数是已取值的文本）
+labels: [{
+  text: 'yield_rate',
+  formatter: (val) => `${val}%`,  // val 是 yield_rate 的值
+}]
 ```
