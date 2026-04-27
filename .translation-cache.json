@@ -1,5 +1,5 @@
 {
-  "skills/antv-g2-chart/SKILL.md": "6bffcda3f5c6dce83a4c86ce118bf46f",
+  "skills/antv-g2-chart/SKILL.md": "5ce8977d6794688580ab50f5c37a7d5d",
   "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "6369d562522952faf3ee5f4788bd71be",
   "skills/antv-g2-chart/references/scales/g2-scale-band.md": "f595a1b51ed94c47e9964bb92fe7b4e4",
   "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "a33c49a97c8d98ffb080f0df3271a07a",
@@ -20,7 +20,7 @@
   "skills/antv-g2-chart/references/marks/g2-mark-link.md": "227d6ebc5535a6b76d6901f22e097dba",
   "skills/antv-g2-chart/references/marks/g2-mark-mosaic.md": "96d0f4fc48720874474160199496ffa1",
   "skills/antv-g2-chart/references/marks/g2-mark-gauge.md": "cacd5cd2ef2a3eae3c79991b215ae475",
-  "skills/antv-g2-chart/references/marks/g2-mark-partition.md": "4e22c76ac9d328c9e7fd520309776c31",
+  "skills/antv-g2-chart/references/marks/g2-mark-partition.md": "c5fa4ac92ea3aba63d80fb048a4d088a",
   "skills/antv-g2-chart/references/marks/g2-mark-cell-heatmap.md": "2b0b8b62d67dc8bae3a5f2c1c91f5b9b",
   "skills/antv-g2-chart/references/marks/g2-mark-density.md": "a6a31b7fadacd3132595b8a82aab2238",
   "skills/antv-g2-chart/references/marks/g2-mark-vector.md": "4e4a21b20f3178f8c39b0533a94218f3",
