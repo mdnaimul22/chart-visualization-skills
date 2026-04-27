@@ -1004,7 +1004,6 @@ Themes define the overall visual style of a chart, including colors, fonts, spac
 > **Detailed Documentation**: [Built-in Themes](references/themes/g2-theme-builtin.md) | [Custom Themes](references/themes/g2-theme-custom.md)
 
 ---
-
 ## 15. Palettes
 
 Palettes define color sequences, used for color mapping of categorical or continuous data.
