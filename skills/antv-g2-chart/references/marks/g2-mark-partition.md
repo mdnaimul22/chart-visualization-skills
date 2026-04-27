@@ -1,25 +1,22 @@
 ---
 id: "g2-mark-partition"
-title: "G2 矩形分区图（partition）"
+title: "G2 Partition (Rectangular Partition) Chart"
 description: |
-  partition mark 用矩形（冰柱/icicle）布局展示层次数据，每层从父节点位置开始向下延伸，
-  子节点宽度按值比例填满父节点宽度。使用笛卡尔坐标，横轴表示值域，纵轴表示层级深度。
-  属于 @antv/g2 核心，无需额外扩展库。
-  注意：partition 与 sunburst 是两个独立的 mark，不可混用：
-  partition 为矩形布局（直角坐标），sunburst 为圆环布局（极坐标，来自 @antv/g2-extension-plot）。
+  The partition mark uses a rectangular (icicle) layout to display hierarchical data, where each level extends downward from the parent node's position, and child nodes fill the parent node's width proportionally based on their values. It uses Cartesian coordinates, with the horizontal axis representing the value domain and the vertical axis representing the hierarchy depth. It is part of the @antv/g2 core and does not require additional extension libraries.
+  Note: partition and sunburst are two independent marks and cannot be mixed: partition uses a rectangular layout (Cartesian coordinates), while sunburst uses an annular layout (polar coordinates, from @antv/g2-extension-plot).
 
 library: "g2"
 version: "5.x"
 category: "marks"
 tags:
   - "partition"
-  - "矩形分区"
+  - "rectangular partition"
   - "icicle"
-  - "冰柱图"
-  - "层次数据"
+  - "icicle chart"
+  - "hierarchical data"
   - "hierarchy"
-  - "下钻"
   - "drillDown"
+  - "drill down"
 
 related:
   - "g2-mark-treemap"
@@ -28,17 +25,17 @@ related:
   - "g2-mark-pack"
 
 use_cases:
-  - "层次数据的矩形分区展示（如调用栈火焰图、文件目录结构）"
-  - "多层类别数据的占比可视化"
-  - "支持下钻交互的层次结构探索"
+  - "Rectangular partition display of hierarchical data (e.g., call stack flame graphs, file directory structures)"
+  - "Proportional visualization of multi-level categorical data"
+  - "Hierarchical structure exploration with drill-down interaction support"
 
 anti_patterns:
-  - "不要用 partition 画圆环旭日图，应使用 sunburst（需要 @antv/g2-extension-plot）"
-  - "不要把 data 写成 { value: treeRoot }，partition 的 data 是数组形式"
-  - "不要用 d.data?.name 访问字段，partition 回调拿到的是已平铺的 record，直接用 d.name"
-  - "所有节点（包括根节点和中间节点）都必须显式设置 value 字段——partition 不会自动累加子节点；根节点缺少 value 时所有矩形宽度为 0，全部叠在 x=0 处"
-  - "不要用 d['ancestor-node'] 做分支着色——该字段实际等于节点自身 name；分支着色应使用 d.path[1] || d.path[0]"
-  - "encode.color 函数的返回值是颜色通道的域键（domain key），scale.color.domain 必须与函数实际返回值完全一致——若函数返回 hex 色值而 domain 填数据名，Ordinal scale 会把 hex 追加进 domain，图例出现 #E63946 这类乱码条目"
+  - "Do not use partition to create sunburst charts; use sunburst instead (requires @antv/g2-extension-plot)"
+  - "Do not write data as { value: treeRoot }; partition data should be in array form"
+  - "Do not access fields using d.data?.name; partition callbacks receive flattened records, so use d.name directly"
+  - "All nodes (including root and intermediate nodes) must explicitly set the value field—partition does not automatically sum child nodes; if the root node lacks a value, all rectangles will have a width of 0 and stack at x=0"
+  - "Do not use d['ancestor-node'] for branch coloring—this field equals the node's own name; use d.path[1] || d.path[0] for branch coloring"
+  - "The return value of the encode.color function is the domain key for the color channel, and scale.color.domain must match the function's actual return values exactly—if the function returns hex color values but the domain contains data names, the Ordinal scale will append the hex values to the domain, causing garbled legend entries like #E63946"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -48,36 +45,36 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/graph/hierarchy/#partition"
 ---
 
-## partition vs sunburst 对比
+## partition vs sunburst Comparison
 
-| 特性 | partition（矩形分区）| sunburst（旭日图）|
-|------|----------------------|-------------------|
-| 来源 | `@antv/g2` 核心，无需扩展 | `@antv/g2-extension-plot`，需要 `extend` |
-| 坐标系 | 笛卡尔坐标（直角）| 极坐标（同心圆）|
-| 视觉形态 | 矩形冰柱/icicle | 同心圆环 |
-| data 格式 | 数组 `[treeRoot]` | `{ value: treeRoot }` |
-| 回调中字段访问 | 直接 `d.name`、`d.depth`、`d.value` | 直接 `d.name`、`d.depth`、`d.path`（字符串）|
+| Feature | partition (Rectangle Partition) | sunburst (Sunburst Chart) |
+|---------|---------------------------------|---------------------------|
+| Source  | `@antv/g2` core, no extension required | `@antv/g2-extension-plot`, requires `extend` |
+| Coordinate System | Cartesian (rectangular) | Polar (concentric circles) |
+| Visual Form | Rectangle icicle | Concentric rings |
+| Data Format | Array `[treeRoot]` | `{ value: treeRoot }` |
+| Field Access in Callback | Direct `d.name`, `d.depth`, `d.value` | Direct `d.name`, `d.depth`, `d.path` (string) |
 
-## 最小可运行示例
+## Minimum Viable Example
 
-数据结构：单根数组，`name`/`value`/`children` 三个字段。**所有节点（含根节点和中间节点）都必须显式设置 `value`**——partition 不会自动累加子节点，根节点缺少 `value` 将导致所有矩形宽度为 0 并叠在一起。
+Data Structure: Single root array with three fields: `name`/`value`/`children`. **All nodes (including the root and intermediate nodes) must explicitly set `value`**——partition will not automatically accumulate child nodes, and the absence of `value` in the root node will result in all rectangles having a width of 0 and overlapping.
 
-以下 mock 数据模拟年度预算分配（4 大类别，3 层深度）：
+The following mock data simulates annual budget allocation (4 categories, 3 levels deep):
 
 ```javascript
 import { Chart } from '@antv/g2';
 
 const data = [
   {
-    name: '年度预算',
+    name: 'Annual Budget',
     value: 1550,
     children: [
       {
-        name: '产品研发',
+        name: 'Product R&D',
         value: 600,
         children: [
           {
-            name: '前端',
+            name: 'Frontend',
             value: 220,
             children: [
               { name: 'React', value: 90 },
@@ -86,7 +83,7 @@ const data = [
             ],
           },
           {
-            name: '后端',
+            name: 'Backend',
             value: 230,
             children: [
               { name: 'Java', value: 100 },
@@ -95,7 +92,7 @@ const data = [
             ],
           },
           {
-            name: '移动端',
+            name: 'Mobile',
             value: 150,
             children: [
               { name: 'iOS', value: 80 },
@@ -105,85 +102,85 @@ const data = [
         ],
       },
       {
-        name: '市场营销',
+        name: 'Marketing',
         value: 400,
         children: [
           {
-            name: '数字营销',
+            name: 'Digital Marketing',
             value: 180,
             children: [
               { name: 'SEO', value: 70 },
               { name: 'SEM', value: 60 },
-              { name: '社媒', value: 50 },
+              { name: 'Social Media', value: 50 },
             ],
           },
           {
-            name: '品牌推广',
+            name: 'Brand Promotion',
             value: 130,
             children: [
-              { name: '设计', value: 70 },
-              { name: '内容', value: 60 },
+              { name: 'Design', value: 70 },
+              { name: 'Content', value: 60 },
             ],
           },
           {
-            name: '活动运营',
+            name: 'Event Operations',
             value: 90,
             children: [
-              { name: '线上', value: 50 },
-              { name: '线下', value: 40 },
+              { name: 'Online', value: 50 },
+              { name: 'Offline', value: 40 },
             ],
           },
         ],
       },
       {
-        name: '运营支持',
+        name: 'Operational Support',
         value: 300,
         children: [
           {
-            name: '客户服务',
+            name: 'Customer Service',
             value: 130,
             children: [
-              { name: '售前', value: 60 },
-              { name: '售后', value: 70 },
+              { name: 'Pre-sales', value: 60 },
+              { name: 'After-sales', value: 70 },
             ],
           },
           {
-            name: '数据分析',
+            name: 'Data Analysis',
             value: 100,
             children: [
               { name: 'BI', value: 60 },
-              { name: '算法', value: 40 },
+              { name: 'Algorithm', value: 40 },
             ],
           },
           {
-            name: '技术支持',
+            name: 'Technical Support',
             value: 70,
             children: [
-              { name: '运维', value: 40 },
-              { name: '安全', value: 30 },
+              { name: 'Operations', value: 40 },
+              { name: 'Security', value: 30 },
             ],
           },
         ],
       },
       {
-        name: '基础设施',
+        name: 'Infrastructure',
         value: 250,
         children: [
           {
-            name: '云计算',
+            name: 'Cloud Computing',
             value: 120,
             children: [
               { name: 'AWS', value: 60 },
-              { name: '自建IDC', value: 60 },
+              { name: 'Self-built IDC', value: 60 },
             ],
           },
           {
-            name: '工具链',
+            name: 'Toolchain',
             value: 130,
             children: [
               { name: 'CI/CD', value: 50 },
-              { name: '监控', value: 40 },
-              { name: '日志', value: 40 },
+              { name: 'Monitoring', value: 40 },
+              { name: 'Logging', value: 40 },
             ],
           },
         ],
@@ -220,30 +217,30 @@ chart.options({
     },
   ],
   style: { inset: 0.5 },
-  axis: { x: { title: '预算（万元）' } },
+  axis: { x: { title: 'Budget (10,000 RMB)' } },
 });
 
 chart.render();
 ```
 
-## 数据格式说明
+## Data Format Description
 
-`partition` 的 `data` 是**数组**，每项是一个树根节点（支持多根）。
+The `data` of `partition` is an **array**, where each item is a tree root node (supports multiple roots).
 
-**关键：所有节点必须显式设置 `value`**，partition 布局不会自动累加子节点的值。非叶节点的 `value` 应等于其所有叶子节点 `value` 之和。
+**Key: All nodes must explicitly set `value`**, the partition layout will not automatically accumulate the values of child nodes. The `value` of non-leaf nodes should equal the sum of the `value` of all its leaf nodes.
 
 ```javascript
-// ✅ 正确：根节点和中间节点都显式设置 value
+// ✅ Correct: Root and intermediate nodes explicitly set value
 chart.options({
   type: 'partition',
   data: [
     {
       name: 'root',
-      value: 300,          // ← 根节点必须有 value（= 所有叶子之和）
+      value: 300,          // ← Root node must have value (= sum of all leaves)
       children: [
         {
           name: 'A',
-          value: 200,      // ← 中间节点也必须有 value
+          value: 200,      // ← Intermediate nodes must also have value
           children: [
             { name: 'A1', value: 120 },
             { name: 'A2', value: 80 },
@@ -255,71 +252,71 @@ chart.options({
   ],
 });
 
-// ❌ 错误：根节点缺少 value → 所有矩形宽度为 0，全部叠在 x=0 处
+// ❌ Error: Root node missing value → all rectangles have width 0, stacked at x=0
 chart.options({
   type: 'partition',
-  data: [{ name: 'root', children: [...] }],   // ❌ 缺少 value，图表崩溃
+  data: [{ name: 'root', children: [...] }],   // ❌ Missing value, chart crashes
 });
 
-// ❌ 错误：不能用 { value: treeRoot } 对象包装（sunburst 的写法）
+// ❌ Error: Cannot use { value: treeRoot } object wrapper (sunburst syntax)
 chart.options({
   type: 'partition',
-  data: { value: { name: 'root', children: [...] } },   // ❌ 不工作
+  data: { value: { name: 'root', children: [...] } },   // ❌ Does not work
 });
 ```
 
-## 回调函数中的数据结构
+## Data Structure in Callback Functions
 
-`partition` 在渲染前会将树形数据展平，回调中拿到的 `d` 是**已展平的 record**，直接访问字段：
+`partition` flattens the tree data before rendering. The `d` received in the callback is a **flattened record**, allowing direct field access:
 
 ```javascript
-// d 的结构（展平后）
+// Structure of d (after flattening)
 {
-  name: 'diffProps',                                    // 节点名称
-  value: 120,                                           // 节点数值
-  depth: 3,                                             // 层级深度（根节点为 0）
-  path: ['main', 'render', 'reconcile', 'diffProps'],  // 从根到当前节点的路径数组
-  'ancestor-node': 'diffProps',  // 注意：等于节点自身 name，不是一级祖先名
-  childNodeCount: 0,             // 子节点数量（叶子节点为 0）
-  x: [x0, x1],                  // 水平位置区间
-  y: [y0, y1],                   // 垂直位置区间（即层级）
+  name: 'diffProps',                                    // Node name
+  value: 120,                                           // Node value
+  depth: 3,                                             // Depth level (root node is 0)
+  path: ['main', 'render', 'reconcile', 'diffProps'],  // Path array from root to current node
+  'ancestor-node': 'diffProps',  // Note: Equals the node's own name, not the top-level ancestor
+  childNodeCount: 0,             // Number of child nodes (0 for leaf nodes)
+  x: [x0, x1],                  // Horizontal position range
+  y: [y0, y1],                   // Vertical position range (i.e., depth level)
 }
 ```
 
-**按分支（一级类别）着色**：使用 `d.path[1]`（路径第 2 元素 = 一级子节点名），而不是 `d['ancestor-node']`（它等于节点自身名，无分组效果）：
+**Color by Branch (Top-Level Category)**: Use `d.path[1]` (2nd element in path = top-level child name), not `d['ancestor-node']` (which equals the node's own name and has no grouping effect):
 
 ```javascript
-// ✅ 按分支着色（同一一级子树同色）
+// ✅ Color by branch (same color for nodes in the same top-level subtree)
 encode: { color: (d) => d.path[1] || d.path[0] }
-// path[1] 对根节点为 undefined，回退到 path[0]（根节点自身名）
+// path[1] is undefined for root nodes, fallback to path[0] (root node's own name)
 
-// ✅ 按节点名着色（每个节点独立颜色）
+// ✅ Color by node name (unique color for each node)
 encode: { color: 'name' }
 
-// ✅ 按层级深度着色
+// ✅ Color by depth level
 encode: { color: (d) => d.depth }
 
-// ❌ 错误：ancestor-node 等于节点自身 name，不是"一级祖先"
-encode: { color: (d) => d['ancestor-node'] }  // 等效于 d.name，无分组效果
+// ❌ Error: ancestor-node equals the node's own name, not the "top-level ancestor"
+encode: { color: (d) => d['ancestor-node'] }  // Equivalent to d.name, no grouping effect
 
-// ❌ 错误：partition 不使用 d3-hierarchy 包装，d.data 不存在
+// ❌ Error: partition does not use d3-hierarchy wrapping, d.data does not exist
 encode: { color: (d) => d.data?.name }
 ```
 
-## labels 位置选择
+## labels Position Selection
 
-- **浅树（≤ 6 层）**：用 `position: 'inside'`，文字显示在矩形内部，太窄时由 `overflowHide` 自动隐藏
-- **深树（> 6 层）**：用 `position: 'left'` + `dx: 8`，文字从矩形左边缘开始，适合行高较小的场景
+- **Shallow Tree (≤ 6 levels)**: Use `position: 'inside'`, text is displayed inside the rectangle, and automatically hidden by `overflowHide` when too narrow
+- **Deep Tree (> 6 levels)**: Use `position: 'left'` + `dx: 8`, text starts from the left edge of the rectangle, suitable for scenes with smaller line heights
 
 ```javascript
-// 浅树（推荐）
+// Shallow Tree (Recommended)
 labels: [{ text: 'name', position: 'inside', transform: [{ type: 'overflowHide' }] }]
 
-// 深树（官方 example 用法，适合 10+ 层）
+// Deep Tree (Official example usage, suitable for 10+ levels)
 labels: [{ text: 'name', position: 'left', dx: 8, transform: [{ type: 'overflowHide' }] }]
 ```
 
-## layout 配置
+## layout Configuration
 
 ```javascript
 chart.options({
@@ -327,17 +324,17 @@ chart.options({
   data: [...],
   encode: { value: 'value', color: 'name' },
   layout: {
-    sort: (a, b) => b.value - a.value,  // 按值降序排列子节点
-    fillParent: true,                   // 子节点填满父节点宽度（默认 true）
-    // valueField: 'value',             // 数值字段名（默认 'value'）
-    // nameField: 'name',               // 名称字段名（默认 'name'）
+    sort: (a, b) => b.value - a.value,  // Sort child nodes in descending order by value
+    fillParent: true,                   // Child nodes fill the parent node's width (default true)
+    // valueField: 'value',             // Value field name (default 'value')
+    // nameField: 'name',               // Name field name (default 'name')
   },
 });
 ```
 
-## 带下钻交互
+## Drill-Down Interaction
 
-`partition` 内置 `drillDown` 交互，点击节点可下钻：
+`partition` comes with a built-in `drillDown` interaction, allowing users to drill down by clicking on a node:
 
 ```javascript
 chart.options({
@@ -345,141 +342,141 @@ chart.options({
   data: [...],
   encode: { value: 'value', color: 'name' },
   interaction: {
-    drillDown: true,  // 默认已开启
+    drillDown: true,  // Enabled by default
   },
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：根节点缺少 value → 所有矩形叠在 x=0
+### Error 1: Root Node Missing `value` → All Rectangles Stacked at `x=0`
 
-partition 布局用 `node.value` 计算根节点宽度（`x1 = x0 + value`）。根节点 `value` 为 0 时，宽度为 0，所有子节点也从 `x=0` 开始且宽度由各自 value 决定，导致兄弟节点严重重叠。
+The `partition` layout calculates the root node's width using `node.value` (`x1 = x0 + value`). When the root node's `value` is 0, its width becomes 0, and all child nodes start at `x=0` with widths determined by their respective `value`. This causes severe overlap among sibling nodes.
 
 ```javascript
-// ❌ 错误：根节点无 value，子节点起点均为 x=0，发生重叠
+// ❌ Error: Root node without value, child nodes start at x=0, causing overlap
 chart.options({
   type: 'partition',
   data: [
     {
       name: 'root',
-      // value 缺失！
+      // value is missing!
       children: [
         { name: 'A', value: 150 },  // x=[0, 150]
-        { name: 'B', value: 200 },  // x=[0, 200] ← 与 A 重叠！
+        { name: 'B', value: 200 },  // x=[0, 200] ← Overlaps with A!
       ],
     },
   ],
 });
 
-// ✅ 正确：所有节点显式设置 value
+// ✅ Correct: All nodes explicitly set with value
 chart.options({
   type: 'partition',
   data: [
     {
       name: 'root',
-      value: 350,   // ← 必须有，等于所有叶子 value 之和
+      value: 350,   // ← Must be present, equal to the sum of all leaf values
       children: [
         { name: 'A', value: 150 },  // x=[0, 150]
-        { name: 'B', value: 200 },  // x=[150, 350] ← 正确
+        { name: 'B', value: 200 },  // x=[150, 350] ← Correct
       ],
     },
   ],
 });
 ```
 
-### 错误 2：把 partition 和 sunburst 混用
+### Error 2: Mixing partition and sunburst
 ```javascript
-// ❌ 错误：用 partition 配极坐标想得到旭日图
+// ❌ Incorrect: Using partition with polar coordinates to achieve a sunburst chart
 chart.options({
   type: 'partition',
-  coordinate: { type: 'polar' },  // ❌ partition 不支持极坐标旭日图
+  coordinate: { type: 'polar' },  // ❌ partition does not support polar coordinate sunburst charts
 });
 
-// ✅ 正确：旭日图应使用 sunburst（需要 @antv/g2-extension-plot）
+// ✅ Correct: Sunburst charts should use sunburst (requires @antv/g2-extension-plot)
 import { plotlib } from '@antv/g2-extension-plot';
 import { Runtime, corelib, extend } from '@antv/g2';
 const Chart = extend(Runtime, { ...corelib(), ...plotlib() });
 
 chart.options({
   type: 'sunburst',
-  data: { value: treeRoot },  // sunburst 使用 { value: root } 对象
+  data: { value: treeRoot },  // sunburst uses { value: root } object
   encode: { value: 'sum' },
 });
 ```
 
-### 错误 3：data 使用 sunburst 的对象格式
+### Error 3: Using sunburst object format for data
 ```javascript
-// ❌ 错误：partition 不接受 { value: root } 对象
+// ❌ Incorrect: partition does not accept { value: root } object
 chart.options({
   type: 'partition',
   data: { value: { name: 'root', children: [...] } },
 });
 
-// ✅ 正确：partition 使用数组，且根节点需显式设置 value
+// ✅ Correct: partition uses an array, and the root node must explicitly set value
 chart.options({
   type: 'partition',
   data: [{ name: 'root', value: 1000, children: [...] }],
 });
 ```
 
-### 错误 4：labels 中用 d.data?.name 访问字段
+### Error 4: Accessing Fields with `d.data?.name` in `labels`
 ```javascript
-// ❌ 错误：d3-hierarchy 写法，partition 已展平，d.data 不存在
+// ❌ Incorrect: d3-hierarchy syntax, partition is flattened, `d.data` does not exist
 labels: [{ text: (d) => d.data?.name }]
 
-// ✅ 正确：直接访问展平后字段
+// ✅ Correct: Directly access the flattened field
 labels: [{ text: 'name' }]
 labels: [{ text: (d) => d.name }]
 ```
 
-### 错误 5：误用 ancestor-node 做分支着色
+### Error 5: Misusing ancestor-node for branch coloring
 ```javascript
-// ❌ 错误：ancestor-node 等于节点自身 name，所有节点颜色各不相同，无分组效果
+// ❌ Incorrect: ancestor-node equals the node's own name, resulting in all nodes having different colors with no grouping effect
 encode: { color: (d) => d['ancestor-node'] }
 
-// ✅ 正确：用 path[1] 取一级子节点名实现分支着色
+// ✅ Correct: Use path[1] to get the first-level child node name for branch coloring
 encode: { color: (d) => d.path[1] || d.path[0] }
 ```
 
-### 错误 6：encode.color 函数返回值与 scale.color.domain 不匹配
+### Error 6: Mismatch between `encode.color` function return value and `scale.color.domain`
 
-`encode.color` 的函数返回值是颜色通道的**域键（domain key）**，`scale.color.domain` 必须与函数实际返回的值完全一致。
+The return value of the `encode.color` function is the **domain key** for the color channel, and `scale.color.domain` must exactly match the value actually returned by the function.
 
-若函数返回 hex 色值而 `domain` 填数据名，`@antv/scale` 的 Ordinal scale 会把未知的 hex 字符串**动态追加**进 domain，导致图例出现 `#E63946` 这类乱码条目。
+If the function returns a hex color value while the `domain` is filled with data names, the Ordinal scale in `@antv/scale` will **dynamically append** the unknown hex string to the domain, resulting in garbled entries like `#E63946` in the legend.
 
 ```javascript
-// ❌ 错误：函数返回 hex 色值，但 domain 是数据字段名
-// Ordinal scale 把 '#E63946'/'#BDBDBD' 追加到 domain，图例出现 hex 字符串条目
+// ❌ Error: Function returns hex color value, but domain is data field name
+// Ordinal scale appends '#E63946'/'#BDBDBD' to domain, causing legend to display hex string entries
 encode: {
   color: (d) => ['产品研发', '基础设施'].includes(d.path[1]) ? '#E63946' : '#BDBDBD',
 },
 scale: {
   color: {
-    domain: ['产品研发', '市场营销', '运营支持', '基础设施'],  // ❌ 与函数返回值不匹配
+    domain: ['产品研发', '市场营销', '运营支持', '基础设施'],  // ❌ Mismatch with function return value
     range: ['#E63946', '#BDBDBD', '#BDBDBD', '#E63946'],
   },
 },
-// 结果：domain 被污染为 ['产品研发', '市场营销', '运营支持', '基础设施', '#E63946', '#BDBDBD']
-// 图例显示 6 个条目，其中包含 '#E63946'、'#BDBDBD' 字符串
+// Result: Domain is polluted to ['产品研发', '市场营销', '运营支持', '基础设施', '#E63946', '#BDBDBD']
+// Legend displays 6 entries, including '#E63946' and '#BDBDBD' strings
 
-// ✅ 正确：函数返回语义标签，scale.domain 精确匹配返回值
+// ✅ Correct: Function returns semantic labels, scale.domain precisely matches return values
 encode: {
   color: (d) => ['产品研发', '基础设施'].includes(d.path[1]) ? 'highlight' : 'muted',
 },
 scale: {
   color: {
-    domain: ['highlight', 'muted'],  // ✅ 与函数返回值完全一致
+    domain: ['highlight', 'muted'],  // ✅ Exact match with function return values
     range: ['#E63946', '#BDBDBD'],
   },
 },
-// 图例只显示 2 个语义条目，颜色映射正确
+// Legend displays only 2 semantic entries with correct color mapping
 ```
 
-若不需要图例，只想指定颜色映射，可直接用 `range` 不设 `domain`（利用 Ordinal 的自动 domain 收集）：
+If you do not need a legend and only want to specify color mappings, you can directly use `range` without setting `domain` (leveraging Ordinal's automatic domain collection):
 
 ```javascript
-// ✅ 不需要控制图例标签时：直接用 range，让 Ordinal 自动收集 domain
+// ✅ When legend labels are not needed: Use range directly, allowing Ordinal to automatically collect domain
 encode: { color: (d) => d.path[1] || d.path[0] },
 scale: {
   color: {

@@ -76,14 +76,13 @@ chart.render();
 labels: [
   {
     // Recommended: text function approach, allows access to the complete data row datum
-    text: (d) => `${d.sold.toLocaleString()} 万`,
+    text: (d) => `${d.sold.toLocaleString()} million`,
 
     // Alternatively, a string field name (automatically retrieves the value of that field)
     // text: 'sold',
   },
 ],
 ```
-
 ## formatter Usage (Only Formats Text with Retrieved Values)
 
 The first argument received by `formatter` is the mapped value of `text` (not the complete datum), which is suitable for simple formatting of numerical values:

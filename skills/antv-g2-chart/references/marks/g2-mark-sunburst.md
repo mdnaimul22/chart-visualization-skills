@@ -1,20 +1,20 @@
 ---
 id: "g2-mark-sunburst"
-title: "G2 旭日图（sunburst）"
+title: "G2 Sunburst"
 description: |
-  sunburst mark 用同心圆环（极坐标）展示多层级层次数据，来自 @antv/g2-extension-plot 扩展库。
-  圆环的径向深度表示层级，弧长角度表示数值大小。
-  注意：sunburst 与 partition 是两个独立的 mark：
-  sunburst 为圆环布局（极坐标，需要扩展），partition 为矩形冰柱布局（直角坐标，@antv/g2 核心）。
+  The sunburst mark uses concentric circles (polar coordinates) to display multi-level hierarchical data, from the @antv/g2-extension-plot extension library.
+  The radial depth of the rings represents the hierarchy, and the arc angle represents the value size.
+  Note: sunburst and partition are two separate marks:
+  sunburst is a circular layout (polar coordinates, requires extension), and partition is a rectangular icicle layout (Cartesian coordinates, @antv/g2 core).
 
 library: "g2"
 version: "5.x"
 category: "marks"
 tags:
-  - "旭日图"
+  - "Sunburst"
   - "sunburst"
-  - "层次结构"
-  - "多层级"
+  - "Hierarchy"
+  - "Multi-level"
   - "hierarchy"
   - "polar"
   - "g2-extension-plot"
@@ -25,14 +25,14 @@ related:
   - "g2-mark-arc-pie"
 
 use_cases:
-  - "组织架构展示"
-  - "文件系统分析"
-  - "预算分配的层次占比"
+  - "Organizational structure display"
+  - "File system analysis"
+  - "Hierarchical proportion of budget allocation"
 
 anti_patterns:
-  - "层级过深（>4层）应使用矩形树图或 partition"
-  - "不要用 type: 'partition' 加极坐标替代 sunburst，应直接使用 sunburst"
-  - "不要把 data 写成数组，sunburst 的 data 是 { value: treeRoot } 对象"
+  - "Hierarchy too deep (>4 levels) should use treemap or partition"
+  - "Do not use type: 'partition' with polar coordinates to replace sunburst, use sunburst directly"
+  - "Do not write data as an array, sunburst's data is a { value: treeRoot } object"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -42,17 +42,17 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/mark/sunburst"
 ---
 
-## partition vs sunburst 对比
+## partition vs sunburst Comparison
 
-| 特性 | sunburst（旭日图）| partition（矩形分区）|
-|------|-------------------|----------------------|
-| 来源 | `@antv/g2-extension-plot`，需要 `extend` | `@antv/g2` 核心，无需扩展 |
-| 坐标系 | 极坐标（同心圆）| 笛卡尔坐标（直角）|
-| 视觉形态 | 同心圆环 | 矩形冰柱/icicle |
-| data 格式 | `{ value: treeRoot }` 或 fetch | 数组 `[treeRoot]` 或 fetch |
-| 回调中 path | `d.path` 是**字符串** `'A / B / C'` | `d.path` 是**数组** `['A', 'B', 'C']` |
+| Feature | sunburst (Sunburst Chart) | partition (Rectangular Partition) |
+|---------|----------------------------------|-----------------------------------|
+| Source  | `@antv/g2-extension-plot`, requires `extend` | `@antv/g2` core, no extension needed |
+| Coordinate System | Polar (concentric circles) | Cartesian (rectangular) |
+| Visual Form | Concentric rings | Rectangular icicle |
+| data Format | `{ value: treeRoot }` or fetch | Array `[treeRoot]` or fetch |
+| Path in Callback | `d.path` is a **string** `'A / B / C'` | `d.path` is an **array** `['A', 'B', 'C']` |
 
-## 引入扩展（必须）
+## Import Extensions (Required)
 
 ```javascript
 import { plotlib } from '@antv/g2-extension-plot';
@@ -61,7 +61,7 @@ import { Runtime, corelib, extend } from '@antv/g2';
 const Chart = extend(Runtime, { ...corelib(), ...plotlib() });
 ```
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { plotlib } from '@antv/g2-extension-plot';
@@ -89,71 +89,71 @@ chart.options({
 chart.render();
 ```
 
-## 数据格式说明
+## Data Format Description
 
-`sunburst` 的 `data` 是 `{ value: treeRoot }` 对象（单棵树），不是数组：
+The `data` for `sunburst` is a `{ value: treeRoot }` object (single tree), not an array:
 
 ```javascript
-// ✅ 正确：内联数据，单棵树根对象
+// ✅ Correct: Inline data, single tree root object
 chart.options({
   type: 'sunburst',
   data: {
     value: {
       name: 'root',
       children: [
-        { name: '分组1', children: [{ name: '分组1-1', sum: 100 }] },
-        { name: '分组2', sum: 200 },
+        { name: 'Group 1', children: [{ name: 'Group 1-1', sum: 100 }] },
+        { name: 'Group 2', sum: 200 },
       ],
     },
   },
   encode: { value: 'sum' },
 });
 
-// ✅ 正确：远程 fetch
+// ✅ Correct: Remote fetch
 chart.options({
   type: 'sunburst',
   data: { type: 'fetch', value: 'https://example.com/tree.json' },
   encode: { value: 'sum' },
 });
 
-// ❌ 错误：不能直接传数组（partition 的写法）
+// ❌ Incorrect: Cannot directly pass an array (partition syntax)
 chart.options({
   type: 'sunburst',
-  data: [{ name: 'root', children: [...] }],  // ❌ 不工作
+  data: [{ name: 'root', children: [...] }],  // ❌ Does not work
 });
 ```
 
-## 回调函数中的数据结构
+## Data Structure in Callback Functions
 
-sunburst 展平后，回调中 `d` 的结构：
+After sunburst flattening, the structure of `d` in the callback:
 
 ```javascript
 {
-  name: '分组1-1',             // 节点名称
-  value: 100,                  // 节点数值（子树汇总）
-  depth: 2,                    // 层级深度（根节点为 1）
-  path: '分组1 / 分组1-1',     // ← 路径是字符串（/ 分隔）
-  'ancestor-node': '分组1',   // 第一层祖先节点名
+  name: 'Group1-1',             // Node name
+  value: 100,                   // Node value (subtree summary)
+  depth: 2,                     // Hierarchy depth (root node is 1)
+  path: 'Group1 / Group1-1',    // ← Path is a string (separated by /)
+  'ancestor-node': 'Group1',    // First-level ancestor node name
   x: [x0, x1],
   y: [y0, y1],
 }
 ```
 
-**注意**：`path` 是**字符串**，用 ` / ` 分隔，与 partition 的数组不同。
+**Note**: `path` is a **string**, separated by ` / `, which is different from the array in partition.
 
-## encode 着色策略
+## encode coloring strategy
 
-sunburst 展平后内置字段（`name`、`depth`、`path`、`ancestor-node`）可用字符串指定；
-原始数据中的自定义字段不在展平记录中，需用回调通过 `path` 派生：
+After sunburst flattening, built-in fields (`name`, `depth`, `path`, `ancestor-node`) can be specified using strings;
+Custom fields from the original data are not in the flattened records and need to be derived using a callback via `path`:
 
 ```javascript
-// ✅ 默认着色（按 ancestor-node，同门类同色）
-encode: { value: 'sum' }  // color 默认为 'ancestor-node'
+// ✅ Default coloring (by ancestor-node, same category same color)
+encode: { value: 'sum' }  // color defaults to 'ancestor-node'
 
-// ✅ 按 name 字段着色（内置字段，字符串可用）
+// ✅ Color by name field (built-in field, string can be used)
 encode: { value: 'sum', color: 'name' }
 
-// ✅ 按路径前两级着色（回调）
+// ✅ Color by the first two levels of the path (callback)
 encode: {
   value: 'sum',
   color: (d) => {
@@ -162,30 +162,30 @@ encode: {
   },
 }
 
-// ✅ 按层级深度着色
+// ✅ Color by depth level
 encode: { value: 'sum', color: (d) => d.depth }
 ```
 
-## 极坐标自定义
+## Polar Coordinate Customization
 
 ```javascript
-// 调整内外半径
+// Adjust inner and outer radius
 chart.options({
   type: 'sunburst',
   data: { value: treeData },
   encode: { value: 'sum' },
   coordinate: {
     type: 'polar',
-    innerRadius: 0.3,   // 默认 0.2
+    innerRadius: 0.3,   // default 0.2
     outerRadius: 0.9,
   },
 });
 
-// 还原为直角坐标（得到类似 partition 的矩形布局，但用 partition 更合适）
+// Revert to Cartesian coordinates (results in a rectangular layout similar to partition, but using partition is more appropriate)
 coordinate: { type: 'cartesian' }
 ```
 
-## 下钻交互
+## Drill-Down Interaction
 
 ```javascript
 chart.options({
@@ -195,50 +195,50 @@ chart.options({
   interaction: {
     drillDown: {
       breadCrumb: {
-        rootText: '总名称',
+        rootText: 'Total Name',
         style: { fontSize: '14px', fill: '#333' },
         active: { fill: 'red' },
       },
-      isFixedColor: true,   // 下钻后维持原来颜色
+      isFixedColor: true,   // Maintain original color after drill-down
     },
   },
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：未引入扩展库
+### Error 1: Extension Library Not Imported
 ```javascript
-// ❌ 错误：直接用 Chart from '@antv/g2'，sunburst 未注册
+// ❌ Error: Directly using Chart from '@antv/g2', sunburst is not registered
 import { Chart } from '@antv/g2';
 chart.options({ type: 'sunburst', ... });  // ❌ Unknown mark type: sunburst
 
-// ✅ 正确：通过 extend 注册 plotlib
+// ✅ Correct: Register plotlib via extend
 import { plotlib } from '@antv/g2-extension-plot';
 import { Runtime, corelib, extend } from '@antv/g2';
 const Chart = extend(Runtime, { ...corelib(), ...plotlib() });
 ```
 
-### 错误 2：data 使用 partition 的数组格式
+### Error 2: Using Array Format with `partition` in `data`
 ```javascript
-// ❌ 错误：sunburst 不接受数组
+// ❌ Incorrect: Sunburst does not accept arrays
 chart.options({
   type: 'sunburst',
   data: [{ name: 'root', children: [...] }],
 });
 
-// ✅ 正确：sunburst 使用 { value: root } 对象
+// ✅ Correct: Sunburst uses a `{ value: root }` object
 chart.options({
   type: 'sunburst',
   data: { value: { name: 'root', children: [...] } },
 });
 ```
 
-### 错误 3：把 path 当数组处理
+### Error 3: Treating `path` as an Array
 ```javascript
-// ❌ 错误：sunburst 的 path 是字符串
-color: (d) => d.path[1]          // 拿到的是第 2 个字符，不是第 2 层路径
+// ❌ Incorrect: `path` in sunburst is a string
+color: (d) => d.path[1]          // Retrieves the 2nd character, not the 2nd level path
 
-// ✅ 正确：先 split
+// ✅ Correct: Split first
 color: (d) => d.path.split(' / ')[1]
 ```
