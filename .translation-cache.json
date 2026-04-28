@@ -1,5 +1,5 @@
 {
-  "skills/antv-g2-chart/SKILL.md": "3576072a03119b55dc56b421a65616bf",
+  "skills/antv-g2-chart/SKILL.md": "7e37e4303f98654c2071cbdab876e14c",
   "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "6369d562522952faf3ee5f4788bd71be",
   "skills/antv-g2-chart/references/scales/g2-scale-band.md": "f595a1b51ed94c47e9964bb92fe7b4e4",
   "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "a33c49a97c8d98ffb080f0df3271a07a",
@@ -143,7 +143,7 @@
   "skills/antv-g2-chart/references/data/g2-data-sortby.md": "2a8a31ce1428eb3a3fc70d6e5824d9d6",
   "skills/antv-g2-chart/references/data/g2-data-kde.md": "a7203f6c9900beddc682fb4cb18c32b2",
   "skills/antv-g2-chart/references/patterns/g2-pattern-performance.md": "c0d0ed55fae1e8d37c326bff194db611",
-  "skills/antv-g2-chart/references/patterns/g2-pattern-v4-to-v5.md": "feba95525d44d47b72bcb25894ca0b50",
+  "skills/antv-g2-chart/references/patterns/g2-pattern-v4-to-v5.md": "247ccd641209c379da59e9b5c9ea254b",
   "skills/antv-g2-chart/references/patterns/g2-pattern-responsive.md": "b55b6170ff2ba08ab6f1f3d05b78055f",
   "skills/antv-g2-chart/references/animations/g2-animation-types.md": "bc1ee2d2b96492e118c82dc220ca8048"
 }
