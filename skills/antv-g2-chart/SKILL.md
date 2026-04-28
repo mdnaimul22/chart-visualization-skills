@@ -278,7 +278,7 @@ chart.render();
 
 ---
 
-## 4. Core Concepts / 核心概念
+## 4. Core Concepts
 
 Core concepts are the foundation of G2, and understanding them is a prerequisite for using G2 correctly.
 
@@ -1013,7 +1013,6 @@ Label transforms are used to handle issues such as label overlap and overflow, i
 ## 18. Patterns / 模式
 
 Patterns are best practices for common scenarios, including migration guides, performance optimization, and responsive adaptation.
-
 ### 18.1 Migration Guide / Migration (v4 → v5)
 
 | v4 (Deprecated) | v5 (Correct) |
