@@ -169,7 +169,7 @@ async function runEvaluation(opts: {
     console.log(`  Issues Count: ${summary.issuesCount}`);
     console.log('='.repeat(60));
 
-    console.log(`EVAL_RESULT_PATH=${outputPath}`);
+    process.stderr.write(`EVAL_RESULT_PATH=${outputPath}\n`);
   } catch (error) {
     console.error('Evaluation failed:', (error as Error).message);
     process.exit(1);

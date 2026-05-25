@@ -122,6 +122,6 @@ node controller.js --score --score-threshold=0.7
 
 - `list_directory` — 列出目录结构
 - `read_file` — 读取文件内容（限 12 KB）
-- `grep_files` — 在目录中搜索关键词
+- `grep_files` — 在目录中搜索关键词`
 
 未配置时 agent 直接基于 skill 内容和错误 case 分析，不会尝试调用任何工具。

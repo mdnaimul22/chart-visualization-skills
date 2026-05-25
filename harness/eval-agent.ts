@@ -32,7 +32,7 @@ export function run({ sample, full, retrieval, dataset, concurrency, ids, rootDi
   }
 
   const argv = [
-    path.join(MAIN_ROOT_DIR, 'eval', 'eval-cli', 'index.js'),
+    path.join(MAIN_ROOT_DIR, 'eval', 'eval-cli', 'index.ts'),
     'eval',
     `--retrieval=${retrieval}`
   ];
@@ -46,8 +46,8 @@ export function run({ sample, full, retrieval, dataset, concurrency, ids, rootDi
   if (dataset) argv.push(`--dataset=${dataset}`);
   if (concurrency) argv.push(`--concurrency=${concurrency}`);
 
-  console.log(`\n$ node ${argv.join(' ')} (root=${effectiveRoot})`);
-  const result = spawnSync('node', argv, {
+  console.log(`\n$ tsx ${argv.join(' ')} (root=${effectiveRoot})`);
+  const result = spawnSync('tsx', argv, {
     cwd: effectiveRoot,
     stdio: ['inherit', 'inherit', 'pipe'],
     shell: false,
