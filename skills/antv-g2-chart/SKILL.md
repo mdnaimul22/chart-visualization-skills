@@ -242,6 +242,23 @@ chart.options({ label: { text: 'value' } });
 // ✅ Correct: labels (plural)
 chart.options({ labels: [{ text: 'value' }] });
 
+// ❌ Wrong: labels formatter 把第一个参数当 datum 对象
+// formatter 的第一个参数是 text 已映射的值（如 85），不是 datum
+// d.value 在数字 85 上为 undefined，结果为 "undefined%"
+chart.options({
+  labels: [{ text: 'value', formatter: (d) => d.value + '%' }],
+});
+
+// ✅ Correct: 用 text 函数直接访问 datum 并格式化（推荐）
+chart.options({
+  labels: [{ text: (d) => d.value + '%' }],
+});
+
+// ✅ Correct: 或用 formatter 的正确用法（val 是已映射的数值）
+chart.options({
+  labels: [{ text: 'value', formatter: (val) => val + '%' }],
+});
+
 // ❌ Wrong: hex 色值放在数据中，被 Ordinal scale 当作类别 key
 // 渲染颜色是 G2 默认调色板，图例显示无意义的 '#1e3a5f' 等字符串
 const barData = [
@@ -283,6 +300,25 @@ chart.options({
   scale: {
     color: { type: 'identity' },
   },
+});
+
+// ❌ Wrong: area 图上使用 stroke + lineWidth 会包裹整个填充区域
+// 底部和两侧也会被描边，正确做法是 view + children 叠加 area + line
+chart.options({
+  type: 'area',
+  data,
+  encode: { x: 'date', y: 'value' },
+  style: { fill: '#FF5924', fillOpacity: 0.4, stroke: '#FF5924', lineWidth: 2 },
+});
+
+// ✅ Correct: view + area(填充) + line(顶部边缘线)
+chart.options({
+  type: 'view',
+  data,
+  children: [
+    { type: 'area', encode: { x: 'date', y: 'value' }, style: { fill: '#FF5924', fillOpacity: 0.4 } },
+    { type: 'line', encode: { x: 'date', y: 'value' }, style: { stroke: '#FF5924', lineWidth: 2 } },
+  ],
 });
 
 // ❌ Wrong: unnecessary scale type specification
