@@ -71,12 +71,8 @@ const NODE_STYLE = {
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 650,
   autoFit: 'view',
-
   data,
-
   node: {
     // Select node shape based on type
     type: (d) => {

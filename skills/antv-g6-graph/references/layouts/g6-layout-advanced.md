@@ -1,15 +1,18 @@
 ---
 id: "g6-layout-advanced"
-title: "G6 Advanced Layouts (concentric / radial / mds / fruchterman)"
+title: "G6 高级布局（concentric / radial / mds / fruchterman）"
 description: |
-  Configuration and usage scenarios for four layouts: concentric (concentric circles), radial (radiating), mds (dimensionality reduction with distance preservation), and fruchterman (fast force-directed).
+  concentric（同心圆）、radial（辐射）、mds（降维保距）、
+  fruchterman（快速力导向）四种布局的配置与使用场景。
 
 library: "g6"
 version: "5.x"
 category: "layouts"
 subcategory: "advanced"
 tags:
-  - "layout"
+  - "布局"
+  - "同心圆"
+  - "辐射"
   - "concentric"
   - "radial"
   - "mds"
@@ -26,9 +29,9 @@ created: "2026-04-15"
 updated: "2026-04-15"
 ---
 
-## Concentric Layout (concentric)
+## 同心圆布局（concentric）
 
-Nodes are layered based on their attribute values, with nodes having larger values placed in the inner circle.
+按节点属性值大小分层，值大的节点排在内圈。
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -40,7 +43,7 @@ const graph = new Graph({
   data: {
     nodes: Array.from({ length: 20 }, (_, i) => ({
       id: `n${i}`,
-      data: { label: `N${i}`, degree: Math.floor(Math.random() * 10) },
+           { label: `N${i}`, degree: Math.floor(Math.random() * 10) },
     })),
     edges: Array.from({ length: 25 }, (_, i) => ({
       source: `n${i % 10}`,
@@ -59,16 +62,16 @@ const graph = new Graph({
   },
   layout: {
     type: 'concentric',
-    // Field used for sorting (nodes with larger values are placed in the inner circle)
-    sortBy: 'degree',            // Field name or 'degree' (automatically calculates degree)
-    // Minimum spacing between concentric circles (px)
+    // 用于排序的字段（值大的在内圈）
+    sortBy: 'degree',            // 字段名或 'degree'（自动计算度数）
+    // 最小同心圆间距（px）
     minNodeSpacing: 20,
-    // Distance between levels
+    // 层间距离
     levelDistance: 60,
-    // Prevent node overlap
+    // 防止节点重叠
     preventOverlap: true,
     nodeSize: 30,
-    // Radius of the outermost circle
+    // 最外圈半径
     maxLevelDiff: 0.5,
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
@@ -79,15 +82,13 @@ graph.render();
 
 ---
 
-## Radial Layout (radial)
+## 辐射布局（radial）
 
-Arranges nodes in a radial pattern outward from a specified center node, based on graph distance, with clear hierarchical layers.
+以指定节点为中心，按图距离向外辐射排列，层次清晰。
 
 ```javascript
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 800,
   data: {
     nodes: Array.from({ length: 20 }, (_, i) => ({ id: `n${i}`, data: {} })),
     edges: [
@@ -111,16 +112,16 @@ const graph = new Graph({
   },
   layout: {
     type: 'radial',
-    // Center node id (defaults to the first node)
+    // 中心节点 id（默认为第一个节点）
     focusNode: 'n0',
-    // Spacing between layers
+    // 每层的间距
     unitRadius: 80,
-    // Prevent overlap
+    // 防重叠
     preventOverlap: true,
     nodeSize: 30,
-    // Strict radius (nodes at each level are arranged at the same radius as much as possible)
+    // 严格半径（每层节点尽量排在同一半径上）
     strictRadii: true,
-    // Spacing between child nodes
+    // 子节点之间的间距
     nodeSpacing: 5,
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
@@ -131,19 +132,19 @@ graph.render();
 
 ---
 
-## Dimensionality Reduction Layout (MDS)
+## 降维布局（mds）
 
-Maintains the graph distance (shortest path distance) between nodes, suitable for displaying similarity/distance relationships.
+保持节点之间的图距离（最短路径距离）排列，适合展示相似/距离关系。
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   width: 640,
   height: 480,
-  data: { nodes: [...], edges: [...] },
+    { nodes: [...], edges: [...] },
   layout: {
     type: 'mds',
-    // Edge weight field (read from edge.data, affects node distance calculation)
+    // 边权重字段（从 edge.data 中读取，影响节点距离计算）
     linkDistance: 100,
   },
   behaviors: ['drag-canvas', 'zoom-canvas'],
@@ -152,29 +153,27 @@ const graph = new Graph({
 
 ---
 
-## Fast Fruchterman (fruchterman)
+## 快速力导向（fruchterman）
 
-Faster than d3-force, suitable for medium-sized graphs (hundreds of nodes), and supports GPU acceleration.
+比 d3-force 更快，适合中等规模图（数百节点），支持 GPU 加速。
 
 ```javascript
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: { nodes: [...], edges: [...] },
   layout: {
     type: 'fruchterman',
-    // Number of iterations (more iterations lead to more stability but slower performance)
+    // 迭代次数（越多越稳定，越慢）
     iterations: 1000,
-    // Gravity coefficient (prevents nodes from flying out)
+    // 重力系数（防止节点飞出）
     gravity: 10,
-    // Speed (affects convergence speed)
+    // 速度（影响收敛速度）
     speed: 5,
-    // Enable clustering
+    // 是否启用聚类
     clustering: false,
-    // Repulsion force between nodes
-    k: undefined,           // Default is auto-calculated
-    // Use WebWorker (runs asynchronously, does not block the main thread)
+    // 节点间排斥力
+    k: undefined,           // 默认自动计算
+    // 使用 WebWorker（异步运行，不阻塞主线程）
     workerEnabled: true,
   },
   behaviors: ['drag-canvas', 'zoom-canvas', 'drag-element'],
@@ -183,39 +182,39 @@ const graph = new Graph({
 graph.render();
 ```
 
-### Comparison of Fruchterman and Force
+### fruchterman 与 force 对比
 
-| Feature | force (d3-force) | fruchterman |
-|---------|------------------|-------------|
-| Algorithm | D3 Force-Directed | Fruchterman-Reingold |
-| Performance | Moderate | Faster |
-| GPU Acceleration | Not Supported | Supported |
-| Configurable Force Types | Yes (link/many/center...) | No |
-| Large Graphs | Requires Optimization | Better |
+| 特性 | force（d3-force） | fruchterman |
+|------|-----------------|-------------|
+| 算法 | D3 力导向 | Fruchterman-Reingold |
+| 性能 | 中等 | 较快 |
+| GPU 加速 | 不支持 | 支持 |
+| 可配置力类型 | 是（link/many/center...） | 否 |
+| 大规模图 | 需要优化 | 较好 |
 
 ---
 
-## Layout Selection Guide
+## 布局选型指南
 
 ```
-Need hierarchical relationships?
-  → Directed Acyclic Graph (DAG): dagre / antv-dagre
-  → Tree structure: compact-box / mindmap / dendrogram / indented
+需要层次关系？
+  → 有向无环图（DAG）：dagre / antv-dagre
+  → 树形结构：compact-box / mindmap / dendrogram / indented
 
-Need circular/symmetric arrangement?
-  → Few nodes: circular
-  → Layered by attribute: concentric
-  → Centered around a point: radial
+需要圆形/对称排列？
+  → 节点数不多：circular
+  → 按属性分层：concentric
+  → 以某点为中心：radial
 
-Need physical spring effect?
-  → Small graph (< 200 nodes): force / d3-force
-  → Medium graph (< 500 nodes): fruchterman
-  → Large graph (> 500 nodes): force-atlas2
+需要物理弹簧效果？
+  → 小图（< 200 节点）：force / d3-force
+  → 中图（< 500 节点）：fruchterman
+  → 大图（> 500 节点）：force-atlas2
 
-Need to preserve original position relationships?
-  → Use node x/y coordinates + layout: { type: 'preset' } (or do not set layout)
+需要保持原始位置关系？
+  → 使用节点 x/y 坐标 + layout: { type: 'preset' }（或不设置布局）
 
-Other special requirements?
-  → Grid alignment: grid
-  → Preserve graph distances: mds
+其他特殊需求？
+  → 网格对齐：grid
+  → 保持图距离：mds
 ```

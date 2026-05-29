@@ -37,8 +37,6 @@ Map node data fields to node size ranges:
 ```javascript
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: {
     nodes: [
        { id: 'n1', data: { label: 'A', value: 10 } },

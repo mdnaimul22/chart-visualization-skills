@@ -40,8 +40,6 @@ fetch('https://assets.antv.antgroup.com/g6/circular.json')
   .then((data) => {
     const graph = new Graph({
       container: 'container',
-      width: 800,
-      height: 600,
       autoFit: 'view',
       data,
       layout: { type: 'circular' },
@@ -105,8 +103,6 @@ import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: {
     nodes: [
       { id: 'n0', data: { cluster: 'a' }, style: { x: 200, y: 150 } },

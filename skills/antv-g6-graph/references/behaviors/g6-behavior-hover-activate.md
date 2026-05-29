@@ -1,19 +1,20 @@
 ---
 id: "g6-behavior-hover-activate"
-title: "G6 Hover Activate Interaction"
+title: "G6 悬停激活交互（Hover Activate）"
 description: |
-  Use the hover-activate behavior to highlight nodes and associated edges when the mouse hovers over them,
-  improving the readability of the graph.
+  使用 hover-activate 行为实现鼠标悬停时高亮节点和关联边，
+  提升图的可读性。
 
 library: "g6"
 version: "5.x"
 category: "behaviors"
 subcategory: "highlight"
 tags:
-  - "interaction"
+  - "交互"
+  - "悬停"
   - "hover"
   - "hover-activate"
-  - "highlight"
+  - "高亮"
   - "activate"
 
 related:
@@ -21,12 +22,12 @@ related:
   - "g6-state-overview"
 
 use_cases:
-  - "Highlighting associated edges of the current node when edges are dense"
-  - "Knowledge graph exploration"
-  - "Relationship graph analysis"
+  - "边密集时高亮当前节点关联边"
+  - "知识图谱探索"
+  - "关系图分析"
 
 anti_patterns:
-  - "Hover-activate has limited significance when there are fewer edges"
+  - "边较少时 hover-activate 意义不大"
 
 difficulty: "beginner"
 completeness: "full"
@@ -36,7 +37,7 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/behavior/hover-activate"
 ---
 
-## Minimum Viable Example
+## 最小可运行示例
 
 ```javascript
 import { Graph } from '@antv/g6';
@@ -101,9 +102,8 @@ const graph = new Graph({
     'zoom-canvas',
     {
       type: 'hover-activate',
-      degree: 1,              // Highlight how many hops of neighbors (1 = direct neighbors)
-      state: 'active',        // Active state name
-      inactiveState: 'inactive',  // State name for other elements
+      degree: 1,              // 高亮几跳邻居（1=直接邻居）
+      state: 'active',        // 激活状态名
     },
   ],
 });
@@ -111,13 +111,13 @@ const graph = new Graph({
 graph.render();
 ```
 
-## Parameter Reference
+## 参数参考
 
 ```typescript
 interface HoverActivateOptions {
-  degree?: number;              // Neighbor hops, default 1
-  state?: string;               // Active element state, default 'active'
-  inactiveState?: string;       // Inactive element state, default 'inactive'
+  degree?: number;              // 邻居跳数，默认 1
+  state?: string;               // 激活元素状态，默认 'active'
+  inactiveState?: string;       // 未激活元素状态，默认 'inactive'
   enable?: boolean | ((event) => boolean);
 }
 ```

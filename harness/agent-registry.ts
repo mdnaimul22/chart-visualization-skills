@@ -80,7 +80,7 @@ registry.register(
   'eval',
   'Run LLM evaluation on the dataset and produce a result JSON file',
   (opts) => evalAgent.run(opts as unknown as Parameters<typeof evalAgent.run>[0]),
-  () => fs.existsSync(path.join(ROOT_DIR, 'eval', 'eval-cli', 'index.js'))
+  () => fs.existsSync(path.join(ROOT_DIR, 'eval', 'eval-cli', 'index.ts'))
 );
 
 registry.register(

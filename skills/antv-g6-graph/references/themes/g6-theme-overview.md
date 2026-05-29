@@ -49,8 +49,6 @@ import { Graph } from '@antv/g6';
 // Light theme (default)
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: { nodes: [...], edges: [...] },
   theme: 'light',               // Default value
   layout: { type: 'force' },

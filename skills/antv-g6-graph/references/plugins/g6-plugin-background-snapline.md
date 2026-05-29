@@ -1,9 +1,9 @@
 ---
 id: "g6-plugin-background-snapline"
-title: "G6 Background Plugin + Snapline Plugin (background / snapline)"
+title: "G6 背景插件 + 对齐线插件（background / snapline）"
 description: |
-  background: Sets the background color, gradient, or image for the canvas.
-  snapline: Displays smart alignment reference lines when dragging nodes, supporting automatic snapping.
+  background：为画布设置背景颜色、渐变或图片。
+  snapline：拖拽节点时显示智能对齐参考线，支持自动吸附。
 
 library: "g6"
 version: "5.x"
@@ -12,9 +12,10 @@ subcategory: "visual"
 tags:
   - "background"
   - "snapline"
-  - "alignment line"
-  - "canvas background"
-  - "snapping alignment"
+  - "对齐线"
+  - "背景"
+  - "画布背景"
+  - "吸附对齐"
 
 related:
   - "g6-plugin-tooltip"
@@ -26,21 +27,19 @@ created: "2026-04-16"
 updated: "2026-04-16"
 ---
 
-## Background Plugin (background)
+## 背景插件（background）
 
-Sets the background color, gradient, or background image for the graph canvas, supporting all CSS style properties.
+为图画布设置背景颜色、渐变或背景图片，支持所有 CSS 样式属性。
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: {
     nodes: [
-      { id: 'n1', data: { label: 'Node 1' } },
-      { id: 'n2', data: { label: 'Node 2' } },
+      { id: 'n1', data: { label: '节点1' } },
+      { id: 'n2', data: { label: '节点2' } },
     ],
     edges: [{ source: 'n1', target: 'n2' }],
   },
@@ -48,7 +47,7 @@ const graph = new Graph({
     {
       type: 'background',
       key: 'bg',
-      backgroundColor: '#f0f2f5',   // Background color
+      backgroundColor: '#f0f2f5',   // 背景颜色
     },
   ],
 });
@@ -56,35 +55,35 @@ const graph = new Graph({
 graph.render();
 ```
 
-### background Configuration Parameters
+### background 配置参数
 
-| Parameter | Type | Default Value | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `type` | `string` | `'background'` | Plugin type |
-| `key` | `string` | — | Unique identifier, used for `graph.updatePlugin()` |
-| `backgroundColor` | `string` | — | Background color (CSS color) |
-| `backgroundImage` | `string` | — | Background image (`'url(...)'`) |
-| `backgroundSize` | `string` | `'cover'` | Background size (CSS background-size) |
-| `backgroundRepeat` | `string` | — | Background repeat (CSS background-repeat) |
-| `backgroundPosition` | `string` | — | Background position |
-| `opacity` | `string` | — | Background opacity (0-1) |
-| `transition` | `string` | `'background 0.5s'` | Transition animation |
-| `zIndex` | `string` | `-1` | Stacking order, default -1 is below other elements |
-| `width` | `string` | `'100%'` | Background width |
-| `height` | `string` | `'100%'` | Background height |
+| `type` | `string` | `'background'` | 插件类型 |
+| `key` | `string` | — | 唯一标识，用于 `graph.updatePlugin()` |
+| `backgroundColor` | `string` | — | 背景颜色（CSS color） |
+| `backgroundImage` | `string` | — | 背景图片（`'url(...)'`） |
+| `backgroundSize` | `string` | `'cover'` | 背景尺寸（CSS background-size） |
+| `backgroundRepeat` | `string` | — | 背景重复（CSS background-repeat） |
+| `backgroundPosition` | `string` | — | 背景位置 |
+| `opacity` | `string` | — | 背景透明度（0-1） |
+| `transition` | `string` | `'background 0.5s'` | 过渡动画 |
+| `zIndex` | `string` | `-1` | 层叠顺序，默认 -1 在其他元素之下 |
+| `width` | `string` | `'100%'` | 背景宽度 |
+| `height` | `string` | `'100%'` | 背景高度 |
 
-> Note: The default `zIndex` of -1 ensures the background is below other DOM plugins such as grid lines.
+> 注意：`zIndex` 默认 -1 确保背景在网格线等其他 DOM 插件之下。
 
-### Common Background Styles
+### 常见背景样式
 
 ```javascript
-// Solid Color Background
+// 纯色背景
 { type: 'background', backgroundColor: '#f0f2f5' }
 
-// Gradient Background
+// 渐变背景
 { type: 'background', background: 'linear-gradient(45deg, #1890ff, #722ed1)', opacity: '0.8' }
 
-// Image Background
+// 图片背景
 {
   type: 'background',
   backgroundImage: 'url(https://example.com/bg.png)',
@@ -93,34 +92,32 @@ graph.render();
   opacity: '0.2',
 }
 
-// Dark Theme Background
+// 暗色主题背景
 { type: 'background', backgroundColor: '#1a1a2e' }
 ```
 
-### Dynamic Background Update
+### 动态更新背景
 
 ```javascript
 const graph = new Graph({
   plugins: [{ type: 'background', key: 'bg', backgroundColor: '#f0f2f5' }],
 });
 
-// Dynamically switch background
+// 动态切换背景
 graph.updatePlugin({ key: 'bg', backgroundColor: '#e6f7ff', transition: 'background 1s ease' });
 ```
 
 ---
 
-## Snapline Plugin
+## 对齐线插件（snapline）
 
-Automatically displays horizontal/vertical alignment reference lines when dragging nodes, supports automatic snapping, and facilitates precise alignment.
+拖拽节点时自动显示水平/垂直对齐参考线，支持自动吸附，便于精确对齐。
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: {
     nodes: [
       { id: 'n1' },
@@ -135,9 +132,9 @@ const graph = new Graph({
     {
       type: 'snapline',
       key: 'snapline',
-      tolerance: 5,        // Distance threshold to trigger alignment (px)
-      offset: 20,          // Extension distance of alignment line ends (px)
-      autoSnap: true,      // Whether to automatically snap to alignment position
+      tolerance: 5,        // 触发对齐的距离阈值（px）
+      offset: 20,          // 对齐线头尾延伸距离（px）
+      autoSnap: true,      // 是否自动吸附到对齐位置
       verticalLineStyle: { stroke: '#1783FF', lineWidth: 1 },
       horizontalLineStyle: { stroke: '#1783FF', lineWidth: 1 },
     },
@@ -147,28 +144,28 @@ const graph = new Graph({
 graph.render();
 ```
 
-### snapline Configuration Parameters
+### snapline 配置参数
 
-| Parameter | Type | Default Value | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `type` | `string` | `'snapline'` | Plugin type |
-| `key` | `string` | — | Unique identifier |
-| `tolerance` | `number` | `5` | Distance threshold for triggering alignment (px) |
-| `offset` | `number` | `20` | Extension distance of alignment line at both ends (px) |
-| `autoSnap` | `boolean` | `true` | Whether to automatically snap to alignment position |
-| `shape` | `string \| Function` | `'key'` | Reference shape (`'key'` for main shape) |
-| `verticalLineStyle` | `LineStyle` | `{ stroke: '#1783FF' }` | Vertical alignment line style |
-| `horizontalLineStyle` | `LineStyle` | `{ stroke: '#1783FF' }` | Horizontal alignment line style |
-| `filter` | `(node) => boolean` | `() => true` | Filter nodes that do not participate in alignment |
+| `type` | `string` | `'snapline'` | 插件类型 |
+| `key` | `string` | — | 唯一标识 |
+| `tolerance` | `number` | `5` | 触发对齐的距离阈值（px） |
+| `offset` | `number` | `20` | 对齐线头尾延伸距离（px） |
+| `autoSnap` | `boolean` | `true` | 是否自动吸附到对齐位置 |
+| `shape` | `string \| Function` | `'key'` | 参照图形（`'key'` 为主图形） |
+| `verticalLineStyle` | `LineStyle` | `{ stroke: '#1783FF' }` | 垂直对齐线样式 |
+| `horizontalLineStyle` | `LineStyle` | `{ stroke: '#1783FF' }` | 水平对齐线样式 |
+| `filter` | `(node) => boolean` | `() => true` | 过滤不参与对齐的节点 |
 
-### Customizing Snapline Style
+### 自定义对齐线样式
 
 ```javascript
 plugins: [
   {
     type: 'snapline',
     tolerance: 8,
-    autoSnap: false,     // Only display the line, do not automatically snap
+    autoSnap: false,     // 只显示线，不自动吸附
     verticalLineStyle: {
       stroke: '#F08F56',
       lineWidth: 2,
@@ -179,7 +176,7 @@ plugins: [
       lineWidth: 2,
       lineDash: [4, 4],
     },
-    // Exclude specific nodes from snapping
+    // 排除特定节点不参与对齐
     filter: (node) => node.id !== 'fixed-node',
   },
 ]
@@ -187,15 +184,13 @@ plugins: [
 
 ---
 
-## Combined Usage Example
+## 组合使用示例
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 500,
   data: {
     nodes: Array.from({ length: 9 }, (_, i) => ({ id: `n${i}` })),
     edges: [],

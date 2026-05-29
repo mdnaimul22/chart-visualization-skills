@@ -1,22 +1,22 @@
 ---
 id: "g6-layout-force"
-title: "G6 Force-Directed Layout (Force Layout)"
+title: "G6 力导向布局（Force Layout）"
 description: |
-  Automatically arrange nodes using force-directed layout (force / d3-force / fruchterman).
-  Based on physical simulation, nodes generate repulsive forces, and edges generate attractive forces, ultimately reaching a balanced state.
+  使用力导向布局（force / d3-force / fruchterman）自动排列节点。
+  基于物理模拟，节点间产生斥力，边产生引力，最终达到平衡状态。
 
 library: "g6"
 version: "5.x"
 category: "layouts"
 subcategory: "force"
 tags:
-  - "layout"
-  - "force-directed"
+  - "布局"
+  - "力导向"
   - "force"
   - "d3-force"
   - "fruchterman"
   - "network"
-  - "automatic layout"
+  - "自动布局"
 
 related:
   - "g6-core-graph-init"
@@ -24,15 +24,15 @@ related:
   - "g6-node-circle"
 
 use_cases:
-  - "Network relationship graph"
-  - "Social graph"
-  - "Knowledge graph"
-  - "Exploratory graph analysis"
+  - "网络关系图"
+  - "社交图谱"
+  - "知识图谱"
+  - "探索性图分析"
 
 anti_patterns:
-  - "Force-directed calculation is slow when the number of nodes exceeds 1000; consider fruchterman or force-atlas2"
-  - "Switch to dagre when fixed hierarchical order is required"
-  - "Use compact-box or mindmap for tree-like data"
+  - "节点数量超过 1000 时力导向计算较慢，考虑 fruchterman 或 force-atlas2"
+  - "需要固定层次顺序时改用 dagre"
+  - "树形数据使用 compact-box 或 mindmap"
 
 difficulty: "beginner"
 completeness: "full"
@@ -42,36 +42,36 @@ author: "antv-team"
 source_url: "https://g6.antv.antgroup.com/manual/layout/force"
 ---
 
-## Core Concepts
+## 核心概念
 
-Force-directed layout achieves visual balance in graphs by simulating physical forces:
-- **Repulsion**: Nodes repel each other to prevent overlap
-- **Edge Attraction**: Edges pull connected nodes closer
-- **Gravity**: Attracts nodes towards the canvas center
+力导向布局通过模拟物理力使图自动达到视觉平衡：
+- **斥力（repulsion）**：节点间互相排斥，防止重叠
+- **引力（edge attraction）**：边将连接的节点拉近
+- **向心力（gravity）**：将节点吸引到画布中心
 
-G6 provides three force-directed layouts:
-| Layout Type | Features |
+> **约束**：`nodeStrength` 必须为非负数（≥ 0），负值会导致布局计算异常或节点行为不可预测。
+
+G6 提供三种力导向布局：
+| 布局类型 | 特点 |
 |----------|------|
-| `force` | Built-in G6, intuitive parameters, sufficient for most scenarios |
-| `d3-force` | Based on D3, rich force types, highly customizable |
-| `fruchterman` | High performance, supports GPU acceleration, suitable for large graphs |
+| `force` | G6 内置，参数直观，大多数场景够用 |
+| `d3-force` | 基于 D3，力类型丰富，高度可定制 |
+| `fruchterman` | 性能好，支持 GPU 加速，适合大图 |
 
-## Minimum Viable Example
+## 最小可运行示例
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 600,
   data: {
     nodes: [
-       { id: 'n1', data: { label: 'Node 1' } },
-       { id: 'n2', data: { label: 'Node 2' } },
-       { id: 'n3', data: { label: 'Node 3' } },
-       { id: 'n4', data: { label: 'Node 4' } },
-       { id: 'n5', data: { label: 'Node 5' } },
+       { id: 'n1', data: { label: '节点1' } },
+       { id: 'n2', data: { label: '节点2' } },
+       { id: 'n3', data: { label: '节点3' } },
+       { id: 'n4', data: { label: '节点4' } },
+       { id: 'n5', data: { label: '节点5' } },
     ],
     edges: [
        { source: 'n1', target: 'n2' },
@@ -105,163 +105,163 @@ const graph = new Graph({
 graph.render();
 ```
 
-## Common Variants
+## 常用变体
 
-### G6 Force Layout (Complete Parameters)
+### G6 Force 布局（完整参数）
 
 ```javascript
 layout: {
   type: 'force',
-  // Ideal length of edges
+  // 边的理想长度
   linkDistance: 100,
-  // Strength of gravity (higher values pull nodes closer to the center)
+  // 向心力强度（越大节点越聚向中心）
   gravity: 10,
-  // Coulomb repulsion distance scale (smaller values increase repulsion range, helping to spread nodes)
+  // 库仑斥力距离缩放（值越小斥力作用范围越大，有助于展开节点）
   coulombDisScale: 0.005,
-  // Center point
-  center: [400, 300],     // [x, y], default is canvas center
-  // Maximum number of iterations
+  // 中心点
+  center: [400, 300],     // [x, y]，默认画布中心
+  // 最大迭代次数
   maxIteration: 1000,
-  // Damping coefficient (0~1, smaller values converge faster)
+  // 阻尼系数（0~1，越小收敛越快）
   damping: 0.9,
-  // Minimum movement distance (convergence is considered if movement is less than this value)
+  // 最小移动距离（小于此值视为收敛）
   minMovement: 0.5,
 },
-// ⚠️ preventOverlap / nodeSize are G6 v4 parameters and are silently ignored in v5's force layout
-// To prevent overlap, use d3-force + collide instead (see D3 Force example below)
+// ⚠️ preventOverlap / nodeSize 是 G6 v4 参数，v5 的 force 布局中被静默忽略
+// 若需要防重叠，请改用 d3-force + collide（见下方 D3 Force 示例）
 ```
 
-### D3 Force Layout
+### D3 Force 布局
 
 ```javascript
 layout: {
   type: 'd3-force',
-  // Edge connection force (spring effect)
+  // 边的连接力（弹簧效果）
   link: {
-    distance: 100,         // Ideal edge length
-    strength: 0.8,         // Force strength 0~1
+    distance: 100,         // 理想边长
+    strength: 0.8,         // 力强度 0~1
   },
-  // Node repulsion (Coulomb repulsion)
+  // 节点间斥力（库仑排斥）
   manyBody: {
-    strength: -200,        // Negative value for repulsion, positive value for attraction
+    strength: -200,        // 负值为斥力，正值为引力
     distanceMax: 400,
   },
-  // Pull towards center
+  // 向中心收拢
   center: {
     x: 0,
     y: 0,
     strength: 0.1,
   },
-  // Collision detection (prevent overlap)
+  // 碰撞检测（防重叠）
   collide: {
     radius: 30,
     strength: 0.5,
   },
-  // Control iteration
+  // 控制迭代
   alpha: 0.5,
   alphaDecay: 0.028,
   alphaMin: 0.001,
 },
 ```
 
-### Fruchterman Layout (Recommended for Large Graphs)
+### Fruchterman 布局（大图推荐）
 
 ```javascript
 layout: {
   type: 'fruchterman',
   gravity: 1,
   speed: 5,
-  clustering: true,              // Enable clustering
+  clustering: true,              // 开启聚类
   clusterGravity: 10,
-  // GPU acceleration (requires WebGL renderer)
-  // workerEnabled: true,        // Run in Web Worker
+  // GPU 加速（需引入 WebGL renderer）
+  // workerEnabled: true,        // 在 Web Worker 中运行
 },
 ```
 
-### Drag Nodes in Force-Directed Graph
+### 拖拽力导向图中的节点
 
 ```javascript
-// To drag nodes in a force-directed graph, use drag-element-force
-// This ensures that other nodes respond in real-time during dragging
+// 力导向图中拖拽节点需要使用 drag-element-force
+// 这样拖动时其他节点也会实时响应
 behaviors: [
   'drag-canvas',
   'zoom-canvas',
-  'drag-element-force',  // Replace the regular drag-element
+  'drag-element-force',  // 替代普通的 drag-element
 ],
 ```
 
-### Fix the Position of Certain Nodes
+### 固定某些节点位置
 
 ```javascript
-// Fix the position by setting coordinates in the node style
+// 通过在节点 style 中设置坐标来固定位置
 const nodes = [
-   { id: 'center', data: { label: 'Center' }, style: { x: 400, y: 300 } },
-   { id: 'n1', data: { label: 'Node 1' } },
-   { id: 'n2', data: { label: 'Node 2' } },
+   { id: 'center', data: { label: '中心' }, style: { x: 400, y: 300 } },
+   { id: 'n1', data: { label: '节点1' } },
+   { id: 'n2', data: { label: '节点2' } },
 ];
 
-// Or specify fixed nodes in the layout configuration
+// 或在布局配置中指定固定节点
 layout: {
   type: 'force',
-  // Callback function: nodes returning true will be fixed
+  // 回调函数：返回 true 的节点将被固定
   nodeFixable: (d) => d.id === 'center',
 },
 ```
 
-## Web Worker Acceleration (Large Graphs)
+## Web Worker 加速（大图）
 
 ```javascript
 layout: {
-  type: 'fruchterman',    // fruchterman supports GPU acceleration, recommended for large graphs
+  type: 'fruchterman',    // fruchterman 支持 GPU 加速，大图推荐
   gravity: 1,
   speed: 5,
 },
-// ⚠️ G6 v5 force layout's workerEnabled has been removed, for large graphs please use fruchterman or force-atlas2 instead
+// ⚠️ G6 v5 force 布局的 workerEnabled 已移除，大图请改用 fruchterman 或 force-atlas2
 ```
 
-## Common Errors
+## 常见错误
 
-### Error 1: Regular Dragging in Force-Directed Graphs Does Not Respond to Physical Simulation
+### 错误1：力导向图中普通拖拽不响应物理模拟
 
 ```javascript
-// ❌ drag-element dragging does not affect the physical state of other nodes
+// ❌ drag-element 拖拽不会影响其他节点物理状态
 behaviors: ['drag-element'],
 
-// ✅ Use drag-element-force to maintain physical simulation
+// ✅ 使用 drag-element-force 保持物理模拟
 behaviors: ['drag-element-force'],
 ```
 
-### Error 2: Node Overlap in Force Layout —— `preventOverlap` from v4 is Ineffective
+### 错误2：force 布局节点重叠 —— 用 v4 的 preventOverlap 无效
 
 ```javascript
-// ❌ `preventOverlap` / `nodeSize` are G6 v4 parameters, silently ignored in G6 v5 force layout, nodes still overlap
+// ❌ preventOverlap / nodeSize 是 G6 v4 参数，G6 v5 force 布局中被静默忽略，节点依然重叠
 layout: {
   type: 'force',
-  preventOverlap: true,   // Ineffective
-  nodeSize: 40,           // Ineffective
+  preventOverlap: true,   // 无效
+  nodeSize: 40,           // 无效
 },
 
 
-// ✅ Use d3-force + collide collision detection instead (recommended)
+// ✅ 改用 d3-force + collide 碰撞检测（推荐）
 layout: {
   type: 'd3-force',
   link: { distance: 100, strength: 0.8 },
   manyBody: { strength: -200 },
   collide: {
-    radius: 25,     // Node radius (nodeSize / 2)
+    radius: 25,     // 节点半径（nodeSize / 2）
     strength: 0.7,
   },
 },
 ```
 
-### Error 3: Reading Coordinates Before Layout Convergence
+### 错误3：布局未收敛就读取坐标
 
 ```javascript
-// ❌ Reading coordinates immediately after render(), layout may not be complete
+// ❌ render() 后立即读取坐标，布局可能未完成
 graph.render();
-const pos = graph.getElementPosition('n1');  // may be inaccurate
+const pos = graph.getElementPosition('n1');  // 可能不准确
 
-// ✅ Wait for layout completion
+// ✅ 等待布局完成
 await graph.render();
-const pos = graph.getElementPosition('n1');  // read after layout completion
+const pos = graph.getElementPosition('n1');  // 布局完成后读取
 ```

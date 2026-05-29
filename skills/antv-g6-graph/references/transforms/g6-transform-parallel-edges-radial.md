@@ -1,9 +1,9 @@
 ---
 id: "g6-transform-parallel-edges-radial"
-title: "G6 Data Transform: Parallel Edge Processing + Radial Label Placement (process-parallel-edges / place-radial-labels)"
+title: "G6 数据变换：平行边处理 + 径向标签（process-parallel-edges / place-radial-labels）"
 description: |
-  process-parallel-edges: Handles multiple parallel edges between two nodes, supporting bundled mode (expanded into arcs) and merged mode (folded into one).
-  place-radial-labels: Automatically adjusts label angles and positions for radial layouts (radial trees, radial compact trees) to prevent label overlap.
+  process-parallel-edges：处理两节点间的多条平行边，支持捆绑模式（展开为弧线）和合并模式（折叠为一条）。
+  place-radial-labels：为径向布局图（辐射树、径向紧凑树）自动调整标签角度和位置，防止标签重叠。
 
 library: "g6"
 version: "5.x"
@@ -12,11 +12,11 @@ subcategory: "data"
 tags:
   - "process-parallel-edges"
   - "place-radial-labels"
-  - "parallel edges"
-  - "multiple edges"
-  - "radial labels"
+  - "平行边"
+  - "多边"
+  - "径向标签"
   - "transforms"
-  - "data transforms"
+  - "数据变换"
 
 related:
   - "g6-edge-quadratic-loop"
@@ -29,21 +29,19 @@ created: "2026-04-16"
 updated: "2026-04-16"
 ---
 
-## Parallel Edge Processing (process-parallel-edges)
+## 平行边处理（process-parallel-edges）
 
-When there are multiple edges between two nodes, automatically process these parallel edges to avoid overlapping. Two modes are provided:
-- **bundle mode** (default): Expand each edge into a quadratic Bezier curve with different curvature
-- **merge mode**: Merge multiple parallel edges into a single aggregated edge
+当两个节点之间存在多条边时，自动处理这些平行边，避免重叠。提供两种模式：
+- **bundle 模式**（默认）：将每条边展开为不同曲率的二次贝塞尔曲线
+- **merge 模式**：将多条平行边合并为一条聚合边
 
-### Bundle Mode (bundle)
+### 捆绑模式（bundle）
 
 ```javascript
 import { Graph } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 500,
   data: {
     nodes: [
       { id: 'A', style: { x: 100, y: 300 } },
@@ -51,14 +49,14 @@ const graph = new Graph({
       { id: 'C', style: { x: 700, y: 300 } },
     ],
     edges: [
-      // 5 parallel edges from A to B
+      // A->B 有 5 条平行边
       ...Array.from({ length: 5 }, (_, i) => ({
         id: `AB-${i}`,
         source: 'A',
         target: 'B',
-        data: { label: `Relation ${i + 1}` },
+        data: { label: `关系${i + 1}` },
       })),
-      // Bidirectional edges are also supported
+      // 双向边也支持
       { source: 'A', target: 'C' },
       { source: 'C', target: 'A' },
     ],
@@ -70,8 +68,8 @@ const graph = new Graph({
     },
   },
   edge: {
-    // ⚠️ In bundle mode, do not set global edge.type here
-    // process-parallel-edges will automatically set the parallel edge type to quadratic
+    // ⚠️ 捆绑模式下，不要在这里设置全局 edge.type
+    // process-parallel-edges 会自动将平行边类型设置为 quadratic
     style: {
       labelText: (d) => d?.data?.label,
       endArrow: true,
@@ -81,8 +79,8 @@ const graph = new Graph({
   transforms: [
     {
       type: 'process-parallel-edges',
-      mode: 'bundle',   // Default is bundle
-      distance: 20,     // Distance between edges in bundle mode (px)
+      mode: 'bundle',   // 默认为 bundle
+      distance: 20,     // 捆绑模式下边之间的距离（px）
     },
   ],
 });
@@ -90,9 +88,9 @@ const graph = new Graph({
 graph.render();
 ```
 
-> **Important:** Bundle mode will forcibly change the parallel edge type to `quadratic`. Therefore, do not set the global edge type in `edge.type`, as it will override the bundle processing result.
+> **重要：** 捆绑模式会强制将平行边类型改为 `quadratic`，因此不能在 `edge.type` 设置全局边类型，否则会覆盖 bundle 处理结果。
 
-### Merge Mode (merge)
+### 合并模式（merge）
 
 ```javascript
 const graph = new Graph({
@@ -106,8 +104,8 @@ const graph = new Graph({
   transforms: [
     {
       type: 'process-parallel-edges',
-      mode: 'merge',        // Merge into a single aggregated edge
-      style: {              // Additional styles for the merged edge
+      mode: 'merge',        // 合并为一条聚合边
+      style: {              // 合并边的额外样式
         stroke: '#ff7a45',
         lineWidth: 3,
         halo: true,
@@ -119,42 +117,40 @@ const graph = new Graph({
 });
 ```
 
-> Note: The merged style is assigned to `datum.style`, which has a lower priority than `edge.style` (the default style configured in Graph).
+> 注意：合并样式赋值给 `datum.style`，优先级低于 `edge.style`（Graph 配置的默认样式）。
 
-### process-parallel-edges Configuration Parameters
+### process-parallel-edges 配置参数
 
-| Parameter | Type | Default Value | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `type` | `string` | `'process-parallel-edges'` | Transformation type |
-| `key` | `string` | — | Unique identifier for dynamic updates |
-| `mode` | `'bundle' \| 'merge'` | `'bundle'` | Processing mode |
-| `distance` | `number` | `15` | Edge spacing in bundle mode (px) |
-| `edges` | `string[]` | — | Specifies the edge IDs to process (default: all) |
-| `style` | `PathStyleProps \| Function` | — | Aggregated edge style in merge mode |
+| `type` | `string` | `'process-parallel-edges'` | 变换类型 |
+| `key` | `string` | — | 唯一标识，用于动态更新 |
+| `mode` | `'bundle' \| 'merge'` | `'bundle'` | 处理模式 |
+| `distance` | `number` | `15` | bundle 模式下边间距（px） |
+| `edges` | `string[]` | — | 指定要处理的边 ID（默认全部） |
+| `style` | `PathStyleProps \| Function` | — | merge 模式的聚合边样式 |
 
-### Abbreviated Form
+### 简写形式
 
 ```javascript
-// Use default configuration (bundle mode, distance=15)
+// 使用默认配置（bundle 模式，distance=15）
 transforms: ['process-parallel-edges']
 
-// Dynamically update configuration
+// 动态更新配置
 graph.updateTransform({ key: 'parallel', mode: 'bundle', distance: 30 });
 ```
 
 ---
 
-## Radial Labels (place-radial-labels)
+## 径向标签（place-radial-labels）
 
-A label auto-layout transformation specifically designed for radial layouts (radial, dendrogram, etc.). Automatically adjusts the position and rotation angle of labels based on the angle of nodes in the circular layout to ensure readability.
+专为径向布局（radial、dendrogram 等）设计的标签自动排布变换。根据节点在圆形布局中的角度，自动调整标签的位置和旋转角度，确保可读性。
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 800,
   autoFit: 'view',
   data: treeToGraphData({
     id: 'root',
@@ -174,13 +170,13 @@ const graph = new Graph({
     },
   },
   layout: {
-    type: 'dendrogram',    // or 'compact-box' with radial
+    type: 'dendrogram',    // 或 'compact-box' with radial
     radial: true,
   },
   transforms: [
     {
       type: 'place-radial-labels',
-      offset: 4,           // Offset of labels from nodes (px)
+      offset: 4,           // 标签距离节点的偏移量（px）
     },
   ],
   behaviors: ['drag-canvas', 'zoom-canvas'],
@@ -189,27 +185,25 @@ const graph = new Graph({
 graph.render();
 ```
 
-### place-radial-labels Configuration Parameters
+### place-radial-labels 配置参数
 
-| Parameter | Type | Default Value | Description |
+| 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `type` | `string` | `'place-radial-labels'` | Transformation type |
-| `offset` | `number` | — | Additional offset of the label from the node (px) |
+| `type` | `string` | `'place-radial-labels'` | 变换类型 |
+| `offset` | `number` | — | 标签距离节点的额外偏移量（px） |
 
-### Radial Tree Complete Example
+### 径向树完整示例
 
 ```javascript
 import { Graph, treeToGraphData } from '@antv/g6';
 
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 800,
   autoFit: 'view',
   data: treeToGraphData({
-    id: 'Root Node',
+    id: '根节点',
     children: Array.from({ length: 6 }, (_, i) => ({
-      id: `Branch${i + 1}`,
+      id: `分支${i + 1}`,
       children: Array.from({ length: 3 }, (_, j) => ({
         id: `${i + 1}-${j + 1}`,
       })),
@@ -230,7 +224,7 @@ const graph = new Graph({
     style: { stroke: '#aaa', lineWidth: 1 },
   },
   layout: {
-    type: 'radial',          // Radial layout
+    type: 'radial',          // 辐射布局
     unitRadius: 120,
     preventOverlap: true,
     nodeSize: 20,
@@ -249,28 +243,26 @@ graph.render();
 
 ---
 
-## Combined Usage: Bidirectional Graph + Parallel Edge Handling
+## 组合使用：双向图 + 平行边处理
 
 ```javascript
 import { Graph } from '@antv/g6';
 
-// Microservice dependency graph: Service A calls multiple APIs of Service B, and Service B returns responses
+// 微服务依赖图：A 调用 B 的多个 API，B 返回响应
 const graph = new Graph({
   container: 'container',
-  width: 800,
-  height: 500,
   data: {
     nodes: [
-      { id: 'service-a', data: { label: 'Service A' } },
-      { id: 'service-b', data: { label: 'Service B' } },
-      { id: 'service-c', data: { label: 'Service C' } },
+      { id: 'service-a', data: { label: '服务A' } },
+      { id: 'service-b', data: { label: '服务B' } },
+      { id: 'service-c', data: { label: '服务C' } },
     ],
     edges: [
       { source: 'service-a', target: 'service-b', data: { label: 'API /users' } },
-      { source: 'service-a', target: 'service-b', data: { label: 'API /orders' } },
-      { source: 'service-b', target: 'service-a', data: { label: 'Response' } },
-      { source: 'service-b', target: 'service-c', data: { label: 'Query' } },
-      { source: 'service-c', target: 'service-b', data: { label: 'Result' } },
+      { source: 'service-a', target: 'service-b',  { label: 'API /orders' } },
+      { source: 'service-b', target: 'service-a', data: { label: '响应' } },
+      { source: 'service-b', target: 'service-c', data: { label: '查询' } },
+      { source: 'service-c', target: 'service-b',  { label: '结果' } },
     ],
   },
   node: {
