@@ -1,21 +1,22 @@
 ---
 id: "g2-mark-interval-basic"
-title: "G2 Basic Bar Chart (Interval Mark)"
+title: "G2 基础柱状图（Interval Mark）"
 description: |
-  Create a basic bar chart using Interval Mark. Interval Mark is the core mark type in G2 for
-  rendering bar charts, column charts, and histograms.
-  This article uses the Spec mode (chart.options({})), mapping x/y/color channels via encode.
+  使用 Interval Mark 创建基础柱状图。Interval Mark 是 G2 中
+  用于绘制柱形、条形、直方图的核心标记类型。
+  本文采用 Spec 模式（chart.options({})），通过 encode 映射 x/y/color 通道。
 
 library: "g2"
 version: "5.x"
 category: "marks"
 subcategory: "interval"
 tags:
-  - "bar chart"
-  - "column chart"
-  - "categorical data"
-  - "comparison"
+  - "柱状图"
+  - "条形图"
+  - "分类数据"
+  - "比较"
   - "Interval"
+  - "bar chart"
   - "bar"
   - "spec"
   - "options"
@@ -29,15 +30,15 @@ related:
   - "g2-scale-band"
 
 use_cases:
-  - "Compare numerical values across different categories"
-  - "Display metrics such as completion volume or sales volume for various items"
-  - "Show ranking data"
-  - "Compare metric values across multiple dimensions"
+  - "比较不同类别的数值大小"
+  - "展示各项目的完成量、销量等指标"
+  - "显示排名数据"
+  - "对比多个维度的指标值"
 
 anti_patterns:
-  - "Not suitable for showing trends in continuous numerical data (use Line or Area Mark instead)"
-  - "Poor readability with more than 20 categories; consider pagination or filtering"
-  - "Not suitable for showing part-to-whole relationships (use stacked bar charts or pie charts instead)"
+  - "不适合展示连续数值的趋势变化（改用 Line 或 Area Mark）"
+  - "类别超过 20 个时可读性差，考虑分页或过滤"
+  - "不适合展示部分与整体的关系（改用堆叠柱状图或饼图）"
 
 difficulty: "beginner"
 completeness: "full"
@@ -47,20 +48,20 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/bar/basic"
 ---
 
-## Core Concepts
+## 核心概念
 
-Interval Mark maps data to rectangular intervals:
-- In Cartesian coordinates: Bar (vertical) or Column (horizontal)
-- In polar coordinates: Sector (Pie Chart) or Rose Chart
-- In radial coordinates: Radial Bar Chart
+Interval Mark 将数据映射为矩形区间：
+- 在直角坐标系中：柱形（竖向）或条形（横向）
+- 在极坐标系中：扇形（饼图）或玫瑰图
+- 在径向坐标系中：玉珏图（Radial Bar Chart）
 
-**Key encode channels:**
-- `x`: Categorical axis, typically maps categorical fields, automatically uses Band Scale
-- `y`: Numerical axis, maps numerical fields, uses Linear Scale
-- `y1`: Interval endpoint, used to represent interval range (e.g., Gantt Chart)
-- `color`: Color, used for visual distinction
+**关键 encode 通道：**
+- `x`：分类轴，通常映射分类字段，自动使用 Band Scale
+- `y`：数值轴，映射数值字段，使用 Linear Scale
+- `y1`：区间终点，用于表示区间范围（如甘特图）
+- `color`：颜色，用于视觉区分
 
-## Minimum Viable Example
+## 最小可运行示例
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -90,20 +91,20 @@ chart.options({
 chart.render();
 ```
 
-## Common Variants
+## 常用变体
 
-### Horizontal Bar Chart (Transposed Coordinate System)
+### 水平条形图（转置坐标系）
 
 ```javascript
 chart.options({
   type: 'interval',
   data: [...],
   encode: { x: 'genre', y: 'sold', color: 'genre' },
-  coordinate: { transform: [{ type: 'transpose' }] },   // Key: Transposed coordinate system
+  coordinate: { transform: [{ type: 'transpose' }] },   // 关键：转置坐标系
 });
 ```
 
-### Bar Chart with Data Labels
+### 带数据标签的柱状图
 
 ```javascript
 chart.options({
@@ -112,7 +113,7 @@ chart.options({
   encode: { x: 'genre', y: 'sold' },
   labels: [
     {
-      text: 'sold',            // Display the value of which field
+      text: 'sold',            // 显示哪个字段的值
       position: 'outside',     // 'inside' | 'outside' | 'top-left' | 'top-right'
       style: { fontSize: 12, fill: '#333' },
     },
@@ -120,7 +121,7 @@ chart.options({
 });
 ```
 
-### Rounded Bar Chart
+### 圆角柱状图
 
 ```javascript
 chart.options({
@@ -128,15 +129,15 @@ chart.options({
   data: [...],
   encode: { x: 'genre', y: 'sold' },
   style: {
-    radius: 4,               // Uniform rounded corners
-    // or set individually:
+    radius: 4,               // 统一圆角
+    // 或单独设置：
     // radiusTopLeft: 4,
     // radiusTopRight: 4,
   },
 });
 ```
 
-### Custom Colors
+### 自定义颜色
 
 ```javascript
 chart.options({
@@ -151,7 +152,7 @@ chart.options({
 });
 ```
 
-### With Tooltip Configuration
+### 带 Tooltip 配置
 
 ```javascript
 chart.options({
@@ -160,12 +161,12 @@ chart.options({
   encode: { x: 'genre', y: 'sold' },
   tooltip: {
     title: 'genre',
-    items: [{ field: 'sold', name: 'Sales' }],
+    items: [{ field: 'sold', name: '销量' }],
   },
 });
 ```
 
-### Y-axis Starting from a Specified Value
+### Y 轴从指定值开始
 
 ```javascript
 chart.options({
@@ -173,12 +174,12 @@ chart.options({
   data: [...],
   encode: { x: 'genre', y: 'sold' },
   scale: {
-    y: { domain: [50, 400] },  // Manually set the y-axis range
+    y: { domain: [50, 400] },  // 手动设置 y 轴范围
   },
 });
 ```
 
-### Customizing Axis Titles
+### 自定义坐标轴标题
 
 ```javascript
 chart.options({
@@ -186,24 +187,24 @@ chart.options({
   data: [...],
   encode: { x: 'genre', y: 'sold' },
   axis: {
-    x: { title: 'Game Type' },
-    y: { title: 'Sales (Ten Thousand Units)' },
+    x: { title: '游戏类型' },
+    y: { title: '销量（万份）' },
   },
 });
 ```
 
-### Radial Bar Chart (Jian Fan Chart)
+### 径向柱状图（玉珏图）
 
 ```javascript
 chart.options({
   type: 'interval',
   data: [...],
   encode: { x: 'genre', y: 'sold' },
-  coordinate: { type: 'radial', innerRadius: 0.2 },  // Radial coordinate system
+  coordinate: { type: 'radial', innerRadius: 0.2 },  // 径向坐标系
 });
 ```
 
-### Bar Chart with Interactive Effects
+### 带交互效果的柱状图
 
 ```javascript
 chart.options({
@@ -211,84 +212,89 @@ chart.options({
   data: [...],
   encode: { x: 'genre', y: 'sold' },
   interaction: {
-    elementHighlight: true,  // Element highlight interaction
+    elementHighlight: true,  // 元素高亮交互
   },
 });
 ```
 
-## Spec Complete Structure Quick Reference
+## Spec 完整结构速查
 
 ```javascript
 chart.options({
-  // Mark type
+  // Mark 类型
   type: 'interval',
 
-  // Data
+  // 数据
   data: [...],
 
-  // Channel mapping
+  // 通道映射
   encode: {
-    x: 'genre',           // x-axis field
-    y: 'sold',            // y-axis field
-    y1: 'endValue',       // Range end field (e.g., Gantt chart)
-    color: 'genre',       // Color field
-    shape: 'rect',        // Shape: 'rect' | 'hollow'
+    x: 'genre',           // x 轴字段
+    y: 'sold',            // y 轴字段
+    y1: 'endValue',       // 区间终点字段（如甘特图）
+    color: 'genre',       // 颜色字段
+    shape: 'rect',        // 形状：'rect' | 'hollow'
   },
 
-  // Scale
+  // 比例尺
   scale: {
     y: { domain: [0, 500] },
     color: { range: ['#f00', '#00f'] },
   },
 
-  // Coordinate transformation
+  // 坐标系变换
   coordinate: { 
     type: 'radial', 
     innerRadius: 0.2,
     transform: [{ type: 'transpose' }] 
   },
 
-  // Style
+  // 样式
   style: {
     radius: 4,
     fillOpacity: 0.9,
   },
 
-  // Data labels (note: labels is plural)
-  labels: [{ text: 'sold', position: 'outside' }],
+  // 数据标签（注意是 labels 复数）
+  labels: [
+    {
+      text: 'sold',
+      position: 'outside', // 'inside' | 'outside' | 'top-left' | 'top-right'
+    }
+  ],
 
   // Tooltip
   tooltip: { title: 'genre', items: [{ field: 'sold' }] },
 
-  // Axis
+  // 坐标轴
   axis: {
-    x: { title: 'Game Type' },
-    y: { title: 'Sales' },
+    x: { title: '游戏类型' },
+    y: { title: '销量' },
   },
 
-  // Legend
+  // 图例
   legend: {
     color: { position: 'right' }
   },
 
-  // Interaction
+  // 交互
   interaction: {
     elementHighlight: true
   }
 });
 ```
 
-## Complete Type Reference
+## 完整类型参考
 
 ```typescript
-// Spec type passed to chart.options() (interval part)
+// chart.options() 传入的 Spec 类型（interval 部分）
 interface IntervalSpec {
   type: 'interval';
   data?: DataOption;
   encode?: {
     x?: string | ((d: any) => any);
     y?: string | ((d: any) => any);
-    y1?: string | ((d: any) => any); // End point channel
+    y1?: string | ((d: any) => any); // 区间终点通道
     color?: string | ((d: any) => any);
     shape?: 'rect' | 'hollow' | 'funnel' | 'pyramid' | string;
     size?: string | number | ((d: any) => any);
@@ -329,14 +335,14 @@ interface IntervalSpec {
 }
 ```
 
-## Common Errors and Fixes
+## 常见错误与修正
 
-### Error 1: Using API Chaining
+### 错误 1：使用 API 链式调用
 ```javascript
-// ❌ Incorrect (G2 API chaining syntax)
+// ❌ 错误（G2 API 链式调用写法）
 chart.interval().encode('x', 'genre');
 
-// ✅ Correct (G2 Spec syntax)
+// ✅ 正确（G2 Spec 写法）
 chart.options({
   type: 'interval',
   data,
@@ -344,44 +350,44 @@ chart.options({
 });
 ```
 
-### Error 2: Missing container Parameter
+### 错误 2：缺少 container 参数
 ```javascript
-// ❌ Incorrect
+// ❌ 错误
 const chart = new Chart({ width: 640, height: 480 });
 
-// ✅ Correct
+// ✅ 正确
 const chart = new Chart({ container: 'container', width: 640, height: 480 });
 ```
 
-### Error 3: Confusion between encode and style
+### 错误 3：encode 和 style 混淆
 ```javascript
-// ❌ Incorrect: style does not accept data field names
+// ❌ 错误：style 不接受数据字段名
 chart.options({ type: 'interval',  [...], style: { color: 'genre' } });
 
-// ✅ Correct: Use encode for data mapping and style for fixed styles
+// ✅ 正确：数据映射用 encode，固定样式用 style
 chart.options({
   type: 'interval',
   data: [...],
-  encode: { color: 'genre' },   // Data-driven
-  style: { fill: '#1890ff' },   // Use style only for fixed colors
+  encode: { color: 'genre' },   // 数据驱动
+  style: { fill: '#1890ff' },   // 固定颜色时才用 style
 });
 ```
 
-### Error 4: Writing `labels` as `label` (singular)
+### 错误 4：labels 写成 label（单数）
 ```javascript
-// ❌ Incorrect: In Spec mode, the label field is `labels` (plural)
+// ❌ 错误：Spec 模式中标签字段是 labels（复数）
 chart.options({ type: 'interval',  data: [...], label: { text: 'sold' } });
 
-// ✅ Correct
+// ✅ 正确
 chart.options({ type: 'interval', data: [...], labels: [{ text: 'sold' }] });
 ```
 
-### Error 5: Handling Negative Values on the Y-Axis
+### 错误 5：y 轴负值处理
 ```javascript
-// ❌ Potential Issue: Negative value bars may exceed the plotting area
+// ❌ 潜在问题：负值柱体可能超出绘图区域
 chart.options({ type: 'interval',  dataWithNegatives, encode: { y: 'value' } });
 
-// ✅ Correct: Explicitly include the negative value range via scale.y.domain
+// ✅ 正确：通过 scale.y.domain 显式包含负值范围
 chart.options({
   type: 'interval',
   data: dataWithNegatives,
@@ -390,17 +396,17 @@ chart.options({
 });
 ```
 
-### Error 6: Improper Use of Radial Coordinate System
+### 错误 6：径向坐标系使用不当
 ```javascript
-// ❌ Incorrect: Reversed x/y mapping order in radial coordinate system
+// ❌ 错误：在径向坐标系中 x/y 映射顺序颠倒
 chart.options({
   type: 'interval',
   data: [...],
-  encode: { x: 'value', y: 'genre' },  // Should be x: genre, y: value
+  encode: { x: 'value', y: 'genre' },  // 应该是 x: genre, y: value
   coordinate: { type: 'radial' }
 });
 
-// ✅ Correct: In radial coordinate system, x corresponds to angular direction, y corresponds to radial direction
+// ✅ 正确：径向坐标系中 x 对应角度方向，y 对应半径方向
 chart.options({
   type: 'interval',
   data: [...],
@@ -409,16 +415,16 @@ chart.options({
 });
 ```
 
-### Error 7: Incorrect Organization of Children Structure in Composite Views
+### 错误 7：复合视图中未正确组织 children 结构
 ```javascript
-// ❌ Incorrect: Not using the children property of the view to compose multiple marks
+// ❌ 错误：没有使用 view 的 children 属性来组合多个 mark
 chart.options({
   type: 'interval',
   data: [...],
   encode: {...}
 });
 
-// ✅ Correct: Using view to contain multiple children marks
+// ✅ 正确：使用 view 包含多个 children mark
 chart.options({
   type: 'view',
   children: [
@@ -436,22 +442,22 @@ chart.options({
 });
 ```
 
-### Error 8: Incorrect Encoding Field Usage in Image Mark
+### 错误 8：image mark 使用错误的编码字段
 ```javascript
-// ❌ Incorrect: Image mark uses x/y to map image URL
+// ❌ 错误：image mark 使用了 x/y 映射图像 URL
 chart.options({
   type: 'image',
   data: [{ url: 'https://example.com/image.png' }],
-  encode: { x: () => 0, y: () => 0, src: 'url' }  // Should not use x/y to position the image
+  encode: { x: () => 0, y: () => 0, src: 'url' }  // 不应该用 x/y 来定位图像
 });
 
-// ✅ Correct: Image mark uses src field to map image URL, combined with style to set size and position
+// ✅ 正确：image mark 使用 src 字段映射图像地址，配合 style 设置尺寸和位置
 chart.options({
   type: 'image',
   data: [{ url: 'https://example.com/image.png' }],
   encode: { src: 'url' },
   style: {
-    x: '50%',   // Position relative to the container
+    x: '50%',   // 相对于容器的位置
     y: '50%',
     width: 80,
     height: 80
@@ -459,17 +465,17 @@ chart.options({
 });
 ```
 
-### Error 9: Incorrect Interaction Configuration Location
+### 错误 9：交互配置位置错误
 ```javascript
-// ❌ Incorrect: Placing interaction configuration outside the mark level
+// ❌ 错误：将交互配置放在 mark 级别之外
 chart.options({
   type: 'interval',
   data: [...],
   encode: {...},
-  elementHighlight: true  // Incorrect location
+  elementHighlight: true  // 放错位置
 });
 
-// ✅ Correct: Interaction configuration should be placed within the interaction object
+// ✅ 正确：交互配置应放在 interaction 对象中
 chart.options({
   type: 'interval',
   data: [...],
@@ -480,16 +486,16 @@ chart.options({
 });
 ```
 
-### Error 10: Incorrect Use of y1 Channel in Interval Charts
+### 错误 10：区间图未正确使用 y1 通道
 ```javascript
-// ❌ Incorrect: Mapping both start and end points to the y channel
+// ❌ 错误：将区间起点和终点都映射到 y 通道
 chart.options({
   type: 'interval',
   data: [{ start: 1, end: 5 }],
-  encode: { x: 'name', y: ['start', 'end'] }  // Incorrect approach
+  encode: { x: 'name', y: ['start', 'end'] }  // 错误方式
 });
 
-// ✅ Correct: Using y and y1 channels to map start and end points separately
+// ✅ 正确：使用 y 和 y1 通道分别映射起点和终点
 chart.options({
   type: 'interval',
   data: [{ start: 1, end: 5 }],
@@ -497,9 +503,9 @@ chart.options({
 });
 ```
 
-### Error 11: Incorrect Axis Label Formatting Configuration
+### 错误 11：坐标轴标签格式化配置错误
 ```javascript
-// ❌ Incorrect: Using non-existent axis.labelFormatter configuration
+// ❌ 错误：使用不存在的 axis.labelFormatter 配置
 chart.options({
   type: 'interval',
   data: [...],
@@ -513,7 +519,7 @@ chart.options({
   }
 });
 
-// ✅ Correct: Using the correct label configuration method
+// ✅ 正确：使用正确的 label 配置方式
 chart.options({
   type: 'interval',
   data: [...],
