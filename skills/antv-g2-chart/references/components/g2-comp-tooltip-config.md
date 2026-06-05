@@ -1,19 +1,19 @@
 ---
 id: "g2-comp-tooltip-config"
-title: "G2 Tooltip Configuration and Customization"
+title: "G2 Tooltip 配置与自定义"
 description: |
-  G2 v5 tooltip is enabled via top-level tooltip configuration or interaction: [{ type: 'tooltip' }],
-  supporting custom content (items field filtering, render function for complete HTML customization),
-  groupKey controls merging rules, and crosshairs display crosshairs.
+  G2 v5 tooltip 通过 tooltip 顶层配置或 interaction: [{ type: 'tooltip' }] 启用，
+  支持自定义内容（items 字段过滤、render 函数完全自定义 HTML），
+  groupKey 控制合并规则，crosshairs 显示十字准线。
 
 library: "g2"
 version: "5.x"
 category: "components"
 tags:
   - "tooltip"
-  - "tooltip box"
-  - "customization"
-  - "interaction"
+  - "提示框"
+  - "自定义"
+  - "交互"
   - "spec"
 
 related:
@@ -22,10 +22,10 @@ related:
   - "g2-mark-interval-basic"
 
 use_cases:
-  - "Customize tooltip display fields and format"
-  - "Shared tooltip across multiple series (grouped tooltip)"
-  - "Completely customize tooltip HTML template"
-  - "Display crosshairs for positioning assistance"
+  - "自定义 tooltip 显示字段和格式"
+  - "多系列共享 tooltip（分组 tooltip）"
+  - "完全自定义 tooltip HTML 模板"
+  - "显示十字准线辅助定位"
 
 difficulty: "intermediate"
 completeness: "full"
@@ -35,7 +35,7 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/component/tooltip"
 ---
 
-## Minimum Viable Example (Enable Default Tooltip)
+## 最小可运行示例（启用默认 tooltip）
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -47,20 +47,20 @@ const chart = new Chart({
 });
 
 const data = [
-  { month: 'January', value: 120, type: 'Sales' },
-  { month: 'February', value: 180, type: 'Sales' },
-  { month: 'March', value: 150, type: 'Sales' },
+  { month: '1月', value: 120, type: '销售额' },
+  { month: '2月', value: 180, type: '销售额' },
+  { month: '3月', value: 150, type: '销售额' },
 ];
 
 chart.options({
   type: 'line',
   data,
   encode: { x: 'month', y: 'value', color: 'type' },
-  // Tooltip is enabled by default, this configuration can be customized
+  // tooltip 默认开启，此配置可自定义
   tooltip: {
-    title: (d) => `${d.month} Data`,   // Custom title
+    title: (d) => `${d.month} 数据`,   // 自定义标题
     items: [
-      { channel: 'y', name: 'Sales', valueFormatter: (v) => `¥${v}` },
+      { channel: 'y', name: '销售额', valueFormatter: (v) => `¥${v}` },
     ],
   },
 });
@@ -68,7 +68,7 @@ chart.options({
 chart.render();
 ```
 
-## Multi-field tooltip (Displaying multiple information items)
+## 多字段 tooltip（显示多个信息项）
 
 ```javascript
 const data = [
@@ -83,17 +83,17 @@ chart.options({
   encode: { x: 'date', y: 'revenue' },
   tooltip: {
     title: 'date',
-    // Each item in items corresponds to one line of displayed content
+    // items 中每项对应一行显示内容
     items: [
-      { field: 'revenue', name: 'Revenue', valueFormatter: (v) => `¥${v}` },
-      { field: 'cost', name: 'Cost', valueFormatter: (v) => `¥${v}` },
-      { field: 'profit', name: 'Profit', valueFormatter: (v) => `¥${v}` },
+      { field: 'revenue', name: '收入', valueFormatter: (v) => `¥${v}` },
+      { field: 'cost', name: '成本', valueFormatter: (v) => `¥${v}` },
+      { field: 'profit', name: '利润', valueFormatter: (v) => `¥${v}` },
     ],
   },
 });
 ```
 
-## Fully Customized HTML (render Function)
+## 完全自定义 HTML（render 函数）
 
 ```javascript
 chart.options({
@@ -102,7 +102,7 @@ chart.options({
   encode: { x: 'category', y: 'value', color: 'category' },
   tooltip: {
     render: (event, { title, items }) => {
-      // Return an HTML string, fully customizing the tooltip content
+      // 返回 HTML 字符串，完全自定义 tooltip 内容
       return `
         <div style="padding: 8px 12px; background: #fff; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
           <div style="font-weight: bold; margin-bottom: 6px;">${title}</div>
@@ -120,10 +120,10 @@ chart.options({
 });
 ```
 
-## Multiple Series Shared Tooltip (groupKey)
+## 多系列共享 tooltip（groupKey）
 
 ```javascript
-// Multiple line chart, displaying values of all series simultaneously on mouse hover
+// 多折线图，鼠标悬停时同时显示所有系列的值
 chart.options({
   type: 'view',
   data,
@@ -132,17 +132,17 @@ chart.options({
       type: 'line',
       encode: { x: 'month', y: 'value', color: 'type' },
       tooltip: {
-        // groupKey: The field by which multiple series tooltips are merged
-        // By default, tooltips are merged by x values, displaying points of all series at the same x value in one tooltip
+        // groupKey：按哪个字段合并多系列的 tooltip
+        // 默认按 x 值合并，所有系列在同一 x 处的点显示在一个 tooltip 中
         title: 'month',
       },
     },
   ],
-  interaction: [{ type: 'tooltip', shared: true }],   // shared: true enables shared tooltip
+  interaction: [{ type: 'tooltip', shared: true }],   // shared: true 显示共享 tooltip
 });
 ```
 
-## Complete Configuration Options
+## 完整配置项
 
 ```javascript
 chart.options({
@@ -151,46 +151,46 @@ chart.options({
   encode: { x: 'month', y: 'value' },
 
   tooltip: {
-    // Title
-    title: 'month',               // Field name or function (d) => string
+    // 标题
+    title: 'month',               // 字段名 或 函数 (d) => string
 
-    // Display items
+    // 显示项
     items: [
       {
-        field: 'value',           // Data field name
-        channel: 'y',             // Or use channel name ('x' | 'y' | 'color', etc.)
-        name: 'Sales',            // Display name (overrides default)
-        color: '#1890ff',         // Color block
-        // valueFormatter accepts:
-        //   function (value) => string   ← Required for concatenating units
-        //   d3-format string '.2f'       ← Formats only the number itself, does not support appending text
-        valueFormatter: (v) => `${v} ten thousand`, // ✅ Function form, can concatenate units
-        // valueFormatter: '.2f',             // ✅ d3-format, formats only the number
-        // valueFormatter: '.0f meters',      // ❌ Error! Cannot append text after d3-format
+        field: 'value',           // 数据字段名
+        channel: 'y',             // 或者用通道名（'x' | 'y' | 'color' 等）
+        name: '销售额',           // 显示名称（覆盖默认）
+        color: '#1890ff',         // 色块颜色
+        // valueFormatter 接受：
+        //   函数 (value) => string   ← 需要拼接单位时必须用这种形式
+        //   d3-format 字符串 '.2f'   ← 只格式化数字本身，不支持追加文字
+        valueFormatter: (v) => `${v} 万元`,   // ✅ 函数形式，可拼接单位
+        // valueFormatter: '.2f',             // ✅ d3-format，仅格式化数字
+        // valueFormatter: '.0f 米',          // ❌ 错误！d3-format 后不能追加文字
       },
     ],
 
-    // Rendering
-    render: (event, { title, items }) => `<div>...</div>`,  // Fully custom HTML
+    // 渲染
+    render: (event, { title, items }) => `<div>...</div>`,  // 完全自定义 HTML
 
-    // Trigger method
-    // Configured in interaction
+    // 触发方式
+    // 在 interaction 中配置
   },
 
-  // Tooltip interaction (additional configuration)
+  // tooltip 交互（可补充配置）
   interaction: [
     {
       type: 'tooltip',
-      shared: true,       // Multiple Marks share tooltip
-      crosshairs: true,   // Display crosshairs
+      shared: true,       // 多 Mark 共享 tooltip
+      crosshairs: true,   // 显示十字准线
     },
   ],
 });
 ```
 
-## Crosshairs
+## 十字准线（crosshairs）
 
-Crosshairs are configured through the `tooltip` interaction item in `interaction`:
+十字准线通过 `interaction` 中的 `tooltip` 交互项配置：
 
 ```javascript
 chart.options({
@@ -200,26 +200,26 @@ chart.options({
   interaction: [
     {
       type: 'tooltip',
-      crosshairs: true,           // Display crosshairs (enabled by default)
-      crosshairsStroke: '#aaa',   // Crosshair color
-      crosshairsLineWidth: 1,     // Crosshair width
-      crosshairsLineDash: [4, 4], // Dashed line style
+      crosshairs: true,           // 显示十字准线（默认开启）
+      crosshairsStroke: '#aaa',   // 准线颜色
+      crosshairsLineWidth: 1,     // 准线宽度
+      crosshairsLineDash: [4, 4], // 虚线样式
     },
   ],
 });
 ```
 
-## Customize Tooltip Style via CSS
+## 通过 CSS 自定义 tooltip 样式
 
-When the customization of the `render` function is insufficient, you can directly override the default styles using CSS:
+当 `render` 函数的定制化程度不够时，可以通过 CSS 直接覆盖默认样式：
 
 ```javascript
-// Method 1: Override in global page CSS
+// 方式 1：在页面全局 CSS 中覆盖
 // .g2-tooltip { background: #1a1a1a; color: #fff; border-radius: 8px; }
 // .g2-tooltip-title { font-size: 14px; font-weight: bold; }
 // .g2-tooltip-list-item-value { color: #fadb14; }
 
-// Method 2: Override locally via the css parameter in interaction
+// 方式 2：通过 interaction 的 css 参数（局部覆盖）
 chart.options({
   interaction: [
     {
@@ -245,51 +245,51 @@ chart.options({
 });
 ```
 
-**Built-in CSS Class Names:**
-- `.g2-tooltip` — Tooltip container
-- `.g2-tooltip-title` — Title
-- `.g2-tooltip-list-item` — Individual data item
-- `.g2-tooltip-list-item-name-label` — Data item name
-- `.g2-tooltip-list-item-value` — Data item value
-- `.g2-tooltip-list-item-marker` — Data item color marker
+**内置 CSS 类名：**
+- `.g2-tooltip` — tooltip 容器
+- `.g2-tooltip-title` — 标题
+- `.g2-tooltip-list-item` — 单条数据项
+- `.g2-tooltip-list-item-name-label` — 数据项名称
+- `.g2-tooltip-list-item-value` — 数据项值
+- `.g2-tooltip-list-item-marker` — 数据项颜色标记点
 
 ---
 
-## Common Errors and Fixes
+## 常见错误与修正
 
-### Error 1: Mismatch between `tooltip.items` field name and data
+### 错误 1：tooltip.items 字段名与数据不匹配
 
 ```javascript
-// ❌ Error: Data field is 'revenue' but 'items' is written as 'value'
-const data = [{ month: 'January', revenue: 1200 }];
+// ❌ 错误：数据字段是 'revenue' 但 items 写的是 'value'
+const data = [{ month: '1月', revenue: 1200 }];
 chart.options({
   tooltip: {
-    items: [{ field: 'value' }],   // ❌ No 'value' field in the data
+    items: [{ field: 'value' }],   // ❌ 数据中没有 'value' 字段
   },
 });
 
-// ✅ Correct: `field` matches the data field name
+// ✅ 正确：field 与数据字段名对应
 chart.options({
   tooltip: {
-    items: [{ field: 'revenue', name: 'Revenue' }],   // ✅
+    items: [{ field: 'revenue', name: '收入' }],   // ✅
   },
 });
 ```
 
-### Error 2: Forgot to Return a String in the render Function
+### 错误 2：render 函数忘记返回字符串
 
 ```javascript
-// ❌ Wrong: render function lacks a return statement
+// ❌ 错误：render 函数没有 return 语句
 chart.options({
   tooltip: {
     render: (event, { title, items }) => {
       const html = `<div>${title}</div>`;
-      // Forgot to return!
+      // 忘记 return！
     },
   },
 });
 
-// ✅ Correct: Must return an HTML string
+// ✅ 正确：必须返回 HTML 字符串
 chart.options({
   tooltip: {
     render: (event, { title, items }) => {
@@ -299,54 +299,55 @@ chart.options({
 });
 ```
 
-### Error 3: Using d3-format Strings to Concatenate Units in `valueFormatter`
+### 错误 3：valueFormatter 用 d3-format 字符串拼接单位
 
-`valueFormatter` supports two formats: a function `(v) => string` or a d3-format string (e.g., `'.2f'`). **d3-format strings only format the number itself and cannot append text units**——formats with spaces like `'.0f 米'` will be treated as invalid format specifiers, causing display anomalies or direct errors.
+`valueFormatter` 支持两种形式：函数 `(v) => string` 或 d3-format 字符串（如 `'.2f'`）。**d3-format 字符串只格式化数字本身，不能在后面追加文字单位**——带空格的写法如 `'.0f 米'` 会被当作无效格式符，导致显示异常或直接报错。
 
 ```javascript
-// ❌ Incorrect: Appending text units to d3-format strings
+// ❌ 错误：d3-format 字符串后追加文字单位
 chart.options({
   tooltip: {
     items: [
-      { field: 'distance', name: 'Distance', valueFormatter: '.0f 米' },  // ❌ Invalid format, d3-format does not support concatenating text
-      { field: 'price',    name: 'Price', valueFormatter: '.2f 元' },     // ❌ Same issue
+      { field: 'distance', name: '距离', valueFormatter: '.0f 米' },  // ❌ 无效格式，d3-format 不支持拼接文字
+      { field: 'price',    name: '价格', valueFormatter: '.2f 元' },  // ❌ 同上
     ],
   },
 });
 
-// ✅ Correct: Use function format when concatenating units is required
+// ✅ 正确：需要拼接单位时必须用函数形式
 chart.options({
   tooltip: {
     items: [
-      { field: 'distance', name: 'Distance', valueFormatter: (v) => `${Math.round(v)} 米` },  // ✅ Function format
-      { field: 'price',    name: 'Price', valueFormatter: (v) => `¥${v.toFixed(2)}` },        // ✅ Function format
+      { field: 'distance', name: '距离', valueFormatter: (v) => `${Math.round(v)} 米` },  // ✅ 函数形式
+      { field: 'price',    name: '价格', valueFormatter: (v) => `¥${v.toFixed(2)}` },     // ✅ 函数形式
     ],
   },
 });
 
-// ✅ Correct: Use d3-format strings only for formatting numbers (no units needed)
+// ✅ 仅格式化数字（不需要单位）时可用 d3-format 字符串
 chart.options({
   tooltip: {
     items: [
-      { field: 'ratio', name: 'Ratio', valueFormatter: '.1%' },  // ✅ Pure d3-format, no text
-      { field: 'value', name: 'Value', valueFormatter: ',.0f' }, // ✅ Comma-separated integer
+      { field: 'ratio', name: '占比', valueFormatter: '.1%' },  // ✅ 纯 d3-format，无文字
+      { field: 'value', name: '数值', valueFormatter: ',.0f' }, // ✅ 千分位整数
     ],
   },
 });
 ```
-### Error 4: Multiple Series Tooltip Without `shared` Configuration
+
+### 错误 4：多系列 tooltip 未配置 shared
 
 ```javascript
-// ❌ Issue: Multi-line chart tooltip only displays the line currently hovered over
+// ❌ 问题：多折线图 tooltip 只显示当前 hover 的那条线
 chart.options({
   type: 'view',
   children: [
     { type: 'line', encode: { x: 'month', y: 'value', color: 'type' } },
   ],
-  // Without shared: true, the tooltip only shows the line directly hovered by the mouse
+  // 没有 shared: true，tooltip 只显示鼠标直接悬停的那条线
 });
 
-// ✅ Correct: Set `shared: true` to display all series
+// ✅ 正确：设置 shared: true 显示所有系列
 chart.options({
   type: 'view',
   children: [
@@ -355,3 +356,7 @@ chart.options({
   interaction: [{ type: 'tooltip', shared: true }],   // ✅
 });
 ```
+
+---
+
+> **深色背景适配**：深色背景下 tooltip 样式需要适配时，使用 `theme: 'classicDark'` 自动切换，或通过 `interaction.tooltip.css` 手动控制。详见 [深色主题适配](../concepts/g2-concept-dark-theme-adaptation.md)
