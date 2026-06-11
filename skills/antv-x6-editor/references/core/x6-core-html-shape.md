@@ -1,13 +1,8 @@
 ---
 id: "x6-core-html-shape"
-title: "X6 HTML Shape 完整指南（Shape.HTML.register）"
+title: "Complete Guide to X6 HTML Shape (Shape.HTML.register)"
 description: |
-  X6 3.x 富 HTML 节点专项指南：Shape.HTML.register 是唯一注册入口。本文档基于
-  src/shape/html.ts 源码，覆盖 HTML shape 注册 API、html 回调三种返回值（string /
-  HTMLElement / 函数）、effect 重渲染机制（如 effect: ['data']），以及业务场景模板：
-  HTML 卡片节点、HTML 表单节点（input/select/textarea）、HTML 状态徽标节点、HTML
-  用户卡片（头像 + 姓名 + 职位）、HTML 数据表格节点。并明确说明 X6 2.x 旧 API
-  Graph.registerHTMLComponent 已废弃，3.x 不存在该方法。
+  Specialized guide for X6 3.x Rich HTML Nodes: Shape.HTML.register is the only registration entry point. This document is based on the source code in src/shape/html.ts, covering the HTML shape registration API, three types of return values for the html callback (string / HTMLElement / function), effect re-rendering mechanism (e.g., effect: ['data']), and business scenario templates: HTML card nodes, HTML form nodes (input/select/textarea), HTML status badge nodes, HTML user cards (avatar + name + position), and HTML data table nodes. It also clarifies that the deprecated X6 2.x API Graph.registerHTMLComponent is no longer available in 3.x.
 
 library: "x6"
 version: "3.x"
@@ -47,28 +42,28 @@ related:
   - "x6-intermediate-custom-node"
 
 use_cases:
-  - "用 HTML/CSS 渲染卡片、表单、状态徽标、数据表等富 UI 节点"
-  - "节点内容随 data 变化时自动重渲染"
-  - "在 SVG 节点之外嵌入任意 DOM（含 input、select、img）"
-  - "用户卡片节点（头像 + 姓名 + 职位）"
-  - "可编辑表单节点（input/select 输入框）"
-  - "状态可变节点（online/offline/idle 切换）"
+  - "Render rich UI nodes such as cards, forms, status badges, and data tables using HTML/CSS"
+  - "Automatically re-render node content when data changes"
+  - "Embed arbitrary DOM elements (including input, select, img) within SVG nodes"
+  - "User card nodes (avatar + name + position)"
+  - "Editable form nodes (input/select fields)"
+  - "State-switchable nodes (online/offline/idle)"
 
 anti_patterns:
-  - "使用 Graph.registerHTMLComponent —— X6 3.x 已废弃，源码不存在"
-  - "addNode({ shape: 'html', html: '...' }) 直接传 html —— 必须先 register 一个具名 shape"
-  - "在 html 回调里返回 undefined / null"
-  - "对静态展示型节点滥用 effect: ['data']"
+  - "Using Graph.registerHTMLComponent —— Deprecated in X6 3.x, does not exist in the source code"
+  - "Directly passing html in addNode({ shape: 'html', html: '...' }) —— Must first register a named shape"
+  - "Returning undefined / null in the html callback"
+  - "Overusing effect: ['data'] for static display nodes"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 1. 唯一注册入口：`Shape.HTML.register`
+## 1. Unique Registration Entry Point: `Shape.HTML.register`
 
-X6 3.x 中**所有富 HTML 节点都通过 `Shape.HTML.register` 注册一个具名 shape**，然后用 `graph.addNode({ shape: 'xxx' })` 添加。**没有其他注册方式**。
+In X6 3.x, **all rich HTML nodes are registered via `Shape.HTML.register` as a named shape**, and then added using `graph.addNode({ shape: 'xxx' })`. **There is no other registration method**.
 
-源码位置：`src/shape/html.ts:38`
+Source code location: `src/shape/html.ts:38`
 
 ```ts
 public static register(config: HTMLShapeConfig) {
@@ -81,22 +76,22 @@ public static register(config: HTMLShapeConfig) {
 }
 ```
 
-### `HTMLShapeConfig` 字段（完整列表）
+### `HTMLShapeConfig` Fields (Complete List)
 
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `shape` | `string` | ✅ | 注册后的 shape id，用于 `addNode({ shape })` |
-| `html` | `string \| HTMLElement \| (cell) => HTMLElement \| string` | ✅ | HTML 内容生成函数或静态 HTML |
-| `effect` | `(keyof NodeProperties)[]` | ❌ | 监听哪些 props 变化时重新调用 `html(cell)` 渲染；不填默认仅初次渲染（注：内部 `change:*` 监听仍会触发，但只在 prop 在 effect 列表中时才重渲染）|
-| `inherit` | `string` | ❌ | 继承的内置 shape，默认 `'html'` |
-| `width` / `height` | `number` | ❌ | 默认尺寸（addNode 时可覆盖） |
-| 其他 NodeProperties | — | ❌ | 与 `Graph.registerNode` 的 options 一致 |
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `shape` | `string` | ✅ | Registered shape id, used in `addNode({ shape })` |
+| `html` | `string \| HTMLElement \| (cell) => HTMLElement \| string` | ✅ | HTML content generation function or static HTML |
+| `effect` | `(keyof NodeProperties)[]` | ❌ | List of props to listen for changes and re-invoke `html(cell)` rendering; defaults to initial render only if not provided (Note: Internal `change:*` listeners will still trigger, but re-rendering occurs only when the prop is in the effect list) |
+| `inherit` | `string` | ❌ | Inherited built-in shape, defaults to `'html'` |
+| `width` / `height` | `number` | ❌ | Default dimensions (can be overridden in `addNode`) |
+| Other NodeProperties | — | ❌ | Consistent with `Graph.registerNode` options |
 
-## 2. 最小可运行模板（按复杂度递进）
+## 2. Minimum Viable Templates (Progressively by Complexity)
 
-### 2.1 静态 HTML（最简）
+### 2.1 Static HTML (Simplest)
 
-`html` 字段直接传字符串：
+Directly pass a string to the `html` field:
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -116,9 +111,9 @@ const graph = new Graph({
 graph.addNode({ shape: 'static-html', x: 80, y: 60 });
 ```
 
-### 2.2 函数返回 HTMLElement（推荐）
+### 2.2 Function Returns HTMLElement (Recommended)
 
-`html(node)` 返回一个 DOM 元素，用 `node.getData()` 读取业务数据：
+`html(node)` returns a DOM element, and business data is read using `node.getData()`:
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -150,9 +145,9 @@ graph.addNode({
 });
 ```
 
-### 2.3 加 effect：data 变化自动重渲染
+### 2.3 Add effect: Automatic Re-rendering on Data Changes
 
-`effect: ['data']` 让节点的 `data` prop 变化时**自动重新调用 `html(cell)`**，无需手动 `view.render()`：
+`effect: ['data']` allows the `html(cell)` function to be **automatically re-invoked when the node's `data` prop changes**, eliminating the need for manual `view.render()`:
 
 ```javascript
 Shape.HTML.register({
@@ -181,14 +176,14 @@ const node = graph.addNode({
   data: { name: 'API Server', status: 'online' },
 });
 
-// 修改 data 会自动触发 html(cell) 重新执行 → 视图刷新
+// Modifying data automatically triggers html(cell) re-execution → view refresh
 setTimeout(() => node.setData({ name: 'API Server', status: 'offline' }), 1000);
 ```
 
-> **何时该加 `effect: ['data']`**：业务数据动态变化（状态切换、计数更新等）。
-> **何时不要加**：纯静态展示节点（卡片标题写死、不会通过 setData 修改）。多余的 effect 会增加重渲染开销。
+> **When to add `effect: ['data']`**：Dynamic changes in business data (status switches, count updates, etc.).  
+> **When not to add**：Purely static node displays (hardcoded card titles, no modifications via `setData`). Unnecessary effects increase re-rendering overhead.
 
-### 2.4 表单 / 含 input / select 的交互节点
+### 2.4 Form / Interactive Node with Input / Select
 
 ```javascript
 Shape.HTML.register({
@@ -225,7 +220,7 @@ graph.addNode({
 });
 ```
 
-### 2.5 用户卡片（头像 + 文本）
+### 2.5 User Card (Avatar + Text)
 
 ```javascript
 Shape.HTML.register({
@@ -253,7 +248,7 @@ Shape.HTML.register({
 });
 ```
 
-## 3. `html` 字段的三种合法返回（源码 `src/shape/html.ts:124-134`）
+## 3. Three Valid Returns for the `html` Field (Source Code `src/shape/html.ts:124-134`)
 
 ```ts
 let { html } = content;
@@ -264,40 +259,40 @@ if (html) {
   if (typeof html === 'string') {
     container.innerHTML = html;
   } else {
-    Dom.append(container, html);   // 必须是 HTMLElement
+    Dom.append(container, html);   // Must be an HTMLElement
   }
 }
 ```
 
-| 返回类型 | 渲染方式 | 适用场景 |
+| Return Type | Rendering Method | Applicable Scenarios |
 |---------|---------|---------|
-| `string` | `container.innerHTML = html` | 静态结构、模板字符串拼接 |
-| `HTMLElement` | `Dom.append(container, html)` | 需要 addEventListener / ref 持有 |
-| `(cell) => string \| HTMLElement` | 同上，可读 cell 状态 | 内容依赖 data / props |
+| `string` | `container.innerHTML = html` | Static structure, template string concatenation |
+| `HTMLElement` | `Dom.append(container, html)` | Requires addEventListener / ref holding |
+| `(cell) => string \| HTMLElement` | Same as above, can read cell state | Content depends on data / props |
 
-返回 `null` / `undefined` / 空字符串都会**渲染为空 div**。
+Returning `null` / `undefined` / empty string will **render as an empty div**.
 
-## 4. 风格规范（用于跟着 expected 写）
+## 4. Style Guidelines (for writing according to expected)
 
-X6 官方 demo 的 HTML shape 通常**保持极简**：
+The HTML shape in the official X6 demo usually **keeps it minimalistic**:
 
-1. **节点宽高**写在 `Shape.HTML.register({ width, height })` 里，作为该 shape 的默认值；`addNode` 时可省略
-2. **`addNode`** 只传 `shape` / `x` / `y` / `data`（如需），**不要重复传 width/height**（除非确实要覆盖）
-3. **样式用 `cssText` 一行写完** 或精简的 `style.xxx` 赋值，避免长串 `box-shadow / fontFamily / padding` 等装饰性属性堆叠
-4. **不要给静态节点加 `effect: ['data']`**——只在 setData 动态修改时才需要
-5. **不要在 HTML shape demo 里附带 connecting / addEdge / centerContent**——除非需求明确要求
-6. **`background: { color: '#F2F7FA' }`** 是 X6 demo 的常用浅蓝背景色，与 expected 保持一致
+1. **Node width and height** are written in `Shape.HTML.register({ width, height })` as the default values for the shape; can be omitted when `addNode`
+2. **`addNode`** only passes `shape` / `x` / `y` / `data` (if needed), **do not repeat width/height** (unless you really want to override)
+3. **Styles are written in one line using `cssText`** or concise `style.xxx` assignments, avoiding long strings of decorative properties like `box-shadow / fontFamily / padding`
+4. **Do not add `effect: ['data']` to static nodes** - only needed when dynamically modifying with setData
+5. **Do not include connecting / addEdge / centerContent in HTML shape demos** - unless explicitly required
+6. **`background: { color: '#F2F7FA' }`** is the commonly used light blue background color in X6 demos, consistent with expected
 
-## 5. X6 2.x 旧 API 已废弃（重要）
+## 5. X6 2.x Legacy APIs Deprecated (Important)
 
-⚠️ **`Graph.registerHTMLComponent(name, factory)` 在 X6 3.x 中不存在**：
+⚠️ **`Graph.registerHTMLComponent(name, factory)` does not exist in X6 3.x**:
 
 ```javascript
-// ❌ 错误：X6 2.x 旧 API，3.x 源码已无此方法（grep src/ 无任何匹配）
+// ❌ Incorrect: X6 2.x legacy API, removed from 3.x source code (grep src/ yields no matches)
 Graph.registerHTMLComponent('user-card', (node) => { /* ... */ });
 graph.addNode({ shape: 'html', html: 'user-card', data: {...} });
 
-// ✅ 正确：X6 3.x 统一使用 Shape.HTML.register
+// ✅ Correct: X6 3.x uses Shape.HTML.register uniformly
 Shape.HTML.register({
   shape: 'user-card',
   html(node) { /* ... */ },
@@ -305,27 +300,27 @@ Shape.HTML.register({
 graph.addNode({ shape: 'user-card', data: {...} });
 ```
 
-如果在网上或旧 demo 里看到 `Graph.registerHTMLComponent`，**一律替换为 `Shape.HTML.register`**：
-- 不再需要把 shape 写成字符串 `'html'` + 用 `html: 'component-name'` 引用
-- 直接用注册时的 shape 名作为 `addNode({ shape })`
+If you encounter `Graph.registerHTMLComponent` in online resources or old demos, **replace it with `Shape.HTML.register`**:
+- No longer need to specify shape as the string `'html'` and reference with `html: 'component-name'`
+- Directly use the registered shape name in `addNode({ shape })`
 
-## 6. 常见错误与修正
+## 6. Common Errors and Fixes
 
-### ❌ `addNode` 时 shape 直接写 `'html'`
+### ❌ Directly writing `'html'` for `shape` when using `addNode`
 
 ```javascript
-// 错误：'html' 是 X6 内置基础 shape，没有 html 内容定义
+// Error: 'html' is a built-in basic shape in X6, without HTML content definition
 graph.addNode({ shape: 'html', html: '<div>x</div>' });
-// → 抛 "shape not found" 或渲染空白
+// → Throws "shape not found" or renders blank
 ```
 
 ```javascript
-// 正确：先 register 一个具名 shape
+// Correct: First register a named shape
 Shape.HTML.register({ shape: 'card', html: '<div>x</div>' });
 graph.addNode({ shape: 'card', x: 0, y: 0, width: 100, height: 40 });
 ```
 
-### ❌ `html` 回调返回值忘了
+### ❌ Forgot to return value in `html` callback
 
 ```javascript
 Shape.HTML.register({
@@ -333,13 +328,13 @@ Shape.HTML.register({
   html(node) {
     const div = document.createElement('div');
     div.textContent = 'hi';
-    // ❌ 忘了 return → foreignObject 内为空
+    // ❌ Forgot to return → foreignObject is empty
   },
 });
 ```
 
 ```javascript
-// 正确：必须 return
+// Correct: Must return
 html(node) {
   const div = document.createElement('div');
   div.textContent = 'hi';
@@ -347,37 +342,37 @@ html(node) {
 }
 ```
 
-### ❌ 用 `Graph.registerHTMLComponent`（X6 2.x 残留）
+### ❌ Using `Graph.registerHTMLComponent` (X6 2.x remnant)
 
-参见第 5 节。
+Refer to Section 5.
 
-### ❌ `effect` 写错 prop 名
+### ❌ Incorrect `effect` prop name
 
 ```javascript
-// 错误：'datas' 不是合法 NodeProperty key
+// Error: 'datas' is not a valid NodeProperty key
 Shape.HTML.register({ shape: 'x', effect: ['datas'], html(n) { /* ... */ } });
-// → setData 不会触发重渲染
+// → setData will not trigger re-rendering
 ```
 
 ```javascript
-// 正确：effect 元素必须是 NodeProperties 的 key（如 'data' / 'attrs' / 'size' / 'position'）
+// Correct: effect elements must be keys of NodeProperties (e.g., 'data' / 'attrs' / 'size' / 'position')
 Shape.HTML.register({ shape: 'x', effect: ['data'], html(n) { /* ... */ } });
 ```
 
-### ❌ HTML 节点尺寸不生效
+### ❌ HTML Node Size Not Taking Effect
 
 ```javascript
-// 错误：div 用 px 写死，但外层 foreignObject 大小是 width/height 决定
+// Error: div size is hardcoded in px, but the outer foreignObject size is determined by width/height
 html(node) {
   const div = document.createElement('div');
-  div.style.width = '300px';   // ⚠️ 节点本身只有 200x80
-  div.style.height = '200px';  // → 超出 foreignObject 被裁
+  div.style.width = '300px';   // ⚠️ Node itself is only 200x80
+  div.style.height = '200px';  // → Exceeds foreignObject and gets clipped
   return div;
 }
 ```
 
 ```javascript
-// 正确：内部用 100% 撑满 foreignObject，节点尺寸由 register/addNode 控制
+// Correct: Use 100% internally to fill the foreignObject, node size controlled by register/addNode
 html(node) {
   const div = document.createElement('div');
   div.style.cssText = 'width:100%;height:100%;...';
@@ -386,9 +381,9 @@ html(node) {
 graph.addNode({ shape: 'card', width: 300, height: 200 });
 ```
 
-## 7. 相关文档
+## 7. Related Documentation
 
-- `core/x6-core-shapes.md` — 全部 10 个内置 shape 概览
-- `core/x6-core-node.md` — 节点 API（addNode / setData / 事件）
-- `core/x6-core-cell-data.md` — cell.data 的读写与监听
-- `intermediate/x6-intermediate-custom-node.md` — 用 Graph.registerNode 注册自定义 SVG 节点
+- `core/x6-core-shapes.md` — Overview of all 10 built-in shapes
+- `core/x6-core-node.md` — Node API (addNode / setData / events)
+- `core/x6-core-cell-data.md` — Reading, writing, and listening to cell.data
+- `intermediate/x6-intermediate-custom-node.md` — Registering custom SVG nodes using Graph.registerNode

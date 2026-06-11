@@ -1,26 +1,25 @@
 ---
 id: "x6-intermediate-group"
-title: "X6 群组与嵌套"
+title: "X6 Grouping and Nesting"
 description: |
-  X6 节点的父子关系（Group）配置指南。
-  包含组合节点、交互式嵌入、子节点移动限制、父节点自动扩展、展开/折叠。
+  Configuration guide for parent-child relationships (Group) of X6 nodes.
+  Includes combined nodes, interactive embedding, child node movement restrictions, automatic expansion of parent nodes, and expand/collapse functionality.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "group"
 tags:
-  - "群组"
   - "group"
-  - "嵌套"
+  - "grouping"
+  - "nesting"
   - "parent"
   - "children"
   - "embedding"
-  - "组合"
-  - "折叠"
+  - "combination"
   - "collapse"
   - "expand"
-  - "分组"
+  - "grouping"
   - "restrict"
   - "translating"
 
@@ -30,24 +29,24 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "将多个节点组合为一个群组"
-  - "拖拽节点嵌入另一个节点形成父子关系"
-  - "限制子节点只能在父节点内移动"
-  - "父节点自动扩展包围子节点"
-  - "实现父节点的展开与折叠"
+  - "Combine multiple nodes into a single group"
+  - "Drag and drop nodes to embed them within another node, forming a parent-child relationship"
+  - "Restrict child nodes to move only within the parent node"
+  - "Automatically expand parent nodes to enclose child nodes"
+  - "Implement expand and collapse functionality for parent nodes"
 
 anti_patterns:
-  - "不要手动设置 parent/children 字段，应通过 API 操作"
-  - "不要忘记开启 embedding 选项才能交互式嵌入"
+  - "Do not manually set parent/children fields; use API operations instead"
+  - "Do not forget to enable the embedding option for interactive embedding"
 ---
 
-# X6 群组与嵌套
+# X6 Grouping and Nesting
 
-## 基本概念
+## Basic Concepts
 
-X6 通过父子关系（parent-children）实现群组功能。父节点移动时子节点跟随，边的路径点也会跟随共同父节点移动。
+X6 implements grouping functionality through parent-child relationships. When a parent node moves, its child nodes follow, and the path points of edges also move along with the common parent node.
 
-## 通过 API 组合节点
+## Combining Nodes via API
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -58,7 +57,7 @@ const graph = new Graph({
   height: 600,
 });
 
-// 创建父节点
+// Create parent node
 const parent = graph.addNode({
   shape: 'rect',
   x: 40,
@@ -72,7 +71,7 @@ const parent = graph.addNode({
   zIndex: 1,
 });
 
-// 创建子节点
+// Create child nodes
 const child1 = graph.addNode({
   shape: 'rect',
   x: 80,
@@ -99,47 +98,47 @@ const child2 = graph.addNode({
   zIndex: 2,
 });
 
-// 设置父子关系
+// Establish parent-child relationships
 parent.addChild(child1);
 parent.addChild(child2);
 ```
 
-## 父子关系 API
+## Parent-Child Relationship API
 
 ```javascript
-// 添加子节点
+// Add child node
 parent.addChild(childNode);
 
-// 获取子节点
+// Get child nodes
 const children = parent.getChildren(); // Cell[] | null
 
-// 获取父节点
+// Get parent node
 const parentNode = child.getParent(); // Cell | null
 
-// 判断关系
+// Determine relationship
 parent.isParentOf(child);  // true
 child.isChildOf(parent);   // true
 
-// 获取所有后代节点（递归）
+// Get all descendant nodes (recursive)
 const descendants = parent.getDescendants();
 
-// 移除子节点（不删除节点本身）
+// Remove child node (does not delete the node itself)
 parent.removeChild(child);
 
-// 嵌入边（将边设为子节点）
+// Embed edge (set edge as child node)
 parent.addChild(edge);
 ```
 
-## 交互式嵌入（Embedding）
+## Interactive Embedding (Embedding)
 
-通过拖拽将一个节点嵌入另一个节点成为子节点：
+Embed a node into another node as a child node by dragging:
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   embedding: {
     enabled: true,
-    // 查找父节点的方法：拖拽节点时遍历画布中的节点，返回的节点为目标父节点
+    // Method to find the parent node: Traverse the nodes on the canvas while dragging the node, and return the node as the target parent node
     findParent({ node }) {
       const bbox = node.getBBox();
       return this.getNodes().filter((candidate) => {
@@ -151,17 +150,17 @@ const graph = new Graph({
 });
 ```
 
-### embedding 配置项
+### embedding Configuration Options
 
-| 配置项 | 类型 | 说明 |
-|--------|------|------|
-| `enabled` | boolean | 是否启用嵌入 |
-| `findParent` | Function | 查找父节点的方法，返回节点数组 |
-| `validate` | Function | 验证是否允许嵌入 |
+| Configuration Item | Type | Description |
+|--------------------|------|-------------|
+| `enabled` | boolean | Whether to enable embedding |
+| `findParent` | Function | Method to find parent nodes, returns an array of nodes |
+| `validate` | Function | Validates whether embedding is allowed |
 
-## 限制子节点移动范围
+## Restrict Child Node Movement Range
 
-将子节点的移动限制在父节点内部：
+Restrict the movement of child nodes within the parent node:
 
 ```javascript
 const graph = new Graph({
@@ -173,15 +172,15 @@ const graph = new Graph({
       if (parentNode) {
         return parentNode.getBBox();
       }
-      return undefined; // 不限制
+      return undefined; // No restriction
     },
   },
 });
 ```
 
-## 自动扩展父节点
+## Auto-Expand Parent Node
 
-监听子节点移动事件，自动扩展父节点使其始终包围子节点：
+Listen for child node movement events and automatically expand the parent node to always enclose the child nodes:
 
 ```javascript
 graph.on('node:change:position', ({ node, options }) => {
@@ -200,7 +199,7 @@ graph.on('node:change:position', ({ node, options }) => {
 
     const children = parentNode.getChildren();
     if (children && children.length) {
-      // 计算所有子节点的包围盒
+      // Calculate the bounding box of all child nodes
       let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
       children.filter(child => child.isNode()).forEach((child) => {
         const bbox = child.getBBox();
@@ -223,14 +222,14 @@ graph.on('node:change:position', ({ node, options }) => {
 });
 ```
 
-## 展开与折叠父节点
+## Expand and Collapse Parent Nodes
 
-通过自定义节点实现可折叠的群组：
+Implement collapsible groups through custom nodes:
 
 ```javascript
 import { Graph } from '@antv/x6';
 
-// 注册可折叠的群组节点
+// Register collapsible group node
 Graph.registerNode(
   'collapsible-group',
   {
@@ -270,7 +269,7 @@ const child = graph.addNode({
 
 group.addChild(child);
 
-// 切换折叠状态
+// Toggle collapse state
 function toggleCollapse(groupNode, collapsed) {
   const children = groupNode.getDescendants();
   children.forEach((cell) => {
@@ -280,7 +279,7 @@ function toggleCollapse(groupNode, collapsed) {
       cell.show();
     }
   });
-  // 调整父节点大小
+  // Adjust parent node size
   if (collapsed) {
     groupNode.prop('expandedSize', groupNode.getSize());
     groupNode.resize(200, 40);
@@ -292,7 +291,7 @@ function toggleCollapse(groupNode, collapsed) {
   }
 }
 
-// 双击切换折叠
+// Double-click to toggle collapse
 graph.on('node:dblclick', ({ node }) => {
   if (node === group) {
     const isCollapsed = node.prop('collapsed') || false;
@@ -302,14 +301,14 @@ graph.on('node:dblclick', ({ node }) => {
 });
 ```
 
-## 可折叠带按钮的群组节点
+## Collapsible Group Node with Button
 
-下面是一个更完整的示例，展示如何创建一个带有折叠按钮的群组节点：
+Below is a more complete example demonstrating how to create a group node with a collapsible button:
 
 ```javascript
 import { Graph } from '@antv/x6';
 
-// 注册可折叠群组节点
+// Register collapsible group node
 Graph.registerNode(
   'collapsable-group',
   {
@@ -408,45 +407,45 @@ graph.on('node:click', ({ node }) => {
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 未启用 embedding 就尝试拖拽嵌入
+### ❌ Attempting to Drag and Embed Without Enabling Embedding
 
 ```javascript
-// 错误：没有配置 embedding，拖拽不会触发嵌入
+// Error: Embedding is not configured, dragging will not trigger embedding
 const graph = new Graph({ container: 'container' });
 
-// 正确：必须启用 embedding
+// Correct: Embedding must be enabled
 const graph = new Graph({
   container: 'container',
   embedding: { enabled: true },
 });
 ```
 
-### ❌ 手动设置 parent/children 字段
+### ❌ Manually Setting parent/children Fields
 
 ```javascript
-// 错误：直接操作内部字段
+// Incorrect: Directly manipulating internal fields
 node.prop('parent', parentId);
 
-// 正确：使用 API
+// Correct: Using API
 parentNode.addChild(childNode);
 ```
 
-### ❌ 错误使用 Shape.Group.define 或不存在的 API
+### ❌ Incorrect Usage of Shape.Group.define or Non-existent API
 
 ```javascript
-// 错误：使用了不存在的 API
+// Incorrect: Using a non-existent API
 Shape.Group.define('collapsable-group', { ... });
 
-// 正确：使用 Graph.registerNode 注册自定义节点
+// Correct: Using Graph.registerNode to register a custom node
 Graph.registerNode('collapsable-group', { ... }, true);
 ```
 
-### ❌ 错误处理折叠逻辑，未正确更新按钮状态和尺寸
+### ❌ Incorrect Collapse Logic, Failing to Update Button State and Size
 
 ```javascript
-// 错误：没有正确更新按钮文本和节点尺寸
+// Error: Fails to correctly update button text and node size
 graph.on('node:click', ({ node }) => {
   if (node.shape === 'collapsable-group') {
     const collapsed = !node.prop('collapsed');
@@ -460,7 +459,7 @@ graph.on('node:click', ({ node }) => {
   }
 });
 
-// 正确：完整处理折叠状态、按钮文本和节点尺寸
+// Correct: Fully handles collapse state, button text, and node size
 let collapsed = false;
 graph.on('node:click', ({ node }) => {
   if (node === group) {

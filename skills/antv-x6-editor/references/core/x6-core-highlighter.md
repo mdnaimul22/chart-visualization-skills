@@ -1,10 +1,10 @@
 ---
 id: "x6-core-highlighter"
-title: "X6 高亮器（Highlighter）"
+title: "X6 Highlighter"
 description: |
-  节点和边的高亮效果配置。
-  用于连线交互时高亮可连接的节点/端口，或自定义选中状态的视觉反馈。
-  内置 stroke、className、opacity 三种高亮策略。
+  Configuration for highlighting effects on nodes and edges.
+  Used to highlight connectable nodes/ports during edge interaction, or to customize visual feedback for selected states.
+  Built-in highlight strategies include stroke, className, and opacity.
 
 library: "x6"
 version: "3.x"
@@ -12,14 +12,14 @@ category: "core"
 subcategory: "highlighter"
 tags:
   - "highlighter"
-  - "高亮"
+  - "highlight"
   - "stroke"
   - "className"
   - "opacity"
   - "highlighting"
   - "magnetAvailable"
   - "nodeAvailable"
-  - "连线高亮"
+  - "edge highlighting"
 
 related:
   - "x6-core-graph-init"
@@ -27,26 +27,26 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "连线时高亮可连接的端口"
-  - "连线时高亮可连接的节点"
-  - "自定义选中元素的高亮样式"
-  - "鼠标悬停时的视觉反馈"
+  - "Highlight connectable ports during edge interaction"
+  - "Highlight connectable nodes during edge interaction"
+  - "Customize highlight styles for selected elements"
+  - "Provide visual feedback on mouse hover"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Highlighter（高亮器）** 为节点/边提供视觉高亮效果。X6 在连线交互时会自动触发高亮：
+**Highlighter** provides visual highlighting effects for nodes/edges. X6 automatically triggers highlighting during edge interactions:
 
-- **magnetAvailable**：拖拽连线时，可连接的端口（magnet）高亮
-- **nodeAvailable**：拖拽连线时，可连接的节点高亮
-- **default**：默认高亮样式（如 `graph.highlightCell()` 手动触发时使用）
+- **magnetAvailable**: When dragging an edge, highlight connectable ports (magnets)
+- **nodeAvailable**: When dragging an edge, highlight connectable nodes
+- **default**: Default highlight style (used when manually triggered, e.g., `graph.highlightCell()`)
 
-## 配置方式
+## Configuration Method
 
-在 Graph 构造函数的 `highlighting` 字段中配置：
+Configure in the `highlighting` field of the Graph constructor:
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -56,7 +56,7 @@ const graph = new Graph({
   width: 800,
   height: 600,
   connecting: {
-    highlight: true,  // 必须启用，连线时才会触发高亮
+    highlight: true,  // Must be enabled to trigger highlighting during connection
   },
   highlighting: {
     default: {
@@ -75,18 +75,18 @@ const graph = new Graph({
 });
 ```
 
-## 内置高亮器
+## Built-in Highlighter
 
 ### stroke
 
-在元素周围绘制描边高亮框（SVG path），最常用的高亮方式。
+Draws a stroke highlight box (SVG path) around the element, the most commonly used highlighting method.
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `padding` | `number` | `3` | 高亮框与元素的间距 |
-| `rx` | `number` | `0` | 高亮框圆角 X |
-| `ry` | `number` | `0` | 高亮框圆角 Y |
-| `attrs` | `object` | `{ 'stroke-width': 3, stroke: '#FEB663' }` | 高亮框的 SVG 属性 |
+| `padding` | `number` | `3` | The spacing between the highlight box and the element |
+| `rx` | `number` | `0` | Highlight box rounded corner X |
+| `ry` | `number` | `0` | Highlight box rounded corner Y |
+| `attrs` | `object` | `{ 'stroke-width': 3, stroke: '#FEB663' }` | SVG attributes of the highlight box |
 
 ```javascript
 highlighting: {
@@ -108,11 +108,11 @@ highlighting: {
 
 ### className
 
-通过添加 CSS 类名实现高亮，适合用 CSS 动画实现复杂效果。
+Highlighting is achieved by adding a CSS class name, which is suitable for implementing complex effects using CSS animations.
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `className` | `string` | `'x6-highlighted'` | 添加到元素上的 CSS 类名 |
+| `className` | `string` | `'x6-highlighted'` | CSS class name added to the element |
 
 ```javascript
 highlighting: {
@@ -123,7 +123,7 @@ highlighting: {
 }
 ```
 
-配套 CSS：
+Accompanying CSS:
 
 ```css
 .port-available circle {
@@ -135,9 +135,9 @@ highlighting: {
 
 ### opacity
 
-通过添加降低透明度的 CSS 类名实现高亮（实际效果为非高亮元素变淡）。
+Highlighting is achieved by adding a CSS class name that reduces opacity (the actual effect is that non-highlighted elements become faded).
 
-无参数，直接使用：
+No parameters are required; use directly:
 
 ```javascript
 highlighting: {
@@ -148,19 +148,19 @@ highlighting: {
 }
 ```
 
-## highlighting 配置项
+## highlighting Configuration
 
-| 字段 | 触发时机 | 说明 |
-|------|----------|------|
-| `default` | `graph.highlightCell()` 手动调用时 | 默认高亮样式 |
-| `magnetAvailable` | 拖拽连线时，经过可连接的 magnet | 端口/元素高亮 |
-| `nodeAvailable` | 拖拽连线时，经过可连接的节点 | 节点高亮 |
+| Field | Trigger Timing | Description |
+|-------|----------------|-------------|
+| `default` | When `graph.highlightCell()` is manually called | Default highlight style |
+| `magnetAvailable` | When dragging a line and passing over a connectable magnet during connection | Port/element highlight |
+| `nodeAvailable` | When dragging a line and passing over a connectable node during connection | Node highlight |
 
-**注意**：必须在 `connecting` 中设置 `highlight: true` 才会在连线交互时触发 `magnetAvailable` 和 `nodeAvailable` 高亮。
+**Note**: `highlight: true` must be set in `connecting` for `magnetAvailable` and `nodeAvailable` highlights to be triggered during line interaction.
 
-## Graph 默认配置
+## Graph Default Configuration
 
-X6 Graph 的默认 highlighting 配置（源码）：
+Default highlighting configuration for X6 Graph (source code):
 
 ```javascript
 highlighting: {
@@ -179,9 +179,9 @@ highlighting: {
 }
 ```
 
-## 完整示例
+## Complete Example
 
-### 连线时高亮可用端口
+### Highlight Available Ports When Connecting
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -245,53 +245,53 @@ const node2 = graph.addNode({
   },
 });
 
-// 从 node1 的 out1 端口拖拽连线时，node2 的 in1 端口会高亮
+// When dragging a connection from node1's out1 port, node2's in1 port will be highlighted
 ```
 
-### 手动高亮/取消高亮
+### Manual Highlight/Unhighlight
 
-通过 `CellView` 的 `highlight()` / `unhighlight()` 方法手动触发高亮：
+Manually trigger highlighting using the `highlight()` / `unhighlight()` methods of `CellView`:
 
 ```javascript
-// 获取节点视图
+// Get the node view
 const nodeView = graph.findViewByCell(node1);
 
-// 手动高亮（不传 options 时使用 highlighting.default 配置）
+// Manual highlight (uses highlighting.default configuration when no options are provided)
 nodeView.highlight();
 
-// 高亮指定子元素，使用自定义高亮器
+// Highlight a specific child element using a custom highlighter
 nodeView.highlight(nodeView.container.querySelector('rect'), {
   highlighter: { name: 'stroke', args: { padding: 5, attrs: { stroke: '#f5222d' } } },
 });
 
-// 取消高亮
+// Unhighlight
 nodeView.unhighlight();
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 连线时端口不高亮
+### ❌ Ports Do Not Highlight During Connection
 
 ```javascript
-// 错误：忘记开启 connecting.highlight
+// Error: Forgot to enable connecting.highlight
 const graph = new Graph({
   container: 'container',
   connecting: {
     allowBlank: false,
-    // highlight 默认为 false！
+    // highlight defaults to false!
   },
   highlighting: {
     magnetAvailable: { name: 'stroke', args: { padding: 4 } },
   },
 });
-// 连线时端口不会高亮
+// Ports will not highlight during connection
 
-// 正确：必须设置 highlight: true
+// Correct: Must set highlight: true
 const graph = new Graph({
   container: 'container',
   connecting: {
     allowBlank: false,
-    highlight: true, // ✅ 开启连线高亮
+    highlight: true, // ✅ Enable connection highlighting
   },
   highlighting: {
     magnetAvailable: { name: 'stroke', args: { padding: 4 } },
@@ -299,17 +299,17 @@ const graph = new Graph({
 });
 ```
 
-### ❌ 使用 className 但忘记写 CSS
+### ❌ Using className but Forgetting to Write CSS
 
 ```javascript
-// 问题：className 高亮器只添加类名，不自带样式
+// Problem: className highlighter only adds a class name, without built-in styles
 highlighting: {
   magnetAvailable: {
     name: 'className',
-    args: { className: 'my-highlight' }, // 仅添加类名
+    args: { className: 'my-highlight' }, // Only adds a class name
   },
 }
-// 如果没有对应 CSS 规则，视觉上无变化
+// If there are no corresponding CSS rules, there will be no visual changes
 
-// 解决：添加 CSS 或改用 stroke 高亮器
+// Solution: Add CSS or switch to the stroke highlighter
 ```

@@ -1,9 +1,9 @@
 ---
 id: "x6-core-router-advanced"
-title: "X6 高级路由器（Router）"
+title: "X6 Advanced Router"
 description: |
-  X6 除了常用的 orth、manhattan、metro、er 路由器外，还提供 oneside（单侧路由）和 loop（自环路由）等高级路由器。
-  适用于单侧出线、自环连线等场景。
+  In addition to the commonly used orth, manhattan, metro, and er routers, X6 also provides advanced routers such as oneside (single-side routing) and loop (self-loop routing).
+  These are suitable for scenarios like single-side wiring, self-loop connections, etc.
 
 library: "x6"
 version: "3.x"
@@ -11,54 +11,54 @@ category: "core"
 subcategory: "edge"
 tags:
   - "router"
-  - "路由"
+  - "routing"
   - "oneside"
   - "loop"
-  - "自环"
-  - "单侧"
-  - "边"
-  - "连线"
+  - "self-loop"
+  - "single-side"
+  - "edge"
+  - "connection"
 
 related:
   - "x6-core-edge"
   - "x6-core-connector-advanced"
 
 use_cases:
-  - "边从节点同一侧出入"
-  - "自环连线（同一节点的边）"
-  - "单侧出线布局"
-  - "循环依赖表示"
+  - "Edge entering and exiting from the same side of a node"
+  - "Self-loop connection (edge within the same node)"
+  - "Single-side wiring layout"
+  - "Representation of circular dependencies"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 路由器完整列表
+## Complete List of Routers
 
-| Router | 说明 | 典型场景 |
-|--------|------|---------|
-| `normal` | 默认，直连无中间点 | 简单连线 |
-| `orth` | 正交路由（水平/垂直线段） | 流程图 |
-| `manhattan` | 智能正交路由，自动避开障碍 | 复杂流程图 |
-| `metro` | 地铁线路风格（45°对角线） | 地铁图 |
-| `er` | ER 图路由 | ER 图 |
-| `oneside` | 强制从指定侧出入 | 层级布局、单向流 |
-| `loop` | 自环路由 | 自环边、循环状态 |
+| Router | Description | Typical Scenario |
+|--------|-------------|---------------|
+| `normal` | Default, direct connection without intermediate points | Simple connections |
+| `orth` | Orthogonal routing (horizontal/vertical segments) | Flowcharts |
+| `manhattan` | Smart orthogonal routing, automatically avoids obstacles | Complex flowcharts |
+| `metro` | Metro line style (45° diagonal lines) | Metro maps |
+| `er` | ER diagram routing | ER diagrams |
+| `oneside` | Forces entry/exit from a specified side | Hierarchical layouts, unidirectional flows |
+| `loop` | Self-loop routing | Self-loop edges, loop states |
 
 ---
 
-## OneSide 路由器
+## OneSide Router
 
-强制边从节点的指定侧（top/bottom/left/right）出入，适用于层次布局或需要统一出线方向的场景。
+Forces edges to enter or exit nodes from a specified side (top/bottom/left/right), suitable for hierarchical layouts or scenarios requiring uniform edge direction.
 
-### 配置项
+### Configuration Options
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `side` | `'left' \| 'top' \| 'right' \| 'bottom'` | `'bottom'` | 出线方向 |
-| `padding` | `number \| SideOptions` | `40` | 出线点到节点的距离 |
+| `side` | `'left' \| 'top' \| 'right' \| 'bottom'` | `'bottom'` | Outgoing direction |
+| `padding` | `number \| SideOptions` | `40` | Distance from the outgoing point to the node |
 
-### 示例
+### Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -85,7 +85,7 @@ const target = graph.addNode({
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
-// 边从底部出入
+// Edge enters/exits from the bottom
 graph.addEdge({
   source,
   target,
@@ -101,7 +101,7 @@ graph.addEdge({
   },
 });
 
-// 边从右侧出入
+// Edge enters/exits from the right
 graph.addEdge({
   source,
   target,
@@ -118,29 +118,29 @@ graph.addEdge({
 });
 ```
 
-### 工作原理
+### How It Works
 
-OneSide 路由器会：
-1. 将 source 和 target 的连接点移动到节点指定侧外部
-2. 保持正交路径
-3. 如果两个节点的出线点在同一水平/垂直线上，自动对齐
+The OneSide router will:
+1. Move the connection points of the source and target to the outside of the specified side of the node
+2. Maintain orthogonal paths
+3. Automatically align if the outgoing points of two nodes are on the same horizontal/vertical line
 
 ---
 
-## Loop 路由器
+## Loop Router
 
-用于自环边（source 和 target 是同一个节点，或 sourceAnchor 和 targetAnchor 相同的场景）。
+Used for self-loop edges (where the source and target are the same node, or where the sourceAnchor and targetAnchor are the same).
 
-### 配置项
+### Configuration Options
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `width` | `number` | `50` | 自环的宽度（到节点中心的距离） |
-| `height` | `number` | `80` | 自环的高度（弧线跨度） |
-| `angle` | `'auto' \| number` | `'auto'` | 自环方向角度，`'auto'` 自动寻找不与节点重叠的方向 |
-| `merge` | `boolean \| number` | - | 是否合并起止点为同一锚点 |
+| `width` | `number` | `50` | Width of the self-loop (distance to the node center) |
+| `height` | `number` | `80` | Height of the self-loop (arc span) |
+| `angle` | `'auto' \| number` | `'auto'` | Angle direction of the self-loop, `'auto'` automatically finds a direction that does not overlap with the node |
+| `merge` | `boolean \| number` | - | Whether to merge start and end points at the same anchor |
 
-### 示例：自环边
+### Example: Self-Loop Edge
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -157,7 +157,7 @@ const node = graph.addNode({
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
-// 自环边：source 和 target 指向同一节点
+// Self-loop edge: source and target point to the same node
 graph.addEdge({
   source: node,
   target: node,
@@ -170,17 +170,17 @@ graph.addEdge({
     },
   },
   connector: { name: 'loop' },
-  label: '重试',
+  label: 'Retry',
   attrs: {
     line: { stroke: '#f5222d', strokeWidth: 2, targetMarker: 'classic' },
   },
 });
 ```
 
-### 示例：指定角度的自环
+### Example: Self-loop at a Specified Angle
 
 ```javascript
-// 自环从顶部出（angle: -90 即顶部方向）
+// Self-loop exiting from the top (angle: -90, i.e., top direction)
 graph.addEdge({
   source: node,
   target: node,
@@ -199,23 +199,23 @@ graph.addEdge({
 });
 ```
 
-### angle 角度说明
+### angle Angle Description
 
-- `0`：右侧
-- `90`：底部
-- `180` 或 `-180`：左侧
-- `-90` 或 `270`：顶部
-- `'auto'`：自动选择不与节点 BBox 重叠的方向
+- `0`: Right side
+- `90`: Bottom
+- `180` or `-180`: Left side
+- `-90` or `270`: Top
+- `'auto'`: Automatically select a direction that does not overlap with the node's BBox
 
 ---
 
-## 路由器简写与对象写法
+## Router Abbreviation and Object Notation
 
 ```javascript
-// 简写（无参数时）
+// Abbreviation (no parameters)
 graph.addEdge({ source, target, router: 'orth' });
 
-// 对象写法（带参数时）
+// Object notation (with parameters)
 graph.addEdge({
   source,
   target,
@@ -231,37 +231,37 @@ graph.addEdge({
 
 ---
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1: 自环边不使用 loop 路由器
+### Error 1: Self-loop edges do not use the loop router
 
 ```javascript
-// ❌ 错误：自环边使用 orth 路由器，会得到长度为 0 的边
+// ❌ Incorrect: Self-loop edges using the orth router will result in edges with a length of 0
 graph.addEdge({ source: node, target: node, router: 'orth' });
 
-// ✅ 正确：自环边使用 loop 路由器 + loop 连接器
+// ✅ Correct: Self-loop edges use the loop router + loop connector
 graph.addEdge({
   source: node,
   target: node,
-  router: { name: 'loop', args: { width: 50,  height: 80 } },
+  router: { name: 'loop', args: { width: 50, height: 80 } },
   connector: { name: 'loop' },
 });
 ```
 
-### 错误 2: oneside 的 side 拼写错误
+### Error 2: Spelling Error in `oneside`'s `side`
 
 ```javascript
-// ❌ 错误：side 值拼写错误
+// ❌ Incorrect: Spelling error in `side` value
 router: { name: 'oneside', args: { side: 'buttom' } }
 
-// ✅ 正确：side 取值为 'top' | 'bottom' | 'left' | 'right'
+// ✅ Correct: `side` value should be 'top' | 'bottom' | 'left' | 'right'
 router: { name: 'oneside', args: { side: 'bottom' } }
 ```
 
-### 错误 3: 自定义节点注册方式错误导致渲染失败
+### Error 3: Incorrect Custom Node Registration Causes Rendering Failure
 
 ```javascript
-// ❌ 错误：使用 Shape.Rectangle.define 注册节点，可能引发 define 方法未定义的问题
+// ❌ Incorrect: Using Shape.Rectangle.define to register a node may cause issues due to the define method being undefined
 Shape.Rectangle.define({
   shape: 'custom-node',
   width: 80,
@@ -272,7 +272,7 @@ Shape.Rectangle.define({
   },
 });
 
-// ✅ 正确：使用 Graph.registerNode 注册自定义节点
+// ✅ Correct: Using Graph.registerNode to register a custom node
 Graph.registerNode(
   'custom-node',
   {
@@ -297,17 +297,17 @@ Graph.registerNode(
 );
 ```
 
-### 错误 4: orth 路由器未生效或绕开障碍物失败
+### Error 4: orth Router Not Taking Effect or Failing to Bypass Obstacles
 
 ```javascript
-// ❌ 错误：未正确设置 router 或缺少必要的 graph 配置
+// ❌ Error: Router not properly configured or missing necessary graph configuration
 graph.addEdge({
   source: sourceNode,
   target: targetNode,
   router: 'orth',
 });
 
-// ✅ 正确：确保 graph 初始化时启用 router，并在 addEdge 中显式设置
+// ✅ Correct: Ensure router is enabled during graph initialization and explicitly set in addEdge
 const graph = new Graph({
   container: 'container',
   connecting: {

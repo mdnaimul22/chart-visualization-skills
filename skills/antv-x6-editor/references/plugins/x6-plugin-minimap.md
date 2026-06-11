@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-minimap"
-title: "X6 MiniMap 小地图插件"
+title: "X6 MiniMap Plugin"
 description: |
-  MiniMap 插件在独立容器中显示画布的缩略视图，支持通过拖拽视口框快速导航，适合大画布场景。
+  The MiniMap plugin displays a thumbnail view of the canvas in a separate container, supporting quick navigation through dragging the viewport frame. It is suitable for large canvas scenarios.
 
 library: "x6"
 version: "3.x"
@@ -22,15 +22,15 @@ related:
   - "x6-core-graph-init"
 
 use_cases:
-  - "大画布全局预览"
-  - "通过小地图快速导航"
-  - "查看当前视口在全局的位置"
+  - "Global preview of large canvases"
+  - "Quick navigation via MiniMap"
+  - "View the current viewport's position in the global context"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, MiniMap } from '@antv/x6';
@@ -44,23 +44,23 @@ graph.use(new MiniMap({
 }));
 ```
 
-**重要**：MiniMap 需要一个独立的 DOM 容器，不能与画布共用同一容器。
+**Important**: MiniMap requires a separate DOM container and cannot share the same container as the canvas.
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `container` | HTMLElement | **必填** | 小地图的 DOM 容器 |
-| `width` | number | `300` | 小地图宽度 |
-| `height` | number | `200` | 小地图高度 |
-| `padding` | number | `10` | 小地图内边距 |
-| `scalable` | boolean | `true` | 是否可通过小地图缩放画布（拖拽视口框角落） |
-| `minScale` | number | `0.01` | 最小缩放比例 |
-| `maxScale` | number | `16` | 最大缩放比例 |
-| `graphOptions` | object | `{}` | 传递给内部缩略 Graph 的配置 |
-| `createGraph` | function | - | 自定义创建缩略 Graph 的方法 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `container` | HTMLElement | **Required** | DOM container for the mini-map |
+| `width` | number | `300` | Width of the mini-map |
+| `height` | number | `200` | Height of the mini-map |
+| `padding` | number | `10` | Inner padding of the mini-map |
+| `scalable` | boolean | `true` | Whether the canvas can be scaled via the mini-map (by dragging the viewport box corners) |
+| `minScale` | number | `0.01` | Minimum scale ratio |
+| `maxScale` | number | `16` | Maximum scale ratio |
+| `graphOptions` | object | `{}` | Configuration passed to the internal thumbnail Graph |
+| `createGraph` | function | - | Custom method to create the thumbnail Graph |
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph, Scroller, MiniMap } from '@antv/x6';
@@ -73,10 +73,10 @@ const graph = new Graph({
   grid: { visible: true },
 });
 
-// Scroller 提供滚动能力
+// Scroller provides scrolling capability
 graph.use(new Scroller({ enabled: true, pannable: true }));
 
-// MiniMap 提供全局预览
+// MiniMap provides a global preview
 graph.use(new MiniMap({
   enabled: true,
   container: document.getElementById('minimap'),
@@ -86,7 +86,7 @@ graph.use(new MiniMap({
   scalable: true,
 }));
 
-// 添加大量节点
+// Add a large number of nodes
 for (let i = 0; i < 30; i++) {
   graph.addNode({
     x: Math.random() * 3000,
@@ -98,35 +98,35 @@ for (let i = 0; i < 30; i++) {
 }
 ```
 
-## HTML 布局示例
+## HTML Layout Example
 
-小地图容器需要在 HTML 中提前准备：
+The minimap container needs to be prepared in advance in HTML:
 
 ```html
 <div style="display: flex;">
-  <!-- 画布容器 -->
+  <!-- Canvas container -->
   <div id="container" style="flex: 1; height: 600px;"></div>
-  <!-- 小地图容器 -->
+  <!-- Minimap container -->
   <div id="minimap" style="width: 200px; height: 160px; border: 1px solid #ccc;"></div>
 </div>
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 未提供 container
+### ❌ Container Not Provided
 
 ```javascript
-// 错误：缺少 container
+// Error: Missing container
 graph.use(new MiniMap({
   enabled: true,
   width: 200,
   height: 160,
-  // ❌ 缺少 container，小地图无处渲染
+  // ❌ Missing container, minimap has nowhere to render
 }));
 ```
 
 ```javascript
-// 正确：提供独立 DOM 容器
+// Correct: Provide an independent DOM container
 graph.use(new MiniMap({
   enabled: true,
   container: document.getElementById('minimap'),  // ✅
@@ -135,27 +135,27 @@ graph.use(new MiniMap({
 }));
 ```
 
-### ❌ container 与画布容器相同
+### ❌ container is the same as the canvas container
 
 ```javascript
-// 错误：小地图和画布不能用同一容器
+// Error: The minimap and canvas cannot use the same container
 const el = document.getElementById('container');
 const graph = new Graph({ container: el });
-graph.use(new MiniMap({ container: el }));  // ❌ 冲突
+graph.use(new MiniMap({ container: el }));  // ❌ Conflict
 ```
 
 ```javascript
-// 正确：使用独立容器
+// Correct: Use an independent container
 const graph = new Graph({ container: document.getElementById('container') });
 graph.use(new MiniMap({
-  container: document.getElementById('minimap'),  // ✅ 独立容器
+  container: document.getElementById('minimap'),  // ✅ Independent container
 }));
 ```
 
-### ❌ 在构造函数中配置 minimap
+### ❌ Configure minimap in the constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Error: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   minimap: { enabled: true, container: el },  // ❌
@@ -163,7 +163,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确
+// Correct
 import { Graph, MiniMap } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new MiniMap({ enabled: true, container: el }));  // ✅

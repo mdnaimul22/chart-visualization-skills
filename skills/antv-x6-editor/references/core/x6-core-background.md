@@ -1,8 +1,8 @@
 ---
 id: "x6-core-background"
-title: "X6 画布背景配置"
+title: "X6 Canvas Background Configuration"
 description: |
-  X6 画布背景配置：纯色背景、背景图片、平铺模式（repeat/flip-x/flip-y/flip-xy/watermark）、透明度等。
+  X6 Canvas Background Configuration: solid color background, background image, tiling mode (repeat/flip-x/flip-y/flip-xy/watermark), opacity, etc.
 
 library: "x6"
 version: "3.x"
@@ -21,24 +21,24 @@ related:
   - "x6-core-grid"
 
 use_cases:
-  - "设置画布背景颜色"
-  - "设置画布背景图片"
-  - "画布添加水印"
-  - "背景图片平铺/翻转"
-  - "动态切换背景"
+  - "Set canvas background color"
+  - "Set canvas background image"
+  - "Add watermark to canvas"
+  - "Background image tiling/flipping"
+  - "Dynamically switch background"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
-背景在 Graph 构造函数中通过 `background` 字段配置：
+The background is configured in the Graph constructor via the `background` field:
 
 ```javascript
 import { Graph } from '@antv/x6';
 
-// 纯色背景
+// Solid color background
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -47,18 +47,18 @@ const graph = new Graph({
 });
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `color` | string | - | 背景颜色（CSS 颜色值） |
-| `image` | string | - | 背景图片 URL |
-| `position` | string \| object | `'center'` | 背景图片位置。字符串：CSS background-position；对象：`{ x, y }` |
-| `size` | string \| object | `'auto auto'` | 背景图片大小。字符串：`'auto'`/`'contain'`/`'cover'`；对象：`{ width, height }` |
-| `repeat` | string | `'no-repeat'` | 平铺模式：`'repeat'`、`'no-repeat'`、`'repeat-x'`、`'repeat-y'`、`'flip-x'`、`'flip-y'`、`'flip-xy'`、`'watermark'` |
-| `opacity` | number | `1` | 背景透明度（0~1） |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `color` | string | - | Background color (CSS color value) |
+| `image` | string | - | Background image URL |
+| `position` | string \| object | `'center'` | Background image position. String: CSS background-position; Object: `{ x, y }` |
+| `size` | string \| object | `'auto auto'` | Background image size. String: `'auto'`/`'contain'`/`'cover'`; Object: `{ width, height }` |
+| `repeat` | string | `'no-repeat'` | Tiling mode: `'repeat'`, `'no-repeat'`, `'repeat-x'`, `'repeat-y'`, `'flip-x'`, `'flip-y'`, `'flip-xy'`, `'watermark'` |
+| `opacity` | number | `1` | Background opacity (0~1) |
 
-## 纯色背景
+## Solid Color Background
 
 ```javascript
 const graph = new Graph({
@@ -67,7 +67,7 @@ const graph = new Graph({
 });
 ```
 
-## 背景图片
+## Background Image
 
 ```javascript
 const graph = new Graph({
@@ -81,9 +81,9 @@ const graph = new Graph({
 });
 ```
 
-## 平铺模式
+## Tiled Mode
 
-### repeat（标准平铺）
+### repeat (Standard Tiling)
 
 ```javascript
 const graph = new Graph({
@@ -96,24 +96,24 @@ const graph = new Graph({
 });
 ```
 
-### flip-x / flip-y / flip-xy（翻转平铺）
+### flip-x / flip-y / flip-xy (Flip Tiling)
 
-图片在水平/垂直方向交替翻转，形成镜像平铺效果：
+The image alternates and flips in the horizontal/vertical direction, creating a mirrored tiling effect:
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   background: {
     image: 'https://example.com/pattern.png',
-    repeat: 'flip-xy',  // 水平和垂直都翻转
+    repeat: 'flip-xy',  // Flip both horizontally and vertically
     size: { width: 200, height: 200 },
   },
 });
 ```
 
-### watermark（水印）
+### Watermark
 
-图片以水印方式平铺，带旋转角度：
+Tile an image as a watermark with a rotation angle:
 
 ```javascript
 const graph = new Graph({
@@ -126,24 +126,24 @@ const graph = new Graph({
 });
 ```
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 动态设置背景
+// Dynamically set background
 graph.drawBackground({ color: '#fff' });
 
-// 设置背景图片
+// Set background image
 graph.drawBackground({
   image: 'https://example.com/bg.png',
   repeat: 'repeat',
   size: { width: 100, height: 100 },
 });
 
-// 清除背景
+// Clear background
 graph.clearBackground();
 ```
 
-## 完整示例：背景色 + 网格
+## Complete Example: Background Color + Grid
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -166,34 +166,34 @@ graph.addNode({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ background 与 grid 的颜色混淆
+### ❌ Confusion Between `background` and `grid` Colors
 
 ```javascript
-// 注意：grid 的颜色是网格线/点的颜色，不是背景色
+// Note: The color of `grid` refers to the color of grid lines/points, not the background color
 const graph = new Graph({
   container: 'container',
-  grid: { visible: true, args: { color: '#F2F7FA' } },  // ❌ 这不是设置背景色
+  grid: { visible: true, args: { color: '#F2F7FA' } },  // ❌ This does not set the background color
 });
 
-// 正确：背景色用 background，网格颜色用 grid.args.color
+// Correct: Use `background` for background color and `grid.args.color` for grid color
 const graph = new Graph({
   container: 'container',
-  background: { color: '#F2F7FA' },  // ✅ 背景色
-  grid: { visible: true, args: { color: '#ddd' } },  // ✅ 网格点颜色
+  background: { color: '#F2F7FA' },  // ✅ Background color
+  grid: { visible: true, args: { color: '#ddd' } },  // ✅ Grid point color
 });
 ```
 
-### ❌ image 路径问题
+### ❌ Image Path Issues
 
 ```javascript
-// 注意：image 必须是可访问的 URL 或 Data URL
+// Note: image must be an accessible URL or Data URL
 background: {
-  image: './bg.png',  // ⚠️ 相对路径可能在某些环境下无法加载
+  image: './bg.png',  // ⚠️ Relative paths may fail to load in certain environments
 }
 
-// 推荐：使用绝对 URL 或 import 的资源
+// Recommended: Use absolute URLs or imported resources
 background: {
   image: 'https://cdn.example.com/bg.png',  // ✅
 }

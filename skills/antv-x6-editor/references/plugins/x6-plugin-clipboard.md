@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-clipboard"
-title: "X6 Clipboard 复制粘贴插件"
+title: "X6 Clipboard Copy-Paste Plugin"
 description: |
-  Clipboard 插件提供画布元素的复制（Copy）、剪切（Cut）、粘贴（Paste）能力，支持跨画布粘贴和 localStorage 持久化。
+  The Clipboard plugin provides copy (Copy), cut (Cut), and paste (Paste) capabilities for canvas elements, supporting cross-canvas pasting and localStorage persistence.
 
 library: "x6"
 version: "3.x"
@@ -23,17 +23,17 @@ related:
   - "x6-plugin-keyboard"
 
 use_cases:
-  - "复制选中的节点和边"
-  - "剪切选中元素"
-  - "粘贴到画布（带偏移）"
-  - "跨页面复制粘贴"
-  - "Ctrl+C/Ctrl+V 快捷键"
+  - "Copy selected nodes and edges"
+  - "Cut selected elements"
+  - "Paste to canvas (with offset)"
+  - "Cross-page copy-paste"
+  - "Ctrl+C/Ctrl+V shortcuts"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Clipboard } from '@antv/x6';
@@ -41,44 +41,44 @@ import { Graph, Clipboard } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Clipboard({ enabled: true }));
 
-// 复制
+// Copy
 graph.copy(cells);
 
-// 粘贴
+// Paste
 graph.paste();
 
-// 剪切
+// Cut
 graph.cut(cells);
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
+| Option | Type | Default Value | Description |
 |--------|------|--------|------|
-| `enabled` | boolean | `false` | 是否启用剪贴板 |
-| `useLocalStorage` | boolean | `false` | 是否使用 localStorage 存储（支持跨页面粘贴） |
+| `enabled` | boolean | `false` | Whether to enable clipboard |
+| `useLocalStorage` | boolean | `false` | Whether to use localStorage for storage (supports cross-page pasting) |
 
-## 编程式 API
+## Programmatic API
 
 ### copy(cells, options?)
 
-复制指定元素到剪贴板：
+Copy the specified elements to the clipboard:
 
 ```javascript
-// 复制选中元素
+// Copy selected elements
 const cells = graph.getSelectedCells();
 graph.copy(cells);
 
-// 深拷贝（包括子元素）
+// Deep copy (including child elements)
 graph.copy(cells, { deep: true });
 
-// 使用 localStorage（跨页面）
+// Use localStorage (cross-page)
 graph.copy(cells, { useLocalStorage: true });
 ```
 
 ### cut(cells, options?)
 
-剪切：复制后从画布中删除：
+Cut: Copy and then delete from the canvas:
 
 ```javascript
 const cells = graph.getSelectedCells();
@@ -87,41 +87,41 @@ graph.cut(cells);
 
 ### paste(options?)
 
-粘贴剪贴板内容到画布：
+Paste clipboard content to the canvas:
 
 ```javascript
-// 默认粘贴（偏移 20px）
+// Default paste (offset by 20px)
 graph.paste();
 
-// 自定义偏移
+// Custom offset
 graph.paste({ offset: 40 });
 
-// 指定偏移方向
+// Specify offset direction
 graph.paste({ offset: { dx: 30, dy: 30 } });
 
-// 粘贴时修改节点属性
+// Modify node properties during paste
 graph.paste({
   offset: 20,
   nodeProps: { zIndex: 10 },
   edgeProps: { zIndex: 5 },
 });
 
-// 从 localStorage 粘贴
+// Paste from localStorage
 graph.paste({ useLocalStorage: true });
 ```
 
 ### getCellsInClipboard()
 
-获取当前剪贴板中的元素：
+Get the elements currently in the clipboard:
 
 ```javascript
 const cells = graph.getCellsInClipboard();
-console.log('剪贴板中有', cells.length, '个元素');
+console.log('There are', cells.length, 'elements in the clipboard');
 ```
 
 ### isClipboardEmpty()
 
-判断剪贴板是否为空：
+Determine if the clipboard is empty:
 
 ```javascript
 if (!graph.isClipboardEmpty()) {
@@ -129,15 +129,15 @@ if (!graph.isClipboardEmpty()) {
 }
 ```
 
-## 事件监听
+## Event Listening
 
 ```javascript
 graph.on('clipboard:changed', ({ cells }) => {
-  console.log('剪贴板内容变化:', cells.length, '个元素');
+  console.log('Clipboard content changed:', cells.length, 'elements');
 });
 ```
 
-## 完整示例：复制粘贴 + 快捷键
+## Complete Example: Copy and Paste + Keyboard Shortcuts
 
 ```javascript
 import { Graph, Selection, Clipboard, Keyboard } from '@antv/x6';
@@ -152,7 +152,7 @@ graph.use(new Selection({ enabled: true, rubberband: true }));
 graph.use(new Clipboard({ enabled: true }));
 graph.use(new Keyboard({ enabled: true, global: true }));
 
-// Ctrl+C 复制
+// Ctrl+C Copy
 graph.bindKey('ctrl+c', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -160,7 +160,7 @@ graph.bindKey('ctrl+c', () => {
   }
 });
 
-// Ctrl+X 剪切
+// Ctrl+X Cut
 graph.bindKey('ctrl+x', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -168,50 +168,50 @@ graph.bindKey('ctrl+x', () => {
   }
 });
 
-// Ctrl+V 粘贴
+// Ctrl+V Paste
 graph.bindKey('ctrl+v', () => {
   if (!graph.isClipboardEmpty()) {
     const cells = graph.paste({ offset: 20 });
     graph.cleanSelection();
-    graph.select(cells);  // 选中粘贴的元素
+    graph.select(cells);  // Select the pasted elements
   }
 });
 
-// 添加示例节点
+// Add example node
 graph.addNode({ x: 100, y: 100, width: 100, height: 50, label: 'Copy me' });
 ```
 
-## 跨页面复制粘贴
+## Cross-Page Copy and Paste
 
-启用 `useLocalStorage` 后，复制的数据存储在浏览器 localStorage 中，可以在同域名下的不同页面间粘贴：
+After enabling `useLocalStorage`, the copied data is stored in the browser's localStorage, allowing it to be pasted across different pages under the same domain:
 
 ```javascript
 graph.use(new Clipboard({
   enabled: true,
-  useLocalStorage: true,  // 启用跨页面
+  useLocalStorage: true,  // Enable cross-page
 }));
 
-// 页面 A 复制
+// Copy on Page A
 graph.copy(graph.getSelectedCells(), { useLocalStorage: true });
 
-// 页面 B 粘贴
+// Paste on Page B
 graph.paste({ useLocalStorage: true });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 复制时传入空数组
+### ❌ Passing an Empty Array During Copy
 
 ```javascript
-// 错误：未检查是否有选中元素
+// Error: No check for selected elements
 graph.bindKey('ctrl+c', () => {
-  graph.copy(graph.getSelectedCells());  // 如果没选中任何元素，传入空数组
-  // 此时剪贴板会被清空！
+  graph.copy(graph.getSelectedCells());  // If no elements are selected, an empty array is passed
+  // The clipboard will be cleared at this point!
 });
 ```
 
 ```javascript
-// 正确：先检查
+// Correct: Check first
 graph.bindKey('ctrl+c', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -220,17 +220,17 @@ graph.bindKey('ctrl+c', () => {
 });
 ```
 
-### ❌ 未注册 Clipboard 就调用 copy/paste
+### ❌ Calling copy/paste without registering Clipboard
 
 ```javascript
-// 错误：插件未注册
+// Error: Plugin not registered
 const graph = new Graph({ container: 'container' });
-graph.copy(cells);   // ❌ 无效
-graph.paste();       // ❌ 无效
+graph.copy(cells);   // ❌ Invalid
+graph.paste();       // ❌ Invalid
 ```
 
 ```javascript
-// 正确：先注册插件
+// Correct: Register plugin first
 import { Graph, Clipboard } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Clipboard({ enabled: true }));

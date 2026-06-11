@@ -1,9 +1,9 @@
 ---
 id: "x6-core-edge"
-title: "X6 边配置与样式"
+title: "X6 Edge Configuration and Styling"
 description: |
-  X6 边的创建、路由器、连接器、箭头、标签、顶点配置。
-  包含 orth/manhattan/smooth/rounded 等路由与连接器的使用方式。
+  X6 edge creation, router, connector, arrow, label, and vertex configuration.
+  Includes usage of orth/manhattan/smooth/rounded routers and connectors.
 
 library: "x6"
 version: "3.x"
@@ -36,49 +36,49 @@ related:
   - "x6-core-graph-init"
 
 use_cases:
-  - "创建节点之间的连线"
-  - "设置边的路由器和连接器"
-  - "配置边的箭头样式"
-  - "给边添加文本标签"
-  - "创建虚线/曲线边"
-  - "设置边的中间顶点"
+  - "Creating connections between nodes"
+  - "Setting edge routers and connectors"
+  - "Configuring edge arrow styles"
+  - "Adding text labels to edges"
+  - "Creating dashed/curved edges"
+  - "Setting intermediate vertices for edges"
 
 anti_patterns:
-  - "不要混淆 router 和 connector 的作用"
-  - "不要遗漏 source/target"
+  - "Do not confuse the roles of router and connector"
+  - "Do not omit source/target"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 添加边
+## Add Edge
 
 ```javascript
-// 方式1：传入节点实例
+// Method 1: Pass node instances
 graph.addEdge({ source: sourceNode, target: targetNode });
 
-// 方式2：传入节点 ID
+// Method 2: Pass node IDs
 graph.addEdge({ source: 'node1', target: 'node2' });
 
-// 方式3：连接到端口
+// Method 3: Connect to ports
 graph.addEdge({
   source: { cell: 'node1', port: 'out1' },
   target: { cell: 'node2', port: 'in1' },
 });
 
-// 方式4：使用坐标点
+// Method 4: Use coordinates
 graph.addEdge({
   source: { x: 100, y: 50 },
   target: { x: 400, y: 50 },
 });
-// 或用简写
+// Or use shorthand
 graph.addEdge({
   sourcePoint: [100, 50],
   targetPoint: [400, 50],
 });
 ```
 
-## 边样式
+## Edge Style
 
 ```javascript
 graph.addEdge({
@@ -86,30 +86,30 @@ graph.addEdge({
   target: node2,
   attrs: {
     line: {
-      stroke: '#8f8f8f',        // 线条颜色
-      strokeWidth: 1,           // 线宽
-      strokeDasharray: '5 3',   // 虚线（5px 线 + 3px 间隔）
-      targetMarker: 'classic',  // 目标端箭头
-      sourceMarker: null,       // 源端无箭头
+      stroke: '#8f8f8f',        // Line color
+      strokeWidth: 1,           // Line width
+      strokeDasharray: '5 3',   // Dashed line (5px line + 3px gap)
+      targetMarker: 'classic',  // Target end arrow
+      sourceMarker: null,       // No arrow at source end
     },
   },
 });
 ```
 
-## 箭头类型
+## Arrow Types
 
 ```javascript
-// 内置箭头
-targetMarker: 'classic'        // 经典三角箭头
-targetMarker: 'block'          // 实心三角
-targetMarker: 'circle'         // 圆形
-targetMarker: 'circlePlus'     // 带+号圆形
-targetMarker: 'diamond'        // 菱形
-targetMarker: 'ellipse'        // 椭圆
-targetMarker: 'cross'          // 十字
-targetMarker: 'async'          // 异步标记
+// Built-in Arrows
+targetMarker: 'classic'        // Classic triangle arrow
+targetMarker: 'block'          // Solid triangle
+targetMarker: 'circle'         // Circle
+targetMarker: 'circlePlus'     // Circle with + sign
+targetMarker: 'diamond'        // Diamond
+targetMarker: 'ellipse'        // Ellipse
+targetMarker: 'cross'          // Cross
+targetMarker: 'async'          // Async marker
 
-// 自定义箭头
+// Custom Arrows
 targetMarker: {
   name: 'block',
   width: 12,
@@ -119,63 +119,63 @@ targetMarker: {
 }
 ```
 
-## 路由器（Router）
+## Router
 
-路由器决定边经过的路径点（拐点）。
+The router determines the path points (turning points) that an edge passes through.
 
 ```javascript
-// 正交路由（垂直/水平折线）
+// Orthogonal routing (vertical/horizontal folding)
 graph.addEdge({ source, target, router: 'orth' });
 
-// Manhattan 路由（智能绕障）
+// Manhattan routing (intelligent obstacle avoidance)
 graph.addEdge({ source, target, router: 'manhattan' });
 
-// 路由器带配置
+// Router with configuration
 graph.addEdge({
   source, target,
   router: { name: 'orth', args: { padding: 20 } },
 });
 
-// ER 图专用路由
+// ER diagram dedicated routing
 graph.addEdge({ source, target, router: 'er' });
 
-// Metro 地铁线路由
+// Metro line routing
 graph.addEdge({ source, target, router: 'metro' });
 ```
 
-## 连接器（Connector）
+## Connector
 
-连接器决定路径点之间如何绘制线条。
+The connector determines how lines are drawn between path points.
 
 ```javascript
-// 圆角折线
+// Rounded polyline
 graph.addEdge({ source, target, router: 'orth', connector: 'rounded' });
 
-// 贝塞尔曲线
+// Bezier curve
 graph.addEdge({ source, target, connector: 'smooth' });
 
-// 跳线（交叉处跳跃）
+// Jumpover (jumps at intersections)
 graph.addEdge({ source, target, connector: 'jumpover' });
 
-// 连接器带配置
+// Connector with configuration
 graph.addEdge({
   source, target,
   connector: { name: 'rounded', args: { radius: 10 } },
 });
 ```
 
-## 边标签
+## Edge Labels
 
 ```javascript
-// 简写
+// Shorthand
 graph.addEdge({ source, target, label: 'Yes' });
 
-// 详细配置
+// Detailed Configuration
 graph.addEdge({
   source, target,
   labels: [
     {
-      position: 0.5,           // 标签在边上的位置（0-1）
+      position: 0.5,           // Label position on the edge (0-1)
       attrs: {
         text: { text: 'label text', fontSize: 12, fill: '#333' },
         rect: { fill: '#fff', stroke: '#8f8f8f', rx: 3, ry: 3 },
@@ -184,7 +184,7 @@ graph.addEdge({
   ],
 });
 
-// 多个标签
+// Multiple Labels
 graph.addEdge({
   source, target,
   labels: [
@@ -194,9 +194,9 @@ graph.addEdge({
 });
 ```
 
-## 顶点（Vertices）
+## Vertices
 
-手动指定边的中间拐点：
+Manually specify intermediate vertices for an edge:
 
 ```javascript
 graph.addEdge({
@@ -210,30 +210,30 @@ graph.addEdge({
 });
 ```
 
-## 动态修改边
+## Dynamically Modify Edge
 
 ```javascript
-// 修改样式
+// Modify style
 edge.attr('line/stroke', '#f5222d');
 edge.attr('line/strokeWidth', 2);
 
-// 修改标签
+// Modify label
 edge.setLabels([{ attrs: { text: { text: 'Updated' } } }]);
 
-// 修改路由器
+// Modify router
 edge.setRouter('manhattan');
 
-// 修改连接器
+// Modify connector
 edge.setConnector('smooth');
 
-// 修改源/目标
+// Modify source/target
 edge.setSource(newSourceNode);
 edge.setTarget({ cell: 'node3', port: 'in1' });
 ```
 
-## 常用边样式组合
+## Common Border Style Combinations
 
-### 流程图边
+### Flowchart Edge
 
 ```javascript
 graph.addEdge({
@@ -244,7 +244,7 @@ graph.addEdge({
 });
 ```
 
-### 血缘图边
+### Lineage Graph Edge
 
 ```javascript
 graph.addEdge({
@@ -255,7 +255,7 @@ graph.addEdge({
 });
 ```
 
-### 虚线边（调用关系）
+### Dashed Edge (Call Relationship)
 
 ```javascript
 graph.addEdge({
@@ -266,7 +266,7 @@ graph.addEdge({
 });
 ```
 
-### 高亮状态边
+### Highlighted State Edge
 
 ```javascript
 graph.addEdge({

@@ -1,9 +1,9 @@
 ---
 id: "x6-plugin-keyboard"
-title: "X6 Keyboard 快捷键插件"
+title: "X6 Keyboard Shortcut Plugin"
 description: |
-  Keyboard 插件为画布提供键盘快捷键支持。
-  基于 Mousetrap 库实现，支持组合键、序列键和作用域控制。
+  The Keyboard plugin provides keyboard shortcut support for the canvas.
+  It is implemented based on the Mousetrap library, supporting key combinations, key sequences, and scope control.
 
 library: "x6"
 version: "3.x"
@@ -11,7 +11,7 @@ category: "plugins"
 subcategory: "keyboard"
 tags:
   - "keyboard"
-  - "快捷键"
+  - "shortcut"
   - "hotkey"
   - "bindKey"
   - "Mousetrap"
@@ -27,24 +27,24 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "绑定 Ctrl+Z/Ctrl+Y 实现撤销重做"
-  - "绑定 Delete/Backspace 删除选中元素"
-  - "绑定 Ctrl+C/Ctrl+V 复制粘贴"
-  - "自定义快捷键操作画布"
+  - "Bind Ctrl+Z/Ctrl+Y for undo and redo"
+  - "Bind Delete/Backspace to delete selected elements"
+  - "Bind Ctrl+C/Ctrl+V for copy and paste"
+  - "Customize shortcut operations on the canvas"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Keyboard** 插件基于 [Mousetrap](https://github.com/ccampbell/mousetrap) 库为画布提供快捷键绑定能力。支持：
-- 单键：`'delete'`、`'backspace'`、`'escape'`
-- 组合键：`'ctrl+z'`、`'ctrl+shift+z'`、`'command+c'`
-- 序列键：`'g i'`（依次按 g 然后 i）
-- 多键绑定：数组形式同时绑定多个按键
+The **Keyboard** plugin, based on the [Mousetrap](https://github.com/ccampbell/mousetrap) library, provides shortcut key binding capabilities for the canvas. It supports:
+- Single keys: `'delete'`, `'backspace'`, `'escape'`
+- Combination keys: `'ctrl+z'`, `'ctrl+shift+z'`, `'command+c'`
+- Sequence keys: `'g i'` (press g followed by i)
+- Multiple key bindings: array form to bind multiple keys simultaneously
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Keyboard } from '@antv/x6';
@@ -55,13 +55,13 @@ const graph = new Graph({
   height: 600,
 });
 
-// 注册 Keyboard 插件
+// Register Keyboard plugin
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 
-// 绑定快捷键
+// Bind shortcut keys
 keyboard.bindKey('ctrl+z', () => {
-  // 撤销操作
+  // Undo operation
 });
 
 keyboard.bind(Keyboard.events.KEYDOWN, (e) => {
@@ -69,11 +69,11 @@ keyboard.bind(Keyboard.events.KEYDOWN, (e) => {
 });
 
 keyboard.bindKey('ctrl+shift+z', () => {
-  // 重做操作
+  // Redo operation
 });
 
 keyboard.bindKey(['delete', 'backspace'], () => {
-  // 删除选中元素
+  // Delete selected elements
   const cells = graph.getSelectedCells();
   if (cells.length) {
     graph.removeCells(cells);
@@ -81,56 +81,56 @@ keyboard.bindKey(['delete', 'backspace'], () => {
 });
 ```
 
-## 配置项
+## Configuration Options
 
 ### KeyboardOptions
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `enabled` | `boolean` | `true` | 是否启用 |
-| `global` | `boolean` | `false` | 是否绑定到 document（`true`）还是画布容器（`false`） |
-| `format` | `(key: string) => string` | 无 | 按键格式化函数 |
-| `guard` | `(e: KeyboardEvent) => boolean` | 无 | 守卫函数，返回 `true` 则阻止快捷键触发 |
+| `enabled` | `boolean` | `true` | Whether to enable |
+| `global` | `boolean` | `false` | Whether to bind to `document` (`true`) or the canvas container (`false`) |
+| `format` | `(key: string) => string` | None | Key formatting function |
+| `guard` | `(e: KeyboardEvent) => boolean` | None | Guard function, returns `true` to prevent shortcut triggering |
 
-### global 参数说明
+### Global Parameter Description
 
-- `false`（默认）：快捷键仅在画布容器获得焦点时生效。容器会自动设置 `tabindex="-1"` 以确保可聚焦。
-- `true`：快捷键绑定到 `document`，全局生效，不需要画布获取焦点。
+- `false` (default): Shortcuts only take effect when the canvas container is focused. The container automatically sets `tabindex="-1"` to ensure focusability.  
+- `true`: Shortcuts are bound to the `document`, taking effect globally without requiring the canvas to be focused.
 
-## API 方法
+## API Methods
 
-| 方法 | 说明 |
-|------|------|
-| `keyboard.bindKey(keys, callback, action?)` | 绑定快捷键 |
-| `keyboard.unbindKey(keys, action?)` | 解绑快捷键 |
-| `keyboard.trigger(key, action?)` | 手动触发快捷键回调 |
-| `keyboard.clear()` | 清除所有绑定 |
-| `keyboard.enable()` | 启用键盘 |
-| `keyboard.disable()` | 禁用键盘 |
-| `keyboard.isEnabled()` | 获取启用状态 |
-| `keyboard.toggleEnabled(enabled?)` | 切换启用状态 |
+| Method | Description |
+|--------|-------------|
+| `keyboard.bindKey(keys, callback, action?)` | Bind shortcut key |
+| `keyboard.unbindKey(keys, action?)` | Unbind shortcut key |
+| `keyboard.trigger(key, action?)` | Manually trigger shortcut key callback |
+| `keyboard.clear()` | Clear all bindings |
+| `keyboard.enable()` | Enable keyboard |
+| `keyboard.disable()` | Disable keyboard |
+| `keyboard.isEnabled()` | Get enabled status |
+| `keyboard.toggleEnabled(enabled?)` | Toggle enabled status |
 
-### bindKey 参数
+### bindKey Parameter
 
-| 参数 | 类型 | 说明 |
+| Parameter | Type | Description |
 |------|------|------|
-| `keys` | `string \| string[]` | 按键或按键数组 |
-| `callback` | `(e: KeyboardEvent) => void` | 回调函数 |
-| `action` | `'keypress' \| 'keydown' \| 'keyup'` | 可选，触发时机，默认 `'keydown'` |
+| `keys` | `string \| string[]` | Key or array of keys |
+| `callback` | `(e: KeyboardEvent) => void` | Callback function |
+| `action` | `'keypress' \| 'keydown' \| 'keyup'` | Optional, trigger timing, default `'keydown'` |
 
-### 按键语法（Mousetrap 格式）
+### Key Syntax (Mousetrap Format)
 
-| 类型 | 示例 | 说明 |
+| Type | Example | Description |
 |------|------|------|
-| 单键 | `'a'`、`'1'`、`'delete'` | 单个按键 |
-| 修饰组合 | `'ctrl+s'`、`'command+c'` | 修饰键 + 按键 |
-| 多修饰 | `'ctrl+shift+z'` | 多个修饰键 |
-| 多键绑定 | `['ctrl+z', 'command+z']` | 数组，兼容 Win/Mac |
-| 序列键 | `'g i'`（空格分隔） | 依次按下 |
+| Single Key | `'a'`, `'1'`, `'delete'` | Single key |
+| Modifier Combination | `'ctrl+s'`, `'command+c'` | Modifier key + key |
+| Multiple Modifiers | `'ctrl+shift+z'` | Multiple modifier keys |
+| Multi-key Binding | `['ctrl+z', 'command+z']` | Array, compatible with Win/Mac |
+| Sequence Keys | `'g i'` (space-separated) | Press in sequence |
 
-## 完整示例
+## Complete Example
 
-### 常见编辑器快捷键
+### Common Editor Shortcuts
 
 ```javascript
 import { Graph, Keyboard, Selection, Clipboard, History } from '@antv/x6';
@@ -148,7 +148,7 @@ graph.use(new History({ enabled: true }));
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 
-// 撤销/重做
+// Undo/Redo
 keyboard.bindKey(['ctrl+z', 'command+z'], () => {
   if (graph.canUndo()) {
     graph.undo();
@@ -161,7 +161,7 @@ keyboard.bindKey(['ctrl+shift+z', 'command+shift+z'], () => {
   }
 });
 
-// 删除
+// Delete
 keyboard.bindKey(['delete', 'backspace'], () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -169,7 +169,7 @@ keyboard.bindKey(['delete', 'backspace'], () => {
   }
 });
 
-// 复制/粘贴
+// Copy/Paste
 keyboard.bindKey(['ctrl+c', 'command+c'], () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -185,21 +185,21 @@ keyboard.bindKey(['ctrl+v', 'command+v'], () => {
   }
 });
 
-// 全选
+// Select All
 keyboard.bindKey(['ctrl+a', 'command+a'], (e) => {
   e.preventDefault();
   graph.select(graph.getCells());
 });
 ```
 
-### 全局模式（不需要画布聚焦）
+### Global Mode (No Canvas Focus Required)
 
 ```javascript
 const keyboard = new Keyboard({
   enabled: true,
-  global: true,  // 绑定到 document
+  global: true,  // Bind to document
   guard(e) {
-    // 在 input/textarea 中不触发
+    // Do not trigger in input/textarea
     const tagName = (e.target as HTMLElement)?.tagName?.toLowerCase();
     return tagName === 'input' || tagName === 'textarea';
   },
@@ -207,48 +207,48 @@ const keyboard = new Keyboard({
 graph.use(keyboard);
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 快捷键不生效（未聚焦画布）
+### ❌ Shortcuts Not Working (Canvas Not Focused)
 
 ```javascript
-// 问题：默认模式下，画布容器未获得焦点时快捷键不触发
+// Issue: In default mode, shortcuts do not trigger when the canvas container is not focused
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
-// 需要点击画布后快捷键才生效
+// Shortcuts only work after clicking on the canvas
 
-// 解决方案一：使用 global 模式
+// Solution 1: Use global mode
 const keyboard = new Keyboard({ enabled: true, global: true });
 
-// 解决方案二：手动聚焦容器
+// Solution 2: Manually focus the container
 graph.container.focus();
 ```
 
-### ❌ Mac/Windows 兼容问题
+### ❌ Mac/Windows Compatibility Issues
 
 ```javascript
-// 错误：只绑定 ctrl，Mac 用户无法使用
-keyboard.bindKey('ctrl+z', handler); // ❌ Mac 上不生效
+// Error: Only binds ctrl, Mac users cannot use
+keyboard.bindKey('ctrl+z', handler); // ❌ Does not work on Mac
 
-// 正确：同时绑定 ctrl 和 command
+// Correct: Binds both ctrl and command
 keyboard.bindKey(['ctrl+z', 'command+z'], handler); // ✅
 ```
 
-### ❌ 错误使用 graph.bindKey 或 graph.bind
+### ❌ Incorrect Usage of `graph.bindKey` or `graph.bind`
 
 ```javascript
-// 错误：使用 graph.bindKey（不存在的方法）
-graph.bindKey('ctrl+s', handler); // ❌ 报错：graph.bindKey is not a function
+// Incorrect: Using graph.bindKey (non-existent method)
+graph.bindKey('ctrl+s', handler); // ❌ Error: graph.bindKey is not a function
 
-// 正确：使用 keyboard 实例调用 bindKey
+// Correct: Using bindKey with a keyboard instance
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 keyboard.bindKey('ctrl+s', handler); // ✅
 
-// 错误：使用 graph.bind 监听 Keyboard.events（已废弃或不存在）
-graph.bind(Keyboard.events.KEYDOWN, handler); // ❌ 报错：Cannot read properties of undefined
+// Incorrect: Using graph.bind to listen to Keyboard.events (deprecated or non-existent)
+graph.bind(Keyboard.events.KEYDOWN, handler); // ❌ Error: Cannot read properties of undefined
 
-// 正确：使用 keyboard.bindKey 绑定组合键
+// Correct: Using keyboard.bindKey to bind key combinations
 keyboard.bindKey('ctrl+d', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -263,28 +263,28 @@ keyboard.bindKey('ctrl+d', () => {
 });
 ```
 
-### ❌ 快捷键冲突或未阻止默认行为
+### ❌ Shortcut Key Conflicts or Default Behavior Not Prevented
 
 ```javascript
-// 错误：未阻止浏览器默认行为，可能导致页面跳转等副作用
+// Error: Browser default behavior not prevented, may cause side effects like page navigation
 keyboard.bindKey('ctrl+s', () => {
   const data = graph.toJSON();
   console.log(data);
-}); // ❌ 浏览器会弹出保存对话框
+}); // ❌ Browser will prompt a save dialog
 
-// 正确：在回调中阻止默认行为
+// Correct: Prevent default behavior in the callback
 keyboard.bindKey('ctrl+s', (e) => {
   e.preventDefault();
   const data = graph.toJSON();
   console.log(data);
-  return false; // 可选：返回 false 阻止进一步冒泡
+  return false; // Optional: Return false to prevent further bubbling
 });
 ```
 
-### ❌ 变量未定义导致运行时错误
+### ❌ Runtime Error Caused by Undefined Variable
 
 ```javascript
-// 错误：未正确声明 keyboard 变量导致运行时报错 "keyboard is not defined"
+// Error: Incorrect declaration of the keyboard variable results in runtime error "keyboard is not defined"
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 
@@ -295,7 +295,7 @@ keyboard.bindKey(['ctrl+c', 'command+c'], () => {
   }
 });
 
-// 正确：确保 keyboard 变量已声明并正确使用
+// Correct: Ensure the keyboard variable is declared and used correctly
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 
@@ -307,13 +307,13 @@ keyboard.bindKey(['ctrl+c', 'command+c'], () => {
 });
 ```
 
-### ❌ 使用 graph.bindKey 而不是 keyboard.bindKey
+### ❌ Use keyboard.bindKey instead of graph.bindKey
 
 ```javascript
-// 错误：使用 graph.bindKey（不存在的方法）
-graph.bindKey('ctrl+s', handler); // ❌ 报错：graph.bindKey is not a function
+// Error: Using graph.bindKey (non-existent method)
+graph.bindKey('ctrl+s', handler); // ❌ Error: graph.bindKey is not a function
 
-// 正确：使用 keyboard 实例调用 bindKey
+// Correct: Use bindKey by calling the keyboard instance
 const keyboard = new Keyboard({ enabled: true });
 graph.use(keyboard);
 keyboard.bindKey('ctrl+s', handler); // ✅

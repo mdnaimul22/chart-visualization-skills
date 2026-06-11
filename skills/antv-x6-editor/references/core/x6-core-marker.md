@@ -1,9 +1,9 @@
 ---
 id: "x6-core-marker"
-title: "X6 箭头标记（Marker）"
+title: "X6 Arrow Marker"
 description: |
-  边的起始端和终止端箭头标记配置。
-  包含内置箭头类型（classic、block、diamond、circle、cross、ellipse 等）及自定义箭头。
+  Configuration for arrow markers at the start and end of edges.
+  Includes built-in arrow types (classic, block, diamond, circle, cross, ellipse, etc.) and custom arrows.
 
 library: "x6"
 version: "3.x"
@@ -11,7 +11,7 @@ category: "core"
 subcategory: "marker"
 tags:
   - "marker"
-  - "箭头"
+  - "arrow"
   - "targetMarker"
   - "sourceMarker"
   - "classic"
@@ -20,10 +20,9 @@ tags:
   - "circle"
   - "cross"
   - "ellipse"
-  - "arrow"
-  - "自定义箭头"
+  - "custom arrow"
   - "SVG path"
-  - "渐变箭头"
+  - "gradient arrow"
   - "defineGradient"
   - "linearGradient"
 
@@ -33,22 +32,22 @@ related:
   - "x6-intermediate-custom-edge"
 
 use_cases:
-  - "给边添加箭头"
-  - "自定义箭头样式和大小"
-  - "设置起始端和终止端不同的箭头"
-  - "空心箭头、菱形箭头、圆形箭头"
-  - "自定义 SVG path 箭头"
-  - "渐变填充的箭头"
+  - "Add arrows to edges"
+  - "Customize arrow style and size"
+  - "Set different arrows for start and end points"
+  - "Hollow arrows, diamond arrows, circular arrows"
+  - "Custom SVG path arrows"
+  - "Gradient-filled arrows"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Marker（箭头标记）** 是边的起始端（sourceMarker）或终止端（targetMarker）的装饰元素。通过边的 `attrs.line` 配置。
+**Marker (Arrow Marker)** is a decorative element at the starting end (sourceMarker) or ending end (targetMarker) of an edge. It is configured through the `attrs.line` property of the edge.
 
-## 配置方式
+## Configuration Method
 
 ```javascript
 graph.addEdge({
@@ -58,108 +57,108 @@ graph.addEdge({
     line: {
       stroke: '#8f8f8f',
       strokeWidth: 1,
-      targetMarker: 'classic',       // 终止端箭头（字符串简写）
-      sourceMarker: null,            // 起始端无箭头
+      targetMarker: 'classic',       // Arrow at the end (string shorthand)
+      sourceMarker: null,            // No arrow at the start
     },
   },
 });
 ```
 
-## 内置箭头类型
+## Built-in Arrow Types
 
-| 名称 | 说明 | 效果 |
-|------|------|------|
-| `'classic'` | 经典实心箭头（V 形，有凹陷） | ▶ 带内凹 |
-| `'block'` | 实心三角形箭头（无凹陷） | ▶ 完整三角 |
-| `'diamond'` | 菱形箭头 | ◆ |
-| `'circle'` | 圆形箭头 | ● |
-| `'circlePlus'` | 带十字的圆形 | ⊕ |
-| `'ellipse'` | 椭圆形箭头 | ⬮ |
-| `'cross'` | X 形交叉（空心） | ✕ |
-| `'async'` | 斜角标记（锐角三角形，常用于异步信号） | ◁ 斜角 |
+| Name | Description | Effect |
+|------|-------------|---------|
+| `'classic'` | Classic solid arrow (V-shaped, with indentation) | ▶ With indentation |
+| `'block'` | Solid triangular arrow (no indentation) | ▶ Full triangle |
+| `'diamond'` | Diamond-shaped arrow | ◆ |
+| `'circle'` | Circular arrow | ● |
+| `'circlePlus'` | Circle with a cross | ⊕ |
+| `'ellipse'` | Elliptical arrow | ⬮ |
+| `'cross'` | X-shaped cross (hollow) | ✕ |
+| `'async'` | Diagonal mark (acute triangle, often used for asynchronous signals) | ◁ Diagonal |
 
-## 参数配置
+## Parameter Configuration
 
-使用对象格式可传递参数：
+Parameters can be passed using object format:
 
 ```javascript
 attrs: {
   line: {
     targetMarker: {
       name: 'classic',
-      size: 10,        // 统一尺寸
-      width: 12,       // 宽度（优先级高于 size）
-      height: 8,       // 高度（优先级高于 size）
-      offset: 0,       // 沿路径方向的偏移
+      size: 10,        // Unified size
+      width: 12,       // Width (higher priority than size)
+      height: 8,       // Height (higher priority than size)
+      offset: 0,       // Offset along the path direction
     },
   },
 }
 ```
 
-### classic 参数
+### classic Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `10` | 箭头尺寸（width 和 height 的默认值） |
-| `width` | `number` | `size` | 箭头宽度 |
-| `height` | `number` | `size` | 箭头高度 |
-| `offset` | `number` | `-width/2` | 路径方向偏移 |
-| `factor` | `number` | `0.75` | 内凹系数，0~1，越大凹陷越浅 |
+| `size` | `number` | `10` | Arrow size (default value for width and height) |
+| `width` | `number` | `size` | Arrow width |
+| `height` | `number` | `size` | Arrow height |
+| `offset` | `number` | `-width/2` | Path direction offset |
+| `factor` | `number` | `0.75` | Concavity coefficient, 0~1, larger values result in shallower concavity |
 
-### block 参数
+### block parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `10` | 箭头尺寸 |
-| `width` | `number` | `size` | 箭头宽度 |
-| `height` | `number` | `size` | 箭头高度 |
-| `offset` | `number` | `-width/2` | 路径方向偏移 |
-| `open` | `boolean` | `false` | 是否空心（仅描边） |
+| `size` | `number` | `10` | Arrow size |
+| `width` | `number` | `size` | Arrow width |
+| `height` | `number` | `size` | Arrow height |
+| `offset` | `number` | `-width/2` | Path direction offset |
+| `open` | `boolean` | `false` | Whether to be hollow (stroke only) |
 
-### diamond 参数
+### diamond Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `10` | 菱形尺寸 |
-| `width` | `number` | `size` | 菱形宽度 |
-| `height` | `number` | `size` | 菱形高度 |
-| `offset` | `number` | `-width/2` | 路径方向偏移 |
+| `size` | `number` | `10` | Diamond size |
+| `width` | `number` | `size` | Diamond width |
+| `height` | `number` | `size` | Diamond height |
+| `offset` | `number` | `-width/2` | Path direction offset |
 
-### circle 参数
+### circle Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `r` | `number` | `5` | 圆形半径 |
+| `r` | `number` | `5` | Circle radius |
 
-### ellipse 参数
+### ellipse Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `rx` | `number` | `5` | X 方向半径 |
-| `ry` | `number` | `5` | Y 方向半径 |
+| `rx` | `number` | `5` | Radius in the X direction |
+| `ry` | `number` | `5` | Radius in the Y direction |
 
-### cross 参数
+### cross Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `10` | 交叉尺寸 |
-| `width` | `number` | `size` | 宽度 |
-| `height` | `number` | `size` | 高度 |
-| `offset` | `number` | `-width/2` | 路径方向偏移 |
+| `size` | `number` | `10` | Cross size |
+| `width` | `number` | `size` | Width |
+| `height` | `number` | `size` | Height |
+| `offset` | `number` | `-width/2` | Path direction offset |
 
-### async 参数
+### async Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `width` | `number` | `10` | 宽度 |
-| `height` | `number` | `6` | 高度 |
-| `offset` | `number` | `-width/2` | 路径方向偏移 |
-| `open` | `boolean` | `false` | 是否空心（仅描边） |
-| `flip` | `boolean` | `false` | 是否翻转方向 |
+| `width` | `number` | `10` | Width |
+| `height` | `number` | `6` | Height |
+| `offset` | `number` | `-width/2` | Path direction offset |
+| `open` | `boolean` | `false` | Whether to be hollow (stroke only) |
+| `flip` | `boolean` | `false` | Whether to flip direction |
 
-## 完整示例
+## Complete Example
 
-### 常见箭头组合
+### Common Arrow Combinations
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -180,7 +179,7 @@ const node2 = graph.addNode({
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 4, ry: 4 } },
 });
 
-// 经典箭头
+// Classic Arrow
 graph.addEdge({
   source: node1,
   target: node2,
@@ -190,7 +189,7 @@ graph.addEdge({
 });
 ```
 
-### 自定义箭头大小和颜色
+### Customizing Arrow Size and Color
 
 ```javascript
 graph.addEdge({
@@ -203,7 +202,7 @@ graph.addEdge({
       targetMarker: {
         name: 'block',
         size: 14,
-        open: true,        // 空心三角
+        open: true,        // Hollow triangle
         stroke: '#1890ff',
         fill: 'none',
       },
@@ -212,7 +211,7 @@ graph.addEdge({
 });
 ```
 
-### 双向箭头
+### Bidirectional Arrow
 
 ```javascript
 graph.addEdge({
@@ -229,10 +228,10 @@ graph.addEdge({
 });
 ```
 
-### ER 图中的菱形和圆形箭头
+### Diamond and Circular Arrows in ER Diagrams
 
 ```javascript
-// 一对多关系
+// One-to-many relationship
 graph.addEdge({
   source: tableA,
   target: tableB,
@@ -247,7 +246,7 @@ graph.addEdge({
 });
 ```
 
-### 移除默认箭头
+### Remove Default Arrow
 
 ```javascript
 graph.addEdge({
@@ -256,19 +255,19 @@ graph.addEdge({
   attrs: {
     line: {
       stroke: '#8f8f8f',
-      targetMarker: null,    // 无箭头
+      targetMarker: null,    // No arrow
     },
   },
 });
 ```
 
-## 自定义 SVG path 箭头
+## Custom SVG Path Arrow
 
-**当内置箭头不够用时**，可以直接传入 `{ tagName, d, ...attrs }` 对象，X6 会自动把它注册到 SVG `<defs>` 并生成对应的 `<marker>` 元素。**不需要也不允许**手工调用 `document.createElementNS` 或访问 `graph.svgDoc`、`graph.defs`（这些都不是 3.x 的公开 API）。
+**When built-in arrows are insufficient**, you can directly pass a `{ tagName, d, ...attrs }` object. X6 will automatically register it in the SVG `<defs>` and generate the corresponding `<marker>` element. **It is neither necessary nor allowed** to manually call `document.createElementNS` or access `graph.svgDoc`, `graph.defs` (these are not public APIs in 3.x).
 
-- `tagName` 通常用 `'path'`，配合 `d` 路径
-- 路径坐标系：marker 的本地坐标系，原点在边的端点处，**X 轴沿边方向**。常见菱形路径：`'M 20 -10 0 0 20 10 Z'`
-- 可直接在对象内写 `fill`、`stroke`、`strokeWidth` 等 SVG 属性
+- `tagName` is typically `'path'`, used with the `d` path
+- Coordinate system of the path: The local coordinate system of the marker, with the origin at the endpoint of the edge, and the **X-axis along the direction of the edge**. A common diamond path is: `'M 20 -10 0 0 20 10 Z'`
+- SVG attributes such as `fill`, `stroke`, `strokeWidth` can be directly written within the object
 
 ```javascript
 graph.addEdge({
@@ -278,12 +277,12 @@ graph.addEdge({
     line: {
       stroke: '#8f8f8f',
       strokeWidth: 1,
-      // 源端：灰色默认菱形
+      // Source end: default gray diamond
       sourceMarker: {
         tagName: 'path',
         d: 'M 20 -10 0 0 20 10 Z',
       },
-      // 终止端：红边绿底自定义菱形
+      // Target end: custom diamond with red border and green fill
       targetMarker: {
         tagName: 'path',
         stroke: '#D94111',
@@ -296,9 +295,9 @@ graph.addEdge({
 });
 ```
 
-## 渐变填充的箭头
+## Gradient-Filled Arrow
 
-如果一定要给自定义 marker 设置渐变色，**唯一正确**的姿势是使用 X6 公开 API `graph.defineGradient(options)` 拿到 `gradientId`，再把 `fill` 写成 `url(#gradientId)`。
+If you must set a gradient color for a custom marker, the **only correct** approach is to use the X6 public API `graph.defineGradient(options)` to obtain the `gradientId`, and then set `fill` to `url(#gradientId)`.
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -318,7 +317,7 @@ const target = graph.addNode({
   attrs: { body: { stroke: '#8f8f8f', strokeWidth: 1, fill: '#fff', rx: 6, ry: 6 } },
 });
 
-// 1) 通过公开 API 注册线性渐变，拿到 id
+// 1) Register a linear gradient via the public API and obtain the id
 const gradientId = graph.defineGradient({
   type: 'linearGradient',
   stops: [
@@ -327,7 +326,7 @@ const gradientId = graph.defineGradient({
   ],
 });
 
-// 2) 在 marker 对象里通过 url(#id) 引用
+// 2) Reference the gradient in the marker object using url(#id)
 graph.addEdge({
   source,
   target,
@@ -347,14 +346,14 @@ graph.addEdge({
 });
 ```
 
-> ⚠️ `graph.defineGradient` 的 `stops[].offset` 是 `0~1` 的数字（不是 `'0%'` 字符串）。
+> ⚠️ The `stops[].offset` in `graph.defineGradient` should be a number between `0` and `1` (not a string like `'0%'`).
 
-## 常见错误
+## Common Errors
 
-### ❌ 手工创建 SVG `<defs>` / `<linearGradient>`
+### ❌ Manually Creating SVG `<defs>` / `<linearGradient>`
 
 ```javascript
-// 错误：X6 上没有 graph.svgDoc / graph.defs 这种公开属性，且会绕过 X6 的 defs 管理
+// Error: X6 does not have public properties like graph.svgDoc / graph.defs, and this bypasses X6's defs management
 const defs = graph.svgDoc.createElementNS('http://www.w3.org/2000/svg', 'defs');           // ❌
 const gradient = graph.svgDoc.createElementNS(                                              // ❌
   'http://www.w3.org/2000/svg',
@@ -362,11 +361,11 @@ const gradient = graph.svgDoc.createElementNS(                                  
 );
 gradient.setAttribute('id', 'gradient');
 // ...
-graph.svgDoc.appendChild(defs);                                                             // ❌ 运行时报错
+graph.svgDoc.appendChild(defs);                                                             // ❌ Runtime error
 ```
 
 ```javascript
-// 正确：用 graph.defineGradient 拿到 id 后在 fill 里 url(#id)
+// Correct: Use graph.defineGradient to get the id and then use url(#id) in fill
 const gradientId = graph.defineGradient({
   type: 'linearGradient',
   stops: [
@@ -382,17 +381,17 @@ attrs.line.targetMarker = {
 };
 ```
 
-### ❌ 将 marker 设置在错误位置
+### ❌ Setting the marker in the wrong position
 
 ```javascript
-// 错误：marker 不是边的顶层属性
+// Error: marker is not a top-level property of the edge
 graph.addEdge({
   source: node1,
   target: node2,
-  targetMarker: 'classic', // ❌ 无效
+  targetMarker: 'classic', // ❌ Invalid
 });
 
-// 正确：marker 在 attrs.line 下
+// Correct: marker is under attrs.line
 graph.addEdge({
   source: node1,
   target: node2,
@@ -402,15 +401,15 @@ graph.addEdge({
 });
 ```
 
-### ❌ 空心箭头时忘记设置 fill
+### ❌ Forgot to Set `fill` for Hollow Arrow
 
 ```javascript
-// 空心箭头需要用 block + open: true，或手动设置 fill: 'none'
+// Hollow arrow requires `block + open: true`, or manually set `fill: 'none'`
 attrs: {
   line: {
     targetMarker: {
       name: 'block',
-      open: true,  // ✅ block 支持 open 参数
+      open: true,  // ✅ `block` supports `open` parameter
     },
   },
 }

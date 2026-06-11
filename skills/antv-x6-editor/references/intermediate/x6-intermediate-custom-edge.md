@@ -1,16 +1,16 @@
 ---
 id: "x6-intermediate-custom-edge"
-title: "X6 自定义边"
+title: "X6 Custom Edge"
 description: |
-  X6 自定义边完整指南：Graph.registerEdge 注册自定义边、markup/attrs 定制边的外观。
-  包含继承内置边、自定义路由器、自定义连接器、注册自定义边。
+  Comprehensive guide to X6 custom edges: Graph.registerEdge to register custom edges, markup/attrs to customize edge appearance.
+  Includes inheriting built-in edges, custom routers, custom connectors, and registering custom edges.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "custom-edge"
 tags:
-  - "自定义边"
+  - "custom edge"
   - "registerEdge"
   - "Graph.registerEdge"
   - "markup"
@@ -18,7 +18,7 @@ tags:
   - "inherit"
   - "edge"
   - "shape"
-  - "自定义连线"
+  - "custom connection"
   - "router"
   - "connector"
 
@@ -28,24 +28,24 @@ related:
   - "x6-intermediate-custom-node"
 
 use_cases:
-  - "注册带有固定样式的自定义边"
-  - "创建带有多条线段的复合边"
-  - "注册自定义路由器"
-  - "注册自定义连接器"
-  - "创建虚线、动画流动边等特殊效果"
+  - "Register custom edges with fixed styles"
+  - "Create compound edges with multiple segments"
+  - "Register custom routers"
+  - "Register custom connectors"
+  - "Create special effects like dashed lines, animated flow edges"
 
 anti_patterns:
-  - "不要忘记 Graph.registerEdge 第三个参数传 true 以允许覆盖"
-  - "自定义路由器必须返回点数组"
+  - "Don't forget to pass true as the third parameter in Graph.registerEdge to allow overrides"
+  - "Custom routers must return an array of points"
 ---
 
-# X6 自定义边
+# X6 Custom Edge
 
-## Graph.registerEdge — 注册自定义边
+## Graph.registerEdge — Register Custom Edge
 
-与注册自定义节点类似，通过 `Graph.registerEdge` 注册可复用的边类型。
+Similar to registering custom nodes, use `Graph.registerEdge` to register reusable edge types.
 
-### 基本注册
+### Basic Registration
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -53,7 +53,7 @@ import { Graph } from '@antv/x6';
 Graph.registerEdge(
   'custom-edge',
   {
-    inherit: 'edge',  // 继承内置 edge
+    inherit: 'edge',  // Inherit from built-in edge
     attrs: {
       line: {
         stroke: '#1890ff',
@@ -76,7 +76,7 @@ graph.addEdge({
 });
 ```
 
-### 虚线边
+### Dashed Edge
 
 ```javascript
 Graph.registerEdge(
@@ -96,7 +96,7 @@ Graph.registerEdge(
 );
 ```
 
-### 带标签的流程边
+### Flow Edge with Label
 
 ```javascript
 Graph.registerEdge(
@@ -153,7 +153,7 @@ graph.addEdge({
 });
 ```
 
-### 双线边（复合 markup）
+### Double Edge (Composite Markup)
 
 ```javascript
 Graph.registerEdge(
@@ -190,22 +190,22 @@ Graph.registerEdge(
 );
 ```
 
-## 自定义路由器（Router）
+## Custom Router
 
-路由器对路径点进一步处理，在必要时添加额外的点使边按特定规则行走。
+The router further processes the path points, adding extra points when necessary to make the edge follow specific rules.
 
 ```javascript
 Graph.registerRouter(
   'custom-router',
   (vertices, args, view) => {
-    // vertices: 用户定义的路径点
-    // 返回处理后的点数组
+    // vertices: User-defined path points
+    // Returns the processed array of points
     const { offset = 20 } = args;
     const points = [];
     const source = view.sourceAnchor;
     const target = view.targetAnchor;
 
-    // 示例：从 source 先向右走，再转到 target
+    // Example: Move right from source first, then turn to target
     points.push({ x: source.x + offset, y: source.y });
     points.push({ x: source.x + offset, y: target.y });
 
@@ -214,7 +214,7 @@ Graph.registerRouter(
   true,
 );
 
-// 使用
+// Usage
 graph.addEdge({
   source: node1,
   target: node2,
@@ -222,15 +222,15 @@ graph.addEdge({
 });
 ```
 
-## 自定义连接器（Connector）
+## Custom Connector
 
-连接器将路由器返回的点加工成 SVG pathData。
+The connector processes the points returned by the router into SVG pathData.
 
 ```javascript
 Graph.registerConnector(
   'wobble',
   (sourcePoint, targetPoint, routePoints, args) => {
-    // 返回 SVG path 字符串
+    // Return SVG path string
     const { amplitude = 10 } = args;
     const points = [sourcePoint, ...routePoints, targetPoint];
     let path = `M ${points[0].x} ${points[0].y}`;
@@ -244,7 +244,7 @@ Graph.registerConnector(
   true,
 );
 
-// 使用
+// Usage
 graph.addEdge({
   source: node1,
   target: node2,
@@ -252,9 +252,9 @@ graph.addEdge({
 });
 ```
 
-## 在 connecting 中指定默认边类型
+## Specify Default Edge Type in `connecting`
 
-当用户通过交互拖拽创建边时，可以通过 `createEdge` 指定默认边类型：
+When users create edges by dragging through interaction, the default edge type can be specified via `createEdge`:
 
 ```javascript
 const graph = new Graph({
@@ -265,7 +265,7 @@ const graph = new Graph({
     connector: 'rounded',
     createEdge() {
       return this.createEdge({
-        shape: 'custom-edge',  // 使用注册的自定义边
+        shape: 'custom-edge',  // Use the registered custom edge
         attrs: {
           line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' },
         },
@@ -275,46 +275,46 @@ const graph = new Graph({
 });
 ```
 
-## 动态修改已注册边的属性
+## Dynamically Modify Properties of Registered Edges
 
 ```javascript
 const edge = graph.addEdge({ shape: 'custom-edge', source: node1, target: node2 });
 
-// 修改线条颜色
+// Modify line color
 edge.attr('line/stroke', '#f5222d');
 
-// 修改路由器
+// Modify router
 edge.setRouter('manhattan');
 
-// 修改连接器
+// Modify connector
 edge.setConnector('smooth');
 
-// 修改标签
+// Modify label
 edge.setLabels([{ attrs: { labelText: { text: 'Updated' } } }]);
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 重复注册未传覆盖参数
+### ❌ Repeated Registration Without Overwrite Parameter
 
 ```javascript
-// 错误：第二次注册同名 edge 报错
+// Error: Second registration of the same edge name throws an error
 Graph.registerEdge('my-edge', { ... });
 Graph.registerEdge('my-edge', { ... }); // Error
 
-// 正确：第三个参数 true 允许覆盖
+// Correct: Third parameter `true` allows overwriting
 Graph.registerEdge('my-edge', { ... }, true);
 ```
 
-### ❌ 自定义路由器未返回数组
+### ❌ Custom Router Does Not Return an Array
 
 ```javascript
-// 错误：router 必须返回点数组
+// Error: Router must return an array of points
 Graph.registerRouter('bad-router', (vertices) => {
-  return { x: 100, y: 100 }; // ❌ 返回单个点
+  return { x: 100, y: 100 }; // ❌ Returns a single point
 });
 
-// 正确：返回点数组
+// Correct: Returns an array of points
 Graph.registerRouter('good-router', (vertices) => {
   return [{ x: 100, y: 100 }]; // ✅
 }, true);

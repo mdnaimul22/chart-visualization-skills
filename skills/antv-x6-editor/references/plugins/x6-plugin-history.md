@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-history"
-title: "X6 History 撤销重做插件"
+title: "X6 History Plugin for Undo and Redo"
 description: |
-  History 插件提供画布操作的撤销（Undo）和重做（Redo）能力，自动记录节点/边的添加、删除、属性变更等操作。
+  The History plugin provides undo (Undo) and redo (Redo) capabilities for canvas operations, automatically recording operations such as adding, deleting, and changing properties of nodes/edges.
 
 library: "x6"
 version: "3.x"
@@ -10,12 +10,12 @@ category: "plugins"
 subcategory: "history"
 tags:
   - "History"
-  - "撤销"
-  - "重做"
+  - "Undo"
+  - "Redo"
   - "undo"
   - "redo"
-  - "历史记录"
-  - "操作回退"
+  - "History Records"
+  - "Operation Rollback"
 
 related:
   - "x6-plugins"
@@ -23,18 +23,18 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "撤销上一步操作"
-  - "重做已撤销操作"
-  - "实现 Ctrl+Z/Ctrl+Y 快捷键"
-  - "限制历史栈大小"
-  - "忽略特定类型的操作变更"
-  - "批量操作作为单次撤销"
+  - "Undo the last operation"
+  - "Redo an undone operation"
+  - "Implement Ctrl+Z/Ctrl+Y shortcuts"
+  - "Limit the size of the history stack"
+  - "Ignore specific types of operation changes"
+  - "Batch operations as a single undo"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, History } from '@antv/x6';
@@ -42,120 +42,120 @@ import { Graph, History } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new History({ enabled: true }));
 
-// 撤销
+// Undo
 graph.undo();
 
-// 重做
+// Redo
 graph.redo();
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean | `false` | 是否启用历史记录 |
-| `stackSize` | number | `0`（不限制） | 历史栈最大容量，超出后最早的记录被丢弃 |
-| `ignoreAdd` | boolean | `false` | 忽略元素添加操作 |
-| `ignoreRemove` | boolean | `false` | 忽略元素删除操作 |
-| `ignoreChange` | boolean | `false` | 忽略元素属性变更操作 |
-| `beforeAddCommand` | function | - | 命令入栈前的钩子，返回 `false` 阻止入栈 |
-| `afterAddCommand` | function | - | 命令入栈后的回调 |
-| `executeCommand` | function | - | 自定义命令执行逻辑 |
-| `cancelInvalid` | boolean | `true` | 是否取消无效的命令 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean | `false` | Whether to enable history records |
+| `stackSize` | number | `0` (unlimited) | Maximum capacity of the history stack, exceeding which the earliest records are discarded |
+| `ignoreAdd` | boolean | `false` | Ignore element addition operations |
+| `ignoreRemove` | boolean | `false` | Ignore element removal operations |
+| `ignoreChange` | boolean | `false` | Ignore element property change operations |
+| `beforeAddCommand` | function | - | Hook before command is added to the stack, returning `false` prevents stacking |
+| `afterAddCommand` | function | - | Callback after command is added to the stack |
+| `executeCommand` | function | - | Custom command execution logic |
+| `cancelInvalid` | boolean | `true` | Whether to cancel invalid commands |
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 撤销/重做
-graph.undo();            // 撤销上一步
-graph.redo();            // 重做
-graph.undoAndCancel();   // 撤销但不放入 redoStack（无法 redo 回来）
+// Undo/Redo
+graph.undo();            // Undo the last step
+graph.redo();            // Redo
+graph.undoAndCancel();   // Undo but do not add to redoStack (cannot redo)
 
-// 查询状态
-graph.canUndo();  // boolean，是否可以撤销
-graph.canRedo();  // boolean，是否可以重做
+// Query Status
+graph.canUndo();  // boolean, whether undo is possible
+graph.canRedo();  // boolean, whether redo is possible
 
-// 栈大小查询
-graph.getHistoryStackSize();  // 历史栈容量（stackSize 配置值，0 表示不限）
-graph.getUndoStackSize();     // 当前 undo 栈中的记录数
-graph.getRedoStackSize();     // 当前 redo 栈中的记录数
-graph.getUndoRemainSize();    // undo 栈剩余可用空间
+// Stack Size Query
+graph.getHistoryStackSize();  // History stack capacity (stackSize configuration value, 0 means unlimited)
+graph.getUndoStackSize();     // Number of records in the current undo stack
+graph.getRedoStackSize();     // Number of records in the current redo stack
+graph.getUndoRemainSize();    // Remaining available space in the undo stack
 
-// 清空历史
+// Clear History
 graph.cleanHistory();
 
-// 启用/禁用
+// Enable/Disable
 graph.enableHistory();
 graph.disableHistory();
 graph.toggleHistory(true);
 graph.isHistoryEnabled();  // boolean
 ```
 
-## 事件监听
+## Event Listening
 
 ```javascript
-// 撤销时触发
+// Triggered when undoing
 graph.on('history:undo', ({ cmds, options }) => {
-  console.log('已撤销');
+  console.log('Undone');
 });
 
-// 重做时触发
+// Triggered when redoing
 graph.on('history:redo', ({ cmds, options }) => {
-  console.log('已重做');
+  console.log('Redone');
 });
 
-// 新命令入栈时触发
+// Triggered when a new command is pushed to the stack
 graph.on('history:add', ({ cmds, options }) => {
-  console.log('新增历史记录');
+  console.log('New history record added');
 });
 
-// 历史栈清空时触发
+// Triggered when the history stack is cleared
 graph.on('history:clean', ({ cmds, options }) => {
-  console.log('历史已清空');
+  console.log('History cleared');
 });
 
-// 任何历史变化时触发（undo/redo/add/clean 都会触发）
+// Triggered on any history change (undo/redo/add/clean will all trigger this)
 graph.on('history:change', ({ cmds, options }) => {
-  // 可用于更新 UI 按钮状态
+  // Can be used to update UI button states
   updateUndoButton(graph.canUndo());
   updateRedoButton(graph.canRedo());
 });
 ```
 
-## 配置限制栈大小
+## Configure History Stack Size
 
 ```javascript
 graph.use(new History({
   enabled: true,
-  stackSize: 50,  // 最多保存 50 步操作
+  stackSize: 50,  // Maximum of 50 operations saved
 }));
 ```
 
-## 过滤不需要记录的操作
+## Filtering Unnecessary Operations
 
 ```javascript
 graph.use(new History({
   enabled: true,
-  // 忽略所有属性变更（仅记录添加/删除）
+  // Ignore all property changes (only record add/delete)
   ignoreChange: true,
 }));
 ```
 
-使用 `beforeAddCommand` 进行精细过滤：
+Use `beforeAddCommand` for fine-grained filtering:
 
 ```javascript
 graph.use(new History({
   enabled: true,
   beforeAddCommand(event, args) {
-    // 忽略特定属性的变更
+    // Ignore changes to specific properties
     if (event === 'cell:change:attrs') {
-      return false;  // 不记录 attrs 变更
+      return false;  // Do not record attrs changes
     }
   },
 }));
 ```
 
-## 完整示例：撤销重做 + 快捷键 + UI 状态
+## Complete Example: Undo/Redo + Shortcuts + UI State
 
 ```javascript
 import { Graph, History, Keyboard } from '@antv/x6';
@@ -169,48 +169,48 @@ const graph = new Graph({
 graph.use(new History({ enabled: true, stackSize: 100 }));
 graph.use(new Keyboard({ enabled: true, global: true }));
 
-// 绑定快捷键
+// Bind shortcuts
 graph.bindKey('ctrl+z', () => graph.undo());
 graph.bindKey('ctrl+shift+z', () => graph.redo());
 
-// 监听历史变化，更新 UI 按钮
+// Listen for history changes to update UI buttons
 graph.on('history:change', () => {
   document.getElementById('undo-btn').disabled = !graph.canUndo();
   document.getElementById('redo-btn').disabled = !graph.canRedo();
 });
 
-// 添加测试节点
+// Add a test node
 graph.addNode({ x: 100, y: 100, width: 80, height: 40, label: 'Node' });
-// 此时 canUndo() === true
+// At this point, canUndo() === true
 ```
 
-## 批量操作合并为单次撤销
+## Batch Operations Merged into a Single Undo
 
-X6 的 `model.startBatch()` / `model.stopBatch()` 可以将多个操作合并为一条历史记录：
+X6's `model.startBatch()` / `model.stopBatch()` can merge multiple operations into a single history record:
 
 ```javascript
-// 批量操作开始
+// Start batch operation
 graph.startBatch('custom-batch');
 
-// 以下操作会被合并为一条历史记录
+// The following operations will be merged into a single history record
 graph.addNode({ id: 'a', x: 100, y: 100, width: 80, height: 40 });
 graph.addNode({ id: 'b', x: 300, y: 100, width: 80, height: 40 });
 graph.addEdge({ source: 'a', target: 'b' });
 
-// 批量操作结束
+// End batch operation
 graph.stopBatch('custom-batch');
 
-// 一次 undo() 即可撤销上面三个操作
+// A single undo() will revert the above three operations
 graph.undo();
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 未注册插件调用 undo/redo
+### ❌ Calling undo/redo on an unregistered plugin
 
 ```javascript
 const graph = new Graph({ container: 'container' });
-graph.undo();  // ❌ 无效，History 插件未注册
+graph.undo();  // ❌ Invalid, History plugin is not registered
 ```
 
 ```javascript
@@ -220,10 +220,10 @@ graph.use(new History({ enabled: true }));
 graph.undo();  // ✅
 ```
 
-### ❌ 在构造函数中配置 history
+### ❌ Configure history in the constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Error: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   history: { enabled: true },  // ❌
@@ -231,7 +231,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确
+// Correct
 import { Graph, History } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new History({ enabled: true }));  // ✅

@@ -1,24 +1,23 @@
 ---
 id: "x6-core-ports"
-title: "X6 连接桩（Ports）配置"
+title: "X6 Ports Configuration"
 description: |
-  X6 连接桩的定义、分组、位置、样式、动态显隐。
-  连接桩是节点上的连线锚点，用于 DAG/流程图等场景。
+  Definition, grouping, positioning, styling, and dynamic visibility of X6 ports.
+  Ports are connection anchors on nodes, used in DAG/flowchart scenarios.
 
 library: "x6"
 version: "3.x"
 category: "core"
 subcategory: "ports"
 tags:
-  - "连接桩"
-  - "端口"
   - "ports"
+  - "port"
   - "magnet"
-  - "锚点"
-  - "连线"
+  - "anchor"
+  - "connection"
   - "position"
   - "group"
-  - "动态端口"
+  - "dynamic ports"
   - "DAG"
 
 related:
@@ -27,23 +26,23 @@ related:
   - "x6-core-graph-init"
 
 use_cases:
-  - "为节点添加连接桩"
-  - "配置端口分组和位置"
-  - "创建 DAG 节点的输入输出端口"
-  - "动态添加/删除端口"
-  - "鼠标悬停时显示端口"
+  - "Adding ports to nodes"
+  - "Configuring port groups and positions"
+  - "Creating input/output ports for DAG nodes"
+  - "Dynamically adding/removing ports"
+  - "Displaying ports on mouse hover"
 
 anti_patterns:
-  - "不要遗漏 magnet: true，否则端口无法连线"
-  - "不要在 items 中重复 group 已定义的 attrs"
-  - "Graph.registerNode 已声明 ports.items 时，addNode 不要再传同名 id 的 ports.items，会触发 Duplicitied port id"
-  - "node.addPort 添加的 id 不能与 registerNode/addNode 已有 ports.items 中的 id 重名"
+  - "Do not omit magnet: true, otherwise ports cannot be connected"
+  - "Do not duplicate attrs defined in group within items"
+  - "When Graph.registerNode declares ports.items, do not pass ports.items with the same id in addNode, as it will trigger Duplicated port id"
+  - "The id added by node.addPort cannot have the same name as existing ports.items in registerNode/addNode"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 基础端口配置
+## Basic Port Configuration
 
 ```javascript
 graph.addNode({
@@ -74,16 +73,16 @@ graph.addNode({
 });
 ```
 
-## 端口位置
+## Port Position
 
-| position | 说明 |
-|----------|------|
-| `'top'` | 顶部居中 |
-| `'bottom'` | 底部居中 |
-| `'left'` | 左侧居中 |
-| `'right'` | 右侧居中 |
+| position | Description |
+|----------|-------------|
+| `'top'` | Centered at the top |
+| `'bottom'` | Centered at the bottom |
+| `'left'` | Centered on the left |
+| `'right'` | Centered on the right |
 
-多个同组端口会自动均匀分布：
+Multiple ports in the same group will be automatically distributed evenly:
 
 ```javascript
 ports: {
@@ -93,30 +92,30 @@ ports: {
   },
   items: [
     { id: 'in1', group: 'in' },
-    { id: 'in2', group: 'in' },   // 两个 top 端口会均匀分布
+    { id: 'in2', group: 'in' },   // Two top ports will be evenly distributed
     { id: 'out1', group: 'out' },
   ],
 }
 ```
 
-## 通过端口连线
+## Connect via Ports
 
 ```javascript
-// 边连接到指定端口
+// Edge connects to specified ports
 graph.addEdge({
   source: { cell: node1, port: 'out1' },
   target: { cell: node2, port: 'in1' },
   attrs: { line: { stroke: '#1890ff', strokeWidth: 1, targetMarker: 'classic' } },
 });
 
-// 也可用节点 ID
+// Can also use node IDs
 graph.addEdge({
   source: { cell: 'node-1', port: 'out1' },
   target: { cell: 'node-2', port: 'in1' },
 });
 ```
 
-## DAG 节点注册（常用模式）
+## DAG Node Registration (Common Pattern)
 
 ```javascript
 Graph.registerNode('dag-node', {
@@ -140,7 +139,7 @@ Graph.registerNode('dag-node', {
   },
 }, true);
 
-// 使用时只需指定 items
+// When using, only need to specify items
 graph.addNode({
   shape: 'dag-node',
   x: 100, y: 60,
@@ -149,30 +148,30 @@ graph.addNode({
 });
 ```
 
-## 动态操作端口
+## Dynamic Port Operations
 
 ```javascript
-// 添加端口
+// Add a port
 node.addPort({ id: 'new-port', group: 'out' });
 
-// 删除端口
+// Remove a port
 node.removePort('port-id');
 
-// 获取所有端口
+// Get all ports
 const ports = node.getPorts();
 
-// 判断端口是否存在
+// Check if a port exists
 const hasPort = node.hasPort('port-id');
 ```
 
-## 鼠标悬停显示端口
+## Display Ports on Mouse Hover
 
 ```javascript
 const graph = new Graph({
   container: 'container',
 });
 
-// 默认隐藏端口
+// Ports are hidden by default
 graph.addNode({
   shape: 'rect',
   x: 100, y: 60,
@@ -202,14 +201,14 @@ graph.addNode({
   },
 });
 
-// 鼠标进入时显示
+// Display ports on mouse enter
 graph.on('node:mouseenter', ({ node }) => {
   node.getPorts().forEach((port) => {
     node.portProp(port.id, 'attrs/circle/style/visibility', 'visible');
   });
 });
 
-// 鼠标离开时隐藏
+// Hide ports on mouse leave
 graph.on('node:mouseleave', ({ node }) => {
   node.getPorts().forEach((port) => {
     node.portProp(port.id, 'attrs/circle/style/visibility', 'hidden');
@@ -217,7 +216,7 @@ graph.on('node:mouseleave', ({ node }) => {
 });
 ```
 
-## 端口样式自定义
+## Port Style Customization
 
 ```javascript
 ports: {
@@ -234,7 +233,7 @@ ports: {
         },
       },
       label: {
-        position: 'top',  // 标签位置
+        position: 'top',  // Label position
       },
     },
   },
@@ -244,23 +243,23 @@ ports: {
 }
 ```
 
-## 连接验证
+## Connection Validation
 
-配合 `connecting` 配置限制端口连线规则：
+Use the `connecting` configuration to restrict port connection rules:
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   connecting: {
     allowBlank: false,
-    allowNode: false,        // 只允许连接到端口
-    allowLoop: false,        // 禁止自环
+    allowNode: false,        // Only allow connections to ports
+    allowLoop: false,        // Prohibit self-loops
     validateConnection({ sourcePort, targetPort, sourceCell, targetCell }) {
-      // 不允许输出端口连输出端口
+      // Do not allow output ports to connect to output ports
       if (sourcePort && sourcePort.startsWith('out') && targetPort && targetPort.startsWith('out')) {
         return false;
       }
-      // 不允许连接到自身
+      // Do not allow connections to itself
       if (sourceCell === targetCell) return false;
       return true;
     },
@@ -268,29 +267,29 @@ const graph = new Graph({
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：端口未正确分组导致无法连线
+### Error 1: Ports Not Properly Grouped Resulting in Connection Failure
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：没有定义 groups，直接使用 group 属性
+// Error: Groups are not defined, directly using the group property
 graph.addNode({
   shape: 'rect',
   x: 100, y: 60,
   width: 120, height: 50,
   ports: {
     items: [
-      { id: 'port1', group: 'top' },  // group 未定义
+      { id: 'port1', group: 'top' },  // group is not defined
       { id: 'port2', group: 'bottom' },
     ],
   },
 });
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：先定义 groups，再在 items 中引用
+// Correct: Define groups first, then reference them in items
 graph.addNode({
   shape: 'rect',
   x: 100, y: 60,
@@ -314,25 +313,25 @@ graph.addNode({
 });
 ```
 
-### 错误 2：端口未设置 magnet 导致无法连线
+### Error 2: Port Not Set with Magnet, Resulting in Connection Failure
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：缺少 magnet: true
+// Error: Missing magnet: true
 ports: {
   groups: {
     in: {
       position: 'left',
-      attrs: { circle: { r: 5, stroke: '#1890ff', fill: '#fff' } }, // 缺少 magnet
+      attrs: { circle: { r: 5, stroke: '#1890ff', fill: '#fff' } }, // Missing magnet
     },
   },
   items: [{ id: 'in1', group: 'in' }],
 }
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：设置 magnet: true
+// Correct: Set magnet: true
 ports: {
   groups: {
     in: {
@@ -344,11 +343,11 @@ ports: {
 }
 ```
 
-### 错误 3：端口样式设置错误导致显示异常
+### Error 3: Port Style Settings Error Causing Display Anomalies
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：在 items 中重复设置 group 已定义的 attrs
+// Error: Redundantly setting attrs in items that are already defined in the group
 ports: {
   groups: {
     in: {
@@ -357,14 +356,14 @@ ports: {
     },
   },
   items: [
-    { id: 'in1', group: 'in', attrs: { circle: { r: 10 } } }, // 重复设置 circle
+    { id: 'in1', group: 'in', attrs: { circle: { r: 10 } } }, // Redundant setting of circle
   ],
 }
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：避免在 items 中重复设置 group 已定义的 attrs
+// Correct: Avoid redundantly setting attrs in items that are already defined in the group
 ports: {
   groups: {
     in: {
@@ -378,11 +377,11 @@ ports: {
 }
 ```
 
-### 错误 4：创建边时未正确引用节点导致连接失败
+### Error 4: Connection Failure Due to Incorrect Node References When Creating Edges
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：source 和 target 应该是节点实例或节点 ID 字符串
+// Error: source and target should be node instances or node ID strings
 const edge = graph.addEdge({
   source: 'source',
   target: 'target',
@@ -399,9 +398,9 @@ const edge = graph.addEdge({
 })
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：确保 source 和 target 是有效的节点引用
+// Correct: Ensure source and target are valid node references
 const sourceNode = graph.addNode({
   id: 'source',
   shape: 'rect',
@@ -423,8 +422,8 @@ const targetNode = graph.addNode({
 })
 
 const edge = graph.addEdge({
-  source: sourceNode, // 或者 'source'
-  target: targetNode, // 或者 'target'
+  source: sourceNode, // or 'source'
+  target: targetNode, // or 'target'
   attrs: {
     line: {
       stroke: '#5F95FF',
@@ -438,11 +437,11 @@ const edge = graph.addEdge({
 })
 ```
 
-### 错误 5：端口配置中缺少必要的 selector 定义
+### Error 5: Missing Required Selector Definition in Port Configuration
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：portMarkup 使用了未定义的 selector
+// Error: portMarkup uses an undefined selector
 ports: {
   groups: {
     in: {
@@ -454,9 +453,9 @@ ports: {
 }
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：portMarkup 中定义 selector 名称
+// Correct: Define selector name in portMarkup
 ports: {
   groups: {
     in: {
@@ -468,17 +467,17 @@ ports: {
   portMarkup: [
     {
       tagName: 'circle',
-      selector: 'portBody', // 与 attrs 中的 key 一致
+      selector: 'portBody', // Matches the key in attrs
     },
   ],
 }
 ```
 
-### 错误 6：使用未声明的 group 名称导致端口不显示
+### Error 6: Ports Not Displayed Due to Use of Undeclared Group Names
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：items 中使用了未在 groups 中定义的 group 名称
+// Error: Using an undeclared group name in items that is not defined in groups
 graph.addNode({
   shape: 'rect',
   x: 100,
@@ -493,15 +492,15 @@ graph.addNode({
       },
     },
     items: [
-      { id: 'port1', group: 'top' }, // group 'top' 未定义
+      { id: 'port1', group: 'top' }, // group 'top' is not defined
     ],
   },
 });
 ```
 
-**修正方法：**
+**Correction:**
 ```javascript
-// 正确：确保 items 中使用的 group 名称已在 groups 中定义
+// Correct: Ensure the group name used in items is defined in groups
 graph.addNode({
   shape: 'rect',
   x: 100,
@@ -526,19 +525,19 @@ graph.addNode({
 });
 ```
 
-### 错误 7：container 引用无效导致渲染失败
+### Error 7: Rendering Failure Due to Invalid Container Reference
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：container 变量未定义或为 null
+// Error: container variable is undefined or null
 const graph = new Graph({
-  container: container, // ❌ container 未声明，应使用字符串 'container'
+  container: container, // ❌ container is not declared, should use the string 'container'
 });
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：使用字符串 'container'（运行环境已注入，禁止声明 const container）
+// Correct: Use the string 'container' (runtime environment injected, do not declare const container)
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -546,11 +545,11 @@ const graph = new Graph({
 });
 ```
 
-### 错误 8：动态修改边属性时未正确使用 API
+### Error 8: Incorrect API Usage When Dynamically Modifying Edge Attributes
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：使用 edge.attr() 和 edge.prop() 修改边属性时参数格式不正确
+// Incorrect: Improper parameter format when using edge.attr() and edge.prop() to modify edge attributes
 setTimeout(() => {
   edge.attr('line/stroke', '#ff4d4f')
   edge.attr('line/strokeWidth', 2)
@@ -558,18 +557,18 @@ setTimeout(() => {
 }, 2000)
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：使用正确的 API 调用方式
+// Correct: Using the correct API call method
 edge.attr('line/stroke', '#1890ff');
 edge.prop('vertices', [{ x: 200, y: 50 }]);
 ```
 
-### 错误 9：创建支持从连接桩拖拽连线的画布时配置不当
+### Error 9: Improper Configuration When Creating a Canvas Supporting Drag-and-Drop Connections from Connection Points
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：connecting 配置不完整或错误
+// Error: Incomplete or incorrect connecting configuration
 const graph = new Graph({
   container: 'container',
   connecting: {
@@ -604,9 +603,9 @@ const graph = new Graph({
 })
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：使用完整的 connecting 配置
+// Correct: Using a complete connecting configuration
 const graph = new Graph({
   container: 'container',
   background: { color: '#F2F7FA' },
@@ -631,14 +630,14 @@ const graph = new Graph({
 });
 ```
 
-## ⚠️ `registerNode` + `addNode` 端口合并行为（必读）
+## ⚠️ `registerNode` + `addNode` Port Merging Behavior (Must Read)
 
-X6 3.x 在 `new Cell(metadata)` 时执行 `ObjectExt.merge({}, defaults, metadata)` 把注册时的 ports 与 `addNode` 时的 ports **递归合并**；同时 `node.addPort` / `node.addPorts` 走的是 `[...current.items, ...new]` **简单拼接**。两条路径**都不会做 id 去重**，只要出现同名 id，X6 立刻抛 `Error: Duplicitied port id.`，整张画布无法渲染。
+X6 3.x executes `ObjectExt.merge({}, defaults, metadata)` when `new Cell(metadata)` is called, **recursively merging** the ports registered with `registerNode` and the ports added with `addNode`. Meanwhile, `node.addPort` / `node.addPorts` uses `[...current.items, ...new]` for **simple concatenation**. **Neither path performs ID deduplication**. If duplicate IDs are found, X6 immediately throws `Error: Duplicitied port id.`, preventing the entire canvas from rendering.
 
-### ❌ 反例（典型 Duplicitied port id）
+### ❌ Counterexample (Typical Duplicated Port ID)
 
 ```javascript
-// 注册时声明了 in1
+// Declared 'in1' during registration
 Graph.registerNode('my-node', {
   inherit: 'rect',
   width: 120, height: 60,
@@ -648,31 +647,31 @@ Graph.registerNode('my-node', {
   },
 });
 
-// addNode 又写了一遍 in1 → 数组按下标 merge，相当于 items: [{ id: 'in1' }, { id: 'in1' }] → 报错
+// addNode redefines 'in1' → Array merges by index, resulting in items: [{ id: 'in1' }, { id: 'in1' }] → Error
 graph.addNode({
   shape: 'my-node', x: 100, y: 100,
   ports: { items: [{ id: 'in1', group: 'in' }] },
 });
-// → Error: Duplicitied port id.
+// → Error: Duplicated port id.
 ```
 
-### ✅ 正确写法（三选一）
+### ✅ Correct Writing (Choose One of Three)
 
-**1. 注册只声明 groups，items 全在 addNode 时给：**
+**1. Register only declares groups, all items are provided during `addNode`:**
 ```javascript
 Graph.registerNode('my-node', {
   inherit: 'rect',
   width: 120, height: 60,
   ports: {
     groups: { in: { position: 'left', attrs: { circle: { magnet: true, r: 4 } } } },
-    // items 不写，留给 addNode
+    // items not defined, left for addNode
   },
 });
 graph.addNode({ shape: 'my-node', x: 100, y: 100,
   ports: { items: [{ id: 'in1', group: 'in' }] } });
 ```
 
-**2. 注册里完整声明 items，addNode 不再传 ports：**
+**2. Fully declare items during registration, no ports passed in `addNode`:**
 ```javascript
 Graph.registerNode('my-node', {
   inherit: 'rect',
@@ -682,14 +681,14 @@ Graph.registerNode('my-node', {
     items: [{ id: 'in1', group: 'in' }],
   },
 });
-graph.addNode({ shape: 'my-node', x: 100, y: 100 }); // 直接复用 registry 里的端口
+graph.addNode({ shape: 'my-node', x: 100, y: 100 }); // Directly reuse ports from registry
 ```
 
-**3. 注册声明部分端口，运行时追加端口用 `node.addPort` 且 id 不重名：**
+**3. Partially declare ports during registration, add additional ports at runtime using `node.addPort` with unique ids:**
 ```javascript
-const node = graph.addNode({ shape: 'my-node', x: 100, y: 100 }); // 已有 in1
-node.addPort({ id: 'in2', group: 'in' }); // ✅ 新 id
-node.addPort({ id: 'in1', group: 'in' }); // ❌ Duplicitied port id
+const node = graph.addNode({ shape: 'my-node', x: 100, y: 100 }); // Already has in1
+node.addPort({ id: 'in2', group: 'in' }); // ✅ New id
+node.addPort({ id: 'in1', group: 'in' }); // ❌ Duplicated port id
 ```
 
-> 排错小贴士：看到 `Duplicitied port id.` 一律先去 grep 同一个 port id，往往是 registry 已经声明、addNode 又重复传了一遍。
+> Troubleshooting Tip: If you see `Duplicated port id.`, always grep for the same port id first. Often, it’s already declared in the registry and passed again during `addNode`.

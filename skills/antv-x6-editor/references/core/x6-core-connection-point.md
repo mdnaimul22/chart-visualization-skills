@@ -1,9 +1,9 @@
 ---
 id: "x6-core-connection-point"
-title: "X6 连接点（ConnectionPoint）"
+title: "X6 Connection Point"
 description: |
-  边与节点边界的实际交点计算策略。
-  connectionPoint 决定连线端点在节点边界上的最终落点位置，与 anchor 配合使用。
+  Actual intersection calculation strategy between edge and node boundary.
+  connectionPoint determines the final landing position of the connection endpoint on the node boundary, used in conjunction with anchor.
 
 library: "x6"
 version: "3.x"
@@ -11,12 +11,12 @@ category: "core"
 subcategory: "connection-point"
 tags:
   - "connectionPoint"
-  - "连接点"
+  - "connection point"
   - "boundary"
   - "bbox"
   - "rect"
   - "anchor"
-  - "连线交点"
+  - "connection intersection"
 
 related:
   - "x6-core-anchor"
@@ -24,42 +24,42 @@ related:
   - "x6-core-ports"
 
 use_cases:
-  - "控制连线与节点形状边界的交点"
-  - "让连线精确连接到节点轮廓"
-  - "处理旋转节点的连线交点"
-  - "设置连线端点偏移"
+  - "Control the intersection between connection and node shape boundary"
+  - "Make connections precisely connect to node contours"
+  - "Handle connection intersections for rotated nodes"
+  - "Set connection endpoint offsets"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**ConnectionPoint（连接点）** 是边路径与节点边界的实际交点。它与 anchor 的关系是：
+**ConnectionPoint** is the actual intersection point of the edge path with the node boundary. Its relationship with the anchor is as follows:
 
-1. **Anchor** → 确定参考点（如节点中心）
-2. **ConnectionPoint** → 从对端方向画一条射线到 anchor，计算与节点边界的交点
+1. **Anchor** → Determines the reference point (e.g., node center)
+2. **ConnectionPoint** → Draws a ray from the opposite end to the anchor and calculates the intersection point with the node boundary
 
 ```
-对端 ─────────────── connectionPoint(边界交点) ─── anchor(参考点，节点内部)
+Opposite End ─────────────── connectionPoint (Boundary Intersection) ─── anchor (Reference Point, Inside Node)
                            ↑
-                      这是最终连线端点
+                      This is the final connection endpoint
 ```
 
-## 配置方式
+## Configuration Methods
 
-### 全局配置
+### Global Configuration
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   connecting: {
-    connectionPoint: 'boundary',  // 全局默认
+    connectionPoint: 'boundary',  // Global default
   },
 });
 ```
 
-### 单边配置
+### Single-sided Configuration
 
 ```javascript
 graph.addEdge({
@@ -68,58 +68,58 @@ graph.addEdge({
 });
 ```
 
-## 内置连接点类型
+## Built-in Connector Types
 
-| 名称 | 说明 | 适用场景 |
-|------|------|----------|
-| `'boundary'` | 与节点实际形状边界的交点（**默认值**） | 圆形、椭圆、多边形等不规则形状 |
-| `'bbox'` | 与节点未旋转 BBox 的交点 | 简单矩形节点 |
-| `'rect'` | 与节点旋转后 BBox 的交点 | 旋转矩形节点 |
-| `'anchor'` | 直接使用 anchor 位置（不计算边界交点） | 需要连线穿入节点内部时 |
+| Name | Description | Applicable Scenarios |
+|------|-------------|----------|
+| `'boundary'` | Intersection with the actual shape boundary of the node (**default**) | Circular, elliptical, polygonal, and other irregular shapes |
+| `'bbox'` | Intersection with the unrotated BBox of the node | Simple rectangular nodes |
+| `'rect'` | Intersection with the rotated BBox of the node | Rotated rectangular nodes |
+| `'anchor'` | Directly uses the anchor position (does not calculate boundary intersection) | When the connection line needs to pass through the interior of the node |
 
-## 参数详解
+## Parameter Details
 
-### boundary 参数
+### boundary Parameter
 
-最常用的连接点策略，计算射线与节点 SVG 形状的精确交点。
+The most commonly used connection point strategy, calculating the precise intersection point between the ray and the node's SVG shape.
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number \| { x, y }` | `0` | 沿连线方向偏移距离 |
-| `stroked` | `boolean` | `false` | 是否将 strokeWidth 纳入计算 |
-| `selector` | `string \| string[]` | 无 | 指定用于计算交点的子元素选择器 |
-| `insideout` | `boolean` | `true` | 参考点在形状内部时是否仍计算交点 |
-| `extrapolate` | `boolean` | `false` | 延长射线以确保与形状相交 |
-| `sticky` | `boolean` | `false` | 无交点时是否返回最近点（而非 anchor） |
-| `precision` | `number` | `2` | Path 元素的交点精度 |
+| `offset` | `number \| { x, y }` | `0` | Offset distance along the connection line |
+| `stroked` | `boolean` | `false` | Whether to include strokeWidth in calculations |
+| `selector` | `string \| string[]` | None | Specifies the child element selector used for intersection calculations |
+| `insideout` | `boolean` | `true` | Whether to still calculate the intersection point when the reference point is inside the shape |
+| `extrapolate` | `boolean` | `false` | Extends the ray to ensure intersection with the shape |
+| `sticky` | `boolean` | `false` | Whether to return the nearest point (instead of anchor) when no intersection is found |
+| `precision` | `number` | `2` | Intersection precision for Path elements |
 
-### bbox 参数
+### bbox Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number \| { x, y }` | `0` | 偏移距离 |
-| `stroked` | `boolean` | `false` | 是否将 strokeWidth 纳入计算 |
+| `offset` | `number \| { x, y }` | `0` | Offset distance |
+| `stroked` | `boolean` | `false` | Whether to include strokeWidth in the calculation |
 
-### rect 参数
+### rect Parameters
 
-与 bbox 相同，但会考虑节点旋转角度。
+Same as bbox, but takes into account the node rotation angle.
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number \| { x, y }` | `0` | 偏移距离 |
-| `stroked` | `boolean` | `false` | 是否将 strokeWidth 纳入计算 |
+| `offset` | `number \| { x, y }` | `0` | Offset distance |
+| `stroked` | `boolean` | `false` | Whether to include strokeWidth in the calculation |
 
-### anchor 参数
+### anchor Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number \| { x, y }` | `0` | 偏移距离 |
-| `align` | `'top' \| 'right' \| 'bottom' \| 'left'` | 无 | 对齐方向 |
-| `alignOffset` | `number` | `0` | 对齐偏移量 |
+| `offset` | `number \| { x, y }` | `0` | Offset distance |
+| `align` | `'top' \| 'right' \| 'bottom' \| 'left'` | None | Alignment direction |
+| `alignOffset` | `number` | `0` | Alignment offset |
 
-## 完整示例
+## Complete Example
 
-### boundary：精确形状交点
+### boundary: Precise Shape Intersection
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -136,14 +136,14 @@ const graph = new Graph({
   },
 });
 
-// 圆形节点 - boundary 会精确计算圆弧交点
+// Circular Node - boundary precisely calculates the arc intersection
 const circleNode = graph.addNode({
   shape: 'circle',
   x: 100,
   y: 100,
   width: 80,
   height: 80,
-  label: '开始',
+  label: 'Start',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f' } },
 });
 
@@ -153,7 +153,7 @@ const rectNode = graph.addNode({
   y: 100,
   width: 120,
   height: 60,
-  label: '处理',
+  label: 'Process',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
@@ -164,7 +164,7 @@ graph.addEdge({
 });
 ```
 
-### sticky 模式：确保始终有连接点
+### Sticky Mode: Ensure There is Always a Connection Point
 
 ```javascript
 graph.addEdge({
@@ -172,28 +172,28 @@ graph.addEdge({
     cell: node1,
     connectionPoint: {
       name: 'boundary',
-      args: { sticky: true },  // 无交点时返回最近点
+      args: { sticky: true },  // Returns the nearest point when there is no intersection
     },
   },
   target: node2,
 });
 ```
 
-### anchor 类型：连线穿入节点
+### Anchor Type: Edge Penetrating Node
 
 ```javascript
-// 连线直接连接到 anchor 位置，不停留在边界
+// The edge directly connects to the anchor position, without stopping at the boundary
 graph.addEdge({
   source: {
     cell: node1,
     anchor: 'center',
-    connectionPoint: 'anchor',  // 连线到达节点中心
+    connectionPoint: 'anchor',  // Edge reaches the center of the node
   },
   target: node2,
 });
 ```
 
-### 带偏移的连接点
+### Connection Point with Offset
 
 ```javascript
 graph.addEdge({
@@ -201,55 +201,55 @@ graph.addEdge({
     cell: node1,
     connectionPoint: {
       name: 'boundary',
-      args: { offset: 10 },  // 连接点从边界外移 10px
+      args: { offset: 10 },  // Connection point offset 10px from the boundary
     },
   },
   target: node2,
 });
 ```
 
-## connectionPoint 与 anchor 的配合关系
+## The Coordination Between connectionPoint and anchor
 
 ```
-场景：node1 → node2
+Scenario: node1 → node2
 
-1. 确定 node2 的 anchor 位置（如 center = 节点中心）
-2. 从 node1 方向画一条射线指向 node2 的 anchor
-3. connectionPoint 计算射线与 node2 边界的交点
-4. 该交点就是连线终止端的实际位置
+1. Determine the anchor position of node2 (e.g., center = node center)
+2. Draw a ray from node1 pointing to the anchor of node2
+3. Calculate the intersection point of the ray with the boundary of node2 using connectionPoint
+4. This intersection point is the actual end position of the connection line
 ```
 
-| 组合 | 效果 |
+| Combination | Effect |
 |------|------|
-| `anchor: 'center'` + `connectionPoint: 'boundary'` | 连线到达节点形状边界（最常用） |
-| `anchor: 'center'` + `connectionPoint: 'anchor'` | 连线穿入节点到达中心 |
-| `anchor: 'left'` + `connectionPoint: 'boundary'` | 从左侧方向计算边界交点 |
-| `anchor: 'midSide'` + `connectionPoint: 'boundary'` | 自动选择最近侧的边界交点 |
+| `anchor: 'center'` + `connectionPoint: 'boundary'` | Connection line reaches the boundary of the node shape (most commonly used) |
+| `anchor: 'center'` + `connectionPoint: 'anchor'` | Connection line penetrates the node to reach the center |
+| `anchor: 'left'` + `connectionPoint: 'boundary'` | Calculate the boundary intersection point from the left direction |
+| `anchor: 'midSide'` + `connectionPoint: 'boundary'` | Automatically select the nearest boundary intersection point |
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆 connectionPoint 与 anchor
+### ❌ Confusing `connectionPoint` with `anchor`
 
 ```javascript
-// 错误：想让连线连到节点边界却用了 anchor
+// Incorrect: Using `anchor` to connect to the node boundary
 graph.addEdge({
-  source: { cell: node1, anchor: 'boundary' }, // ❌ 'boundary' 不是 anchor 类型
+  source: { cell: node1, anchor: 'boundary' }, // ❌ 'boundary' is not an anchor type
   target: node2,
 });
 
-// 正确：boundary 是 connectionPoint 类型
+// Correct: `boundary` is a `connectionPoint` type
 graph.addEdge({
   source: { cell: node1, connectionPoint: 'boundary' },
   target: node2,
 });
 ```
 
-### ❌ 圆形节点使用 bbox 导致交点不精确
+### ❌ Circular Nodes Using bbox Result in Imprecise Intersection Points
 
 ```javascript
-// 不推荐：对圆形节点 bbox 会计算矩形边界交点
-connectionPoint: 'bbox'  // 圆形节点会有间隙
+// Not Recommended: bbox for circular nodes calculates rectangular boundary intersection points
+connectionPoint: 'bbox'  // Circular nodes will have gaps
 
-// 推荐：使用 boundary 精确计算圆弧交点
+// Recommended: Use boundary to precisely calculate arc intersection points
 connectionPoint: 'boundary'
 ```

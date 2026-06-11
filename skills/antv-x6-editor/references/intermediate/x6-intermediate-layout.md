@@ -1,30 +1,27 @@
 ---
 id: "x6-intermediate-layout"
-title: "X6 布局（Layout）"
+title: "X6 Layout"
 description: |
-  X6 配合 @antv/layout 和 @antv/hierarchy 实现图布局的完整指南。
-  包含 Dagre（有向图）、Grid（网格）、Circle（环形）、Force（力导向）、树形布局、思维导图布局。
+  A comprehensive guide to graph layout in X6 using @antv/layout and @antv/hierarchy.
+  Includes Dagre (Directed Graph), Grid, Circle, Force-Directed, Tree, and Mind Map layouts.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "layout"
 tags:
-  - "布局"
   - "layout"
   - "dagre"
   - "grid"
   - "circle"
   - "force"
-  - "树形"
   - "tree"
   - "mindmap"
-  - "思维导图"
   - "hierarchy"
   - "@antv/layout"
   - "@antv/hierarchy"
   - "rankdir"
-  - "自动排列"
+  - "auto-arrange"
 
 related:
   - "x6-core-graph-init"
@@ -33,46 +30,47 @@ related:
   - "x6-pattern-dag"
 
 use_cases:
-  - "对 DAG 节点进行自动层次布局"
-  - "将节点排列为网格"
-  - "将节点排列为环形"
-  - "使用力导向算法自动布局"
-  - "树形层次结构自动布局"
-  - "思维导图布局"
+  - "Automatic hierarchical layout for DAG nodes"
+  - "Arrange nodes in a grid"
+  - "Arrange nodes in a circular pattern"
+  - "Automatic layout using force-directed algorithm"
+  - "Automatic tree hierarchy layout"
+  - "Mind map layout"
 
 anti_patterns:
-  - "布局算法不会自动添加节点到画布，需要手动调用 graph.fromJSON()"
-  - "不要混淆 @antv/layout 和 X6 内置的 port-layout"
+  - "Layout algorithms do not automatically add nodes to the canvas; manually call graph.fromJSON()"
+  - "Do not confuse @antv/layout with X6's built-in port-layout"
 ---
 
-# X6 布局（Layout）
+# X6 Layout
 
-X6 本身不内置图布局算法，而是通过 `@antv/layout`（通用布局）和 `@antv/hierarchy`（树形布局）计算节点位置，再用 `graph.fromJSON()` 渲染。
+X6 itself does not have built-in graph layout algorithms. Instead, it calculates node positions using `@antv/layout` (general layout) and `@antv/hierarchy` (hierarchical layout), and then renders the graph using `graph.fromJSON()`.
 
-## 安装依赖
+## Install Dependencies
 
 ```bash
-# 通用布局（dagre、grid、circle、force 等）
+
+# General Layouts (dagre, grid, circle, force, etc.)
 npm install @antv/layout dagre
 
-# 树形布局（思维导图、紧凑树等）
+# Tree Layout (Mind Map, Compact Tree, etc.)
 npm install @antv/hierarchy
 ```
 
-## Dagre 布局（有向图/DAG）
+## Dagre Layout (Directed Graph/DAG)
 
-最常用的层次布局，适合流程图、DAG 数据管道。
+The most commonly used hierarchical layout, suitable for flowcharts, DAG data pipelines.
 
 ```javascript
 import { Graph } from '@antv/x6';
 import { DagreLayout } from '@antv/layout';
 
-// 准备数据
+// Prepare data
 const data = {
   nodes: [
-    { id: '1', shape: 'rect', width: 100, height: 40, label: '开始', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
-    { id: '2', shape: 'rect', width: 100, height: 40, label: '处理', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
-    { id: '3', shape: 'rect', width: 100, height: 40, label: '结束', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
+    { id: '1', shape: 'rect', width: 100, height: 40, label: 'Start', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
+    { id: '2', shape: 'rect', width: 100, height: 40, label: 'Process', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
+    { id: '3', shape: 'rect', width: 100, height: 40, label: 'End', attrs: { body: { fill: '#fff', stroke: '#8f8f8f', strokeWidth: 1, rx: 6, ry: 6 } } },
   ],
   edges: [
     { source: '1', target: '2', attrs: { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } } },
@@ -80,18 +78,18 @@ const data = {
   ],
 };
 
-// 执行布局计算
+// Execute layout calculation
 const dagreLayout = new DagreLayout({
   type: 'dagre',
-  rankdir: 'TB',    // 布局方向：TB(上到下) | BT | LR(左到右) | RL
-  align: 'UL',     // 对齐方式：UL | UR | DL | DR
-  ranksep: 50,     // 层间距
-  nodesep: 30,     // 同层节点间距
+  rankdir: 'TB',    // Layout direction: TB (top to bottom) | BT | LR (left to right) | RL
+  align: 'UL',     // Alignment: UL | UR | DL | DR
+  ranksep: 50,     // Layer spacing
+  nodesep: 30,     // Node spacing within the same layer
 });
 
 const model = dagreLayout.layout(data);
 
-// 渲染到画布
+// Render to canvas
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -103,19 +101,19 @@ graph.fromJSON(model);
 graph.centerContent();
 ```
 
-### Dagre 配置项
+### Dagre Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `rankdir` | string | `'TB'` | 布局方向：`'TB'`/`'BT'`/`'LR'`/`'RL'` |
-| `align` | string | `'UL'` | 节点对齐：`'UL'`/`'UR'`/`'DL'`/`'DR'` |
-| `nodesep` | number | 50 | 同层节点间距 |
-| `ranksep` | number | 50 | 层间距 |
-| `controlPoints` | boolean | false | 是否保留边的控制点 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `rankdir` | string | `'TB'` | Layout direction: `'TB'`/`'BT'`/`'LR'`/`'RL'` |
+| `align` | string | `'UL'` | Node alignment: `'UL'`/`'UR'`/`'DL'`/`'DR'` |
+| `nodesep` | number | 50 | Spacing between nodes in the same rank |
+| `ranksep` | number | 50 | Spacing between ranks |
+| `controlPoints` | boolean | false | Whether to retain control points for edges |
 
-## Grid 布局（网格）
+## Grid Layout
 
-将节点排列为网格。
+Arrange nodes in a grid.
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -147,9 +145,9 @@ const graph = new Graph({ container: 'container' });
 graph.fromJSON(model);
 ```
 
-## Circle 布局（环形）
+## Circular Layout
 
-将节点排列为环形。
+Arranges nodes in a circular pattern.
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -168,9 +166,9 @@ const graph = new Graph({ container: 'container' });
 graph.fromJSON(model);
 ```
 
-## Force 布局（力导向）
+## Force Layout (Force-Directed)
 
-基于物理模拟的力导向布局。
+Force-directed layout based on physical simulation.
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -191,42 +189,42 @@ const graph = new Graph({ container: 'container' });
 graph.fromJSON(model);
 ```
 
-## 树形布局（@antv/hierarchy）
+## Tree Layout (@antv/hierarchy)
 
-适合层次结构数据，如组织架构图、思维导图。
+Suitable for hierarchical data, such as organizational charts and mind maps.
 
-### 思维导图布局
+### Mind Map Layout
 
 ```javascript
 import { Graph } from '@antv/x6';
 import Hierarchy from '@antv/hierarchy';
 
-// 树形数据结构
+// Tree data structure
 const treeData = {
   id: 'root',
-  label: '中心主题',
+  label: 'Central Theme',
   children: [
     {
       id: 'c1',
-      label: '分支 1',
+      label: 'Branch 1',
       children: [
-        { id: 'c1-1', label: '子主题 1-1' },
-        { id: 'c1-2', label: '子主题 1-2' },
+        { id: 'c1-1', label: 'Subtopic 1-1' },
+        { id: 'c1-2', label: 'Subtopic 1-2' },
       ],
     },
     {
       id: 'c2',
-      label: '分支 2',
+      label: 'Branch 2',
       children: [
-        { id: 'c2-1', label: '子主题 2-1' },
+        { id: 'c2-1', label: 'Subtopic 2-1' },
       ],
     },
   ],
 };
 
-// 计算布局
+// Calculate layout
 const result = Hierarchy.mindmap(treeData, {
-  direction: 'H',      // H（水平）| V（垂直）
+  direction: 'H',      // H (Horizontal) | V (Vertical)
   getHeight() { return 30; },
   getWidth() { return 100; },
   getHGap() { return 60; },
@@ -234,13 +232,13 @@ const result = Hierarchy.mindmap(treeData, {
   getSide() { return 'right'; },
 });
 
-// 遍历布局结果，转为 X6 数据格式
+// Traverse layout result and convert to X6 data format
 const model = { nodes: [], edges: [] };
 
 function traverse(node) {
   model.nodes.push({
     id: node.id,
-    x: node.x + 400,  // 偏移到画布中心
+    x: node.x + 400,  // Offset to canvas center
     y: node.y + 300,
     shape: 'rect',
     width: 100,
@@ -274,7 +272,7 @@ graph.fromJSON(model);
 graph.centerContent();
 ```
 
-### 紧凑树布局
+### Compact Tree Layout
 
 ```javascript
 import Hierarchy from '@antv/hierarchy';
@@ -288,19 +286,19 @@ const result = Hierarchy.compactBox(treeData, {
 });
 ```
 
-## @antv/hierarchy 布局算法列表
+## @antv/hierarchy Layout Algorithm List
 
-| 算法 | 方法 | 适用场景 |
+| Algorithm | Method | Applicable Scenarios |
 |------|------|----------|
-| 紧凑树 | `Hierarchy.compactBox(data, options)` | 组织架构图、文件树 |
-| 思维导图 | `Hierarchy.mindmap(data, options)` | 思维导图 |
-| 缩进树 | `Hierarchy.indented(data, options)` | 目录结构 |
-| 树形 | `Hierarchy.dendrogram(data, options)` | 系统发育树 |
+| Compact Tree | `Hierarchy.compactBox(data, options)` | Organizational Chart, File Tree |
+| Mind Map | `Hierarchy.mindmap(data, options)` | Mind Map |
+| Indented Tree | `Hierarchy.indented(data, options)` | Directory Structure |
+| Dendrogram | `Hierarchy.dendrogram(data, options)` | Phylogenetic Tree |
 
-## 动态布局（数据变更后重新布局）
+## Dynamic Layout (Re-layout After Data Changes)
 
 ```javascript
-// 添加新节点后重新布局
+// Re-layout after adding new nodes
 function relayout() {
   const currentData = graph.toJSON();
   const newModel = dagreLayout.layout(currentData);
@@ -309,26 +307,28 @@ function relayout() {
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 布局后直接使用 data 而不调用 fromJSON
+### ❌ Using data directly after layout without calling fromJSON
 
 ```javascript
-// 错误：布局只计算位置，不会自动渲染
+// Error: Layout only calculates positions and does not automatically render
 const model = dagreLayout.layout(data);
-// 画布上什么都没有
+// Nothing is displayed on the canvas
 
-// 正确：需要手动渲染
+// Correct: Manual rendering is required
 const model = dagreLayout.layout(data);
 graph.fromJSON(model);
 ```
 
-### ❌ 未安装 dagre 依赖导致 DagreLayout 报错
+### ❌ DagreLayout Error Due to Missing dagre Dependency
 
 ```bash
-# 错误：@antv/layout 的 DagreLayout 依赖 dagre 包
+
+# Error: DagreLayout in @antv/layout depends on the dagre package
+
 # Error: Cannot find module 'dagre'
 
-# 正确：需要同时安装
+# Correct: Need to install both
 npm install @antv/layout dagre
 ```

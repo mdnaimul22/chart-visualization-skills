@@ -1,10 +1,10 @@
 ---
 id: "x6-core-defs"
-title: "X6 defs（渐变 / 标记 / 滤镜定义）"
+title: "X6 defs (Gradient / Marker / Filter Definitions)"
 description: |
-  X6 通过 graph.defineGradient / graph.defineMarker / graph.defineFilter 三个方法，
-  把渐变、箭头标记、SVG 滤镜注册到画布的 <defs> 内并返回引用 id。
-  本文档基于 src/graph/defs.ts 与 src/registry/{marker,filter}/* 的真实实现整理。
+  X6 provides three methods: `graph.defineGradient`, `graph.defineMarker`, and `graph.defineFilter`,
+  to register gradients, arrow markers, and SVG filters into the canvas's `<defs>` and return the reference id.
+  This document is based on the actual implementation in `src/graph/defs.ts` and `src/registry/{marker,filter}/*`.
 
 library: "x6"
 version: "3.x"
@@ -32,54 +32,54 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "给节点 / 边设置渐变填充"
-  - "为自定义箭头标记复用渐变填充"
-  - "给节点添加阴影 / 高亮 / 模糊滤镜"
-  - "在自定义 attr 中拿到 <defs> 资源的 id"
-  - "动态新增 / 移除全局 SVG 资源"
+  - "Set gradient fill for nodes / edges"
+  - "Reuse gradient fill for custom arrow markers"
+  - "Add shadow / highlight / blur filters to nodes"
+  - "Retrieve <defs> resource ids in custom attr"
+  - "Dynamically add / remove global SVG resources"
 
 anti_patterns:
-  - "直接操作 graph.svg / graph.defs / document.createElementNS 手动创建 <defs> 子节点"
-  - "把渐变对象当成字符串 fill"
-  - "传给 defineMarker 的对象忘了 tagName"
-  - "filter 名字写错（如 dropShadow vs drop-shadow），X6 内置 11 个名字必须严格匹配"
+  - "Manually create <defs> child nodes using `graph.svg` / `graph.defs` / `document.createElementNS`"
+  - "Use gradient objects as string fill"
+  - "Forget `tagName` in the object passed to `defineMarker`"
+  - "Misspell filter names (e.g., `dropShadow` vs `drop-shadow`), X6 has 11 built-in names that must match exactly"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 为什么需要 defs
+## Why defs is Needed
 
-SVG 的 `<defs>` 元素用于声明可被引用的"模板资源"（渐变、滤镜、marker），通过 `url(#id)` 在 `fill / stroke / marker-end / filter` 等属性上使用。
+The SVG `<defs>` element is used to declare reusable "template resources" (gradients, filters, markers), which can be referenced via `url(#id)` in attributes like `fill / stroke / marker-end / filter`.
 
-X6 把全部 `<defs>` 操作封装在 `DefsManager`（`src/graph/defs.ts`）里，对外暴露三个 Graph 方法：
+X6 encapsulates all `<defs>` operations in `DefsManager` (`src/graph/defs.ts`), exposing three Graph methods:
 
-| 方法 | 返回 | 内部行为 |
+| Method | Returns | Internal Behavior |
 |------|------|----------|
-| `graph.defineGradient(options)` | `string`（id） | 在 `<defs>` 中创建 `<linearGradient>` / `<radialGradient>` |
-| `graph.defineMarker(options)` | `string`（id） | 在 `<defs>` 中创建 `<marker>` |
-| `graph.defineFilter(options)` | `string`（id） | 在 `<defs>` 中创建 `<filter>` |
+| `graph.defineGradient(options)` | `string` (id) | Creates `<linearGradient>` / `<radialGradient>` in `<defs>` |
+| `graph.defineMarker(options)` | `string` (id) | Creates `<marker>` in `<defs>` |
+| `graph.defineFilter(options)` | `string` (id) | Creates `<filter>` in `<defs>` |
 
-所有方法都是**幂等**的：内部用 `StringExt.hashcode(JSON.stringify(options))` 拼 id，相同 options 重复调用只会创建一次。
+All methods are **idempotent**: internally, `StringExt.hashcode(JSON.stringify(options))` is used to generate the id, ensuring that identical options result in a single creation.
 
-> ⚠️ **禁止**直接读写 `graph.defs` / `graph.svgDoc` 等内部字段；X6 3.x 没有这两个公开属性，强行访问会抛 `Cannot read properties of undefined`。
+> ⚠️ **Do not** directly read or write internal fields like `graph.defs` / `graph.svgDoc`; X6 3.x does not expose these properties, and attempting to access them will throw `Cannot read properties of undefined`.
 
 ## `graph.defineGradient`
 
-### 类型定义（核对自 `src/graph/defs.ts`）
+### Type Definitions (Checked from `src/graph/defs.ts`)
 
 ```typescript
 interface GradientOptions {
   id?: string
   type: string                              // 'linearGradient' | 'radialGradient'
   stops: { offset: number; color: string; opacity?: number }[]
-  attrs?: SimpleAttrs                       // 给 <linearGradient> 标签本身的额外属性
+  attrs?: SimpleAttrs                       // Additional attributes for the <linearGradient> tag itself
 }
 ```
 
-### 大多数场景不用手动调用——直接在 attrs.fill / attrs.stroke 写渐变对象
+### Most scenarios do not require manual invocation—directly write the gradient object in `attrs.fill` / `attrs.stroke`
 
-X6 内置 `fill` attr 注册器（见 `core/x6-core-attr-registry.md`）会判断 fill 值为对象时自动调用 `defineGradient`：
+X6's built-in `fill` attr registrar (see `core/x6-core-attr-registry.md`) automatically calls `defineGradient` when the fill value is an object:
 
 ```javascript
 attrs: {
@@ -95,11 +95,11 @@ attrs: {
 }
 ```
 
-> `offset` 既可以传 `0~1` 的数字，也可以传 `'0%' ~ '100%'` 的字符串，源码会原样拼到 `stop-offset`。
+> `offset` can be either a number between `0` and `1` or a string from `'0%'` to `'100%'`. The source code will directly append it to `stop-offset`.
 
-### 需要显式调用 defineGradient 的场景
+### Scenarios Requiring Explicit Calls to `defineGradient`
 
-当渐变需要被**自定义 marker 或自定义 attr 引用**时，必须先拿到 id，再写到 marker 的 `fill: 'url(#xxx)'` 上：
+When a gradient needs to be **referenced by a custom marker or custom attr**, you must first obtain its `id` and then apply it to the marker's `fill: 'url(#xxx)'`:
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -125,7 +125,7 @@ graph.addEdge({
       stroke: '#ff4d4f',
       strokeWidth: 2,
       targetMarker: {
-        // 自定义 marker，filling 用前面的渐变 id
+        // Custom marker, using the previously defined gradient id for filling
         tagName: 'path',
         d: 'M 12 -6 0 0 12 6 z',
         fill: `url(#${gradientId})`,
@@ -139,35 +139,35 @@ graph.centerContent();
 
 ## `graph.defineMarker`
 
-### 类型定义（核对自 `src/registry/marker/index.ts`）
+### Type Definition (Checked from `src/registry/marker/index.ts`)
 
 ```typescript
 interface MarkerResult extends SimpleAttrs {
   id?: string
-  tagName?: string                              // 默认 'path'
+  tagName?: string                              // Default 'path'
   refX?: number
   refY?: number
-  markerUnits?: 'userSpaceOnUse' | 'strokeWidth'  // 默认 'userSpaceOnUse'
-  markerOrient?: 'auto' | 'auto-start-reverse' | number  // 默认 'auto'
+  markerUnits?: 'userSpaceOnUse' | 'strokeWidth'  // Default 'userSpaceOnUse'
+  markerOrient?: 'auto' | 'auto-start-reverse' | number  // Default 'auto'
   children?: { tagName: string; [attr: string]: any }[]
-  // 其他字段会作为 marker 内部 path 的 attrs（fill / stroke / d / size 等）
+  // Other fields will be used as attrs for the internal path of the marker (fill / stroke / d / size, etc.)
 }
 ```
 
-### 大多数场景：直接在 edge 的 `targetMarker` / `sourceMarker` 中用内置名字
+### Most Scenarios: Directly Use Built-in Names in `targetMarker` / `sourceMarker` of Edge
 
-X6 内置 7 类 marker（`src/registry/marker/`）：
+X6 provides 7 built-in marker types (`src/registry/marker/`):
 
-| name | 形状 | 关键参数 |
+| name | Shape | Key Parameters |
 |------|------|----------|
-| `'classic'` | 经典三角箭头（默认） | `size`, `width`, `height`, `offset`, `factor` |
-| `'block'` | 实心三角块 | `size`, `width`, `height`, `offset`, `open` |
-| `'diamond'` | 菱形 | `size`, `width`, `height`, `offset` |
-| `'cross'` | 十字 | `size`, `width`, `height`, `offset` |
-| `'circle'` | 圆点 | `r`, `size`, `offset` |
-| `'ellipse'` | 椭圆 | `rx`, `ry`, `offset` |
-| `'async'` | 异步双箭头 | `size`, `width`, `height`, `offset` |
-| `'path'` | 自定义 path | `d`, `offset`, `attrs` |
+| `'classic'` | Classic Triangle Arrow (Default) | `size`, `width`, `height`, `offset`, `factor` |
+| `'block'` | Solid Triangle Block | `size`, `width`, `height`, `offset`, `open` |
+| `'diamond'` | Diamond | `size`, `width`, `height`, `offset` |
+| `'cross'` | Cross | `size`, `width`, `height`, `offset` |
+| `'circle'` | Circle | `r`, `size`, `offset` |
+| `'ellipse'` | Ellipse | `rx`, `ry`, `offset` |
+| `'async'` | Asynchronous Double Arrow | `size`, `width`, `height`, `offset` |
+| `'path'` | Custom Path | `d`, `offset`, `attrs` |
 
 ```javascript
 graph.addEdge({
@@ -175,14 +175,14 @@ graph.addEdge({
   attrs: {
     line: {
       stroke: '#333',
-      targetMarker: 'classic',                              // 字符串简写
-      sourceMarker: { name: 'circle', args: { r: 4 } },     // 对象 + args
+      targetMarker: 'classic',                              // String shorthand
+      sourceMarker: { name: 'circle', args: { r: 4 } },     // Object + args
     },
   },
 });
 ```
 
-### 需要 defineMarker 的场景：完全自定义 marker（带 filter / children / 渐变）
+### Scenarios Requiring `defineMarker`: Fully Customized Marker (with Filter / Children / Gradient)
 
 ```javascript
 const arrowId = graph.defineMarker({
@@ -200,13 +200,13 @@ graph.addEdge({
   attrs: {
     line: {
       stroke: '#1890ff',
-      'marker-end': `url(#${arrowId})`,    // 直接用 SVG marker-end 引用
+      'marker-end': `url(#${arrowId})`,    // Directly reference SVG marker-end
     },
   },
 });
 ```
 
-带 children（适用于复合 marker，例如带边框的圆形终止符）：
+With Children (suitable for composite markers, e.g., a bordered circular terminator):
 
 ```javascript
 graph.defineMarker({
@@ -221,47 +221,47 @@ graph.defineMarker({
 });
 ```
 
-> 源码 `defs.ts:127` 显示：若 `tagName !== 'path'`，会自动删除 `d` 属性，避免从 standard edge 继承的污染。
+> The source code `defs.ts:127` indicates: If `tagName !== 'path'`, the `d` attribute will be automatically removed to avoid contamination inherited from the standard edge.
 
 ## `graph.defineFilter`
 
-### 类型定义（核对自 `src/registry/filter/index.ts`）
+### Type Definitions (Checked from `src/registry/filter/index.ts`)
 
 ```typescript
 type FilterOptions = (FilterNativeItem | FilterManualItem) & {
   id?: string
-  attrs?: SimpleAttrs        // <filter> 标签本身的属性，默认 { x:-1, y:-1, width:3, height:3, filterUnits:'objectBoundingBox' }
+  attrs?: SimpleAttrs        // Attributes of the <filter> tag itself, default { x:-1, y:-1, width:3, height:3, filterUnits:'objectBoundingBox' }
 }
 
 interface FilterNativeItem {
   name: 'outline' | 'highlight' | 'blur' | 'dropShadow'
       | 'grayScale' | 'sepia' | 'saturate' | 'hueRotate'
       | 'invert'   | 'brightness' | 'contrast'
-  args?: { /* 不同 name 对应不同 args，见下表 */ }
+  args?: { /* Different args correspond to different names, see the table below */ }
 }
 ```
 
-### X6 内置 11 个 filter（核对自 `src/registry/filter/main.ts`）
+### X6 Built-in 11 Filters (Verified from `src/registry/filter/main.ts`)
 
-| name | args 示例 | 效果 |
+| name | args Example | Effect |
 |------|-----------|------|
-| `'outline'`     | `{ color, width, margin, opacity }` | 描边 |
-| `'highlight'`   | `{ color, width, blur, opacity }`   | 高亮发光 |
-| `'blur'`        | `{ x, y }`                           | 模糊 |
-| `'dropShadow'`  | `{ dx, dy, color, blur, opacity }`   | 投影 |
-| `'grayScale'`   | `{ amount }`                         | 灰度 |
-| `'sepia'`       | `{ amount }`                         | 怀旧 |
-| `'saturate'`    | `{ amount }`                         | 饱和度 |
-| `'hueRotate'`   | `{ angle }`                          | 色相旋转 |
-| `'invert'`      | `{ amount }`                         | 反色 |
-| `'brightness'`  | `{ amount }`                         | 亮度 |
-| `'contrast'`    | `{ amount }`                         | 对比度 |
+| `'outline'`     | `{ color, width, margin, opacity }` | Outline |
+| `'highlight'`   | `{ color, width, blur, opacity }`   | Glow Highlight |
+| `'blur'`        | `{ x, y }`                           | Blur |
+| `'dropShadow'`  | `{ dx, dy, color, blur, opacity }`   | Drop Shadow |
+| `'grayScale'`   | `{ amount }`                         | Grayscale |
+| `'sepia'`       | `{ amount }`                         | Sepia |
+| `'saturate'`    | `{ amount }`                         | Saturation |
+| `'hueRotate'`   | `{ angle }`                          | Hue Rotation |
+| `'invert'`      | `{ amount }`                         | Invert |
+| `'brightness'`  | `{ amount }`                         | Brightness |
+| `'contrast'`    | `{ amount }`                         | Contrast |
 
-> 严格大小写：`dropShadow` 不是 `drop-shadow`、`grayScale` 不是 `grayscale`。
+> Case-sensitive: `dropShadow` is not `drop-shadow`, `grayScale` is not `grayscale`.
 
-### 通过 attrs.filter 直接使用（推荐）
+### Use Directly via attrs.filter (Recommended)
 
-X6 在 `attrs` 中识别 `filter` 字段，传对象会自动调用 `defineFilter`：
+X6 recognizes the `filter` field in `attrs`, and passing an object will automatically call `defineFilter`:
 
 ```javascript
 graph.addNode({
@@ -280,7 +280,7 @@ graph.addNode({
 });
 ```
 
-### 显式调用 defineFilter（需要在多处共享或自定义 filter 时）
+### Explicitly Call defineFilter (Required When Sharing or Customizing Filters in Multiple Places)
 
 ```javascript
 const shadowId = graph.defineFilter({
@@ -288,7 +288,7 @@ const shadowId = graph.defineFilter({
   args: { dx: 0, dy: 4, blur: 8, color: '#1890ff', opacity: 0.4 },
 });
 
-// 多个节点共享同一个滤镜引用
+// Multiple nodes share the same filter reference
 ['n1', 'n2', 'n3'].forEach((id, i) => {
   graph.addNode({
     id, shape: 'rect',
@@ -298,27 +298,27 @@ const shadowId = graph.defineFilter({
 });
 ```
 
-### 自定义 filter 标签（`FilterManualItem`）
+### Custom Filter Tag (`FilterManualItem`)
 
-如果内置 11 项不够，可以传一个不在 native 列表里的 `name`，然后通过 `Registry` 自行扩展 filter 工厂函数（高级用法，多数业务无需触及，详见 `core/x6-core-filter.md`）。
+If the built-in 11 items are insufficient, you can pass a `name` not in the native list and then extend the filter factory function yourself through `Registry` (advanced usage, most scenarios do not require this, see `core/x6-core-filter.md` for details).
 
-## 三个方法的共性
+## Commonalities of the Three Methods
 
-1. **返回值都是字符串 id**，需要拼成 `url(#id)` 使用
-2. **幂等**：相同 options 多次调用只创建一次 DOM（基于 `JSON.stringify` hash）
-3. **DefsManager.remove(id)** 可主动移除，但通常不需要
+1. **All return a string id**, which needs to be concatenated as `url(#id)` for use
+2. **Idempotent**: Repeated calls with the same options create only one DOM (based on `JSON.stringify` hash)
+3. **DefsManager.remove(id)** can be used to proactively remove, but is usually not necessary
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 直接操作 DOM 创建 defs
+### ❌ Directly Manipulating DOM to Create defs
 
 ```javascript
-// 错误：graph.defs / graph.svgDoc 都不是公开 API，会报 Cannot read properties of undefined
+// Error: graph.defs / graph.svgDoc are not public APIs, will throw Cannot read properties of undefined
 const defs = graph.defs;
 const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
 defs.appendChild(grad);
 
-// 正确：用 defineGradient
+// Correct: Use defineGradient
 const id = graph.defineGradient({
   type: 'linearGradient',
   stops: [{ offset: 0, color: '#f00' }, { offset: 1, color: '#0f0' }],
@@ -326,13 +326,13 @@ const id = graph.defineGradient({
 attrs.body.fill = `url(#${id})`;
 ```
 
-### ❌ 渐变直接传字符串
+### ❌ Gradient Directly Passed as String
 
 ```javascript
-// 错误：渐变对象不能被 fromJSON 解析为字符串
-attrs: { body: { fill: 'linear-gradient(#f00, #0f0)' } }   // ❌ 这是 CSS 语法
+// Error: Gradient object cannot be parsed as a string by fromJSON
+attrs: { body: { fill: 'linear-gradient(#f00, #0f0)' } }   // ❌ This is CSS syntax
 
-// 正确：传渐变对象
+// Correct: Pass gradient object
 attrs: {
   body: {
     fill: {
@@ -343,41 +343,41 @@ attrs: {
 }
 ```
 
-### ❌ defineMarker 漏写 tagName
+### ❌ defineMarker Missing tagName
 
 ```javascript
-// 错误：tagName 默认补 'path'，但 d 属性必须配合 path 一起给
-graph.defineMarker({ refX: 5, refY: 0 });  // 渲染为空
+// Error: tagName defaults to 'path', but the d attribute must be provided along with path
+graph.defineMarker({ refX: 5, refY: 0 });  // Renders as empty
 
-// 正确：path 类型
+// Correct: path type
 graph.defineMarker({ tagName: 'path', d: 'M0 0 L8 4 L0 8 z', fill: '#333' });
 
-// 或者：非 path 元素必须显式指定 tagName 并避免 d
+// Alternatively: Non-path elements must explicitly specify tagName and avoid d
 graph.defineMarker({ tagName: 'circle', r: 4, fill: '#333' });
 ```
 
-### ❌ filter 名字大小写错误
+### ❌ Incorrect Case for Filter Names
 
 ```javascript
-// 错误：内置名字严格匹配，写错会抛 Filter not found
+// Incorrect: Built-in names are case-sensitive, incorrect names will throw "Filter not found"
 filter: { name: 'drop-shadow', args: { dx: 2, dy: 2 } }   // ❌
 filter: { name: 'grayscale',  args: { amount: 1 } }       // ❌
 
-// 正确
+// Correct
 filter: { name: 'dropShadow', args: { dx: 2, dy: 2 } }    // ✅
 filter: { name: 'grayScale',  args: { amount: 1 } }       // ✅
 ```
 
-### ❌ 重复定义同样的渐变
+### ❌ Redundant Definition of the Same Gradient
 
 ```javascript
-// 错误：每次都拼 id，但 X6 内部已经去重，多此一举
+// Incorrect: Concatenating id every time, but X6 internally already de-duplicates, redundant effort
 for (const node of nodes) {
   const id = graph.defineGradient({ type: 'linearGradient', stops: [...] });
   // ...
 }
 
-// 正确：调用一次拿到 id 即可
+// Correct: Call once to get the id
 const gradientId = graph.defineGradient({ type: 'linearGradient', stops: [...] });
 nodes.forEach((n) => n.attr('body/fill', `url(#${gradientId})`));
 ```

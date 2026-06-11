@@ -1,37 +1,37 @@
 ---
 id: "x6-intermediate-custom-node"
-title: "X6 自定义节点"
+title: "X6 Custom Node"
 description: |
-  X6 自定义节点完整指南：Graph.registerNode 注册自定义 SVG 节点、Shape.HTML.register 注册 HTML 节点。
-  包含 markup/attrs 定制、继承内置节点、HTML 节点渲染与更新、effect 响应式。
+  Comprehensive guide to X6 custom nodes: Graph.registerNode for registering custom SVG nodes, Shape.HTML.register for registering HTML nodes.
+  Includes markup/attrs customization, inheriting built-in nodes, HTML node rendering and updating, and effect responsiveness.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "custom-node"
 tags:
-  - "自定义节点"
+  - "custom node"
   - "registerNode"
   - "Graph.registerNode"
   - "Shape.HTML.register"
-  - "HTML 节点"
+  - "HTML node"
   - "markup"
   - "attrs"
   - "inherit"
   - "foreignObject"
   - "shape"
   - "effect"
-  - "自定义形状"
+  - "custom shape"
   - "Shape.Group"
-  - "分组节点"
-  - "父子节点"
+  - "grouped node"
+  - "parent-child node"
   - "embed"
   - "addChild"
   - "box-sizing"
   - "font-size"
   - "Invalid left-hand side"
-  - "style 属性"
-  - "驼峰"
+  - "style property"
+  - "camelCase"
 
 related:
   - "x6-core-node"
@@ -39,26 +39,26 @@ related:
   - "x6-intermediate-tools"
 
 use_cases:
-  - "注册自定义 SVG 节点形状"
-  - "使用 HTML/DOM 渲染复杂节点内容"
-  - "继承内置节点并扩展"
-  - "实现数据驱动的响应式 HTML 节点"
-  - "复用自定义节点配置"
+  - "Register custom SVG node shapes"
+  - "Render complex node content using HTML/DOM"
+  - "Inherit and extend built-in nodes"
+  - "Implement data-driven responsive HTML nodes"
+  - "Reuse custom node configurations"
 
 anti_patterns:
-  - "不要在 HTML 节点中使用 position:absolute/relative/transform/opacity（可能导致渲染异常）"
-  - "不要忘记设置 effect 字段，否则 HTML 节点不会响应 data 变化"
-  - "不要使用 Shape.Group / Shape.Group.define / new Shape.Group，X6 3.x 的 Shape 命名空间没有 Group"
-  - "不要在 html() 回调里用 el.style.box-sizing / el.style.font-size 等连字符属性，必须用驼峰或方括号写法"
+  - "Do not use position:absolute/relative/transform/opacity in HTML nodes (may cause rendering issues)"
+  - "Do not forget to set the effect field, otherwise HTML nodes will not respond to data changes"
+  - "Do not use Shape.Group / Shape.Group.define / new Shape.Group, the Shape namespace in X6 3.x does not have Group"
+  - "Do not use hyphenated properties like el.style.box-sizing / el.style.font-size in html() callbacks, use camelCase or bracket notation instead"
 ---
 
-# X6 自定义节点
+# X6 Custom Nodes
 
-## 方式一：Graph.registerNode（SVG 节点）
+## Method 1: Graph.registerNode (SVG Node)
 
-通过 `markup`（结构）和 `attrs`（样式）定制节点外观，然后注册为自定义 shape。
+Customize the node appearance through `markup` (structure) and `attrs` (style), then register it as a custom shape.
 
-### 基本注册
+### Basic Registration
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -66,7 +66,7 @@ import { Graph } from '@antv/x6';
 Graph.registerNode(
   'custom-rect',
   {
-    inherit: 'rect',  // 继承内置 rect 节点
+    inherit: 'rect',  // Inherit from built-in rect node
     width: 120,
     height: 50,
     attrs: {
@@ -83,10 +83,10 @@ Graph.registerNode(
       },
     },
   },
-  true, // 覆盖同名注册
+  true, // Override registration with the same name
 );
 
-// 使用自定义节点
+// Use custom node
 const graph = new Graph({ container: 'container', width: 800, height: 600 });
 
 graph.addNode({
@@ -97,7 +97,7 @@ graph.addNode({
 });
 ```
 
-### 自定义 Markup（多元素节点）
+### Custom Markup (Multi-Element Node)
 
 ```javascript
 Graph.registerNode(
@@ -126,7 +126,7 @@ Graph.registerNode(
         r: 5,
         cx: 15,
         cy: 15,
-        fill: '#52c41a',  // 绿色=正常
+        fill: '#52c41a',  // Green=Normal
       },
       label: {
         refX: 30,
@@ -156,14 +156,14 @@ graph.addNode({
   x: 100,
   y: 100,
   attrs: {
-    label: { text: '数据处理' },
+    label: { text: 'Data Processing' },
     description: { text: 'ETL Pipeline' },
     statusIndicator: { fill: '#52c41a' },
   },
 });
 ```
 
-### 菱形判断节点（polygon）
+### Diamond Decision Node (polygon)
 
 ```javascript
 Graph.registerNode(
@@ -174,7 +174,7 @@ Graph.registerNode(
     height: 80,
     attrs: {
       body: {
-        refPoints: '0,10 10,0 20,10 10,20',  // 菱形顶点
+        refPoints: '0,10 10,0 20,10 10,20',  // Diamond vertices
         fill: '#fff',
         stroke: '#faad14',
         strokeWidth: 2,
@@ -193,11 +193,11 @@ Graph.registerNode(
 );
 ```
 
-## 方式二：Shape.HTML.register（HTML 节点）
+## Method Two: Shape.HTML.register (HTML Node)
 
-使用 HTML/DOM 渲染复杂节点内容（表格、图表、富文本等），基于 SVG `foreignObject` 实现。
+Use HTML/DOM to render complex node content (tables, charts, rich text, etc.), implemented based on SVG `foreignObject`.
 
-### 基本用法
+### Basic Usage
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -232,9 +232,9 @@ graph.addNode({
 });
 ```
 
-### 响应式 HTML 节点（data 驱动更新）
+### Responsive HTML Node (Data-Driven Updates)
 
-通过 `effect` 字段声明依赖的属性，当这些属性变化时自动重新调用 `html()` 方法更新 DOM。
+Declare dependencies through the `effect` field. When these properties change, the `html()` method is automatically re-invoked to update the DOM.
 
 ```javascript
 import { Graph, Shape, Dom } from '@antv/x6';
@@ -243,7 +243,7 @@ Shape.HTML.register({
   shape: 'data-card',
   width: 200,
   height: 100,
-  effect: ['data'],  // 监听 data 变化
+  effect: ['data'],  // Listen for data changes
   html(cell) {
     const { title, status, progress } = cell.getData() || {};
     const div = document.createElement('div');
@@ -274,14 +274,14 @@ const node = graph.addNode({
   shape: 'data-card',
   x: 100,
   y: 100,
-  data: { title: '数据清洗', status: 'running', progress: 0.6 },
+  data: { title: 'Data Cleaning', status: 'running', progress: 0.6 },
 });
 
-// 更新 data 后节点自动刷新
-node.setData({ title: '数据清洗', status: 'completed', progress: 1.0 });
+// Node automatically refreshes after updating data
+node.setData({ title: 'Data Cleaning', status: 'completed', progress: 1.0 });
 ```
 
-### ER 图表格式节点
+### ER Diagram Table Node
 
 ```javascript
 Shape.HTML.register({
@@ -326,9 +326,9 @@ graph.addNode({
 });
 ```
 
-## 配合连接桩（Ports）
+## Cooperate with Ports
 
-自定义节点可以搭配 ports 使用：
+Custom nodes can be used with ports:
 
 ```javascript
 graph.addNode({
@@ -355,29 +355,29 @@ graph.addNode({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ `Shape.Group` / `Shape.Group.define()` 不存在
+### ❌ `Shape.Group` / `Shape.Group.define()` Does Not Exist
 
-X6 3.x 的 `Shape` 命名空间**只导出**：`Circle / Edge / Ellipse / HTML / Image / Path / Polygon / Polyline / Rect / TextBlock`。**没有 `Group`**。下面写法运行时全部抛 `Cannot read properties of undefined (reading 'define')` / `Shape.Group is not a constructor`：
+The `Shape` namespace in X6 3.x **only exports**: `Circle / Edge / Ellipse / HTML / Image / Path / Polygon / Polyline / Rect / TextBlock`. **There is no `Group`**. The following code will throw `Cannot read properties of undefined (reading 'define')` / `Shape.Group is not a constructor` at runtime:
 
 ```javascript
 // ❌
 Shape.Group.define({ shape: 'dept-group', ... });
 new Shape.Group({ ... });
-import { Group } from '@antv/x6'; // ❌ 主包也没有 Group 导出
+import { Group } from '@antv/x6'; // ❌ The main package also does not export Group
 ```
 
-**父子分组 / 容器节点的正确做法（三选一）：**
+**Correct Approaches for Parent-Child Grouping / Container Nodes (Choose One):**
 
 ```javascript
-// 1) 直接用普通 rect 当父节点，通过 embed / addChild 建立父子关系
-const parent = graph.addNode({ shape: 'rect', x: 40, y: 40, width: 300, height: 200, label: '部门', attrs: { body: { fill: '#f5f5f5', stroke: '#999' } } });
-const child  = graph.addNode({ shape: 'rect', x: 80, y: 90, width: 100, height: 40, label: '员工A' });
-parent.addChild(child);            // 维护父子关系
-// 或：parent.embed(child)         // 嵌入（依赖 Graph 的 embedding 配置）
+// 1) Use a regular rect as the parent node and establish parent-child relationships via embed / addChild
+const parent = graph.addNode({ shape: 'rect', x: 40, y: 40, width: 300, height: 200, label: 'Department', attrs: { body: { fill: '#f5f5f5', stroke: '#999' } } });
+const child  = graph.addNode({ shape: 'rect', x: 80, y: 90, width: 100, height: 40, label: 'Employee A' });
+parent.addChild(child);            // Maintain parent-child relationship
+// Alternatively: parent.embed(child)         // Embed (depends on Graph's embedding configuration)
 
-// 2) 注册一个自定义分组形状再用
+// 2) Register a custom group shape and use it
 Graph.registerNode('dept-group', {
   inherit: 'rect',
   width: 300, height: 200,
@@ -386,23 +386,23 @@ Graph.registerNode('dept-group', {
     label: { refX: 8, refY: 8, textAnchor: 'start', textVerticalAnchor: 'top' },
   },
 });
-graph.addNode({ shape: 'dept-group', x: 40, y: 40, label: '部门' });
+graph.addNode({ shape: 'dept-group', x: 40, y: 40, label: 'Department' });
 
-// 3) 需要 Embedding 嵌入交互时，在 Graph 构造选项里开启（不是插件！）
+// 3) Enable embedding interaction in Graph constructor options (not a plugin!)
 const graph = new Graph({
   container: 'container',
   embedding: { enabled: true, findParent: 'bbox', frontOnly: false },
 });
 ```
 
-> 同样不存在的还有 `Shape.Cylinder` / `Shape.Diamond` / `Shape.Cloud` 等。需要异形节点时，要么用 `'polygon'` + 自定义 `points`，要么用 `Graph.registerNode` + 自定义 `markup`。
+> Similarly, `Shape.Cylinder` / `Shape.Diamond` / `Shape.Cloud`, etc., do not exist. For custom shapes, use either `'polygon'` with custom `points` or `Graph.registerNode` with custom `markup`.
 
-### ❌ HTML 节点 `el.style.box-sizing = '...'` 抛 Invalid left-hand side
+### ❌ HTML Node `el.style.box-sizing = '...'` Throws Invalid Left-Hand Side
 
-在 `Shape.HTML.register` 的 `html(node)` 回调或任何 DOM 操作里，**禁止**直接给 `style` 写连字符属性名——JS 会把 `style.box-sizing` 解析成 `style.box - sizing`（减法表达式）然后报 `Uncaught SyntaxError: Invalid left-hand side in assignment`，整段脚本拒绝执行：
+In the `html(node)` callback of `Shape.HTML.register` or any DOM operation, **do not** directly assign hyphenated property names to `style`—JS will parse `style.box-sizing` as `style.box - sizing` (a subtraction expression) and throw `Uncaught SyntaxError: Invalid left-hand side in assignment`, causing the entire script to fail:
 
 ```javascript
-// ❌ 全部会抛 Invalid left-hand side in assignment
+// ❌ All will throw Invalid left-hand side in assignment
 html() {
   const wrap = document.createElement('div');
   wrap.style.box-sizing      = 'border-box';
@@ -413,42 +413,42 @@ html() {
 }
 ```
 
-**正确写法（任选其一，推荐前两种）：**
+**Correct Approaches (Choose any, first two recommended):**
 
 ```javascript
-// 1) 驼峰
+// 1) Camel Case
 wrap.style.boxSizing       = 'border-box';
 wrap.style.fontSize        = '14px';
 wrap.style.backgroundColor = '#fff';
 wrap.style.borderRadius    = '8px';
 
-// 2) 方括号（保留连字符）
+// 2) Square Brackets (Preserve Hyphens)
 wrap.style['box-sizing']     = 'border-box';
 wrap.style['font-size']      = '14px';
 wrap.style['background-color']= '#fff';
 wrap.style['border-radius']  = '8px';
 
-// 3) cssText 一次性写
+// 3) cssText in One Go
 wrap.style.cssText = 'box-sizing:border-box;font-size:14px;background:#fff;border-radius:8px;';
 
-// 4) Object.assign 批量赋值
+// 4) Object.assign for Batch Assignment
 Object.assign(wrap.style, {
   boxSizing: 'border-box', fontSize: '14px',
   backgroundColor: '#fff', borderRadius: '8px',
 });
 ```
 
-### ❌ HTML 节点使用 position:absolute 导致渲染异常
+### ❌ Rendering Anomalies Caused by `position:absolute` in HTML Nodes
 
 ```javascript
-// 错误：foreignObject 内使用 absolute 定位可能导致显示不全
+// Error: Using absolute positioning within foreignObject may result in incomplete display
 html() {
   const div = document.createElement('div');
-  div.style.position = 'absolute';  // ❌ 可能导致渲染异常
+  div.style.position = 'absolute';  // ❌ May cause rendering anomalies
   return div;
 }
 
-// 正确：使用 flex 或 normal flow 布局
+// Correct: Use flex or normal flow layout
 html() {
   const div = document.createElement('div');
   div.style.display = 'flex';  // ✅
@@ -456,23 +456,23 @@ html() {
 }
 ```
 
-### ❌ 忘记设置 effect 导致节点不更新
+### ❌ Forgetting to Set `effect` Causes Node Not to Update
 
 ```javascript
-// 错误：修改 data 后节点不刷新
+// Error: Node does not refresh after modifying data
 Shape.HTML.register({
   shape: 'my-node',
   html(cell) {
     const { value } = cell.getData();
     // ...
   },
-  // 缺少 effect: ['data']
+  // Missing effect: ['data']
 });
 
-// 正确：声明 effect
+// Correct: Declare effect
 Shape.HTML.register({
   shape: 'my-node',
-  effect: ['data'],  // ✅ 监听 data 变化
+  effect: ['data'],  // ✅ Listen for data changes
   html(cell) {
     const { value } = cell.getData();
     // ...
@@ -480,13 +480,13 @@ Shape.HTML.register({
 });
 ```
 
-### ❌ registerNode 未设置第三个参数导致重复注册报错
+### ❌ registerNode Not Setting the Third Parameter Causes Duplicate Registration Error
 
 ```javascript
-// 错误：重复注册时报错
+// Error: Throws an error on duplicate registration
 Graph.registerNode('my-node', { ... });
 Graph.registerNode('my-node', { ... }); // Error: already registered
 
-// 正确：第三个参数传 true 允许覆盖
+// Correct: Pass true as the third parameter to allow override
 Graph.registerNode('my-node', { ... }, true);
 ```

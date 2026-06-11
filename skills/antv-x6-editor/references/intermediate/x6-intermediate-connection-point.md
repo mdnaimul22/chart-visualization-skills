@@ -1,18 +1,16 @@
 ---
 id: "x6-intermediate-connection-point"
-title: "X6 连接点与锚点"
+title: "X6 Connection Points and Anchors"
 description: |
-  X6 锚点（Anchor）和连接点（ConnectionPoint）完整指南。
-  包含内置锚点类型、连接点计算方式、全局配置与单边配置、自定义锚点和连接点。
+  Comprehensive guide to X6 Anchors and Connection Points.
+  Includes built-in anchor types, connection point calculation methods, global and per-side configurations, and custom anchors and connection points.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "connection-point"
 tags:
-  - "连接点"
   - "connectionPoint"
-  - "锚点"
   - "anchor"
   - "nodeAnchor"
   - "sourceAnchor"
@@ -34,30 +32,30 @@ related:
   - "x6-core-graph-init"
 
 use_cases:
-  - "控制边与节点的精确连接位置"
-  - "实现多条边连接到同一节点时的间隔分布"
-  - "设置边连接到节点的特定方向（上下左右）"
-  - "自定义连接点计算方式"
+  - "Control the precise connection position between edges and nodes"
+  - "Achieve evenly spaced connections when multiple edges connect to the same node"
+  - "Set specific connection directions (top, bottom, left, right) for edges connecting to nodes"
+  - "Customize connection point calculation methods"
 
 anti_patterns:
-  - "不要混淆 anchor（锚点）和 connectionPoint（连接点）的概念"
-  - "不要混淆 port 和 anchor——port 是连接桩，anchor 是锚点位置"
+  - "Do not confuse anchor and connectionPoint concepts"
+  - "Do not confuse port and anchor——port is a connection stub, anchor is an anchor position"
 ---
 
-# X6 连接点与锚点
+# X6 Connection Points and Anchors
 
-## 核心概念
+## Core Concepts
 
-- **锚点（Anchor）**：边在节点上的参考点位置（如中心、顶部、左侧等）
-- **连接点（ConnectionPoint）**：根据锚点和参考线计算得到的边的实际起点/终点
+- **Anchor**: The reference point position of an edge on a node (e.g., center, top, left, etc.)
+- **ConnectionPoint**: The actual start/end point of an edge calculated based on the anchor and reference line
 
-默认情况下：
-- 锚点为 `center`（节点中心）
-- 连接点为 `boundary`（参考线与节点边框的交点）
+By default:
+- The anchor is `center` (node center)
+- The connection point is `boundary` (intersection of the reference line with the node border)
 
-## 使用方式
+## Usage
 
-### 方式一：全局配置（Graph.connecting）
+### Method 1: Global Configuration (Graph.connecting)
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -67,16 +65,16 @@ const graph = new Graph({
   width: 800,
   height: 600,
   connecting: {
-    // 全局锚点配置
+    // Global anchor configuration
     sourceAnchor: 'right',
     targetAnchor: 'left',
-    // 全局连接点配置
+    // Global connection point configuration
     connectionPoint: 'anchor',
   },
 });
 ```
 
-### 方式二：单边配置（优先级更高）
+### Method Two: Unilateral Configuration (Higher Priority)
 
 ```javascript
 graph.addEdge({
@@ -99,61 +97,61 @@ graph.addEdge({
 });
 ```
 
-## 内置锚点类型
+## Built-in Anchor Types
 
-| 锚点 | 位置 | 说明 |
+| Anchor | Position | Description |
 |------|------|------|
-| `center` | 节点中心 | 默认值 |
-| `top` | 顶部中心 | |
-| `bottom` | 底部中心 | |
-| `left` | 左侧中心 | |
-| `right` | 右侧中心 | |
-| `topLeft` | 左上角 | |
-| `topRight` | 右上角 | |
-| `bottomLeft` | 左下角 | |
-| `bottomRight` | 右下角 | |
-| `midSide` | 最近侧中心 | 自动选择离参考线最近的一侧 |
-| `orth` | 正交点 | 保证连线垂直/水平连接 |
-| `nodeCenter` | 节点中心 | 始终为节点几何中心 |
+| `center` | Node Center | Default Value |
+| `top` | Top Center | |
+| `bottom` | Bottom Center | |
+| `left` | Left Center | |
+| `right` | Right Center | |
+| `topLeft` | Top Left Corner | |
+| `topRight` | Top Right Corner | |
+| `bottomLeft` | Bottom Left Corner | |
+| `bottomRight` | Bottom Right Corner | |
+| `midSide` | Nearest Side Center | Automatically selects the side closest to the reference line |
+| `orth` | Orthogonal Intersection | Ensures vertical/horizontal connection |
+| `nodeCenter` | Node Center | Always the geometric center of the node |
 
-### 锚点参数
+### Anchor Parameters
 
-所有锚点都支持以下参数：
+All anchors support the following parameters:
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `dx` | number \| string | 0 | X 轴偏移量（支持百分比） |
-| `dy` | number \| string | 0 | Y 轴偏移量（支持百分比） |
-| `rotate` | boolean | false | 是否跟随节点旋转 |
+| `dx` | number \| string | 0 | X-axis offset (supports percentage) |
+| `dy` | number \| string | 0 | Y-axis offset (supports percentage) |
+| `rotate` | boolean | false | Whether to rotate with the node |
 
-### midSide 额外参数
+### midSide Additional Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `padding` | number | 0 | 偏移量 |
-| `direction` | `'H'` \| `'V'` | - | 限制方向（H=只连左右，V=只连上下） |
+| `padding` | number | 0 | Offset |
+| `direction` | `'H'` \| `'V'` | - | Restriction direction (H=connect only left and right, V=connect only up and down) |
 
-## 内置连接点类型
+## Built-in Connector Types
 
-| 连接点 | 说明 |
+| Connector | Description |
 |--------|------|
-| `boundary` | 默认。参考线与节点边框的交点 |
-| `bbox` | 参考线与包围盒的交点 |
-| `rect` | 参考线与旋转后矩形的交点 |
-| `anchor` | 直接使用锚点作为连接点（不计算交点） |
+| `boundary` | Default. Intersection of the reference line with the node border |
+| `bbox` | Intersection of the reference line with the bounding box |
+| `rect` | Intersection of the reference line with the rotated rectangle |
+| `anchor` | Directly use the anchor point as the connector (no intersection calculation) |
 
-### boundary 参数
+### boundary Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | number \| Point | 0 | 偏移量 |
-| `stroked` | boolean | true | 是否考虑边框宽度 |
-| `sticky` | boolean | false | 无交点时使用最近点 |
-| `selector` | string | - | 指定用于计算的子元素 |
+| `offset` | number \| Point | 0 | Offset |
+| `stroked` | boolean | true | Whether to consider border width |
+| `sticky` | boolean | false | Use the nearest point when there is no intersection |
+| `selector` | string | - | Specify the child element used for calculation |
 
-## 常用配置组合
+## Common Configuration Combinations
 
-### DAG 左右连接
+### DAG Left-Right Connection
 
 ```javascript
 const graph = new Graph({
@@ -168,7 +166,7 @@ const graph = new Graph({
 });
 ```
 
-### 多条边分散连接（midSide）
+### Multiple Edges Dispersedly Connected (midSide)
 
 ```javascript
 const graph = new Graph({
@@ -180,9 +178,9 @@ const graph = new Graph({
 });
 ```
 
-### 正交连接（orth anchor）
+### Orthogonal Connection (orth anchor)
 
-保证边从节点的正交方向（上下左右最近侧）连出：
+Ensures edges connect from the orthogonal direction of the node (closest side up, down, left, or right):
 
 ```javascript
 const graph = new Graph({
@@ -196,18 +194,18 @@ const graph = new Graph({
 });
 ```
 
-### 带偏移的锚点
+### Anchors with Offset
 
 ```javascript
 graph.addEdge({
   source: {
     cell: 'node1',
-    anchor: { name: 'right', args: { dy: -15 } },  // 右侧偏上
+    anchor: { name: 'right', args: { dy: -15 } },  // Offset upwards on the right side
     connectionPoint: 'anchor',
   },
   target: {
     cell: 'node2',
-    anchor: { name: 'left', args: { dy: -15 } },   // 左侧偏上
+    anchor: { name: 'left', args: { dy: -15 } },   // Offset upwards on the left side
     connectionPoint: 'anchor',
   },
   attrs: { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } },
@@ -216,28 +214,28 @@ graph.addEdge({
 graph.addEdge({
   source: {
     cell: 'node1',
-    anchor: { name: 'right', args: { dy: 15 } },   // 右侧偏下
+    anchor: { name: 'right', args: { dy: 15 } },   // Offset downwards on the right side
     connectionPoint: 'anchor',
   },
   target: {
     cell: 'node2',
-    anchor: { name: 'left', args: { dy: 15 } },    // 左侧偏下
+    anchor: { name: 'left', args: { dy: 15 } },    // Offset downwards on the left side
     connectionPoint: 'anchor',
   },
   attrs: { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } },
 });
 ```
 
-## 自定义连接点
+## Custom Connection Point
 
 ```javascript
 Graph.registerConnectionPoint(
   'custom-cp',
   (line, view, magnet, args) => {
-    // line: 参考线
-    // view: 节点视图
-    // magnet: 连接的 SVG 元素
-    // 返回 Point { x, y }
+    // line: reference line
+    // view: node view
+    // magnet: connected SVG element
+    // returns Point { x, y }
     const { offset = 0 } = args;
     const bbox = view.getBBox();
     return { x: bbox.x + bbox.width + offset, y: bbox.y + bbox.height / 2 };
@@ -245,7 +243,7 @@ Graph.registerConnectionPoint(
   true,
 );
 
-// 使用
+// Usage
 new Graph({
   connecting: {
     connectionPoint: { name: 'custom-cp', args: { offset: 5 } },
@@ -253,19 +251,19 @@ new Graph({
 });
 ```
 
-## 动态修改锚点
+## Dynamically Modify Anchor Points
 
 ```javascript
 const edge = graph.addEdge({ source: 'node1', target: 'node2' });
 
-// 修改源锚点
+// Modify source anchor point
 edge.setSource({
   cell: 'node1',
   anchor: { name: 'bottom', args: { dx: 10 } },
   connectionPoint: 'anchor',
 });
 
-// 修改目标锚点
+// Modify target anchor point
 edge.setTarget({
   cell: 'node2',
   anchor: 'top',
@@ -273,38 +271,38 @@ edge.setTarget({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆 anchor 和 connectionPoint
+### ❌ Confusing anchor with connectionPoint
 
 ```javascript
-// 错误：以为 anchor:'right' 就能让边从右侧出发（但默认 connectionPoint 是 boundary，会重新计算交点）
+// Incorrect: Assuming anchor:'right' will make the edge start from the right side (but the default connectionPoint is boundary, which recalculates the intersection point)
 graph.addEdge({
   source: { cell: 'node1', anchor: 'right' },
   target: { cell: 'node2', anchor: 'left' },
 });
-// 边可能不会精确从右侧中心连出
+// The edge may not precisely start from the center of the right side
 
-// 正确：配合 connectionPoint:'anchor' 使用，跳过交点计算
+// Correct: Use connectionPoint:'anchor' in conjunction to skip intersection point calculation
 graph.addEdge({
   source: { cell: 'node1', anchor: 'right', connectionPoint: 'anchor' },
   target: { cell: 'node2', anchor: 'left', connectionPoint: 'anchor' },
 });
 ```
 
-### ❌ 混淆 port 和 anchor
+### ❌ Confusing port with anchor
 
 ```javascript
-// port 是连接桩（节点上的连接点 UI），anchor 是边连接位置的计算方式
-// 有 port 时 source/target 使用 port 字段：
+// port is the connection stub (connection point UI on the node), anchor is the calculation method for the edge connection position
+// When port exists, use the port field for source/target:
 graph.addEdge({
-  source: { cell: 'node1', port: 'out-1' },  // 连接到 port
+  source: { cell: 'node1', port: 'out-1' },  // Connect to port
   target: { cell: 'node2', port: 'in-1' },
 });
 
-// 无 port 时使用 anchor 字段控制连接位置：
+// When no port exists, use the anchor field to control the connection position:
 graph.addEdge({
-  source: { cell: 'node1', anchor: 'right' },  // 连接到锚点
+  source: { cell: 'node1', anchor: 'right' },  // Connect to anchor point
   target: { cell: 'node2', anchor: 'left' },
 });
 ```

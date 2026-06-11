@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-scroller"
-title: "X6 Scroller 滚动画布插件"
+title: "X6 Scroller Canvas Scrolling Plugin"
 description: |
-  Scroller 插件将画布嵌入一个可滚动的容器中，支持画布平移（Pan）、无限滚动、分页显示等能力。
+  The Scroller plugin embeds the canvas in a scrollable container, supporting canvas panning (Pan), infinite scrolling, paginated display, and more.
 
 library: "x6"
 version: "3.x"
@@ -10,12 +10,12 @@ category: "plugins"
 subcategory: "scroller"
 tags:
   - "Scroller"
-  - "滚动"
-  - "平移"
+  - "scrolling"
+  - "panning"
   - "pan"
   - "scroll"
-  - "画布平移"
-  - "无限画布"
+  - "canvas panning"
+  - "infinite canvas"
 
 related:
   - "x6-plugins"
@@ -23,17 +23,17 @@ related:
   - "x6-core-graph-init"
 
 use_cases:
-  - "大画布滚动浏览"
-  - "画布拖拽平移"
-  - "显示分页边界"
-  - "画布内容居中"
-  - "缩放画布到适合大小"
+  - "Large canvas scrolling navigation"
+  - "Canvas drag panning"
+  - "Display page boundaries"
+  - "Center canvas content"
+  - "Zoom canvas to fit size"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Scroller } from '@antv/x6';
@@ -41,86 +41,86 @@ import { Graph, Scroller } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Scroller({
   enabled: true,
-  pannable: true,  // 画布可拖拽平移
+  pannable: true,  // Canvas can be dragged and panned
 }));
 ```
 
-**注意**：使用 Scroller 插件后，画布容器会被包裹在一个滚动容器中。Graph 的 `container` 不再是最外层容器，`scroller.container` 才是。
+**Note**: After using the Scroller plugin, the canvas container will be wrapped in a scroll container. The Graph's `container` is no longer the outermost container; instead, `scroller.container` is.
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean | `true` | 是否启用滚动 |
-| `pannable` | boolean \| object | `false` | 是否可拖拽平移。对象形式：`{ enabled: true, eventTypes: ['leftMouseDown'] }` |
-| `modifiers` | string \| string[] | - | 平移修饰键，如 `'ctrl'`、`['ctrl', 'meta']` |
-| `className` | string | - | 自定义滚动容器 CSS 类名 |
-| `width` | number | - | 滚动容器宽度（默认与画布容器同宽） |
-| `height` | number | - | 滚动容器高度（默认与画布容器同高） |
-| `pageVisible` | boolean | `false` | 是否显示分页边界 |
-| `pageBreak` | boolean | `false` | 是否显示分页断点 |
-| `pageWidth` | number | - | 分页宽度 |
-| `pageHeight` | number | - | 分页高度 |
-| `padding` | number \| object | - | 画布四周的额外滚动区域 |
-| `autoResize` | boolean | `true` | 容器尺寸变化时自动调整 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean | `true` | Whether to enable scrolling |
+| `pannable` | boolean \| object | `false` | Whether panning is enabled. Object format: `{ enabled: true, eventTypes: ['leftMouseDown'] }` |
+| `modifiers` | string \| string[] | - | Pan modifier keys, e.g., `'ctrl'`, `['ctrl', 'meta']` |
+| `className` | string | - | Custom CSS class name for the scroll container |
+| `width` | number | - | Scroll container width (defaults to the same width as the canvas container) |
+| `height` | number | - | Scroll container height (defaults to the same height as the canvas container) |
+| `pageVisible` | boolean | `false` | Whether to display page boundaries |
+| `pageBreak` | boolean | `false` | Whether to display page breakpoints |
+| `pageWidth` | number | - | Page width |
+| `pageHeight` | number | - | Page height |
+| `padding` | number \| object | - | Additional scroll area around the canvas |
+| `autoResize` | boolean | `true` | Automatically adjust when container size changes |
 
-### pannable 对象配置
+### pannable Object Configuration
 
 ```javascript
 graph.use(new Scroller({
   enabled: true,
   pannable: {
     enabled: true,
-    eventTypes: ['leftMouseDown'],  // 仅左键拖拽平移
-    // 可选值: 'leftMouseDown', 'rightMouseDown'
+    eventTypes: ['leftMouseDown'],  // Only left-click drag to pan
+    // Optional values: 'leftMouseDown', 'rightMouseDown'
   },
 }));
 ```
 
-## 编程式 API
+## Programmatic API
 
-注册 Scroller 后，以下 graph 方法的行为会委托给 Scroller 实现：
+After registering Scroller, the following graph methods will delegate their behavior to the Scroller implementation:
 
 ```javascript
-// 平移控制（Scroller 接管）
+// Panning control (handled by Scroller)
 graph.enablePanning();
 graph.disablePanning();
 graph.togglePanning(true);
 graph.isPannable();  // boolean
 
-// 居中定位（注册 Scroller 后自动使用 Scroller 实现）
-graph.centerPoint(x, y);      // 将画布坐标 (x, y) 居中显示
-graph.centerCell(cell);        // 将指定元素居中显示
-graph.centerContent();         // 将画布内容居中显示
+// Centering (automatically uses Scroller implementation after registration)
+graph.centerPoint(x, y);      // Centers the canvas coordinates (x, y)
+graph.centerCell(cell);        // Centers the specified cell
+graph.centerContent();         // Centers the canvas content
 
-// 缩放（注册 Scroller 后自动使用 Scroller 实现）
-graph.zoom(1.5, { absolute: true });   // 缩放到 150%
-graph.zoomToFit({ padding: 20 });      // 自适应缩放，使所有内容可见
-graph.zoomToRect(rect);                // 缩放到指定矩形区域
+// Zooming (automatically uses Scroller implementation after registration)
+graph.zoom(1.5, { absolute: true });   // Zooms to 150%
+graph.zoomToFit({ padding: 20 });      // Auto-fits zoom to make all content visible
+graph.zoomToRect(rect);                // Zooms to the specified rectangle area
 ```
 
-### Scroller 插件专有 API
+### Scroller Plugin Exclusive API
 
-以下方法是 Scroller 插件注册后独有的：
+The following methods are exclusive to the Scroller plugin after registration:
 
 ```javascript
-// 锁定/解锁滚动
-graph.lockScroller();     // 禁止滚动
-graph.unlockScroller();   // 恢复滚动
+// Lock/Unlock scrolling
+graph.lockScroller();     // Disable scrolling
+graph.unlockScroller();   // Restore scrolling
 
-// 更新 Scroller（画布内容变化后手动刷新）
+// Update Scroller (manually refresh after canvas content changes)
 graph.updateScroller();
 
-// 获取/设置滚动条位置
+// Get/Set scrollbar position
 graph.getScrollbarPosition();              // { left: number, top: number }
-graph.setScrollbarPosition(left, top);     // 设置滚动条位置
+graph.setScrollbarPosition(left, top);     // Set scrollbar position
 
-// 获取 Scroller DOM 容器
+// Get Scroller DOM container
 const scroller = graph.getPlugin('scroller');
 const scrollerContainer = scroller.container;
 ```
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph, Scroller, MiniMap } from '@antv/x6';
@@ -136,10 +136,10 @@ graph.use(new Scroller({
   pannable: true,
   pageVisible: true,
   pageBreak: false,
-  modifiers: 'ctrl',  // 按住 Ctrl 拖拽才平移（避免与节点拖拽冲突）
+  modifiers: 'ctrl',  // Hold Ctrl and drag to pan (to avoid conflicts with node dragging)
 }));
 
-// 添加多个节点，分布在较大区域
+// Add multiple nodes distributed across a large area
 for (let i = 0; i < 20; i++) {
   graph.addNode({
     x: Math.random() * 2000,
@@ -150,13 +150,13 @@ for (let i = 0; i < 20; i++) {
   });
 }
 
-// 缩放到适合大小，使所有节点可见
+// Zoom to fit, ensuring all nodes are visible
 graph.zoomToFit({ padding: 40 });
 ```
 
-## 与 MiniMap 配合
+## Use with MiniMap
 
-Scroller 和 MiniMap 搭配使用时，MiniMap 会自动反映 Scroller 的视口区域：
+When Scroller and MiniMap are used together, MiniMap automatically reflects the viewport area of Scroller:
 
 ```javascript
 import { Graph, Scroller, MiniMap } from '@antv/x6';
@@ -172,43 +172,43 @@ graph.use(new MiniMap({
 }));
 ```
 
-## Scroller vs panning 配置
+## Scroller vs panning Configuration
 
-X6 Graph 本身有 `panning` 配置（不需要插件），但 Scroller 提供更完整的滚动体验：
+X6 Graph itself has a `panning` configuration (no plugin required), but Scroller provides a more complete scrolling experience:
 
-| 特性 | `panning: true` | Scroller 插件 |
-|------|-----------------|---------------|
-| 画布拖拽平移 | ✅ | ✅ |
-| 滚动条 | ❌ | ✅ |
-| 分页显示 | ❌ | ✅ |
-| 与 MiniMap 联动 | 部分 | ✅ |
-| 无限滚动区域 | ❌ | ✅ |
+| Feature | `panning: true` | Scroller Plugin |
+|---------|-----------------|-----------------|
+| Canvas Drag Panning | ✅ | ✅ |
+| Scrollbar | ❌ | ✅ |
+| Paginated Display | ❌ | ✅ |
+| MiniMap Integration | Partial | ✅ |
+| Infinite Scroll Area | ❌ | ✅ |
 
-如果只需简单平移，使用 `panning: true`；如果需要滚动条和分页，使用 Scroller 插件。
+If you only need simple panning, use `panning: true`; if you require scrollbars and pagination, use the Scroller plugin.
 
-## 常见错误
+## Common Errors
 
-### ❌ 同时使用 panning 和 Scroller
+### ❌ Using panning and Scroller Simultaneously
 
 ```javascript
-// 错误：两者冲突
+// Error: Both conflict
 const graph = new Graph({
   container: 'container',
-  panning: true,  // ❌ 与 Scroller 冲突
+  panning: true,  // ❌ Conflicts with Scroller
 });
 graph.use(new Scroller({ enabled: true, pannable: true }));
 ```
 
 ```javascript
-// 正确：使用 Scroller 时不要配置 panning
+// Correct: Do not configure panning when using Scroller
 const graph = new Graph({ container: 'container' });
 graph.use(new Scroller({ enabled: true, pannable: true }));  // ✅
 ```
 
-### ❌ 在构造函数中配置 scroller
+### ❌ Configure scroller in the constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Error: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   scroller: { enabled: true, pannable: true },  // ❌
@@ -216,7 +216,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确
+// Correct
 import { Graph, Scroller } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Scroller({ enabled: true, pannable: true }));  // ✅

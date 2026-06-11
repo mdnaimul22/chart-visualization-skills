@@ -1,9 +1,9 @@
 ---
 id: "x6-pattern-dag"
-title: "X6 DAG 有向无环图"
+title: "X6 DAG (Directed Acyclic Graph)"
 description: |
-  使用 X6 构建 DAG（有向无环图）的最佳实践。
-  适用于数据管道、CI/CD 流水线、任务依赖等场景。
+  Best practices for building DAG (Directed Acyclic Graph) using X6.
+  Suitable for data pipelines, CI/CD pipelines, task dependencies, and more.
 
 library: "x6"
 version: "3.x"
@@ -11,40 +11,39 @@ category: "patterns"
 subcategory: "dag"
 tags:
   - "DAG"
-  - "有向无环图"
-  - "数据管道"
+  - "Directed Acyclic Graph"
+  - "Data Pipeline"
   - "pipeline"
   - "CI/CD"
-  - "流水线"
-  - "任务依赖"
-  - "数据血缘"
+  - "Task Dependencies"
+  - "Data Lineage"
   - "ETL"
-  - "端口连线"
+  - "Port Connections"
 
 related:
-  - "x 6-core-ports"
+  - "x6-core-ports"
   - "x6-core-edge"
   - "x6-core-node"
   - "x6-plugins"
 
 use_cases:
-  - "创建数据处理管道图"
-  - "CI/CD 流水线可视化"
-  - "任务依赖关系图"
-  - "数据血缘分析图"
+  - "Creating data processing pipeline diagrams"
+  - "CI/CD pipeline visualization"
+  - "Task dependency graphs"
+  - "Data lineage analysis diagrams"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## DAG 核心特征
+## DAG Core Features
 
-- **有向**：边有方向，从上游流向下游
-- **无环**：不存在循环依赖
-- **端口连线**：通过 Ports 的 in/out 端口建立连接
-- **左右/上下布局**：通常为水平（左→右）或垂直（上→下）流向
+- **Directed**: Edges have a direction, flowing from upstream to downstream
+- **Acyclic**: No cyclic dependencies exist
+- **Port Connection**: Connections are established through in/out Ports
+- **Horizontal/Vertical Layout**: Typically flows horizontally (left→right) or vertically (top→bottom)
 
-## DAG 节点注册
+## DAG Node Registration
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -71,9 +70,9 @@ Graph.registerNode('dag-node', {
 }, true);
 ```
 
-## 完整 DAG 示例
+## Complete DAG Example
 
-以下是一个可直接运行的标准 DAG 数据管道示例。无论用户是否提供参考 JSON，都应输出完整、可运行的代码，并为每个节点分配独立变量名。
+Below is a standard, directly executable DAG data pipeline example. Regardless of whether the user provides a reference JSON, the output should be complete, runnable code, with each node assigned an independent variable name.
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -128,18 +127,18 @@ graph.addEdge({ source: { cell: transform, port: 'out-1' }, target: { cell: load
 graph.addEdge({ source: { cell: aggregate, port: 'out-1' }, target: { cell: load, port: 'in-2' }, attrs: { line: { stroke: '#5F95FF', strokeWidth: 1, targetMarker: 'classic' } } });
 ```
 
-## 从用户数据生成 DAG
+## Generate DAG from User Data
 
-当用户提供节点/边参考数据（如 JSON 数组）时，**不要直接复制 JSON 字段**，因为用户数据常把端口 ID 误写为节点 ID，或缺少完整的 `ports` 配置。正确做法是：
+When users provide node/edge reference data (e.g., JSON arrays), **do not directly copy JSON fields**, as user data often mistakenly uses port IDs as node IDs or lacks complete `ports` configuration. The correct approach is:
 
-1. 根据语义为每个节点创建独立变量（如 `source1`, `etl`, `warehouse`）。
-2. 在 `addNode` 中显式补充 `shape: 'dag-node'` 和 `ports.items`。
-3. 边使用 `{ cell: nodeVar, port: '...' }` 对象格式，禁止用字符串 ID。
-4. 始终输出完整可运行的代码，禁止返回空代码或伪代码。
+1. Create separate variables for each node based on semantics (e.g., `source1`, `etl`, `warehouse`).
+2. Explicitly add `shape: 'dag-node'` and `ports.items` in `addNode`.
+3. Use the `{ cell: nodeVar, port: '...' }` object format for edges, and avoid using string IDs.
+4. Always output complete, executable code, and avoid returning empty or pseudocode.
 
 ```javascript
-// 反例：不要直接遍历用户 JSON 当节点配置
-// 正例：按语义重建节点与边
+// Counterexample: Do not directly iterate over user JSON as node configuration
+// Positive example: Rebuild nodes and edges based on semantics
 const etl = graph.addNode({
   shape: 'dag-node',
   x: 260,
@@ -155,7 +154,7 @@ const etl = graph.addNode({
 });
 ```
 
-## 带状态的 DAG 节点
+## DAG Node with Status
 
 ```javascript
 const statusColors = {
@@ -173,7 +172,7 @@ function setNodeStatus(node, status) {
 }
 ```
 
-## 连线验证（防止环路）
+## Connection Validation (Preventing Loops)
 
 ```javascript
 const graph = new Graph({
@@ -184,23 +183,23 @@ const graph = new Graph({
     router: 'orth',
     connector: 'rounded',
     validateConnection({ sourceCell, targetCell }) {
-      // 防止自连
+      // Prevent self-connection
       if (sourceCell === targetCell) return false;
-      // 检查是否会形成环路（简单实现）
+      // Check if a loop would be formed (simple implementation)
       const edges = graph.getEdges();
-      // ... 拓扑排序检测环路
+      // ... Topological sorting to detect loops
       return true;
     },
   },
 });
 ```
 
-## 数据血缘图（多层 DAG）
+## Data Lineage Graph (Multi-Layer DAG)
 
-数据血缘是 DAG 的典型应用，展示数据从源表到最终报表的流转：
+Data lineage is a typical application of DAG, showcasing the flow of data from source tables to final reports:
 
 ```javascript
-// 使用 smooth connector 替代 orth，更适合多层扇出场景
+// Use smooth connector instead of orth, more suitable for multi-layer fan-out scenarios
 graph.addEdge({
   source: { cell: srcNode, port: 'out1' },
   target: { cell: tgtNode, port: 'in1' },
@@ -209,39 +208,39 @@ graph.addEdge({
 });
 ```
 
-层次建议：
-- **ODS 层**：原始数据源（白色背景）
-- **DWD 层**：明细数据（浅蓝色 `#e6f7ff`）
-- **DWS 层**：汇总数据（浅绿色 `#f6ffed`）
-- **ADS 层**：应用数据（浅橙色 `#fff7e6`）
+Layer recommendations:
+- **ODS Layer**: Original data source (white background)
+- **DWD Layer**: Detailed data (light blue `#e6f7ff`)
+- **DWS Layer**: Aggregated data (light green `#f6ffed`)
+- **ADS Layer**: Application data (light orange `#fff7e6`)
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 1. 返回空代码（no code）
+### 1. Returns empty code (no code)
 
-**错误表现**：用户提供了参考 JSON 数据后，模型未输出任何代码。  
-**原因**：模型被数据中不完整的字段或端口/节点 ID 混淆，导致放弃生成。  
-**修正**：始终基于标准 DAG 模板输出完整可运行代码。忽略用户 JSON 中可能错误的 `id` 字段，按节点语义创建独立变量，并显式配置 `ports.items`。
+**Error Manifestation**: After the user provides reference JSON data, the model does not output any code.  
+**Cause**: The model is confused by incomplete fields or port/node IDs in the data, leading to abandonment of code generation.  
+**Fix**: Always output complete, runnable code based on the standard DAG template. Ignore potentially incorrect `id` fields in the user's JSON, create independent variables based on node semantics, and explicitly configure `ports.items`.
 
 ```javascript
-// ❌ 错误：未生成代码，或只输出数据注释
-// ✅ 正确：直接输出完整代码
+// ❌ Error: No code generated, or only data comments are output
+// ✅ Correct: Directly output complete code
 const source1 = graph.addNode({
   shape: 'dag-node', x: 40, y: 40, label: 'MySQL Source',
   ports: { items: [{ id: 'out1', group: 'out' }] },
 });
 ```
 
-### 2. 边连接格式错误
+### 2. Incorrect Edge Connection Format
 
-**错误表现**：`source: 'source1'` 或 `source: { cell: 'source1' }`（字符串 ID）。  
-**修正**：必须使用节点变量引用 + 端口 ID 对象。
+**Error Manifestation**: `source: 'source1'` or `source: { cell: 'source1' }` (string ID).  
+**Correction**: Must use node variable reference + port ID object.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 graph.addEdge({ source: 'source1', target: 'etl' });
 
-// ✅ 正确
+// ✅ Correct
 graph.addEdge({
   source: { cell: source1, port: 'out1' },
   target: { cell: etl, port: 'in1' },
@@ -249,16 +248,16 @@ graph.addEdge({
 });
 ```
 
-### 3. 节点缺少端口配置
+### 3. Missing Port Configuration in Nodes
 
-**错误表现**：`addNode` 时只写了 `shape` 和 `label`，没有 `ports`。  
-**修正**：DAG 必须通过端口连线，每个节点在 `addNode` 时必须声明 `ports: { items: [...] }`，并指定 `group: 'in'` 或 `group: 'out'`。
+**Error Description**: Only `shape` and `label` are specified when using `addNode`, without `ports`.  
+**Fix**: DAGs must be connected through ports. Each node must declare `ports: { items: [...] }` when using `addNode`, and specify either `group: 'in'` or `group: 'out'`.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 graph.addNode({ shape: 'dag-node', label: 'ETL' });
 
-// ✅ 正确
+// ✅ Correct
 graph.addNode({
   shape: 'dag-node',
   label: 'ETL',
@@ -271,13 +270,13 @@ graph.addNode({
 });
 ```
 
-### 4. 端口 ID 与节点变量名混淆
+### 4. Port ID and Node Variable Name Confusion
 
-**错误表现**：把用户 JSON 里的 `"id": "out1"` 当成节点 ID，导致所有节点 ID 重复或语义丢失。  
-**修正**：`out1`/`in1` 应作为 **端口 ID** 放在 `ports.items` 中；节点本身应使用有意义的变量名（如 `source1`, `etl`, `warehouse`）。
+**Error Manifestation**: Mistaking `"id": "out1"` in the user's JSON as the node ID, resulting in all node IDs being duplicated or losing their semantic meaning.  
+**Correction**: `out1`/`in1` should be used as **port IDs** within `ports.items`; the node itself should use a meaningful variable name (e.g., `source1`, `etl`, `warehouse`).
 
 ```javascript
-// ✅ 正确区分
+// ✅ Correct Distinction
 const warehouse = graph.addNode({
   shape: 'dag-node',
   label: 'Data Warehouse',
@@ -285,17 +284,17 @@ const warehouse = graph.addNode({
 });
 ```
 
-### 5. 错误地使用 addPorts 方法
+### 5. Incorrect Use of the addPorts Method
 
-**错误表现**：在 addNode 后调用 addPorts 添加端口，而不是在 addNode 阶段一次性声明 ports.items。  
-**修正**：应在 addNode 时就声明 ports.items，避免后续手动添加端口。
+**Error Manifestation**: Calling `addPorts` to add ports after `addNode`, instead of declaring `ports.items` all at once during the `addNode` stage.  
+**Correction**: Declare `ports.items` directly when calling `addNode` to avoid manually adding ports later.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const node = graph.addNode({ shape: 'dag-node', label: 'Node' });
 node.addPorts([{ id: 'in1', group: 'in' }]);
 
-// ✅ 正确
+// ✅ Correct
 const node = graph.addNode({
   shape: 'dag-node',
   label: 'Node',
@@ -303,43 +302,43 @@ const node = graph.addNode({
 });
 ```
 
-### 6. 使用字符串 ID 作为 cell 引用
+### 6. Using String IDs as Cell References
 
-**错误表现**：边连接中使用字符串 ID 而非节点变量引用。  
-**修正**：必须使用节点变量引用 + 端口 ID 对象。
+**Incorrect Behavior**: Using string IDs instead of node variable references in edge connections.  
+**Correction**: Must use node variable references + port ID objects.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 graph.addEdge({ source: { cell: 'source1', port: 'out1' }, target: { cell: 'etl', port: 'in1' } });
 
-// ✅ 正确
+// ✅ Correct
 graph.addEdge({ source: { cell: source1, port: 'out1' }, target: { cell: etl, port: 'in1' } });
 ```
 
-### 7. 错误引入额外依赖
+### 7. Error Caused by Introducing Extra Dependencies
 
-**错误表现**：引入了 `Shape` 或其他非必需模块，导致加载失败。  
-**修正**：只引入 `Graph` 即可，避免不必要的模块引入。
+**Error Manifestation**: Introducing `Shape` or other non-essential modules, resulting in loading failure.  
+**Fix**: Only import `Graph` to avoid unnecessary module imports.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 import { Graph, Shape } from '@antv/x6'
 
-// ✅ 正确
+// ✅ Correct
 import { Graph } from '@antv/x6';
 ```
 
-### 8. 错误使用 addNode + addPorts 模式
+### 8. Incorrect Usage of addNode + addPorts Pattern
 
-**错误表现**：先 addNode 再 addPorts，而不是一次性在 addNode 中声明 ports.items。  
-**修正**：应在 addNode 时就声明 ports.items。
+**Error Manifestation**: Using `addNode` first and then `addPorts`, instead of declaring `ports.items` directly within `addNode`.  
+**Correction**: Declare `ports.items` directly when calling `addNode`.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const node = graph.addNode({ shape: 'dag-node', label: 'Node' });
 node.addPorts([{ id: 'in1', group: 'in' }]);
 
-// ✅ 正确
+// ✅ Correct
 const node = graph.addNode({
   shape: 'dag-node',
   label: 'Node',
@@ -347,20 +346,20 @@ const node = graph.addNode({
 });
 ```
 
-### 9. 错误使用 ports 数组而非 items 对象
+### 9. Incorrect Use of `ports` Array Instead of `items` Object
 
-**错误表现**：在 `addNode` 中使用 `ports: [{ id: 'out', group: 'out' }]` 而非 `ports: { items: [...] }`。  
-**修正**：必须使用 `ports: { items: [...] }` 格式，否则端口无法正确渲染。
+**Error Manifestation**: Using `ports: [{ id: 'out', group: 'out' }]` in `addNode` instead of `ports: { items: [...] }`.  
+**Correction**: Must use the `ports: { items: [...] }` format; otherwise, ports will not render correctly.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 graph.addNode({
   shape: 'dag-node',
   label: 'Node',
   ports: [{ id: 'out', group: 'out' }]
 });
 
-// ✅ 正确
+// ✅ Correct
 graph.addNode({
   shape: 'dag-node',
   label: 'Node',
@@ -368,13 +367,13 @@ graph.addNode({
 });
 ```
 
-### 10. 错误使用 createEdge 方法引入额外依赖
+### 10. Incorrect Use of createEdge Method Introducing Extra Dependencies
 
-**错误表现**：在 `connecting.createEdge` 中使用 `Shape.Edge`，导致引入额外依赖。  
-**修正**：应避免使用 `Shape.Edge`，直接使用默认边配置。
+**Error Manifestation**: Using `Shape.Edge` in `connecting.createEdge` results in introducing extra dependencies.  
+**Correction**: Avoid using `Shape.Edge` and directly use the default edge configuration.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 connecting: {
   createEdge() {
     return new Shape.Edge({
@@ -383,26 +382,26 @@ connecting: {
   }
 }
 
-// ✅ 正确
+// ✅ Correct
 connecting: {
-  // 不需要自定义 createEdge
+  // No need to customize createEdge
 }
 ```
 
-### 11. 错误使用 ports 数组形式而非 items 对象形式
+### 11. Incorrect use of ports array format instead of items object format
 
-**错误表现**：在 `addNode` 中使用 `ports: [{ id: 'out1', group: 'out' }]` 而非 `ports: { items: [...] }`。  
-**修正**：必须使用 `ports: { items: [...] }` 格式，否则端口无法正确渲染。
+**Error Manifestation**: Using `ports: [{ id: 'out1', group: 'out' }]` in `addNode` instead of `ports: { items: [...] }`.  
+**Correction**: Must use `ports: { items: [...] }` format, otherwise ports cannot be rendered correctly.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 graph.addNode({
   shape: 'dag-node',
   label: 'Node',
   ports: [{ id: 'out1', group: 'out' }]
 });
 
-// ✅ 正确
+// ✅ Correct
 graph.addNode({
   shape: 'dag-node',
   label: 'Node',
@@ -410,17 +409,17 @@ graph.addNode({
 });
 ```
 
-### 12. 错误使用 addPorts 方法添加端口
+### 12. Incorrect Use of addPorts Method to Add Ports
 
-**错误表现**：在 addNode 后调用 addPorts 添加端口，而不是在 addNode 阶段一次性声明 ports.items。  
-**修正**：应在 addNode 时就声明 ports.items，避免后续手动添加端口。
+**Error Manifestation**: Calling `addPorts` to add ports after `addNode`, instead of declaring `ports.items` all at once during the `addNode` stage.  
+**Correction**: Declare `ports.items` directly when calling `addNode` to avoid manually adding ports later.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const node = graph.addNode({ shape: 'dag-node', label: 'Node' });
 node.addPorts([{ id: 'in1', group: 'in' }]);
 
-// ✅ 正确
+// ✅ Correct
 const node = graph.addNode({
   shape: 'dag-node',
   label: 'Node',
@@ -428,37 +427,37 @@ const node = graph.addNode({
 });
 ```
 
-### 13. 错误使用插件方式引入功能
+### 13. Incorrect Use of Plugin Introduction Method
 
-**错误表现**：通过 `plugins: [new Selection(...)]` 方式引入插件，导致未正确初始化。  
-**修正**：应使用 `graph.use(new Plugin(...))` 方式引入插件。
+**Error Manifestation**: Introducing plugins via `plugins: [new Selection(...)]` results in incorrect initialization.  
+**Correction**: Plugins should be introduced using `graph.use(new Plugin(...))`.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const graph = new Graph({
   plugins: [
     new Selection({ enabled: true }),
   ],
 });
 
-// ✅ 正确
+// ✅ Correct
 import { Selection } from '@antv/x6-plugin-selection';
 const graph = new Graph({ /* ... */ });
 graph.use(new Selection({ enabled: true }));
 ```
 
-### 14. 错误使用 createEdge 返回 this.createEdge
+### 14. Incorrect use of createEdge returning this.createEdge
 
-**错误表现**：在 `createEdge` 中返回 `this.createEdge(...)` 导致递归调用栈溢出。  
-**修正**：应直接返回 `graph.createEdge(...)` 或使用 `new Edge(...)`。
+**Error Manifestation**: Returning `this.createEdge(...)` in `createEdge` causes a recursive call stack overflow.  
+**Fix**: Directly return `graph.createEdge(...)` or use `new Edge(...)`.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 createEdge() {
   return this.createEdge({ ... });
 }
 
-// ✅ 正确
+// ✅ Correct
 createEdge() {
   return graph.createEdge({ ... });
 }

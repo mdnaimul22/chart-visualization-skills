@@ -1,8 +1,8 @@
 ---
 id: "x6-core-panning"
-title: "X6 画布平移（Panning）"
+title: "X6 Canvas Panning"
 description: |
-  X6 画布平移配置：鼠标拖拽平移、修饰键控制、支持左键/右键/滚轮/滚轮按下等多种触发方式。
+  X6 canvas panning configuration: mouse drag panning, modifier key control, supports various trigger methods including left-click, right-click, mouse wheel, and mouse wheel press.
 
 library: "x6"
 version: "3.x"
@@ -21,19 +21,19 @@ related:
   - "x6-plugin-scroller"
 
 use_cases:
-  - "拖拽空白区域平移画布"
-  - "按住修饰键拖拽平移"
-  - "右键拖拽平移"
-  - "滚轮平移画布"
-  - "空格键+拖拽平移"
+  - "Drag blank area to pan canvas"
+  - "Hold modifier key and drag to pan"
+  - "Right-click drag to pan"
+  - "Mouse wheel to pan canvas"
+  - "Spacebar + drag to pan"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
-画布平移在 Graph 构造函数中通过 `panning` 字段配置：
+Canvas panning is configured in the Graph constructor via the `panning` field:
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -42,61 +42,61 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  panning: true,  // 简写：启用左键拖拽平移
+  panning: true,  // Shorthand: Enable left-click drag panning
 });
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
+| Option | Type | Default Value | Description |
 |--------|------|--------|------|
-| `enabled` | boolean | `false` | 是否启用平移 |
-| `modifiers` | string \| string[] \| null | `null` | 修饰键：`'ctrl'`、`'alt'`、`'shift'`、`'meta'`，或数组组合 |
-| `eventTypes` | string[] | `['leftMouseDown']` | 触发方式：`'leftMouseDown'`、`'rightMouseDown'`、`'mouseWheel'`、`'mouseWheelDown'` |
+| `enabled` | boolean | `false` | Whether to enable panning |
+| `modifiers` | string \| string[] \| null | `null` | Modifier keys: `'ctrl'`, `'alt'`, `'shift'`, `'meta'`, or an array combination |
+| `eventTypes` | string[] | `['leftMouseDown']` | Trigger methods: `'leftMouseDown'`, `'rightMouseDown'`, `'mouseWheel'`, `'mouseWheelDown'` |
 
-## 简写形式
+## Abbreviated Form
 
 ```javascript
-// 布尔值简写
+// Boolean shorthand
 panning: true
-// 等价于
+// Equivalent to
 panning: { enabled: true, eventTypes: ['leftMouseDown'] }
 ```
 
-## 对象配置
+## Object Configuration
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   panning: {
     enabled: true,
-    modifiers: 'ctrl',  // 按住 Ctrl 才能拖拽平移
+    modifiers: 'ctrl',  // Hold Ctrl to enable panning
     eventTypes: ['leftMouseDown'],
   },
 });
 ```
 
-## 触发方式说明
+## Trigger Method Description
 
-| eventType | 说明 |
+| eventType | Description |
 |-----------|------|
-| `'leftMouseDown'` | 鼠标左键拖拽空白区域平移 |
-| `'rightMouseDown'` | 鼠标右键拖拽平移 |
-| `'mouseWheel'` | 鼠标滚轮滚动平移（非缩放） |
-| `'mouseWheelDown'` | 按下滚轮（中键）拖拽平移 |
+| `'leftMouseDown'` | Left mouse button drag on blank area to pan |
+| `'rightMouseDown'` | Right mouse button drag to pan |
+| `'mouseWheel'` | Mouse wheel scroll to pan (not zoom) |
+| `'mouseWheelDown'` | Press and drag mouse wheel (middle button) to pan |
 
-多种方式组合：
+Combination of multiple methods:
 
 ```javascript
 panning: {
   enabled: true,
-  eventTypes: ['leftMouseDown', 'rightMouseDown'],  // 左键和右键都可平移
+  eventTypes: ['leftMouseDown', 'rightMouseDown'],  // Both left and right buttons can pan
 }
 ```
 
-## 修饰键控制
+## Modifier Key Control
 
-使用 `modifiers` 避免平移与框选冲突：
+Use `modifiers` to avoid conflicts between panning and rubberband selection:
 
 ```javascript
 import { Graph, Selection } from '@antv/x6';
@@ -105,44 +105,44 @@ const graph = new Graph({
   container: 'container',
   panning: {
     enabled: true,
-    modifiers: 'ctrl',  // Ctrl+拖拽 = 平移
+    modifiers: 'ctrl',  // Ctrl+drag = panning
   },
 });
 
-// 无修饰键拖拽 = 框选
+// Drag without modifier key = rubberband selection
 graph.use(new Selection({ enabled: true, rubberband: true }));
 ```
 
-## 空格键平移
+## Space Key Panning
 
-X6 内置支持空格键临时平移（类似设计工具），按住空格键后拖拽即可平移画布，无需额外配置：
+X6 provides built-in support for temporary panning using the space key (similar to design tools). Simply hold down the space key and drag to pan the canvas, with no additional configuration required:
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   panning: { enabled: true },
-  // 按住空格 + 鼠标拖拽 = 平移（自动支持）
+  // Hold space key + mouse drag = pan (automatically supported)
 });
 ```
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 启用平移
+// Enable panning
 graph.enablePanning();
 
-// 禁用平移
+// Disable panning
 graph.disablePanning();
 
-// 判断是否启用
+// Check if panning is enabled
 graph.isPannable();  // boolean
 
-// 画布平移（编程式）
-graph.translateBy(dx, dy);   // 相对平移
-graph.translate(tx, ty);     // 设置绝对偏移
+// Canvas panning (programmatic)
+graph.translateBy(dx, dy);   // Relative translation
+graph.translate(tx, ty);     // Set absolute offset
 ```
 
-## 完整示例：平移 + 框选 + 缩放
+## Complete Example: Panning + Box Selection + Zooming
 
 ```javascript
 import { Graph, Selection } from '@antv/x6';
@@ -153,33 +153,33 @@ const graph = new Graph({
   height: 600,
   background: { color: '#F2F7FA' },
   grid: { visible: true },
-  // Ctrl+拖拽平移（避免与框选冲突）
+  // Ctrl+Drag to pan (avoid conflict with box selection)
   panning: { enabled: true, modifiers: 'ctrl' },
-  // Ctrl+滚轮缩放
+  // Ctrl+Mouse wheel to zoom
   mousewheel: { enabled: true, modifiers: 'ctrl' },
 });
 
-// 无修饰键拖拽 = 框选
+// Drag without modifiers = Box selection
 graph.use(new Selection({ enabled: true, rubberband: true }));
 
 graph.addNode({ x: 100, y: 100, width: 120, height: 60, label: 'Node A' });
 graph.addNode({ x: 400, y: 300, width: 120, height: 60, label: 'Node B' });
 ```
 
-## Panning 与 Mousewheel 共存
+## Panning and Mousewheel Coexistence
 
-`panning.eventTypes` 中如果包含 `'mouseWheel'`，X6 会用滚轮做**平移**，与 `mousewheel: { enabled: true }` 的**缩放**直接冲突，导致缩放不响应或行为异常。同时配置两者时必须用 `modifiers` 错开触发条件：
+If `'mouseWheel'` is included in `panning.eventTypes`, X6 will use the mouse wheel for **panning**, which directly conflicts with the **zooming** behavior of `mousewheel: { enabled: true }`, causing zoom to be unresponsive or behave abnormally. When configuring both, use `modifiers` to offset the trigger conditions:
 
 ```javascript
-// ✅ 推荐：左键拖拽平移 + Ctrl+滚轮缩放（互不干扰）
+// ✅ Recommended: Left-click drag to pan + Ctrl+wheel to zoom (no interference)
 const graph = new Graph({
   container: 'container',
   background: { color: '#F2F7FA' },
-  panning: { enabled: true },                       // 等价 eventTypes: ['leftMouseDown']
-  mousewheel: { enabled: true, modifiers: 'ctrl' }, // 仅 Ctrl+滚轮缩放
+  panning: { enabled: true },                       // Equivalent to eventTypes: ['leftMouseDown']
+  mousewheel: { enabled: true, modifiers: 'ctrl' }, // Only Ctrl+wheel to zoom
 });
 
-// ✅ 推荐：Shift+拖拽平移 + Ctrl+滚轮缩放（再叠加 Selection rubberband 也不冲突）
+// ✅ Recommended: Shift+drag to pan + Ctrl+wheel to zoom (even with Selection rubberband, no conflict)
 const graph2 = new Graph({
   container: 'container',
   panning: { enabled: true, modifiers: 'shift' },
@@ -188,7 +188,7 @@ const graph2 = new Graph({
 ```
 
 ```javascript
-// ❌ 反模式：mouseWheel 放进 panning.eventTypes，又同时启用 mousewheel 缩放
+// ❌ Anti-pattern: mouseWheel in panning.eventTypes with mousewheel zoom enabled simultaneously
 const graph = new Graph({
   container: 'container',
   panning: { enabled: true, eventTypes: ['leftMouseDown', 'mouseWheel'] }, // ❌
@@ -198,22 +198,22 @@ const graph = new Graph({
 
 ## Panning vs Scroller
 
-| 特性 | `panning` 配置 | Scroller 插件 |
-|------|----------------|---------------|
-| 拖拽平移 | ✅ | ✅ |
-| 滚动条 | ❌ | ✅ |
-| 分页显示 | ❌ | ✅ |
-| 无限滚动区域 | ❌ | ✅ |
-| 配置方式 | Graph 构造函数 | `graph.use()` |
+| Feature | `panning` Configuration | Scroller Plugin |
+|---------|--------------------------|-----------------|
+| Drag to Pan | ✅ | ✅ |
+| Scrollbar | ❌ | ✅ |
+| Paged Display | ❌ | ✅ |
+| Infinite Scroll Area | ❌ | ✅ |
+| Configuration Method | Graph Constructor | `graph.use()` |
 
-简单需求用 `panning`，需要滚动条和分页时用 Scroller 插件。**两者不可同时使用**。
+Use `panning` for simple needs, and use the Scroller plugin when scrollbars and paging are required. **Both cannot be used simultaneously**.
 
-## 常见错误
+## Common Errors
 
-### ❌ panning 和 Scroller 同时使用
+### ❌ Using panning and Scroller Simultaneously
 
 ```javascript
-// 错误：冲突
+// Error: Conflict
 const graph = new Graph({
   container: 'container',
   panning: true,  // ❌
@@ -222,32 +222,32 @@ graph.use(new Scroller({ enabled: true, pannable: true }));
 ```
 
 ```javascript
-// 正确：二选一
-// 方案 A：使用 panning
+// Correct: Choose One
+// Option A: Use panning
 const graph = new Graph({ container: 'container', panning: true });
 
-// 方案 B：使用 Scroller
+// Option B: Use Scroller
 const graph = new Graph({ container: 'container' });
 graph.use(new Scroller({ enabled: true, pannable: true }));
 ```
 
-### ❌ panning 与 rubberband 冲突
+### ❌ Conflict Between Panning and Rubberband
 
 ```javascript
-// 问题：无修饰键时，拖拽到底是平移还是框选？
+// Issue: Without modifier keys, is dragging for panning or rubberband selection?
 const graph = new Graph({
   container: 'container',
-  panning: { enabled: true },  // 无修饰键
+  panning: { enabled: true },  // No modifier key
 });
-graph.use(new Selection({ enabled: true, rubberband: true }));  // 也无修饰键
-// 结果：框选优先级更高，平移不生效
+graph.use(new Selection({ enabled: true, rubberband: true }));  // Also no modifier key
+// Result: Rubberband selection has higher priority, panning does not take effect
 ```
 
 ```javascript
-// 正确：使用修饰键区分
+// Correct: Use modifier keys to differentiate
 const graph = new Graph({
   container: 'container',
-  panning: { enabled: true, modifiers: 'ctrl' },  // ✅ Ctrl+拖拽平移
+  panning: { enabled: true, modifiers: 'ctrl' },  // ✅ Ctrl+drag for panning
 });
-graph.use(new Selection({ enabled: true, rubberband: true }));  // 普通拖拽框选
+graph.use(new Selection({ enabled: true, rubberband: true }));  // Normal drag for rubberband selection
 ```

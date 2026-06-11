@@ -1,21 +1,21 @@
 ---
 id: "x6-pattern-er"
-title: "X6 ER 实体关系图"
+title: "X6 ER Diagram"
 description: |
-  使用 X6 构建 ER 实体关系图的最佳实践。
-  适用于数据库建模、表结构可视化等场景。
+  Best practices for building ER (Entity-Relationship) diagrams using X6.
+  Suitable for database modeling, table structure visualization, and similar scenarios.
 
 library: "x6"
 version: "3.x"
 category: "patterns"
 subcategory: "er"
 tags:
-  - "ER图"
-  - "实体关系"
-  - "数据库"
-  - "表结构"
-  - "字段"
-  - "HTML节点"
+  - "ER Diagram"
+  - "Entity-Relationship"
+  - "Database"
+  - "Table Structure"
+  - "Fields"
+  - "HTML Node"
   - "er router"
 
 related:
@@ -24,29 +24,29 @@ related:
   - "x6-plugins"
 
 use_cases:
-  - "数据库表结构可视化"
-  - "实体关系建模"
-  - "表字段和关联展示"
+  - "Database Table Structure Visualization"
+  - "Entity-Relationship Modeling"
+  - "Table Fields and Associations Display"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## ⚠️ 关键约束（必须遵守）
+## ⚠️ Key Constraints (Must Comply)
 
-1. **必须先调用 `Shape.HTML.register()` 注册 `er-entity` 节点，再创建 Graph 实例和添加节点**
-2. **`Shape.HTML.register()` 中的 `html(cell)` 函数必须返回一个有效的 DOM 元素**（不能返回 HTML 字符串）
-3. **容器使用字符串 `'container'`**，禁止 `document.getElementById('container')`
-4. **禁止调用 `graph.render()`** — X6 自动渲染
-5. **禁止调用 `graph.dispose()`** — 会导致白屏
+1. **Must call `Shape.HTML.register()` to register the `er-entity` node before creating a Graph instance and adding nodes**
+2. **The `html(cell)` function in `Shape.HTML.register()` must return a valid DOM element** (cannot return an HTML string)
+3. **Use the string `'container'` for the container**, do not use `document.getElementById('container')`
+4. **Do not call `graph.render()`** — X6 renders automatically
+5. **Do not call `graph.dispose()`** — will cause a white screen
 
-## ER 图核心特征
+## ER Diagram Core Features
 
-- **表格式节点**：使用 HTML 节点展示表名 + 字段列表
-- **关系边**：1:1、1:N、N:M 标注
-- **ER 路由器**：`router: 'er'` 专用路由，避免边穿过节点
+- **Tabular Nodes**: Use HTML nodes to display table names + field lists
+- **Relationship Edges**: 1:1, 1:N, N:M annotations
+- **ER Router**: Dedicated routing with `router: 'er'` to prevent edges from passing through nodes
 
-## HTML 实体节点注册
+## HTML Entity Node Registration
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -77,12 +77,12 @@ Shape.HTML.register({
 });
 ```
 
-## 完整 ER 图示例
+## Complete ER Diagram Example
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
 
-// 注册 ER 实体节点（同上）
+// Register ER Entity Node (as above)
 Shape.HTML.register({ shape: 'er-entity', width: 200, height: 120, effect: ['data'], html(cell) { /* ... */ } });
 
 const graph = new Graph({
@@ -92,7 +92,7 @@ const graph = new Graph({
   mousewheel: { enabled: true, modifiers: 'ctrl' },
 });
 
-// 用户表
+// User Table
 const userTable = graph.addNode({
   shape: 'er-entity',
   x: 40, y: 60,
@@ -107,7 +107,7 @@ const userTable = graph.addNode({
   },
 });
 
-// 订单表
+// Order Table
 const orderTable = graph.addNode({
   shape: 'er-entity',
   x: 360, y: 40,
@@ -123,7 +123,7 @@ const orderTable = graph.addNode({
   },
 });
 
-// 商品表
+// Product Table
 const productTable = graph.addNode({
   shape: 'er-entity',
   x: 360, y: 240,
@@ -138,7 +138,7 @@ const productTable = graph.addNode({
   },
 });
 
-// 关系边
+// Relationship Edges
 graph.addEdge({
   source: userTable, target: orderTable,
   label: '1:N',
@@ -156,23 +156,23 @@ graph.addEdge({
 });
 ```
 
-## 关系类型标注
+## Relationship Type Annotation
 
 ```javascript
-// 1:1 关系
+// 1:1 Relationship
 graph.addEdge({ source: tableA, target: tableB, label: '1:1', router: 'er' });
 
-// 1:N 关系
+// 1:N Relationship
 graph.addEdge({ source: tableA, target: tableB, label: '1:N', router: 'er' });
 
-// N:M 关系（通常通过中间表）
+// N:M Relationship (typically through a middle table)
 graph.addEdge({ source: tableA, target: middleTable, label: 'N', router: 'er' });
 graph.addEdge({ source: tableB, target: middleTable, label: 'M', router: 'er' });
 ```
 
-## 动态调整高度
+## Dynamic Height Adjustment
 
-实体节点高度应随字段数量自适应：
+The height of entity nodes should adapt automatically based on the number of fields:
 
 ```javascript
 function createEntityNode(graph, config) {
@@ -191,26 +191,26 @@ function createEntityNode(graph, config) {
 }
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误：使用普通节点而非 HTML 节点导致渲染失败
+### Error: Rendering Failure Due to Using Regular Nodes Instead of HTML Nodes
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：试图用 rect 节点模拟 ER 表结构，导致结构复杂且无法正确渲染
+// Error: Attempting to simulate ER table structure using rect nodes, resulting in complex structure and incorrect rendering
 graph.createNode({
   shape: 'rect',
   x: 40,
   y: 60,
   width: 200,
   height: 120,
-  children: [/* 复杂的子元素结构 */]
+  children: [/* Complex child element structure */]
 });
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：使用 Shape.HTML.register 注册自定义 HTML 节点
+// Correct: Register a custom HTML node using Shape.HTML.register
 Shape.HTML.register({
   shape: 'er-entity',
   width: 200,
@@ -227,7 +227,7 @@ Shape.HTML.register({
   },
 });
 
-// 然后直接添加节点
+// Then directly add the node
 graph.addNode({
   shape: 'er-entity',
   x: 40,
@@ -242,11 +242,11 @@ graph.addNode({
 });
 ```
 
-### 错误：边未使用 router: 'er' 导致布局混乱
+### Error: Edge Not Using router: 'er' Causes Layout Chaos
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：未指定 router，边可能穿过节点
+// Error: No router specified, edge may pass through nodes
 graph.addEdge({
   source: tableA,
   target: tableB,
@@ -254,9 +254,9 @@ graph.addEdge({
 });
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：使用 router: 'er' 避免边穿过节点
+// Correct: Use router: 'er' to avoid edges passing through nodes
 graph.addEdge({
   source: tableA,
   target: tableB,
@@ -267,11 +267,11 @@ graph.addEdge({
 });
 ```
 
-### 错误：错误使用 Graph.registerNode 注册 HTML 节点
+### Error: Incorrect Use of Graph.registerNode to Register HTML Nodes
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：使用 Graph.registerNode 注册 HTML 节点，应使用 Shape.HTML.register
+// Error: Using Graph.registerNode to register HTML nodes, should use Shape.HTML.register instead
 Graph.registerNode('er-entity', {
   inherit: 'rect',
   width: 200,
@@ -317,9 +317,9 @@ Graph.registerNode('er-entity', {
 });
 ```
 
-**修正方法：**
+**Correction:**
 ```javascript
-// 正确：使用 Shape.HTML.register 注册 HTML 节点
+// Correct: Using Shape.HTML.register to register HTML nodes
 Shape.HTML.register({
   shape: 'er-entity',
   width: 200,
@@ -337,26 +337,26 @@ Shape.HTML.register({
 });
 ```
 
-### 错误：调用 graph.dispose() 导致图表白屏
+### Error: Calling graph.dispose() Causes the Chart to Go Blank
 
-**错误示例：**
+**Error Example:**
 ```javascript
-// 错误：调用 graph.dispose() 会销毁整个画布，导致图表白屏
+// Error: Calling graph.dispose() destroys the entire canvas, causing the chart to go blank
 const graph = new Graph({ container: 'container' });
 graph.addNode({ shape: 'rect', x: 100, y: 60, width: 120, height: 50, label: 'Temporary' });
-graph.dispose(); // ❌ 错误操作
+graph.dispose(); // ❌ Incorrect Operation
 ```
 
-**修正方法：**
+**Correction Method:**
 ```javascript
-// 正确：避免调用 graph.dispose()，如需重置画布请使用 graph.clearCells()
+// Correct: Avoid calling graph.dispose(). To reset the canvas, use graph.clearCells()
 const graph = new Graph({ container: 'container' });
 graph.addNode({ shape: 'rect', x: 100, y: 60, width: 120, height: 50, label: 'Temporary' });
 
-// 如需清空画布内容，请使用：
+// To clear canvas content, use:
 // graph.clearCells();
 
-// 如需保存状态后重新加载：
+// To save the state and reload:
 const jsonData = graph.toJSON();
 graph.clearCells();
 graph.fromJSON(jsonData);

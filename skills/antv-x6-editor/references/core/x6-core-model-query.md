@@ -1,8 +1,8 @@
 ---
 id: "x6-core-model-query"
-title: "X6 图模型查询与遍历 API"
+title: "X6 Graph Model Query and Traversal API"
 description: |
-  Graph Model 的图结构查询 API：获取邻居节点、连接边、前驱/后继、根/叶节点、图遍历搜索等。
+  Graph Model's graph structure query API: Retrieve neighboring nodes, connected edges, predecessors/successors, root/leaf nodes, graph traversal search, etc.
 library: x6
 version: 3.x
 category: "core"
@@ -18,24 +18,24 @@ tags:
   - getPredecessors
 ---
 
-# 图模型查询与遍历 API
+# Graph Model Query and Traversal API
 
-## 概述
+## Overview
 
-X6 的 Graph Model 提供丰富的图结构查询能力，用于获取节点间的拓扑关系（邻居、前驱、后继）、连接边、根/叶节点等。这些 API 通过 `graph.model` 或直接通过 `graph` 代理调用。
+X6's Graph Model provides rich graph structure query capabilities to retrieve topological relationships between nodes (neighbors, predecessors, successors), connected edges, root/leaf nodes, etc. These APIs can be accessed via `graph.model` or directly through the `graph` proxy.
 
-## 获取元素
+## Get Elements
 
 ### getCells / getNodes / getEdges
 
 ```javascript
-// 获取所有元素
+// Get all elements
 const cells = graph.getCells();
 
-// 只获取节点
+// Get only nodes
 const nodes = graph.getNodes();
 
-// 只获取边
+// Get only edges
 const edges = graph.getEdges();
 ```
 
@@ -45,156 +45,158 @@ const edges = graph.getEdges();
 const cell = graph.getCellById('node-1');
 ```
 
-## 连接边查询
+## Edge Query
 
-### getConnectedEdges — 获取与节点相连的所有边
+(Note: The original content provided only contained a header in Chinese. The translation above adheres to the strict instructions provided, maintaining the Markdown syntax and structure while translating the header to English.)
+
+### getConnectedEdges — Get all edges connected to a node
 
 ```javascript
-// 获取所有连接边（入边 + 出边）
+// Get all connected edges (incoming + outgoing)
 const edges = graph.getConnectedEdges(node);
 
-// 只获取出边
+// Get only outgoing edges
 const outEdges = graph.getConnectedEdges(node, { outgoing: true });
 
-// 只获取入边
+// Get only incoming edges
 const inEdges = graph.getConnectedEdges(node, { incoming: true });
 
-// 包含间接连接（通过边连接的边）
+// Include indirect connections (edges connected through edges)
 const allEdges = graph.getConnectedEdges(node, { indirect: true });
 
-// 深度搜索（包含嵌入子节点的连接边）
+// Deep search (include edges connected to embedded child nodes)
 const deepEdges = graph.getConnectedEdges(node, { deep: true });
 ```
 
-**options 参数：**
+**options parameter:**
 
-| 参数 | 类型 | 说明 |
+| Parameter | Type | Description |
 |------|------|------|
-| `incoming` | boolean | 包含入边 |
-| `outgoing` | boolean | 包含出边 |
-| `indirect` | boolean | 包含间接连接 |
-| `deep` | boolean | 包含嵌入子节点的边 |
-| `enclosed` | boolean | deep 模式下是否包含内部边 |
+| `incoming` | boolean | Include incoming edges |
+| `outgoing` | boolean | Include outgoing edges |
+| `indirect` | boolean | Include indirect connections |
+| `deep` | boolean | Include edges connected to embedded child nodes |
+| `enclosed` | boolean | Whether to include internal edges in deep mode |
 
-> 注意：`incoming` 和 `outgoing` 都不传时，默认都为 `true`。
+> Note: If neither `incoming` nor `outgoing` is provided, both default to `true`.
 
-### getOutgoingEdges — 获取出边
+### getOutgoingEdges — Get Outgoing Edges
 
 ```javascript
 const outEdges = graph.getOutgoingEdges(node);
-// 返回 Edge[] | null
+// Returns Edge[] | null
 ```
 
-### getIncomingEdges — 获取入边
+### getIncomingEdges — Get Incoming Edges
 
 ```javascript
 const inEdges = graph.getIncomingEdges(node);
-// 返回 Edge[] | null
+// Returns Edge[] | null
 ```
 
-## 邻居节点查询
+## Neighbor Node Query
 
-### getNeighbors — 获取邻居节点
+### getNeighbors — Get Neighbor Nodes
 
 ```javascript
-// 获取所有邻居（入方向 + 出方向）
+// Get all neighbors (incoming + outgoing)
 const neighbors = graph.getNeighbors(node);
 
-// 只获取下游邻居
+// Get only downstream neighbors
 const downstream = graph.getNeighbors(node, { outgoing: true });
 
-// 只获取上游邻居
+// Get only upstream neighbors
 const upstream = graph.getNeighbors(node, { incoming: true });
 ```
 
-### isNeighbor — 判断两节点是否为邻居
+### isNeighbor — Determine if Two Nodes Are Neighbors
 
 ```javascript
 const isNear = graph.isNeighbor(node1, node2);
 const isDownstream = graph.isNeighbor(node1, node2, { outgoing: true });
 ```
 
-## 前驱与后继
+## Predecessor and Successor
 
-### getSuccessors — 获取所有后继节点
+### getSuccessors — Get All Successor Nodes
 
-从当前节点沿出边方向可达的所有节点（递归遍历）：
+Retrieves all nodes reachable from the current node along the outgoing edges (recursive traversal):
 
 ```javascript
 const successors = graph.getSuccessors(node);
 
-// 限制距离
-const near = graph.getSuccessors(node, { distance: 1 });  // 只获取直接后继
-const farther = graph.getSuccessors(node, { distance: [2, 3] });  // 距离 2~3 的后继
+// Limit distance
+const near = graph.getSuccessors(node, { distance: 1 });  // Only get direct successors
+const farther = graph.getSuccessors(node, { distance: [2, 3] });  // Successors at distance 2~3
 ```
 
-### isSuccessor — 判断是否为后继
+### isSuccessor — Determine if it is a successor
 
 ```javascript
-const isAfter = graph.isSuccessor(node1, node2);  // node2 是否是 node1 的后继
+const isAfter = graph.isSuccessor(node1, node2);  // Whether node2 is a successor of node1
 ```
 
-### getPredecessors — 获取所有前驱节点
+### getPredecessors — Get All Predecessor Nodes
 
-从当前节点沿入边方向可达的所有节点（递归遍历）：
+All nodes reachable from the current node along the incoming edges (recursive traversal):
 
 ```javascript
 const predecessors = graph.getPredecessors(node);
 ```
 
-### isPredecessor — 判断是否为前驱
+### isPredecessor — Determine if it is a Predecessor
 
 ```javascript
-const isBefore = graph.isPredecessor(node1, node2);  // node2 是否是 node1 的前驱
+const isBefore = graph.isPredecessor(node1, node2);  // Whether node2 is a predecessor of node1
 ```
 
-## 根节点与叶节点
+## Root Node and Leaf Node
 
-### getRoots — 获取根节点（无入边的节点）
+### getRoots — Get Root Nodes (Nodes with No Incoming Edges)
 
 ```javascript
 const roots = graph.getRootNodes();
 ```
 
-### getLeafs — 获取叶节点（无出边的节点）
+### getLeafs — Get Leaf Nodes (Nodes with No Outgoing Edges)
 
 ```javascript
 const leafs = graph.getLeafNodes();
 ```
 
-### isRoot / isLeaf — 判断是否为根/叶
+### isRoot / isLeaf — Determine if a node is a root or leaf
 
 ```javascript
 graph.isRootNode(node);  // true if no incoming edges
 graph.isLeafNode(node);  // true if no outgoing edges
 ```
 
-## 图遍历搜索
+## Graph Traversal Search
 
-### searchCell — 图搜索（BFS/DFS）
+### searchCell — Graph Search (BFS/DFS)
 
 ```javascript
-// 从 node 开始广度优先搜索
+// Perform a breadth-first search starting from the node
 graph.searchCell(node, (cell, distance) => {
-  console.log(`${cell.id} 距离起点: ${distance}`);
+  console.log(`${cell.id} distance from start: ${distance}`);
 }, { breadthFirst: true });
 
-// 深度优先搜索（默认）
+// Depth-first search (default)
 graph.searchCell(node, (cell, distance) => {
   if (cell.id === 'target') {
-    return false;  // 返回 false 停止搜索
+    return false;  // Return false to stop the search
   }
 });
 ```
 
-### getShortestPath — 最短路径
+### getShortestPath — Shortest Path
 
 ```javascript
 const path = graph.getShortestPath(sourceNode, targetNode);
-// 返回节点 ID 数组
+// Returns an array of node IDs
 ```
 
-## 完整示例：DAG 拓扑分析
+## Complete Example: DAG Topology Analysis
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -211,41 +213,41 @@ graph.addEdge({ source: a, target: c });
 graph.addEdge({ source: b, target: d });
 graph.addEdge({ source: c, target: d });
 
-// 查询 A 的后继
+// Query successors of A
 const successors = graph.getSuccessors(a);
-console.log('A 的后继:', successors.map(n => n.id));  // [B, C, D]
+console.log('Successors of A:', successors.map(n => n.id));  // [B, C, D]
 
-// 查询 D 的前驱
+// Query predecessors of D
 const predecessors = graph.getPredecessors(d);
-console.log('D 的前驱:', predecessors.map(n => n.id));  // [B, C, A]
+console.log('Predecessors of D:', predecessors.map(n => n.id));  // [B, C, A]
 
-// 获取根节点
+// Get root nodes
 const roots = graph.getRootNodes();
-console.log('根节点:', roots.map(n => n.id));  // [A]
+console.log('Root nodes:', roots.map(n => n.id));  // [A]
 
-// 获取叶节点
+// Get leaf nodes
 const leafs = graph.getLeafNodes();
-console.log('叶节点:', leafs.map(n => n.id));  // [D]
+console.log('Leaf nodes:', leafs.map(n => n.id));  // [D]
 
-// 获取 B 的邻居
+// Get neighbors of B
 const neighbors = graph.getNeighbors(b);
-console.log('B 的邻居:', neighbors.map(n => n.id));  // [A, D]
+console.log('Neighbors of B:', neighbors.map(n => n.id));  // [A, D]
 ```
 
-## 常见错误
+## Common Errors
 
 ```javascript
-// ❌ 错误：getConnectedEdges 返回可能为空数组，而 getOutgoingEdges 返回 null
+// ❌ Error: getConnectedEdges returns a possibly empty array, while getOutgoingEdges returns null
 const edges = graph.getOutgoingEdges(node);
 edges.forEach(e => ...);  // TypeError: null.forEach
 
-// ✅ 正确：先判空
+// ✅ Correct: Check for null first
 const edges = graph.getOutgoingEdges(node);
 if (edges) {
   edges.forEach(e => ...);
 }
 
-// 或使用 getConnectedEdges（始终返回数组）
+// Or use getConnectedEdges (always returns an array)
 const edges = graph.getConnectedEdges(node, { outgoing: true });
-edges.forEach(e => ...);  // 安全，空数组
+edges.forEach(e => ...);  // Safe, empty array
 ```

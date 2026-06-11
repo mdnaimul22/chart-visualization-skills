@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-selection"
-title: "X6 Selection 框选插件"
+title: "X6 Selection Box Plugin"
 description: |
-  Selection 插件提供节点/边的点选、多选、框选能力，支持选中框显示、修饰键多选、选中元素拖拽移动等功能。
+  The Selection plugin provides single-click, multi-select, and box selection capabilities for nodes/edges, supporting features such as selection box display, modifier key multi-select, and drag-and-move of selected elements.
 
 library: "x6"
 version: "3.x"
@@ -10,9 +10,9 @@ category: "plugins"
 subcategory: "selection"
 tags:
   - "Selection"
-  - "选中"
-  - "框选"
-  - "多选"
+  - "Select"
+  - "Box Selection"
+  - "Multi-select"
   - "rubberband"
   - "select"
   - "unselect"
@@ -24,18 +24,18 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "框选多个节点"
-  - "点击选中节点/边"
-  - "Ctrl/Meta 多选"
-  - "获取选中元素列表"
-  - "选中后批量删除"
-  - "选中后批量移动"
+  - "Box select multiple nodes"
+  - "Click to select nodes/edges"
+  - "Ctrl/Meta multi-select"
+  - "Get list of selected elements"
+  - "Batch delete after selection"
+  - "Batch move after selection"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Selection } from '@antv/x6';
@@ -43,117 +43,117 @@ import { Graph, Selection } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Selection({
   enabled: true,
-  rubberband: true,  // 启用框选
+  rubberband: true,  // Enable box selection
 }));
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean | `false` | 是否启用选择功能 |
-| `rubberband` | boolean | `false` | 是否启用框选（拖拽矩形框选中元素） |
-| `multiple` | boolean | `true` | 是否允许多选 |
-| `strict` | boolean | `false` | 严格模式：框选时元素必须完全在框内才被选中 |
-| `showNodeSelectionBox` | boolean | `false` | 选中节点时是否显示选中框 |
-| `showEdgeSelectionBox` | boolean | `false` | 选中边时是否显示选中框 |
-| `movable` | boolean | `true` | 选中的元素是否可以被拖拽移动 |
-| `multipleSelectionModifiers` | string[] | `['ctrl', 'meta']` | 多选修饰键 |
-| `rubberband` | boolean | `false` | 启用框选 |
-| `filter` | function/string[] | - | 过滤不可选中的元素 |
-| `content` | function | - | 自定义选中框显示内容 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean | `false` | Whether to enable the selection feature |
+| `rubberband` | boolean | `false` | Whether to enable rubberband selection (drag a rectangle to select elements) |
+| `multiple` | boolean | `true` | Whether to allow multiple selections |
+| `strict` | boolean | `false` | Strict mode: elements must be completely within the selection box to be selected |
+| `showNodeSelectionBox` | boolean | `false` | Whether to display the selection box when a node is selected |
+| `showEdgeSelectionBox` | boolean | `false` | Whether to display the selection box when an edge is selected |
+| `movable` | boolean | `true` | Whether selected elements can be dragged and moved |
+| `multipleSelectionModifiers` | string[] | `['ctrl', 'meta']` | Modifier keys for multiple selection |
+| `rubberband` | boolean | `false` | Enable rubberband selection |
+| `filter` | function/string[] | - | Filter unselectable elements |
+| `content` | function | - | Customize the content displayed in the selection box |
 
-## 编程式 API
+## Programmatic API
 
-Selection 插件注册后，以下方法自动挂载到 graph 实例：
+After the Selection plugin is registered, the following methods are automatically mounted to the graph instance:
 
 ```javascript
-// 选中元素（支持节点ID、节点实例、数组）
+// Select elements (supports node ID, node instance, array)
 graph.select(node);
 graph.select([node1, node2]);
 graph.select('node-id');
 
-// 取消选中
+// Deselect elements
 graph.unselect(node);
 graph.unselect([node1, node2]);
 
-// 判断是否选中
+// Check if an element is selected
 graph.isSelected(node);       // boolean
 graph.isSelected('node-id');  // boolean
 
-// 获取选中元素
+// Get selected elements
 graph.getSelectedCells();      // Cell[]
 graph.getSelectedCellCount();  // number
 
-// 清空选择
+// Clear selection
 graph.cleanSelection();
 
-// 重置选择（替换当前选中为新元素）
+// Reset selection (replace current selection with new elements)
 graph.resetSelection([node1, node2]);
 
-// 判断选择是否为空
+// Check if selection is empty
 graph.isSelectionEmpty();  // boolean
 ```
 
-## 动态控制 API
+## Dynamic Control API
 
 ```javascript
-// 启用/禁用选择
+// Enable/Disable Selection
 graph.enableSelection();
 graph.disableSelection();
 graph.toggleSelection(true);
 graph.isSelectionEnabled();  // boolean
 
-// 启用/禁用多选
+// Enable/Disable Multiple Selection
 graph.enableMultipleSelection();
 graph.disableMultipleSelection();
 graph.toggleMultipleSelection(true);
 graph.isMultipleSelection();  // boolean
 
-// 启用/禁用框选
+// Enable/Disable Rubberband
 graph.enableRubberband();
 graph.disableRubberband();
 graph.toggleRubberband(true);
 graph.isRubberbandEnabled();  // boolean
 
-// 启用/禁用严格框选
+// Enable/Disable Strict Rubberband
 graph.enableStrictRubberband();
 graph.disableStrictRubberband();
 graph.toggleStrictRubberband(true);
 graph.isStrictRubberband();  // boolean
 
-// 选中元素是否可拖拽移动
+// Allow Selected Elements to be Dragged
 graph.enableSelectionMovable();
 graph.disableSelectionMovable();
 graph.toggleSelectionMovable(true);
 graph.isSelectionMovable();  // boolean
 
-// 设置框选修饰键
+// Set Rubberband Modifier Keys
 graph.setRubberbandModifiers('alt');
 graph.setRubberbandModifiers(['ctrl', 'shift']);
 
-// 设置选中过滤器
+// Set Selection Filter
 graph.setSelectionFilter((cell) => cell.isNode());
 
-// 设置选中框自定义内容
+// Set Custom Content for Selection Box
 graph.setSelectionDisplayContent((selection, contentElement) => {
   contentElement.textContent = `${selection.length} items`;
 });
 ```
 
-## 事件监听
+## Event Listening
 
 ```javascript
-// 选中变化事件
+// Selection change event
 graph.on('selection:changed', ({ added, removed, selected }) => {
-  // added: 新增选中的元素
-  // removed: 取消选中的元素
-  // selected: 当前所有选中元素
-  console.log('当前选中:', selected.length, '个元素');
+  // added: Newly selected elements
+  // removed: Deselected elements
+  // selected: All currently selected elements
+  console.log('Currently selected:', selected.length, 'elements');
 });
 ```
 
-## 完整示例：框选 + 快捷键删除
+## Complete Example: Box Selection + Shortcut Key Deletion
 
 ```javascript
 import { Graph, Selection, Keyboard } from '@antv/x6';
@@ -173,7 +173,7 @@ graph.use(new Selection({
 }));
 graph.use(new Keyboard({ enabled: true }));
 
-// Delete 键删除选中元素
+// Delete key to remove selected elements
 graph.bindKey('delete', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -181,58 +181,58 @@ graph.bindKey('delete', () => {
   }
 });
 
-// Ctrl+A 全选
+// Ctrl+A to select all
 graph.bindKey('ctrl+a', () => {
   graph.select(graph.getCells());
 });
 
-// 添加示例数据
+// Add sample data
 graph.addNode({ id: 'node1', x: 100, y: 100, width: 80, height: 40, label: 'Node 1' });
 graph.addNode({ id: 'node2', x: 300, y: 100, width: 80, height: 40, label: 'Node 2' });
 graph.addEdge({ source: 'node1', target: 'node2' });
 ```
 
-## 过滤器示例：仅允许选中节点
+## Filter Example: Only Allow Node Selection
 
 ```javascript
 graph.use(new Selection({
   enabled: true,
   rubberband: true,
-  filter: (cell) => cell.isNode(),  // 边不可被选中
+  filter: (cell) => cell.isNode(),  // edges cannot be selected
 }));
 ```
 
-也可以通过 shape 名过滤：
+Filtering by shape name is also possible:
 
 ```javascript
 graph.use(new Selection({
   enabled: true,
-  filter: ['rect', 'circle'],  // 仅允许选中 rect 和 circle 形状
+  filter: ['rect', 'circle'],  // only allow selection of rect and circle shapes
 }));
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 未注册插件就调用 graph.select()
+### ❌ Calling graph.select() without registering the plugin
 
 ```javascript
-// 错误：未注册 Selection 插件
+// Error: Selection plugin not registered
 const graph = new Graph({ container: 'container' });
-graph.select(node);  // ❌ 无效，不会报错但不生效
+graph.select(node);  // ❌ Invalid, no error but ineffective
 ```
 
 ```javascript
-// 正确：先注册插件
+// Correct: Register the plugin first
 import { Graph, Selection } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Selection({ enabled: true }));
 graph.select(node);  // ✅
 ```
 
-### ❌ 在构造函数中配置 selecting
+### ❌ Configuring `selecting` in the Constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Incorrect: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   selecting: { enabled: true, rubberband: true },  // ❌
@@ -240,7 +240,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确：使用 graph.use()
+// Correct: Use graph.use()
 import { Graph, Selection } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Selection({ enabled: true, rubberband: true }));  // ✅

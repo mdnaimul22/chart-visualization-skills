@@ -1,9 +1,9 @@
 ---
 id: "x6-core-port-layout"
-title: "X6 连接桩布局（Port Layout）"
+title: "X6 Port Layout"
 description: |
-  连接桩在节点上的位置布局策略和标签布局策略。
-  port layout 控制端口在节点边界上的分布位置，port label layout 控制端口标签的显示位置和方向。
+  Positioning strategy for ports on nodes and layout strategy for port labels.
+  Port layout controls the distribution of ports on the node boundary, while port label layout controls the display position and direction of port labels.
 
 library: "x6"
 version: "3.x"
@@ -12,8 +12,8 @@ subcategory: "port-layout"
 tags:
   - "port"
   - "layout"
-  - "连接桩布局"
-  - "端口位置"
+  - "port layout"
+  - "port position"
   - "top"
   - "bottom"
   - "left"
@@ -29,29 +29,29 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "控制连接桩在节点四边的分布"
-  - "自定义连接桩的绝对位置"
-  - "椭圆形分布端口"
-  - "控制端口标签的位置和方向"
+  - "Control the distribution of ports on the four sides of a node"
+  - "Customize the absolute position of ports"
+  - "Distribute ports in an elliptical pattern"
+  - "Control the position and direction of port labels"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-X6 中端口的布局分为两层：
+In X6, port layout is divided into two layers:
 
-- **Port Layout（端口位置布局）**：决定端口在节点 BBox 上的坐标位置
-- **Port Label Layout（端口标签布局）**：决定端口标签相对于端口的位置、角度和文字锚点
+- **Port Layout**: Determines the coordinates of the port on the node's BBox.
+- **Port Label Layout**: Determines the position, angle, and text anchor of the port label relative to the port.
 
-两者通过端口组（group）的 `position` 和 `label.position` 字段配置。
+Both are configured through the `position` and `label.position` fields of the port group (group).
 
-## 端口位置布局（Port Layout）
+## Port Layout (Port Layout)
 
-### 配置方式
+### Configuration Method
 
-在节点的 `ports.groups` 中通过 `position` 字段设置：
+Set the `position` field in the node's `ports.groups`:
 
 ```javascript
 graph.addNode({
@@ -63,11 +63,11 @@ graph.addNode({
   ports: {
     groups: {
       in: {
-        position: 'left',  // 字符串简写
+        position: 'left',  // String shorthand
         attrs: { circle: { r: 5, magnet: true, stroke: '#8f8f8f', fill: '#fff' } },
       },
       out: {
-        position: { name: 'right', args: { strict: true } },  // 对象格式带参数
+        position: { name: 'right', args: { strict: true } },  // Object format with parameters
         attrs: { circle: { r: 5, magnet: true, stroke: '#8f8f8f', fill: '#fff' } },
       },
     },
@@ -80,73 +80,73 @@ graph.addNode({
 });
 ```
 
-### 内置端口位置布局
+### Built-in Port Position Layout
 
-| 名称 | 说明 |
+| Name | Description |
 |------|------|
-| `'left'` | 沿节点左边均匀分布 |
-| `'right'` | 沿节点右边均匀分布 |
-| `'top'` | 沿节点顶边均匀分布 |
-| `'bottom'` | 沿节点底边均匀分布 |
-| `'line'` | 沿自定义线段均匀分布 |
-| `'absolute'` | 每个端口独立指定绝对坐标 |
-| `'ellipse'` | 沿椭圆弧分布 |
-| `'ellipseSpread'` | 沿椭圆均匀展开分布 |
+| `'left'` | Evenly distributed along the left side of the node |
+| `'right'` | Evenly distributed along the right side of the node |
+| `'top'` | Evenly distributed along the top side of the node |
+| `'bottom'` | Evenly distributed along the bottom side of the node |
+| `'line'` | Evenly distributed along a custom line segment |
+| `'absolute'` | Each port is independently assigned absolute coordinates |
+| `'ellipse'` | Distributed along an elliptical arc |
+| `'ellipseSpread'` | Evenly spread distribution along an ellipse |
 
-### left / right / top / bottom 参数
+### left / right / top / bottom Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `strict` | `boolean` | `false` | 是否严格等间距。`false`：端口占据中间区域均匀分布；`true`：包含两端边距的等间距分布 |
-| `dx` | `number` | `0` | 每个端口的 X 偏移 |
-| `dy` | `number` | `0` | 每个端口的 Y 偏移 |
+| `strict` | `boolean` | `false` | Whether to use strict equal spacing. `false`: Ports are evenly distributed in the middle area; `true`: Equal spacing distribution including margins on both ends |
+| `dx` | `number` | `0` | X offset for each port |
+| `dy` | `number` | `0` | Y offset for each port |
 
-**strict 的区别**：
-- `strict: false`（默认）：N 个端口将边分成 N 等份，端口在每个等份的中点。例如 2 个端口在 1/4 和 3/4 位置。
-- `strict: true`：N 个端口将边分成 N+1 等份，端口在等分点上。例如 2 个端口在 1/3 和 2/3 位置。
+**Difference in `strict`**:
+- `strict: false` (default): N ports divide the edge into N equal parts, with ports at the midpoint of each part. For example, 2 ports are at the 1/4 and 3/4 positions.
+- `strict: true`: N ports divide the edge into N+1 equal parts, with ports at the division points. For example, 2 ports are at the 1/3 and 2/3 positions.
 
-### line 参数
+### line parameter
 
-沿自定义线段分布端口。
+Distribute ports along a custom line segment.
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `start` | `{ x, y }` | 节点左上角 | 线段起点（相对于节点 BBox） |
-| `end` | `{ x, y }` | 节点右下角 | 线段终点（相对于节点 BBox） |
-| `strict` | `boolean` | `false` | 是否严格等间距 |
-| `dx` | `number` | `0` | X 偏移 |
-| `dy` | `number` | `0` | Y 偏移 |
+| `start` | `{ x, y }` | Top-left corner of the node | Start point of the line segment (relative to node BBox) |
+| `end` | `{ x, y }` | Bottom-right corner of the node | End point of the line segment (relative to node BBox) |
+| `strict` | `boolean` | `false` | Whether to distribute ports with strict equal spacing |
+| `dx` | `number` | `0` | X offset |
+| `dy` | `number` | `0` | Y offset |
 
-### absolute 参数
+### absolute Parameter
 
-每个端口独立指定位置。通过端口 items 中每个端口的 `args` 设置：
+Each port independently specifies its position. Set through the `args` of each port in the port items:
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `x` | `number \| string` | `0` | X 坐标，支持百分比如 `'50%'` |
-| `y` | `number \| string` | `0` | Y 坐标，支持百分比如 `'50%'` |
-| `angle` | `number` | `0` | 旋转角度 |
+| `x` | `number \| string` | `0` | X coordinate, supports percentage like `'50%'` |
+| `y` | `number \| string` | `0` | Y coordinate, supports percentage like `'50%'` |
+| `angle` | `number` | `0` | Rotation angle |
 
-### ellipse / ellipseSpread 参数
+### ellipse / ellipseSpread Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `start` | `number` | `0` | 起始角度（度数） |
-| `step` | `number` | `20`（ellipse）/ `360/N`（ellipseSpread） | 角度步长 |
-| `compensateRotate` | `boolean` | `false` | 是否补偿旋转角度，使端口始终朝外 |
-| `dr` | `number` | `0` | 径向偏移（正值向外，负值向内） |
-| `dx` | `number` | `0` | X 偏移 |
-| `dy` | `number` | `0` | Y 偏移 |
+| `start` | `number` | `0` | Starting angle (in degrees) |
+| `step` | `number` | `20` (ellipse) / `360/N` (ellipseSpread) | Angle step |
+| `compensateRotate` | `boolean` | `false` | Whether to compensate for rotation angle, keeping ports always facing outward |
+| `dr` | `number` | `0` | Radial offset (positive value outward, negative value inward) |
+| `dx` | `number` | `0` | X offset |
+| `dy` | `number` | `0` | Y offset |
 
-**ellipse vs ellipseSpread**：
-- `ellipse`：端口以 `start` 为中心，向两侧按 `step` 角度展开
-- `ellipseSpread`：端口沿椭圆均匀分布，步长自动计算为 `360/N`
+**ellipse vs ellipseSpread**:
+- `ellipse`: Ports expand from the center at `start` angle, spreading to both sides by `step` angle
+- `ellipseSpread`: Ports are evenly distributed along the ellipse, with step automatically calculated as `360/N`
 
-## 端口标签布局（Port Label Layout）
+## Port Label Layout (Port Label Layout)
 
-### 配置方式
+### Configuration Method
 
-在端口组的 `label.position` 中设置：
+Set in the `label.position` of the port group:
 
 ```javascript
 ports: {
@@ -154,7 +154,7 @@ ports: {
     in: {
       position: 'left',
       label: {
-        position: 'left',  // 标签显示在端口左侧
+        position: 'left',  // Label displayed on the left side of the port
       },
       attrs: { circle: { r: 5, magnet: true, stroke: '#8f8f8f', fill: '#fff' } },
     },
@@ -162,37 +162,37 @@ ports: {
 }
 ```
 
-### 内置标签布局
+### Built-in Label Layout
 
-| 名称 | 说明 |
+| Name | Description |
 |------|------|
-| `'left'` | 标签在端口左侧，右对齐 |
-| `'right'` | 标签在端口右侧，左对齐 |
-| `'top'` | 标签在端口上方，居中 |
-| `'bottom'` | 标签在端口下方，居中 |
-| `'outside'` | 标签在端口外侧（相对于节点中心） |
-| `'outsideOriented'` | 同 outside，但文字方向跟随角度 |
-| `'inside'` | 标签在端口内侧（靠近节点中心） |
-| `'insideOriented'` | 同 inside，但文字方向跟随角度 |
-| `'radial'` | 径向布局，标签沿径向向外偏移 |
-| `'radialOriented'` | 同 radial，但文字方向跟随径向角度 |
-| `'manual'` | 手动指定位置 |
+| `'left'` | Label on the left side of the port, right-aligned |
+| `'right'` | Label on the right side of the port, left-aligned |
+| `'top'` | Label above the port, centered |
+| `'bottom'` | Label below the port, centered |
+| `'outside'` | Label outside the port (relative to the node center) |
+| `'outsideOriented'` | Same as outside, but text orientation follows the angle |
+| `'inside'` | Label inside the port (closer to the node center) |
+| `'insideOriented'` | Same as inside, but text orientation follows the angle |
+| `'radial'` | Radial layout, label offset outward along the radial direction |
+| `'radialOriented'` | Same as radial, but text orientation follows the radial angle |
+| `'manual'` | Manually specify the position |
 
-### outside / inside 参数
+### outside / inside Parameters
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number` | `15` | 标签与端口的距离 |
+| `offset` | `number` | `15` | Distance between the label and the port |
 
-### radial 参数
+### radial Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | `number` | `20` | 标签沿径向的偏移距离 |
+| `offset` | `number` | `20` | Offset distance of the label along the radial direction |
 
-## 完整示例
+## Complete Example
 
-### 四边端口（最常用）
+### Four-Sided Ports (Most Commonly Used)
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -210,7 +210,7 @@ graph.addNode({
   y: 150,
   width: 160,
   height: 80,
-  label: '处理节点',
+  label: 'Processing Node',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
   ports: {
     groups: {
@@ -226,15 +226,15 @@ graph.addNode({
       },
     },
     items: [
-      { id: 'in1', group: 'in', attrs: { text: { text: '输入1' } } },
-      { id: 'in2', group: 'in', attrs: { text: { text: '输入2' } } },
-      { id: 'out1', group: 'out', attrs: { text: { text: '输出' } } },
+      { id: 'in1', group: 'in', attrs: { text: { text: 'Input 1' } } },
+      { id: 'in2', group: 'in', attrs: { text: { text: 'Input 2' } } },
+      { id: 'out1', group: 'out', attrs: { text: { text: 'Output' } } },
     ],
   },
 });
 ```
 
-### 绝对定位端口
+### Absolute Positioning of Ports
 
 ```javascript
 graph.addNode({
@@ -243,7 +243,7 @@ graph.addNode({
   y: 100,
   width: 160,
   height: 80,
-  label: '自定义端口位置',
+  label: 'Custom Port Position',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
   ports: {
     groups: {
@@ -261,7 +261,7 @@ graph.addNode({
 });
 ```
 
-### 椭圆分布端口
+### Elliptical Distribution Ports
 
 ```javascript
 graph.addNode({
@@ -270,7 +270,7 @@ graph.addNode({
   y: 150,
   width: 120,
   height: 120,
-  label: '服务',
+  label: 'Service',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f' } },
   ports: {
     groups: {
@@ -290,12 +290,12 @@ graph.addNode({
 });
 ```
 
-### strict 模式对比
+### Strict Mode Comparison
 
 ```javascript
-// 2 个端口在左边：
-// strict: false → 位于 1/4 和 3/4 处（默认，视觉上更居中）
-// strict: true  → 位于 1/3 和 2/3 处（等间距，含两端间距）
+// 2 ports on the left:
+// strict: false → located at 1/4 and 3/4 (default, visually more centered)
+// strict: true  → located at 1/3 and 2/3 (equally spaced, including end spacing)
 
 graph.addNode({
   shape: 'rect',
@@ -315,43 +315,43 @@ graph.addNode({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆 port layout 和 port label layout
+### ❌ Confusing port layout with port label layout
 
 ```javascript
-// 错误：position 是端口位置布局，不是标签位置
+// Incorrect: position is the port position layout, not the label position
 ports: {
   groups: {
     in: {
-      position: 'outside', // ❌ 'outside' 是标签布局，不是端口位置布局
+      position: 'outside', // ❌ 'outside' is a label layout, not a port position layout
     },
   },
 }
 
-// 正确
+// Correct
 ports: {
   groups: {
     in: {
-      position: 'left',               // ✅ 端口位置布局
-      label: { position: 'outside' }, // ✅ 标签布局
+      position: 'left',               // ✅ Port position layout
+      label: { position: 'outside' }, // ✅ Label layout
     },
   },
 }
 ```
 
-### ❌ absolute 布局忘记在 items 中传 args
+### ❌ Forgot to pass args in items for absolute layout
 
 ```javascript
-// 错误：absolute 需要每个 item 指定位置
+// Error: absolute requires each item to specify a position
 ports: {
   groups: { custom: { position: 'absolute' } },
   items: [
-    { id: 'p1', group: 'custom' }, // ❌ 缺少 args，默认 (0,0)
+    { id: 'p1', group: 'custom' }, // ❌ Missing args, defaults to (0,0)
   ],
 }
 
-// 正确
+// Correct
 ports: {
   groups: { custom: { position: 'absolute' } },
   items: [

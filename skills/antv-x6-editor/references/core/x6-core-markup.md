@@ -1,11 +1,11 @@
 ---
 id: "x6-core-markup"
-title: "X6 Markup（DOM 结构定义）"
+title: "X6 Markup (DOM Structure Definition)"
 description: |
-  X6 节点 / 边 / 端口的 DOM 结构通过 markup 描述。
-  本文档基于 src/view/markup.ts 与 src/shape/util.ts 的真实实现，
-  系统讲解 MarkupJSONMarkup 字段、selector / groupSelector 机制、
-  内置 shape 默认 markup、自定义 shape markup 编写规范、字符串 markup 兼容写法。
+  The DOM structure of X6 nodes, edges, and ports is described using markup.
+  This document is based on the actual implementation in src/view/markup.ts and src/shape/util.ts,
+  systematically explaining the MarkupJSONMarkup field, selector/groupSelector mechanism,
+  default markup for built-in shapes, custom shape markup writing conventions, and string markup compatibility syntax.
 
 library: "x6"
 version: "3.x"
@@ -17,7 +17,6 @@ tags:
   - "groupSelector"
   - "tagName"
   - "DOM"
-  - "自定义形状"
   - "custom shape"
   - "registerNode"
   - "label"
@@ -32,69 +31,69 @@ related:
   - "x6-intermediate-custom-edge"
 
 use_cases:
-  - "自定义节点形状（registerNode 时声明 markup）"
-  - "自定义边形状（双线、加粗 hit-area 等）"
-  - "理解 attrs 中 selector（body / label / line）的来源"
-  - "通过 selector 在 markup 多个子元素上独立设置样式"
-  - "通过 groupSelector 一次性给多个子元素设置同一属性"
+  - "Custom node shapes (declaring markup when using registerNode)"
+  - "Custom edge shapes (double lines, bold hit-area, etc.)"
+  - "Understanding the origin of selectors in attrs (body/label/line)"
+  - "Independently setting styles on multiple child elements in markup via selector"
+  - "Setting the same attribute for multiple child elements at once using groupSelector"
 
 anti_patterns:
-  - "在 markup 中重复使用相同的 selector"
-  - "把 attrs 的 key 写成 CSS 选择器（应是 markup 里 selector / groupSelector 的名字）"
-  - "在 HTML 节点的 markup 里混用 SVG tagName"
-  - "在边 markup 中漏写 lines groupSelector 导致 attrs.lines 失效"
+  - "Reusing the same selector in markup"
+  - "Writing attrs keys as CSS selectors (should be the name of selector/groupSelector in markup)"
+  - "Mixing SVG tagName in the markup of HTML nodes"
+  - "Omitting lines groupSelector in edge markup, causing attrs.lines to fail"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Markup** 是 X6 中节点 / 边 / 端口 / 标签的**底层 DOM 结构描述**。同一个 cell 的 `attrs` 配置必须通过 markup 中声明的 `selector` 或 `groupSelector` 引用到具体的 DOM 元素，才能正确生效。
+**Markup** is the **underlying DOM structure description** for nodes / edges / ports / labels in X6. The `attrs` configuration of the same cell must reference the specific DOM element through the `selector` or `groupSelector` declared in the markup to take effect correctly.
 
-> 源码位置：`src/view/markup.ts` — `parseJSONMarkup` 负责把 JSON 描述递归构建为 SVG / XHTML 节点。
+> Source code location: `src/view/markup.ts` — `parseJSONMarkup` is responsible for recursively constructing the JSON description into SVG / XHTML nodes.
 
-## MarkupJSONMarkup 字段速查
+## MarkupJSONMarkup Field Quick Reference
 
-| 字段 | 类型 | 说明 | 必填 |
+| Field | Type | Description | Required |
 |------|------|------|------|
-| `tagName` | `string` | DOM 元素标签名（如 `'rect'`、`'circle'`、`'path'`、`'text'`、`'g'`、`'image'`） | ✓ |
-| `selector` | `string` | 唯一选择器，`attrs[selector] = {...}` 通过它精准定位元素 | |
-| `groupSelector` | `string \| string[]` | 组选择器，一次给多个元素套同一组 attrs；**名字不能与 selector 重名** | |
-| `ns` | `string` | 命名空间，默认 `http://www.w3.org/2000/svg`；HTML 元素需写 `Dom.ns.xhtml` | |
-| `attrs` | `SimpleAttrs` | DOM 属性（自动 kebab-case 化）；与 `cell.attrs[selector]` 合并，后者优先 | |
-| `style` | `Record<string, string \| number>` | inline CSS（通过 `Dom.css` 设置） | |
-| `className` | `string \| string[]` | DOM `class` 属性 | |
-| `textContent` | `string` | 元素的 `textContent`（注意：动态文本应放到 `attrs.text/text`） | |
-| `children` | `MarkupJSONMarkup[]` | 子元素，递归构建 | |
+| `tagName` | `string` | DOM element tag name (e.g., `'rect'`, `'circle'`, `'path'`, `'text'`, `'g'`, `'image'`) | ✓ |
+| `selector` | `string` | Unique selector, used to precisely locate elements via `attrs[selector] = {...}` | |
+| `groupSelector` | `string \| string[]` | Group selector, applies the same set of `attrs` to multiple elements; **name must not conflict with `selector`** | |
+| `ns` | `string` | Namespace, defaults to `http://www.w3.org/2000/svg`; for HTML elements, use `Dom.ns.xhtml` | |
+| `attrs` | `SimpleAttrs` | DOM attributes (automatically converted to kebab-case); merged with `cell.attrs[selector]`, with the latter taking precedence | |
+| `style` | `Record<string, string \| number>` | Inline CSS (set via `Dom.css`) | |
+| `className` | `string \| string[]` | DOM `class` attribute | |
+| `textContent` | `string` | Element's `textContent` (Note: dynamic text should be placed in `attrs.text/text`) | |
+| `children` | `MarkupJSONMarkup[]` | Child elements, recursively constructed | |
 
-`tagName` 缺失会在 `parseJSONMarkup` 中抛 `TypeError: Invalid tagName`。
+If `tagName` is missing, `parseJSONMarkup` will throw `TypeError: Invalid tagName`.
 
-## selector vs groupSelector 的区别（关键）
+## Difference Between `selector` and `groupSelector` (Key)
 
-- `selector` 在一个 markup 中**必须唯一**，重复时会抛 `TypeError: Selector must be unique`
-- `groupSelector` 允许多个元素共享同一个 name，在 `attrs` 中引用该 name 时会把属性应用到**全部成员**
-- 若 `groupSelector` 与某个 `selector` 重名，会抛 `Error: Ambiguous group selector`
+- `selector` **must be unique** within a markup. Duplicates will throw `TypeError: Selector must be unique`.
+- `groupSelector` allows multiple elements to share the same name. When referencing this name in `attrs`, the attributes will be applied to **all members**.
+- If a `groupSelector` shares the same name as a `selector`, it will throw `Error: Ambiguous group selector`.
 
 ```javascript
-// 内置 edge markup（节选自 src/shape/edge.ts）
+// Built-in edge markup (excerpt from src/shape/edge.ts)
 markup: [
   { tagName: 'path', selector: 'wrap', groupSelector: 'lines', attrs: {...} },
   { tagName: 'path', selector: 'line', groupSelector: 'lines', attrs: {...} },
 ]
 attrs: {
-  lines: { connection: true, strokeLinejoin: 'round' }, // ← 同时作用于 wrap 和 line
-  wrap:  { strokeWidth: 10 },                            // ← 只作用于第一条 path（不可见的 hit area）
-  line:  { stroke: '#333', strokeWidth: 2, targetMarker: 'classic' }, // ← 真正的可见线
+  lines: { connection: true, strokeLinejoin: 'round' }, // ← Applies to both wrap and line
+  wrap:  { strokeWidth: 10 },                            // ← Applies only to the first path (invisible hit area)
+  line:  { stroke: '#333', strokeWidth: 2, targetMarker: 'classic' }, // ← The actual visible line
 }
 ```
 
-## 内置 shape 的默认 markup（核对自 `src/shape/util.ts`）
+## Default markup for built-in shapes (verified from `src/shape/util.ts`)
 
-`createShape(shape, config)` 给所有基础 shape 生成默认 markup：
+`createShape(shape, config)` generates default markup for all basic shapes:
 
 ```javascript
-// 等价于
+// Equivalent to
 markup: [
   { tagName: shape, selector: 'body' },  // shape: rect / circle / ellipse / polygon / polyline / path / image / text-block
   { tagName: 'text', selector: 'label' },
@@ -105,13 +104,13 @@ attrs: {
 }
 ```
 
-由此可以推出几条易踩点的规则：
+This leads to several key rules to avoid pitfalls:
 
-1. 内置节点 attrs 中的 `body` selector **真实对应的 tagName 就是该 shape 自身**（rect 的 body 是 `<rect>`，circle 的 body 是 `<circle>`），所以 attrs 里只能写该 tagName 支持的 SVG 属性
-2. 内置节点的文本 selector 叫 **`label`**（不叫 `text`），但内部 `attrs.text` 也保留为别名，两者都能命中
-3. 边（`edge`）默认 markup 是两条 `path`（`wrap` + `line`），通过 `lines` group 一起控制，自定义边时若覆盖 markup，必须保留 `lines` group 或同步改写 attrs
+1. The `body` selector in built-in node `attrs` **directly corresponds to the shape's own tagName** (e.g., `rect`'s body is `<rect>`, `circle`'s body is `<circle>`), so only SVG attributes supported by that tagName can be used in `attrs`.
+2. The text selector for built-in nodes is **`label`** (not `text`), but `attrs.text` is also retained as an alias, and both can be used.
+3. By default, edges (`edge`) have a markup consisting of two `path` elements (`wrap` + `line`), controlled together via the `lines` group. When customizing edges and overriding the markup, the `lines` group must be preserved or the `attrs` must be rewritten accordingly.
 
-## 自定义节点：完整 markup 范例
+## Custom Node: Complete Markup Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -130,7 +129,7 @@ Graph.registerNode(
     ],
     attrs: {
       body: {
-        refWidth: '100%',       // 跟随节点宽度
+        refWidth: '100%',       // Follow node width
         refHeight: '100%',
         fill: '#fff',
         stroke: '#8f8f8f',
@@ -141,8 +140,8 @@ Graph.registerNode(
       icon: {
         ref: 'body',
         refX: 8,
-        refY: 0.5,             // 相对 body 高度的 50%
-        refY2: -10,            // 然后再 -10 像素
+        refY: 0.5,             // 50% of body height
+        refY2: -10,            // Then subtract 10 pixels
         width: 20,
         height: 20,
         'xlink:href': '',
@@ -188,7 +187,7 @@ graph.addNode({
 graph.centerContent();
 ```
 
-## 自定义边：带 hit-area 的 markup
+## Custom Edge: Markup with Hit-Area
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -198,15 +197,15 @@ Graph.registerEdge(
   {
     inherit: 'edge',
     markup: [
-      // 第一条不可见的粗 path 用作点击 hit-area
+      // First invisible thick path used as the hit-area
       { tagName: 'path', selector: 'wrap',  groupSelector: 'lines',
         attrs: { fill: 'none', stroke: 'transparent', strokeWidth: 12, cursor: 'pointer' } },
-      // 第二条可见的细 path 是真正的连线
+      // Second visible thin path is the actual edge
       { tagName: 'path', selector: 'line',  groupSelector: 'lines',
         attrs: { fill: 'none', pointerEvents: 'none' } },
     ],
     attrs: {
-      lines: { connection: true, strokeLinejoin: 'round' }, // ← 必须保留
+      lines: { connection: true, strokeLinejoin: 'round' }, // ← Must be retained
       line:  { stroke: '#1890ff', strokeWidth: 2, targetMarker: 'classic' },
     },
   },
@@ -214,34 +213,34 @@ Graph.registerEdge(
 );
 ```
 
-## 字符串 markup（兼容写法）
+## String markup (compatible syntax)
 
-`markup` 也可以是字符串（HTML/SVG 片段），但**不推荐**在自定义 shape 中使用：
-- 字符串模式没有 `selector` 概念，无法用 attrs 精准定位
-- 通常仅出现在 `getPortContainerMarkup()` 这种"单个 g 容器"的内部场景
-- 业务代码请始终使用 JSON markup
+`markup` can also be a string (HTML/SVG fragment), but it is **not recommended** for use in custom shapes:
+- String mode lacks the `selector` concept, making it impossible to precisely target with attrs
+- Typically appears only in internal scenarios like `getPortContainerMarkup()`, where a "single g container" is used
+- Always use JSON markup in application code
 
 ```javascript
-// ❌ 不推荐
+// ❌ Not recommended
 markup: '<rect class="body"/><text class="label"/>'
 
-// ✅ 推荐
+// ✅ Recommended
 markup: [
   { tagName: 'rect', selector: 'body' },
   { tagName: 'text', selector: 'label' },
 ]
 ```
 
-## 端口 markup
+## Port Markup
 
-端口的 markup 通过 `ports.groups[name].markup` 配置，默认 markup 是一个 `<circle>`（见 `Markup.getPortMarkup()`）：
+Port markup is configured via `ports.groups[name].markup`, with the default markup being a `<circle>` (see `Markup.getPortMarkup()`):
 
 ```javascript
 ports: {
   groups: {
     in: {
       position: 'left',
-      markup: [{ tagName: 'circle', selector: 'circle' }], // ← 默认值
+      markup: [{ tagName: 'circle', selector: 'circle' }], // ← Default value
       attrs: {
         circle: { r: 4, magnet: true, stroke: '#8f8f8f', fill: '#fff' },
       },
@@ -250,11 +249,11 @@ ports: {
 }
 ```
 
-> 端口 markup 顶层 tagName 必须是 SVG 元素。若需要 HTML 形态的端口，应该改用 `Shape.HTML.register` 注册整个 HTML 节点，而不是改端口 markup。
+> The top-level `tagName` of port markup must be an SVG element. If an HTML-based port is required, use `Shape.HTML.register` to register the entire HTML node instead of modifying the port markup.
 
-## 标签 markup（边标签）
+## Label Markup (Side Label)
 
-`graph.addEdge` 的 `labels` 默认 markup 是 `<rect> + <text>`，可通过 `defaultLabel` 或单个 label 覆盖：
+The default markup for `labels` in `graph.addEdge` is `<rect> + <text>`, which can be overridden via `defaultLabel` or individual labels:
 
 ```javascript
 graph.addEdge({
@@ -273,92 +272,92 @@ graph.addEdge({
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ selector 重复
+### ❌ Duplicate selector
 
 ```javascript
-// 错误：两个元素都用了 'body'，运行时抛 TypeError: Selector must be unique
+// Error: Both elements use 'body', throws TypeError: Selector must be unique at runtime
 markup: [
   { tagName: 'rect', selector: 'body' },
   { tagName: 'rect', selector: 'body' },
 ]
 
-// 正确：每个 selector 唯一
+// Correct: Each selector is unique
 markup: [
   { tagName: 'rect', selector: 'body' },
   { tagName: 'rect', selector: 'header' },
 ]
 ```
 
-### ❌ groupSelector 与 selector 重名
+### ❌ groupSelector and selector have the same name
 
 ```javascript
-// 错误：抛 Error: Ambiguous group selector
+// Error: Throws Error: Ambiguous group selector
 markup: [
   { tagName: 'path', selector: 'lines' },
   { tagName: 'path', groupSelector: 'lines' },
 ]
 
-// 正确：错开命名
+// Correct: Use different names
 markup: [
   { tagName: 'path', selector: 'line', groupSelector: 'lines' },
   { tagName: 'path', selector: 'wrap', groupSelector: 'lines' },
 ]
 ```
 
-### ❌ tagName 缺失
+### ❌ Missing `tagName`
 
 ```javascript
-// 错误：抛 TypeError: Invalid tagName
+// Error: Throws TypeError: Invalid tagName
 markup: [{ selector: 'body' }]
 
-// 正确
+// Correct
 markup: [{ tagName: 'rect', selector: 'body' }]
 ```
 
-### ❌ 把 CSS 选择器当成 attrs 的 key
+### ❌ Using CSS Selectors as Keys in attrs
 
 ```javascript
-// 错误：attrs 的 key 必须是 markup 里的 selector / groupSelector
+// Incorrect: Keys in attrs must be selectors or groupSelectors from the markup
 attrs: {
-  '.body': { fill: '#fff' },        // ❌ 不是 CSS 选择器
+  '.body': { fill: '#fff' },        // ❌ Not a CSS selector
   'rect.body': { fill: '#fff' },    // ❌
 }
 
-// 正确
+// Correct
 markup: [{ tagName: 'rect', selector: 'body' }],
 attrs: {
-  body: { fill: '#fff' },           // ✅ 与 selector 名字对齐
+  body: { fill: '#fff' },           // ✅ Aligned with the selector name
 }
 ```
 
-### ❌ 自定义边漏写 lines groupSelector
+### ❌ Custom Edge Missing `lines` `groupSelector`
 
 ```javascript
-// 错误：覆盖 markup 时丢了 lines group，attrs.lines.connection = true 失效，
-// 边路径不会跟随 source/target 更新
+// Error: Overriding markup without the lines group, attrs.lines.connection = true becomes invalid,
+// the edge path will not update with source/target changes
 markup: [{ tagName: 'path', selector: 'line' }],
 attrs: { lines: { connection: true } },
 
-// 正确：要么保留 groupSelector，要么把 connection 写到 line 上
+// Correct: Either retain groupSelector, or move connection to the line
 markup: [{ tagName: 'path', selector: 'line', groupSelector: 'lines' }],
 attrs: { lines: { connection: true }, line: { stroke: '#333' } },
-// 或
+// or
 markup: [{ tagName: 'path', selector: 'line' }],
 attrs: { line: { connection: true, stroke: '#333' } },
 ```
 
-### ❌ 用 SVG markup 装 HTML 内容
+### ❌ Wrap HTML Content with SVG Markup
 
 ```javascript
-// 错误：把 div 当 SVG 子节点会渲染失败
+// Error: Rendering will fail when using a div as a child node of SVG
 markup: [
   { tagName: 'rect', selector: 'body' },
-  { tagName: 'div',  selector: 'content' },     // ❌ SVG 命名空间下没有 div
+  { tagName: 'div',  selector: 'content' },     // ❌ No div in SVG namespace
 ]
 
-// 正确：使用 Shape.HTML.register
+// Correct: Use Shape.HTML.register
 import { Shape } from '@antv/x6';
 Shape.HTML.register({
   shape: 'my-card',

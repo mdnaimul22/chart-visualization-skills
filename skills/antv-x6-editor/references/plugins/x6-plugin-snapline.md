@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-snapline"
-title: "X6 Snapline 对齐线插件"
+title: "X6 Snapline Alignment Plugin"
 description: |
-  Snapline 插件在节点拖拽移动时自动显示对齐辅助线，帮助用户精确对齐节点位置。
+  The Snapline plugin automatically displays alignment guides when nodes are dragged and moved, helping users precisely align node positions.
 
 library: "x6"
 version: "3.x"
@@ -10,10 +10,10 @@ category: "plugins"
 subcategory: "snapline"
 tags:
   - "Snapline"
-  - "对齐线"
-  - "辅助线"
-  - "吸附"
-  - "对齐"
+  - "Alignment Line"
+  - "Guide Line"
+  - "Snapping"
+  - "Alignment"
   - "snap"
 
 related:
@@ -21,15 +21,15 @@ related:
   - "x6-core-node"
 
 use_cases:
-  - "节点拖拽时显示对齐线"
-  - "精确对齐多个节点"
-  - "调整吸附容差"
+  - "Display alignment lines during node dragging"
+  - "Precisely align multiple nodes"
+  - "Adjust snapping tolerance"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Snapline } from '@antv/x6';
@@ -38,54 +38,54 @@ const graph = new Graph({ container: 'container' });
 graph.use(new Snapline({ enabled: true }));
 ```
 
-拖拽节点时，当节点边缘或中心与其他节点对齐时，会自动显示红色辅助线并吸附到对齐位置。
+When dragging a node, a red auxiliary line will automatically appear and snap to the aligned position when the node's edge or center aligns with another node.
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean | `true` | 是否启用对齐线 |
-| `tolerance` | number | `10` | 吸附容差（像素），节点边缘/中心距离对齐位置小于此值时触发吸附 |
-| `sharp` | boolean | `false` | 是否显示截断的对齐线（仅在对齐节点之间显示） |
-| `resizing` | boolean | `false` | 节点缩放时是否也显示对齐线 |
-| `clean` | boolean \| number | `true` | 对齐线自动清除。`true` 立即清除，数字为延迟毫秒数 |
-| `filter` | function \| string[] | - | 过滤不参与对齐计算的节点 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean | `true` | Whether to enable alignment lines |
+| `tolerance` | number | `10` | Snap tolerance (pixels), triggers snapping when the distance from the node edge/center to the alignment position is less than this value |
+| `sharp` | boolean | `false` | Whether to display truncated alignment lines (only shown between aligned nodes) |
+| `resizing` | boolean | `false` | Whether to display alignment lines during node resizing |
+| `clean` | boolean \| number | `true` | Automatic clearing of alignment lines. `true` clears immediately, a number represents the delay in milliseconds |
+| `filter` | function \| string[] | - | Filters nodes that do not participate in alignment calculations |
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 启用/禁用
+// Enable/Disable
 graph.enableSnapline();
 graph.disableSnapline();
 graph.toggleSnapline(true);
 graph.isSnaplineEnabled();  // boolean
 
-// 隐藏当前显示的对齐线
+// Hide currently displayed snaplines
 graph.hideSnapline();
 
-// 设置过滤器
+// Set filter
 graph.setSnaplineFilter((node) => {
   return node.getData()?.snapable !== false;
 });
 
-// 容差控制
-graph.getSnaplineTolerance();      // number，当前容差值
-graph.setSnaplineTolerance(20);    // 设置容差
+// Tolerance control
+graph.getSnaplineTolerance();      // number, current tolerance value
+graph.setSnaplineTolerance(20);    // Set tolerance
 
-// Sharp（截断样式）控制
+// Sharp (truncation style) control
 graph.isSharpSnapline();           // boolean
-graph.enableSharpSnapline();       // 启用截断样式
-graph.disableSharpSnapline();      // 禁用截断样式
+graph.enableSharpSnapline();       // Enable truncation style
+graph.disableSharpSnapline();      // Disable truncation style
 graph.toggleSharpSnapline(true);
 
-// 缩放时是否也显示对齐线
+// Whether to display snaplines during resizing
 graph.isSnaplineOnResizingEnabled();   // boolean
 graph.enableSnaplineOnResizing();
 graph.disableSnaplineOnResizing();
 graph.toggleSnaplineOnResizing(true);
 ```
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph, Snapline } from '@antv/x6';
@@ -99,43 +99,43 @@ const graph = new Graph({
 
 graph.use(new Snapline({
   enabled: true,
-  tolerance: 15,   // 15px 容差
-  sharp: true,     // 截断样式
-  resizing: true,  // 缩放时也对齐
+  tolerance: 15,   // 15px tolerance
+  sharp: true,     // sharp style
+  resizing: true,  // align during resizing
 }));
 
-// 添加示例节点
+// Add example nodes
 graph.addNode({ x: 100, y: 100, width: 120, height: 60, label: 'Node A' });
 graph.addNode({ x: 350, y: 200, width: 120, height: 60, label: 'Node B' });
 graph.addNode({ x: 200, y: 350, width: 120, height: 60, label: 'Node C' });
-// 拖拽 Node C 到与 Node A 左对齐时，会出现竖向对齐线
+// When dragging Node C to align left with Node A, a vertical alignment line will appear
 ```
 
-## 过滤器示例
+## Filter Examples
 
 ```javascript
-// 通过 shape 名过滤：仅特定 shape 参与对齐
+// Filter by shape name: Only specific shapes participate in alignment
 graph.use(new Snapline({
   enabled: true,
-  filter: ['rect', 'circle'],  // 仅 rect 和 circle 节点参与对齐
+  filter: ['rect', 'circle'],  // Only rect and circle nodes participate in alignment
 }));
 
-// 通过函数过滤
+// Filter by function
 graph.use(new Snapline({
   enabled: true,
   filter(node) {
-    // 带有 group 标记的节点不参与对齐
+    // Nodes with the 'group' tag do not participate in alignment
     return node.getData()?.type !== 'group';
   },
 }));
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 在构造函数中配置 snapline
+### ❌ Configure snapline in the constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Error: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   snapline: { enabled: true },  // ❌
@@ -143,7 +143,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确
+// Correct
 import { Graph, Snapline } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Snapline({ enabled: true }));  // ✅

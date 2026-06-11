@@ -1,23 +1,22 @@
 ---
 id: "x6-plugin-export"
-title: "X6 导出（Export）"
+title: "X6 Export"
 description: |
-  X6 画布内容导出为 SVG/PNG/JPEG 图片的完整指南。
-  包含 Export 插件使用、exportSVG、exportPNG、exportJPEG、toSVG、toPNG、toJPEG API。
+  A comprehensive guide to exporting X6 canvas content as SVG/PNG/JPEG images.
+  Includes usage of the Export plugin, exportSVG, exportPNG, exportJPEG, toSVG, toPNG, toJPEG APIs.
 
 library: "x6"
 version: "3.x"
 category: "plugins"
 subcategory: "export"
 tags:
-  - "导出"
   - "export"
   - "SVG"
   - "PNG"
   - "JPEG"
-  - "图片"
-  - "截图"
-  - "下载"
+  - "image"
+  - "screenshot"
+  - "download"
   - "toSVG"
   - "toPNG"
   - "exportPNG"
@@ -25,26 +24,30 @@ tags:
   - "dataUri"
 
 related:
-  - "x 6-core-graph-init"
+  - "x6-core-graph-init"
   - "x6-plugins"
 
 use_cases:
-  - "将画布导出为 SVG 文件"
-  - "将画布导出为 PNG 图片"
-  - "将画布导出为 JPEG 图片"
-  - "获取画布的 DataURI 用于预览"
-  - "控制导出图片的分辨率和背景色"
+  - "Export canvas as an SVG file"
+  - "Export canvas as a PNG image"
+  - "Export canvas as a JPEG image"
+  - "Get the canvas DataURI for preview"
+  - "Control the resolution and background color of exported images"
 
 anti_patterns:
-  - "不要忘记先调用 graph.use(new Export()) 注册插件"
-  - "导出带有跨域图片时注意 CORS 问题"
+  - "Don't forget to register the plugin by calling graph.use(new Export()) first"
+  - "Be cautious of CORS issues when exporting images with cross-domain resources"
 ---
 
-# X6 导出（Export）
+# X6 Export
 
-## 注册插件
+(Note: The original content provided only contains a header. Below is the translation of the given content, adhering to the strict instructions.)
 
-Export 插件需要先注册才能使用导出功能：
+# X6 Export
+
+## Register Plugin
+
+The Export plugin needs to be registered before using the export functionality:
 
 ```javascript
 import { Graph, Export } from '@antv/x6';
@@ -56,33 +59,33 @@ const graph = new Graph({
   background: { color: '#F2F7FA' },
 });
 
-// 注册导出插件
+// Register the Export plugin
 graph.use(new Export());
 ```
 
-## 导出为文件（自动下载）
+## Export to File (Auto Download)
 
-### exportSVG — 导出 SVG 文件
+### exportSVG — Export SVG File
 
 ```javascript
-// 基本用法：自动下载名为 "my-graph.svg" 的文件
+// Basic usage: Automatically download a file named "my-graph.svg"
 graph.exportSVG('my-graph');
 
-// 带配置
+// With configuration
 graph.exportSVG('my-graph', {
-  preserveDimensions: true,  // SVG 尺寸为实际图形大小
-  copyStyles: true,          // 复制外部样式
-  serializeImages: true,     // 图片转为 DataURI
+  preserveDimensions: true,  // SVG dimensions match the actual graph size
+  copyStyles: true,          // Copy external styles
+  serializeImages: true,     // Convert images to DataURI
 });
 ```
 
-### exportPNG — 导出 PNG 文件
+### exportPNG — Export PNG File
 
 ```javascript
-// 基本用法
+// Basic Usage
 graph.exportPNG('my-graph');
 
-// 高清导出（2倍分辨率）
+// High-Resolution Export (2x Resolution)
 graph.exportPNG('my-graph', {
   ratio: 2,
   backgroundColor: '#ffffff',
@@ -90,25 +93,25 @@ graph.exportPNG('my-graph', {
 });
 ```
 
-### exportJPEG — 导出 JPEG 文件
+### exportJPEG — Export JPEG File
 
 ```javascript
 graph.exportJPEG('my-graph', {
   ratio: 2,
   backgroundColor: '#ffffff',
-  quality: 0.92,  // 图片质量 0-1
+  quality: 0.92,  // Image quality 0-1
 });
 ```
 
-## 获取 DataURI（不下载）
+## Get DataURI (Without Downloading)
 
-当需要获取图片数据用于预览、上传等场景时，使用 `to*` 系列方法：
+When you need to obtain image data for preview, upload, and other scenarios, use the `to*` series of methods:
 
 ### toSVG
 
 ```javascript
 graph.toSVG((dataUri) => {
-  // dataUri 是 SVG 格式的 data URI
+  // dataUri is a data URI in SVG format
   console.log(dataUri);
 }, {
   preserveDimensions: true,
@@ -119,8 +122,8 @@ graph.toSVG((dataUri) => {
 
 ```javascript
 graph.toPNG((dataUri) => {
-  // dataUri 是 PNG 格式的 base64 data URI
-  // 可用于 img 标签或上传
+  // dataUri is a base64 data URI in PNG format
+  // Can be used in img tags or for uploading
   const img = new Image();
   img.src = dataUri;
   document.body.appendChild(img);
@@ -142,31 +145,31 @@ graph.toJPEG((dataUri) => {
 });
 ```
 
-## 配置项
+## Configuration Options
 
 ### ToSVGOptions
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `preserveDimensions` | boolean \| Size | - | SVG 尺寸：`true` 为实际大小，也可传 `{ width, height }` |
-| `viewBox` | RectangleLike | - | 自定义 viewBox |
-| `copyStyles` | boolean | `true` | 是否复制外部样式表中的样式 |
-| `stylesheet` | string | - | 自定义 CSS 样式表 |
-| `serializeImages` | boolean | `true` | 是否将图片 href 转为 DataURI |
-| `beforeSerialize` | Function | - | 导出前修改 SVG 元素的回调 |
+| Configuration | Type | Default Value | Description |
+|--------------|------|---------------|-------------|
+| `preserveDimensions` | boolean \| Size | - | SVG dimensions: `true` for actual size, or pass `{ width, height }` |
+| `viewBox` | RectangleLike | - | Custom viewBox |
+| `copyStyles` | boolean | `true` | Whether to copy styles from external stylesheets |
+| `stylesheet` | string | - | Custom CSS stylesheet |
+| `serializeImages` | boolean | `true` | Whether to convert image href to DataURI |
+| `beforeSerialize` | Function | - | Callback to modify SVG elements before export |
 
-### ToImageOptions（继承 ToSVGOptions）
+### ToImageOptions (Inherits from ToSVGOptions)
 
-| 配置项 | 类型 | 默认  | 说明 |
-|--------|------|--------|------|
-| `width` | number | - | 导出图片宽度 |
-| `height` | number | - | 导出图片高度 |
-| `ratio` | number | 1 | 缩放比例（设备像素比） |
-| `backgroundColor` | string | - | 背景色 |
-| `padding` | number \| SideOptions | - | 内边距 |
-| `quality` | number | 0.92 | JPEG 质量（0-1） |
+| Configuration | Type | Default | Description |
+|---------------|------|---------|-------------|
+| `width` | number | - | Exported image width |
+| `height` | number | - | Exported image height |
+| `ratio` | number | 1 | Scaling ratio (device pixel ratio) |
+| `backgroundColor` | string | - | Background color |
+| `padding` | number \| SideOptions | - | Inner padding |
+| `quality` | number | 0.92 | JPEG quality (0-1) |
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph, Export } from '@antv/x6';
@@ -181,7 +184,7 @@ const graph = new Graph({
 
 graph.use(new Export());
 
-// 添加节点和边
+// Add nodes and edges
 const source = graph.addNode({
   shape: 'rect',
   x: 40,
@@ -210,7 +213,7 @@ graph.addEdge({
   attrs: { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } },
 });
 
-// 导出为 PNG（2x 分辨率）
+// Export as PNG (2x resolution)
 graph.exportPNG('flowchart', {
   ratio: 2,
   backgroundColor: '#ffffff',
@@ -218,96 +221,96 @@ graph.exportPNG('flowchart', {
 });
 ```
 
-## ⚠️ 关键约束（必须遵守）
+## ⚠️ Key Constraints (Must Comply)
 
-**所有导出方法（toPNG / toSVG / toJPEG / exportPNG / exportSVG / exportJPEG）都需要先注册 Export 插件**，否则会报 `graph.toPNG is not a function`。
+**All export methods (toPNG / toSVG / toJPEG / exportPNG / exportSVG / exportJPEG) require the Export plugin to be registered first**, otherwise it will throw `graph.toPNG is not a function`.
 
 ```javascript
-// ✅ 正确的导出代码模板（每次生成导出代码都必须包含这两行）
+// ✅ Correct export code template (these two lines must be included every time export code is generated)
 import { Graph, Export } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
-graph.use(new Export());  // 必须在调用任何导出方法之前
+graph.use(new Export());  // Must be called before any export method
 ```
 
-**禁止事项：**
-- 禁止在未注册 Export 插件的情况下调用 toPNG/toSVG/exportPNG 等方法
-- 禁止 `graph.use(Export)` — 必须是 `graph.use(new Export())`
-- 禁止在 `graph.use(new Export())` 之前调用导出方法
+**Prohibited Actions:**
+- Do not call toPNG/toSVG/exportPNG methods without registering the Export plugin
+- Do not use `graph.use(Export)` — must use `graph.use(new Export())`
+- Do not call export methods before `graph.use(new Export())`
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 未注册 Export 插件就调用导出方法
+### ❌ Calling Export Method Without Registering the Export Plugin
 
 ```javascript
-// 错误：graph.toPNG is not a function / graph.exportPNG is not a function
+// Error: graph.toPNG is not a function / graph.exportPNG is not a function
 import { Graph } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.toPNG((dataUri) => { console.log(dataUri); }); // TypeError
 
-// 正确：必须先 import Export 并注册
+// Correct: Must import and register Export first
 import { Graph, Export } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Export());
 graph.toPNG((dataUri) => { console.log(dataUri); }); // ✅
 ```
 
-### ❌ 导出时背景色缺失
+### ❌ Missing Background Color During Export
 
 ```javascript
-// 错误：导出的图片无背景（透明）
+// Error: Exported image has no background (transparent)
 graph.exportPNG('test');
 
-// 正确：指定背景色
+// Correct: Specify background color
 graph.exportPNG('test', { backgroundColor: '#ffffff' });
 ```
 
-### ❌ 使用 toPNG/toSVG 时未传入回调函数
+### ❌ No Callback Function Passed When Using toPNG/toSVG
 
 ```javascript
-// 错误：直接调用返回 undefined
+// Error: Direct call returns undefined
 const dataUri = graph.toPNG(); // undefined
 
-// 正确：传入回调函数接收结果（也可用 Async 版本）
+// Correct: Pass a callback function to receive the result (Async version can also be used)
 graph.toPNG((dataUri) => { console.log(dataUri); });
-// 或
+// or
 const dataUri = await graph.toPNGAsync({ backgroundColor: '#fff' });
 ```
 
-### ❌ 使用 DOM 容器引用而非 ID 字符串初始化画布
+### ❌ Initialize the Canvas Using DOM Container Reference Instead of ID String
 
 ```javascript
-// 错误：在某些环境下可能导致容器重复声明
+// Error: May cause container re-declaration in certain environments
 const container = document.getElementById('container');
 const graph = new Graph({ container });
 
-// 推荐：使用字符串 ID
+// Recommended: Use string ID
 const graph = new Graph({ container: 'container' });
 ```
 
-### ❌ 调用 graph.render() 导致报错
+### ❌ Calling graph.render() Causes an Error
 
 ```javascript
-// 错误：graph.render is not a function
+// Error: graph.render is not a function
 graph.render();
 
-// 正确：X6 Graph 实例不需要手动调用 render()
-// 所有节点和边添加后会自动渲染
+// Correct: X6 Graph instances do not require manual calls to render()
+// All nodes and edges are automatically rendered after being added
 ```
 
-### ❌ 导出方法调用前未确保插件已注册
+### ❌ Export method called before ensuring the plugin is registered
 
 ```javascript
-// 错误：即使引入了 Export，如果没有注册插件，仍然会报错
+// Error: Even if Export is imported, it will still throw an error if the plugin is not registered
 import { Graph, Export } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
-// 忘记调用 graph.use(new Export());
+// Forgot to call graph.use(new Export());
 graph.toPNG((dataUri) => { console.log(dataUri); }); // ❌ TypeError
 
-// 正确：确保插件已注册
+// Correct: Ensure the plugin is registered
 import { Graph, Export } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
-graph.use(new Export()); // ✅ 必须注册插件
-graph.toPNG((dataUri) => { console.log(dataUri); }); // ✅ 正确调用
+graph.use(new Export()); // ✅ Must register the plugin
+graph.toPNG((dataUri) => { console.log(dataUri); }); // ✅ Correct call
 ```
 
 </skill>

@@ -1,9 +1,9 @@
 ---
 id: "x6-core-anchor"
-title: "X6 锚点（Anchor）"
+title: "X6 Anchor"
 description: |
-  边连接到节点/边时的锚点定位策略。
-  包含 nodeAnchor（节点锚点）和 edgeAnchor（边锚点）两类，控制连线端点在目标元素上的精确位置。
+  Anchor positioning strategy when an edge connects to a node/edge.
+  Includes nodeAnchor (node anchor) and edgeAnchor (edge anchor), controlling the precise position of the connection endpoint on the target element.
 
 library: "x6"
 version: "3.x"
@@ -14,7 +14,7 @@ tags:
   - "锚点"
   - "nodeAnchor"
   - "edgeAnchor"
-  - "连线端点"
+  - "connection endpoint"
   - "center"
   - "top"
   - "bottom"
@@ -30,29 +30,29 @@ related:
   - "x6-core-ports"
 
 use_cases:
-  - "控制连线连接到节点的哪个位置"
-  - "设置边连接到另一条边的锚点"
-  - "正交布局中自动对齐连线端点"
-  - "连线从节点中心/边缘/最近侧连出"
+  - "Control where the connection connects to a node"
+  - "Set the anchor point when an edge connects to another edge"
+  - "Automatically align connection endpoints in orthogonal layouts"
+  - "Connect from the center/edge/nearest side of a node"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**Anchor（锚点）** 决定连线端点在目标元素上的参考位置。X6 中有两类锚点：
+**Anchor** determines the reference position of the connection endpoint on the target element. In X6, there are two types of anchors:
 
-- **nodeAnchor**：边连接到节点时的锚点位置
-- **edgeAnchor**：边连接到另一条边时的锚点位置
+- **nodeAnchor**: The anchor position when an edge connects to a node.
+- **edgeAnchor**: The anchor position when an edge connects to another edge.
 
-锚点与 connectionPoint 配合使用：anchor 确定参考点，connectionPoint 确定最终连接位置（通常是 anchor 到节点边界的交点）。
+Anchors are used in conjunction with **connectionPoint**: the anchor determines the reference point, and the connectionPoint determines the final connection position (usually the intersection of the anchor and the node boundary).
 
-## 节点锚点（Node Anchor）
+## Node Anchor (节点锚点)
 
-### 配置方式
+### Configuration Method
 
-在边的 `source` / `target` 中通过 `anchor` 字段设置：
+Set through the `anchor` field in the edge's `source` / `target`:
 
 ```javascript
 graph.addEdge({
@@ -61,94 +61,94 @@ graph.addEdge({
 });
 ```
 
-也可在 Graph 的 `connecting` 中设置全局默认：
+Global defaults can also be set in the Graph's `connecting`:
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   connecting: {
-    anchor: 'center', // 全局默认节点锚点
+    anchor: 'center', // Global default node anchor
   },
 });
 ```
 
-### 内置节点锚点
+### Built-in Node Anchors
 
-| 名称 | 说明 | 参数 |
-|------|------|------|
-| `center` | 节点 BBox 中心（**默认值**） | `dx`, `dy`, `rotate` |
-| `top` | 节点顶部中心 | `dx`, `dy`, `rotate` |
-| `bottom` | 节点底部中心 | `dx`, `dy`, `rotate` |
-| `left` | 节点左侧中心 | `dx`, `dy`, `rotate` |
-| `right` | 节点右侧中心 | `dx`, `dy`, `rotate` |
-| `topLeft` | 节点左上角 | `dx`, `dy`, `rotate` |
-| `topRight` | 节点右上角 | `dx`, `dy`, `rotate` |
-| `bottomLeft` | 节点左下角 | `dx`, `dy`, `rotate` |
-| `bottomRight` | 节点右下角 | `dx`, `dy`, `rotate` |
-| `midSide` | 距离对端最近的一侧中点 | `direction`, `padding`, `rotate` |
-| `orth` | 正交锚点，使连线保持正交 | `padding` |
-| `nodeCenter` | 节点实际中心（非 magnet BBox） | `dx`, `dy` |
+| Name | Description | Parameters |
+|------|-------------|------------|
+| `center` | Center of the node's BBox (**default**) | `dx`, `dy`, `rotate` |
+| `top` | Top center of the node | `dx`, `dy`, `rotate` |
+| `bottom` | Bottom center of the node | `dx`, `dy`, `rotate` |
+| `left` | Left center of the node | `dx`, `dy`, `rotate` |
+| `right` | Right center of the node | `dx`, `dy`, `rotate` |
+| `topLeft` | Top-left corner of the node | `dx`, `dy`, `rotate` |
+| `topRight` | Top-right corner of the node | `dx`, `dy`, `rotate` |
+| `bottomLeft` | Bottom-left corner of the node | `dx`, `dy`, `rotate` |
+| `bottomRight` | Bottom-right corner of the node | `dx`, `dy`, `rotate` |
+| `midSide` | Midpoint of the side closest to the opposite end | `direction`, `padding`, `rotate` |
+| `orth` | Orthogonal anchor, keeps the connection orthogonal | `padding` |
+| `nodeCenter` | Actual center of the node (not the magnet BBox) | `dx`, `dy` |
 
-### BBox 锚点参数
+### BBox Anchor Parameters
 
-`center`、`top`、`bottom`、`left`、`right`、`topLeft`、`topRight`、`bottomLeft`、`bottomRight` 共享参数：
+`center`、`top`、`bottom`、`left`、`right`、`topLeft`、`topRight`、`bottomLeft`、`bottomRight` shared parameters:
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `dx` | `number \| string` | `0` | X 方向偏移，支持百分比如 `'25%'` |
-| `dy` | `number \| string` | `0` | Y 方向偏移，支持百分比如 `'25%'` |
-| `rotate` | `boolean` | `false` | 是否跟随节点旋转 |
+| `dx` | `number \| string` | `0` | Offset in the X direction, supports percentages like `'25%'` |
+| `dy` | `number \| string` | `0` | Offset in the Y direction, supports percentages like `'25%'` |
+| `rotate` | `boolean` | `false` | Whether to rotate with the node |
 
-### midSide 参数
+### midSide Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `direction` | `'H' \| 'V'` | 无 | 限制方向，`H` 只选左/右，`V` 只选上/下 |
-| `padding` | `number` | 无 | BBox 膨胀值 |
-| `rotate` | `boolean` | `false` | 是否跟随节点旋转 |
+| `direction` | `'H' \| 'V'` | None | Restrict direction, `H` selects left/right only, `V` selects top/bottom only |
+| `padding` | `number` | None | BBox expansion value |
+| `rotate` | `boolean` | `false` | Whether to rotate with the node |
 
-### orth 参数
+### orth Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `padding` | `number` | `0` | 距 BBox 边界的内边距 |
+| `padding` | `number` | `0` | Inner padding from the BBox boundary |
 
-## 边锚点（Edge Anchor）
+## Edge Anchor
 
-当一条边连接到另一条边时使用。
+Used when an edge connects to another edge.
 
-### 内置边锚点
+### Built-in Edge Anchor Points
 
-| 名称 | 说明 | 参数 |
-|------|------|------|
-| `ratio` | 边路径上按比例定位（**默认值**） | `ratio` |
-| `length` | 边路径上按长度定位 | `length` |
-| `closest` | 边路径上距对端最近的点 | 无 |
-| `orth` | 正交锚点，从对端画正交线与边路径的交点 | `fallbackAt` |
+| Name | Description | Parameter |
+|------|-------------|------------|
+| `ratio` | Positioning on the edge path by ratio (**default**) | `ratio` |
+| `length` | Positioning on the edge path by length | `length` |
+| `closest` | The point closest to the opposite end on the edge path | None |
+| `orth` | Orthogonal anchor point, intersection of the orthogonal line drawn from the opposite end with the edge path | `fallbackAt` |
 
-### ratio 参数
+### ratio Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `ratio` | `number` | `0.5` | 位置比例，0~1 之间；大于 1 时自动除以 100 |
+| `ratio` | `number` | `0.5` | Position ratio, between 0 and 1; automatically divided by 100 when greater than 1 |
 
-### length 参数
+### length Parameter
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
+|-----------|------|---------------|-------------|
+| `length` | `number` | `20` | Length (in pixels) from the start of the path |
+
+### orth Parameter (Edge Anchor Point)
+
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `length` | `number` | `20` | 从路径起点算起的长度（像素） |
+| `fallbackAt` | `number \| string` | None | Fallback position when there is no orthogonal intersection, specified as a ratio (0~1) or a pixel length string such as `'20'` |
 
-### orth 参数（边锚点）
+The `orth` edge anchor point draws horizontal and vertical lines from the reference point at the opposite end, selecting the nearest intersection point with the edge path. If no intersection exists, the fallback position specified by `fallbackAt` is used. If `fallbackAt` is also not specified, it defaults to `closest`.
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `fallbackAt` | `number \| string` | 无 | 无正交交点时的回退位置，数值为比例（0~1）或像素长度字符串如 `'20'` |
+## Complete Example
 
-`orth` 边锚点会从对端参考点画水平线和垂直线，取与边路径的交点中最近的一个。若无交点则使用 `fallbackAt` 指定的回退位置，若 `fallbackAt` 也未指定则退化为 `closest`。
-
-## 完整示例
-
-### 使用 midSide 实现自动侧边连线
+### Implementing Automatic Side Connection with midSide
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -171,7 +171,7 @@ const node1 = graph.addNode({
   y: 100,
   width: 120,
   height: 60,
-  label: '开始',
+  label: 'Start',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
@@ -181,11 +181,11 @@ const node2 = graph.addNode({
   y: 250,
   width: 120,
   height: 60,
-  label: '结束',
+  label: 'End',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
-// midSide 自动选择离对端最近的一侧
+// midSide automatically selects the closest side to the target
 graph.addEdge({
   source: node1,
   target: node2,
@@ -193,7 +193,7 @@ graph.addEdge({
 });
 ```
 
-### 单独指定 source/target 锚点
+### Specify source/target anchor points separately
 
 ```javascript
 graph.addEdge({
@@ -203,7 +203,7 @@ graph.addEdge({
 });
 ```
 
-### 边连接到边
+### Edge Connecting to Edge
 
 ```javascript
 const edge1 = graph.addEdge({
@@ -211,7 +211,7 @@ const edge1 = graph.addEdge({
   target: node2,
 });
 
-// edge2 连接到 edge1 的中点
+// edge2 connects to the midpoint of edge1
 graph.addEdge({
   source: node3,
   target: { cell: edge1, anchor: { name: 'ratio', args: { ratio: 0.5 } } },
@@ -219,28 +219,28 @@ graph.addEdge({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆 anchor 与 connectionPoint
+### ❌ Confusing anchor with connectionPoint
 
 ```javascript
-// 错误：anchor 不决定最终连接位置，它只是参考点
+// Incorrect: anchor does not determine the final connection position, it is only a reference point
 graph.addEdge({
-  source: { cell: node1, anchor: 'boundary' }, // ❌ boundary 是 connectionPoint，不是 anchor
+  source: { cell: node1, anchor: 'boundary' }, // ❌ boundary is a connectionPoint, not an anchor
   target: node2,
 });
 
-// 正确：anchor 设置参考位置，connectionPoint 决定边界交点
+// Correct: anchor sets the reference position, connectionPoint determines the boundary intersection
 graph.addEdge({
   source: { cell: node1, anchor: 'center', connectionPoint: 'boundary' },
   target: node2,
 });
 ```
 
-### ❌ 字符串简写与对象格式混用错误
+### ❌ Mixed Usage Error of String Abbreviation and Object Format
 
 ```javascript
-// 正确的两种写法
-anchor: 'center'                                    // 字符串简写
-anchor: { name: 'midSide', args: { direction: 'H' } }  // 对象格式（带参数时）
+// Two correct ways of writing
+anchor: 'center'                                    // String abbreviation
+anchor: { name: 'midSide', args: { direction: 'H' } }  // Object format (with parameters)
 ```

@@ -1,8 +1,8 @@
 ---
 id: "x6-core-port-label-layout"
-title: "X6 端口标签布局（Port Label Layout）"
+title: "X6 Port Label Layout"
 description: |
-  X6 连接桩标签的布局策略：side（固定方位）、outside/inside（节点外部/内部）、radial（径向）等，控制端口文字的位置和方向。
+  X6 port label layout strategies: side (fixed position), outside/inside (node external/internal), radial (radial), etc., control the position and direction of port text.
 
 library: "x6"
 version: "3.x"
@@ -12,8 +12,8 @@ tags:
   - "port"
   - "label"
   - "port-label-layout"
-  - "端口标签"
-  - "标签位置"
+  - "port label"
+  - "label position"
   - "outside"
   - "inside"
   - "radial"
@@ -24,23 +24,23 @@ related:
   - "x6-core-node"
 
 use_cases:
-  - "端口标签显示在端口左侧/右侧/上方/下方"
-  - "端口标签自动朝外显示"
-  - "端口标签在节点内部显示"
-  - "圆形节点的端口标签径向布局"
-  - "自定义端口标签偏移"
+  - "Port label displayed on the left/right/top/bottom of the port"
+  - "Port label automatically displayed outward"
+  - "Port label displayed inside the node"
+  - "Radial layout of port labels for circular nodes"
+  - "Custom port label offset"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 概念说明
+## Concept Explanation
 
-端口标签布局（Port Label Layout）控制端口文字相对于端口位置的偏移和对齐方式。与端口布局（Port Layout，控制端口在节点上的位置）不同，标签布局只影响文字的显示位置。
+Port Label Layout controls the offset and alignment of port text relative to the port position. Unlike Port Layout (which controls the position of ports on a node), label layout only affects the display position of the text.
 
-## 基本用法
+## Basic Usage
 
-在端口组（groups）中通过 `label.position` 配置：
+Configure in the port group (`groups`) using `label.position`:
 
 ```javascript
 graph.addNode({
@@ -53,14 +53,14 @@ graph.addNode({
       in: {
         position: 'left',
         label: {
-          position: 'left',  // 标签显示在端口左侧
+          position: 'left',  // Label displayed on the left side of the port
         },
         attrs: { circle: { r: 5, magnet: true, stroke: '#8f8f8f', fill: '#fff' } },
       },
       out: {
         position: 'right',
         label: {
-          position: 'right',  // 标签显示在端口右侧
+          position: 'right',  // Label displayed on the right side of the port
         },
         attrs: { circle: { r: 5, magnet: true, stroke: '#8f8f8f', fill: '#fff' } },
       },
@@ -73,42 +73,42 @@ graph.addNode({
 });
 ```
 
-## 内置布局策略
+## Built-in Layout Strategies
 
-### Side 类（固定方位）
+### Side Class (Fixed Position)
 
-| 名称 | 说明 |
+| Name | Description |
 |------|------|
-| `'left'` | 标签在端口左侧，右对齐 |
-| `'right'` | 标签在端口右侧，左对齐 |
-| `'top'` | 标签在端口上方，居中对齐 |
-| `'bottom'` | 标签在端口下方，居中对齐 |
-| `'manual'` | 手动指定位置（通过 args 的 x/y） |
+| `'left'` | Label is on the left side of the port, right-aligned |
+| `'right'` | Label is on the right side of the port, left-aligned |
+| `'top'` | Label is above the port, center-aligned |
+| `'bottom'` | Label is below the port, center-aligned |
+| `'manual'` | Manually specify the position (via x/y in args) |
 
 ```javascript
 label: {
-  position: 'right',  // 字符串简写
+  position: 'right',  // String shorthand
 }
 
-// 等价于对象形式
+// Equivalent to object form
 label: {
   position: {
     name: 'right',
-    args: {},  // 可传 x/y/angle/attrs 覆盖默认值
+    args: {},  // Can pass x/y/angle/attrs to override default values
   },
 }
 ```
 
-### InOut 类（节点内外自动判断）
+### InOut Class (Automatic Node In/Out Determination)
 
-根据端口在节点边缘的位置，自动决定标签朝内还是朝外：
+Automatically determines whether the label faces inward or outward based on the port's position on the node's edge:
 
-| 名称 | 说明 |
+| Name | Description |
 |------|------|
-| `'outside'` | 标签在节点外部（远离节点中心方向） |
-| `'outsideOriented'` | 同上，且文字自动旋转与边缘平行 |
-| `'inside'` | 标签在节点内部（朝向节点中心方向） |
-| `'insideOriented'` | 同上，且文字自动旋转与边缘平行 |
+| `'outside'` | Label is outside the node (away from the node center) |
+| `'outsideOriented'` | Same as above, with text automatically rotated parallel to the edge |
+| `'inside'` | Label is inside the node (toward the node center) |
+| `'insideOriented'` | Same as above, with text automatically rotated parallel to the edge |
 
 ```javascript
 ports: {
@@ -118,7 +118,7 @@ ports: {
       label: {
         position: {
           name: 'outside',
-          args: { offset: 15 },  // 标签距端口的偏移（像素）
+          args: { offset: 15 },  // Offset of the label from the port (in pixels)
         },
       },
     },
@@ -126,29 +126,29 @@ ports: {
 }
 ```
 
-`outside` 和 `inside` 的判断逻辑：根据端口位置相对于节点中心的角度，自动决定标签放在节点外侧还是内侧。
+Determination logic for `outside` and `inside`: Based on the angle of the port's position relative to the node center, automatically decides whether to place the label outside or inside the node.
 
-### Radial 类（径向布局）
+### Radial Class (Radial Layout)
 
-适合圆形节点或端口沿圆弧分布的场景：
+Suitable for scenarios where circular nodes or ports are distributed along an arc:
 
-| 名称 | 说明 |
+| Name | Description |
 |------|------|
-| `'radial'` | 标签沿径向方向放置（远离节点中心） |
-| `'radialOriented'` | 同上，且文字自动旋转为径向方向 |
+| `'radial'` | Labels are placed in the radial direction (away from the node center) |
+| `'radialOriented'` | Same as above, with text automatically rotated to the radial direction |
 
 ```javascript
 ports: {
   groups: {
     default: {
       position: {
-        name: 'ellipse',  // 端口沿椭圆分布
+        name: 'ellipse',  // Ports distributed along an ellipse
         args: { dr: 0, compensateRotate: false },
       },
       label: {
         position: {
           name: 'radial',
-          args: { offset: 20 },  // 标签距端口的径向偏移
+          args: { offset: 20 },  // Radial offset of the label from the port
         },
       },
     },
@@ -156,24 +156,24 @@ ports: {
 }
 ```
 
-## 配置参数
+## Configuration Parameters
 
-所有布局策略都支持以下通用参数：
+All layout strategies support the following common parameters:
 
-| 参数 | 类型 | 说明 |
+| Parameter | Type | Description |
 |------|------|------|
-| `x` | number | 覆盖标签 x 偏移 |
-| `y` | number | 覆盖标签 y 偏移 |
-| `angle` | number | 标签旋转角度 |
-| `attrs` | object | 覆盖标签的 SVG 属性 |
+| `x` | number | Overrides the label x offset |
+| `y` | number | Overrides the label y offset |
+| `angle` | number | Label rotation angle |
+| `attrs` | object | Overrides the label's SVG attributes |
 
-InOut 和 Radial 额外支持：
+InOut and Radial additionally support:
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `offset` | number | `15`/`20` | 标签距端口的偏移距离 |
+| `offset` | number | `15`/`20` | Offset distance of the label from the port |
 
-## 完整示例：输入输出端口
+## Complete Example: Input and Output Ports
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -217,9 +217,9 @@ graph.addNode({
 });
 ```
 
-## 手动定位标签
+## Manual Label Positioning
 
-使用 `manual` 策略完全控制标签位置：
+Use the `manual` strategy to fully control the label position:
 
 ```javascript
 label: {
@@ -237,30 +237,30 @@ label: {
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆端口布局（position）和标签布局（label.position）
+### ❌ Confusing Port Layout (`position`) and Label Layout (`label.position`)
 
 ```javascript
-// 错误理解：label.position 不是控制端口在节点上的位置
+// Incorrect Understanding: `label.position` does not control the port's position on the node
 ports: {
   groups: {
     in: {
-      position: 'left',         // 端口在节点左侧 ← 端口布局
+      position: 'left',         // Port on the left side of the node ← Port layout
       label: {
-        position: 'left',       // 标签在端口左侧 ← 标签布局（不同概念！）
+        position: 'left',       // Label on the left side of the port ← Label layout (different concept!)
       },
     },
   },
 }
 ```
 
-### ❌ 标签不显示
+### ❌ Label Not Displayed
 
 ```javascript
-// 错误：端口 items 缺少 text 属性
-items: [{ id: 'p1', group: 'in' }]  // ❌ 标签无内容
+// Error: Port items lack the text property
+items: [{ id: 'p1', group: 'in' }]  // ❌ Label has no content
 
-// 正确：通过 attrs.text.text 设置标签文字
+// Correct: Set label text via attrs.text.text
 items: [{ id: 'p1', group: 'in', attrs: { text: { text: 'Port 1' } } }]  // ✅
 ```

@@ -1,29 +1,28 @@
 ---
 id: "x6-core-graph-init"
-title: "X6 画布初始化"
+title: "X6 Canvas Initialization"
 description: |
-  使用 new Graph({...}) 创建图编辑画布的完整配置指南。
-  包含容器、尺寸、背景、网格、平移缩放、连线交互的配置方式。
+  A complete configuration guide for creating a graph editing canvas using new Graph({...}).
+  Includes configuration methods for container, size, background, grid, panning, zooming, and edge interaction.
 
 library: "x6"
 version: "3.x"
 category: "core"
 subcategory: "init"
 tags:
-  - "初始化"
+  - "initialization"
   - "Graph"
-  - "容器"
-  - "画布"
-  - "背景"
-  - "网格"
+  - "container"
+  - "canvas"
+  - "background"
   - "grid"
   - "background"
   - "container"
   - "new Graph"
   - "panning"
   - "mousewheel"
-  - "缩放"
-  - "平移"
+  - "zooming"
+  - "scrolling"
 
 related:
   - "x6-core-node"
@@ -31,57 +30,57 @@ related:
   - "x6-core-ports"
 
 use_cases:
-  - "创建图编辑画布"
-  - "配置画布背景和网格"
-  - "启用画布平移和缩放"
-  - "设置画布尺寸"
+  - "Create a graph editing canvas"
+  - "Configure canvas background and grid"
+  - "Enable canvas panning and zooming"
+  - "Set canvas size"
 
 anti_patterns:
-  - "不要遗漏 container 参数"
-  - "不要使用 @antv/x6-plugin-xxx 独立包"
+  - "Do not omit the container parameter"
+  - "Do not use @antv/x6-plugin-xxx standalone packages"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-Graph 是 X6 的画布容器，管理所有节点和边。X6 采用**命令式 API**：先创建画布，再通过 `addNode()`/`addEdge()` 逐步添加元素。
+Graph is the canvas container of X6, managing all nodes and edges. X6 uses a **declarative API**: first create the canvas, then gradually add elements using `addNode()`/`addEdge()`.
 
-**X6 与 G6 的关键区别：**
-- X6 是图**编辑**引擎（重交互），G6 是图**可视化**引擎（重布局渲染）
-- X6 无内置布局算法，节点位置通过 `x`/`y` 手动指定
-- X6 以连接桩（Ports）为核心连线机制
+**Key differences between X6 and G6:**
+- X6 is a graph **editing** engine (focus on interaction), G6 is a graph **visualization** engine (focus on layout rendering)
+- X6 has no built-in layout algorithm, node positions are manually specified via `x`/`y`
+- X6 uses ports as the core mechanism for connecting nodes
 
-## 基础初始化
+## Basic Initialization
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({
-  container: 'container',  // 必填：DOM id 或 HTMLElement
-  width: 80 0,              // 可选：不设则自适应容器
+  container: 'container',  // Required: DOM id or HTMLElement
+  width: 800,              // Optional: Auto-adapts to container if not set
   height: 600,
 });
 ```
 
-## 背景和网格
+## Background and Grid
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   background: {
-    color: '#F2F7FA',      // 背景色
+    color: '#F2F7FA',      // Background color
   },
   grid: {
-    visible: true,         // 显示网格
-    size: 10,              // 网格大小
+    visible: true,         // Show grid
+    size: 10,              // Grid size
     type: 'dot',           // 'dot' | 'mesh' | 'double-mesh'
   },
 });
 ```
 
-### 双层网格
+### Double-Layer Grid
 
 ```javascript
 grid: {
@@ -95,48 +94,48 @@ grid: {
 },
 ```
 
-## 平移和缩放
+## Panning and Zooming
 
 ```javascript
 const graph = new Graph({
   container: 'container',
-  panning: true,                    // 拖拽平移（鼠标左键拖空白区域）
+  panning: true,                    // Drag to pan (left mouse button drag on blank area)
   mousewheel: {
     enabled: true,
-    modifiers: 'ctrl',              // 按住 Ctrl + 滚轮缩放
+    modifiers: 'ctrl',              // Hold Ctrl + scroll wheel to zoom
     minScale: 0.2,
     maxScale: 4,
   },
 });
 ```
 
-### 平移配置详解
+### Panning Configuration Details
 
 ```javascript
 panning: {
   enabled: true,
-  modifiers: 'shift',    // 按住 Shift 才能平移
+  modifiers: 'shift',    // Hold Shift to enable panning
   eventTypes: ['leftMouseDown', 'rightMouseDown'],
 }
 ```
 
-## 画布变换
+## Canvas Transformations
 
 ```javascript
-// 居中内容
+// Center content
 graph.centerContent();
 
-// 缩放到适应画布
+// Zoom to fit canvas
 graph.zoomToFit({ padding: 20 });
 
-// 设置缩放比例
-graph.zoom(0.5);     // 相对缩放
-graph.zoomTo(1.5);   // 绝对缩放
+// Set zoom level
+graph.zoom(0.5);     // Relative zoom
+graph.zoomTo(1.5);   // Absolute zoom
 
-// 滚动到某个节点
+// Scroll to a specific node
 graph.centerCell(node);
 
-// 缩放到指定矩形区域（局部放大）
+// Zoom to a specified rectangular area (local magnification)
 graph.zoomToRect({
   x: 0,
   y: 0,
@@ -145,21 +144,21 @@ graph.zoomToRect({
 });
 ```
 
-## 连线交互配置
+## Connection Interaction Configuration
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   connecting: {
-    allowBlank: false,          // 禁止连接到空白
-    allowLoop: false,           // 禁止自环
-    allowNode: false,           // 禁止连接到节点（只能连端口）
-    allowEdge: false,           // 禁止连接到边
-    allowMulti: true,           // 允许多条边
-    highlight: true,            // 拖线时高亮可连接点
-    router: 'orth',             // 默认路由器
-    connector: 'rounded',       // 默认连接器
-    createEdge() {              // 拖线时创建的边样式
+    allowBlank: false,          // Prohibit connection to blank
+    allowLoop: false,           // Prohibit self-loop
+    allowNode: false,           // Prohibit connection to nodes (only ports allowed)
+    allowEdge: false,           // Prohibit connection to edges
+    allowMulti: true,           // Allow multiple edges
+    highlight: true,            // Highlight connectable points during dragging
+    router: 'orth',             // Default router
+    connector: 'rounded',       // Default connector
+    createEdge() {              // Edge style created during dragging
       return this.createEdge({
         attrs: {
           line: { stroke: '#1890ff', strokeWidth: 2, targetMarker: 'classic' },
@@ -167,23 +166,23 @@ const graph = new Graph({
       });
     },
     validateConnection({ sourcePort, targetPort }) {
-      return sourcePort !== targetPort;  // 自定义验证逻辑
+      return sourcePort !== targetPort;  // Custom validation logic
     },
   },
 });
 ```
 
-## 节点移动限制
+## Node Movement Restriction
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   translating: {
-    restrict: true,   // 限制节点在画布范围内移动
+    restrict: true,   // Restrict node movement within the canvas area
   },
 });
 
-// 或自定义限制区域
+// Or customize the restriction area
 translating: {
   restrict(cellView) {
     return { x: 0, y: 0, width: 800, height: 600 };
@@ -191,33 +190,33 @@ translating: {
 },
 ```
 
-## 节点嵌入（分组）
+## Node Embedding (Grouping)
 
 ```javascript
 const graph = new Graph({
   container: 'container',
   embedding: {
     enabled: true,
-    findParent: 'bbox',   // 使用包围盒检测父节点
+    findParent: 'bbox',   // Use bounding box to detect parent nodes
   },
 });
 ```
 
-## 数据操作
+## Data Manipulation
 
-### 清空画布
+### Clear Canvas
 
-使用 `graph.clearCells()` 清空画布上所有节点和边，常用于重置或重新加载数据。
+Use `graph.clearCells()` to clear all nodes and edges on the canvas, commonly used for resetting or reloading data.
 
 ```javascript
-// 清空所有节点和边
+// Clear all nodes and edges
 graph.clearCells();
 ```
 
-### 添加节点和边
+### Add Nodes and Edges
 
 ```javascript
-// 添加节点
+// Add a node
 const node = graph.addNode({
   shape: 'rect',
   x: 60,
@@ -230,7 +229,7 @@ const node = graph.addNode({
   },
 });
 
-// 添加边（传入节点实例或节点 id）
+// Add an edge (pass in node instances or node IDs)
 graph.addEdge({
   source: node1,
   target: node2,
@@ -240,7 +239,7 @@ graph.addEdge({
 });
 ```
 
-### 清空后重新加载数据
+### Clear and Reload Data
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -252,14 +251,14 @@ const graph = new Graph({
   background: { color: '#F2F7FA' },
 });
 
-// 加载初始数据
+// Load initial data
 graph.addNode({ shape: 'rect', x: 60, y: 60, width: 100, height: 40, label: 'Old Node 1' });
 graph.addNode({ shape: 'rect', x: 240, y: 60, width: 100, height: 40, label: 'Old Node 2' });
 
-// 清空画布
+// Clear the canvas
 graph.clearCells();
 
-// 重新加载新数据
+// Reload new data
 const newSource = graph.addNode({
   id: 'newSource',
   shape: 'rect',
@@ -289,7 +288,7 @@ graph.addEdge({
 });
 ```
 
-## 完整配置示例
+## Complete Configuration Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -314,134 +313,134 @@ const graph = new Graph({
   },
 });
 
-// 注册插件
+// Register plugins
 import { Selection, Snapline, History } from '@antv/x6';
 graph.use(new Selection({ enabled: true, rubberband: true }));
 graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 1. 遗漏 container 参数
+### 1. Omitted container parameter
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 const graph = new Graph({ width: 800, height: 600 });
 
-// ✅ 正确
+// ✅ Correct
 const graph = new Graph({ container: 'container', width: 800, height: 600 });
 ```
 
-### 2. 清空画布后重新加载数据失败
+### 2. Failure to Reload Data After Clearing the Canvas
 
-当需要清空画布并重新加载新数据时，必须显式调用 `graph.clearCells()`，然后继续使用 `graph.addNode()` 和 `graph.addEdge()` 添加新元素。
+When you need to clear the canvas and reload new data, you must explicitly call `graph.clearCells()`, followed by using `graph.addNode()` and `graph.addEdge()` to add new elements.
 
 ```javascript
-// ❌ 错误：直接覆盖变量而未清空画布，导致旧数据残留
+// ❌ Incorrect: Overwriting variables without clearing the canvas, resulting in residual old data
 graph.addNode({ shape: 'rect', label: 'Old' });
-// 缺少 clearCells()
+// Missing clearCells()
 
-// ✅ 正确：先清空，再加载
+// ✅ Correct: Clear first, then load
 graph.clearCells();
 graph.addNode({ shape: 'rect', label: 'New' });
 ```
 
-### 3. 使用已废弃的独立插件包
+### 3. Using Deprecated Standalone Plugin Packages
 
-X6 3.x 已将所有插件内置，无需安装 `@antv/x6-plugin-xxx` 系列包。
+X6 3.x has integrated all plugins, so there is no need to install the `@antv/x6-plugin-xxx` series of packages.
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 import { Snapline } from '@antv/x6-plugin-snapline';
 
-// ✅ 正确：从 @antv/x6 导入并通过 graph.use() 注册
+// ✅ Correct: Import from @antv/x6 and register via graph.use()
 import { Graph, Snapline } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Snapline({ enabled: true }));
 ```
 
-### 4. 边 source/target 格式错误
+### 4. Incorrect edge source/target format
 
 ```javascript
-// ❌ 错误：直接传入未定义的变量
-graph.addEdge({ source: 'node1', target: 'node2' }); // 若节点未设置 id 或不存在则报错
+// ❌ Incorrect: Passing undefined variables directly
+graph.addEdge({ source: 'node1', target: 'node2' }); // Throws an error if nodes are not set with id or do not exist
 
-// ✅ 正确：传入节点实例或确保 id 已存在
+// ✅ Correct: Pass node instances or ensure ids exist
 const node1 = graph.addNode({ id: 'n1', shape: 'rect', x: 0, y: 0, width: 100, height: 40 });
 const node2 = graph.addNode({ id: 'n2', shape: 'rect', x: 200, y: 0, width: 100, height: 40 });
 graph.addEdge({ source: node1, target: node2 });
-// 或
+// or
 graph.addEdge({ source: 'n1', target: 'n2' });
 ```
 
-### 5. container 使用规范
+### 5. Container Usage Guidelines
 
-`container` 变量由运行环境自动注入，**禁止**在代码中声明 `const container = ...`，否则报 `Identifier 'container' has already been declared`。
+The `container` variable is automatically injected by the runtime environment. **Do not** declare `const container = ...` in your code, as it will result in the error `Identifier 'container' has already been declared`.
 
 ```javascript
-// ✅ 正确：直接使用字符串 'container'
+// ✅ Correct: Directly use the string 'container'
 const graph = new Graph({ container: 'container' });
 
-// ❌ 错误：重复声明 container 变量
+// ❌ Incorrect: Redeclaring the container variable
 const container = document.getElementById('container');
-const graph = new Graph({ container }); // 报错：Identifier 'container' has already been declared
+const graph = new Graph({ container }); // Error: Identifier 'container' has already been declared
 ```
 
-### 6. 初始化后未正确调用画布变换方法
+### 6. Failure to Call Canvas Transformation Methods After Initialization
 
 ```javascript
-// ❌ 错误：未调用 centerContent 或 zoomToFit
+// ❌ Incorrect: centerContent or zoomToFit not called
 const graph = new Graph({ container: 'container' });
 graph.addNode(...);
-// 缺少居中或缩放调用
+// Missing center or zoom call
 
-// ✅ 正确：初始化后调用变换方法
+// ✅ Correct: Transformation methods called after initialization
 const graph = new Graph({ container: 'container' });
 graph.addNode(...);
 graph.zoomToFit();
 graph.centerContent();
 ```
 
-### 7. container 必须有效
+### 7. container must be valid
 
 ```javascript
-// ✅ 正确：使用字符串 'container'（运行环境已注入）
+// ✅ Correct: Use the string 'container' (injected in the runtime environment)
 const graph = new Graph({ container: 'container' });
 
-// ❌ 错误：传入不存在的元素
-const graph = new Graph({ container: document.getElementById('not-exist') }); // 报错
+// ❌ Incorrect: Passing a non-existent element
+const graph = new Graph({ container: document.getElementById('not-exist') }); // Throws an error
 ```
 
-### 8. 错误使用 `zoomToFit` 后未调用 `centerContent`
+### 8. Failure to Call `centerContent` After Using `zoomToFit`
 
 ```javascript
-// ❌ 错误：仅调用 zoomToFit，未居中内容
+// ❌ Incorrect: Only calling zoomToFit without centering the content
 graph.zoomToFit();
 
-// ✅ 正确：先缩放再居中
+// ✅ Correct: Zoom and then center
 graph.zoomToFit();
 graph.centerContent();
 ```
 
-### 9. 错误使用 `source` 和 `target` 为字符串而非节点实例
+### 9. Incorrect Usage of `source` and `target` as Strings Instead of Node Instances
 
 ```javascript
-// ❌ 错误：source 和 target 为字符串，但未确保节点存在
+// ❌ Incorrect: source and target are strings, but node existence is not ensured
 graph.addEdge({ source: 'source', target: 'target' });
 
-// ✅ 正确：传入节点实例或确保节点已存在
+// ✅ Correct: Pass node instances or ensure nodes exist
 const sourceNode = graph.addNode({ id: 'source', shape: 'rect', x: 40, y: 40, width: 100, height: 40 });
 const targetNode = graph.addNode({ id: 'target', shape: 'rect', x: 200, y: 200, width: 100, height: 40 });
 graph.addEdge({ source: sourceNode, target: targetNode });
-// 或
+// or
 graph.addEdge({ source: 'n1', target: 'n2' });
 ```
 
-### 10. 错误使用 `router` 和 `connector` 配置
+### 10. Incorrect Usage of `router` and `connector` Configuration
 
 ```javascript
-// ❌ 错误：router 和 connector 配置不正确
+// ❌ Incorrect: router and connector configuration is incorrect
 connecting: {
   router: 'manhattan',
   connector: {
@@ -452,40 +451,40 @@ connecting: {
   },
 }
 
-// ✅ 正确：使用标准配置
+// ✅ Correct: Using standard configuration
 connecting: {
   router: 'orth',
   connector: 'rounded',
 }
 ```
 
-### 11. container 使用字符串 'container'
+### 11. Using the string 'container' for the container
 
 ```javascript
-// ✅ 正确：使用默认的 'container' 字符串
+// ✅ Correct: Use the default 'container' string
 const graph = new Graph({ container: 'container' });
 
-// ❌ 错误：在代码中声明 container 变量（运行环境已注入，重复声明会报错）
+// ❌ Incorrect: Declaring the container variable in the code (the runtime environment has already injected it, and redeclaring it will throw an error)
 const container = document.getElementById('my-container');
 const graph = new Graph({ container }); // Identifier 'container' has already been declared
 ```
 
-### 12. 错误使用 `zoomToFit` 和 `centerContent` 顺序
+### 12. Incorrect Order of `zoomToFit` and `centerContent`
 
 ```javascript
-// ❌ 错误：先居中再缩放
+// ❌ Incorrect: Center first, then zoom
 graph.centerContent();
 graph.zoomToFit();
 
-// ✅ 正确：先缩放再居中
+// ✅ Correct: Zoom first, then center
 graph.zoomToFit();
 graph.centerContent();
 ```
 
-### 13. 错误使用 `mousewheel` 配置
+### 13. Incorrect Usage of `mousewheel` Configuration
 
 ```javascript
-// ❌ 错误：未启用 mousewheel
+// ❌ Incorrect: mousewheel not enabled
 const graph = new Graph({
   container: 'container',
   mousewheel: {
@@ -493,7 +492,7 @@ const graph = new Graph({
   },
 });
 
-// ✅ 正确：启用 mousewheel
+// ✅ Correct: mousewheel enabled
 const graph = new Graph({
   container: 'container',
   mousewheel: {
@@ -503,31 +502,31 @@ const graph = new Graph({
 });
 ```
 
-### 14. 错误使用 `panning` 配置
+### 14. Incorrect Usage of `panning` Configuration
 
 ```javascript
-// ❌ 错误：未启用 panning
+// ❌ Incorrect: panning is not enabled
 const graph = new Graph({
   container: 'container',
   panning: false,
 });
 
-// ✅ 正确：启用 panning
+// ✅ Correct: panning is enabled
 const graph = new Graph({
   container: 'container',
   panning: true,
 });
 ```
 
-### 15. 错误使用 `background` 配置
+### 15. Incorrect Usage of `background` Configuration
 
 ```javascript
-// ❌ 错误：未设置 background
+// ❌ Incorrect: Background not set
 const graph = new Graph({
   container: 'container',
 });
 
-// ✅ 正确：设置 background
+// ✅ Correct: Background set
 const graph = new Graph({
   container: 'container',
   background: {
@@ -536,15 +535,15 @@ const graph = new Graph({
 });
 ```
 
-### 16. 错误使用 `grid` 配置
+### 16. Incorrect Usage of `grid` Configuration
 
 ```javascript
-// ❌ 错误：未设置 grid
+// ❌ Incorrect: grid not set
 const graph = new Graph({
   container: 'container',
 });
 
-// ✅ 正确：设置 grid
+// ✅ Correct: grid set
 const graph = new Graph({
   container: 'container',
   grid: {
@@ -554,45 +553,45 @@ const graph = new Graph({
 });
 ```
 
-### 17. 错误使用 `graph.centerContent()` 和 `graph.zoom()` 时画布为空
+### 17. Canvas is empty when `graph.centerContent()` and `graph.zoom()` are used incorrectly
 
 ```javascript
-// ❌ 错误：画布为空时调用 centerContent 和 zoom，导致白屏
+// ❌ Incorrect: Calling centerContent and zoom when the canvas is empty results in a white screen
 const graph = new Graph({ container: 'container' });
-graph.centerContent(); // 白屏
-graph.zoom(0.8);       // 白屏
+graph.centerContent(); // White screen
+graph.zoom(0.8);       // White screen
 
-// ✅ 正确：添加节点后再调用 centerContent 和 zoom
+// ✅ Correct: Add nodes before calling centerContent and zoom
 const graph = new Graph({ container: 'container' });
 graph.addNode({ shape: 'rect', x: 50, y: 50, width: 100, height: 40, label: 'Node A' });
 graph.centerContent();
 graph.zoom(0.8);
 ```
 
-### 18. 错误使用 `graph.zoom()` 参数
+### 18. Misuse of `graph.zoom()` Parameters
 
 ```javascript
-// ❌ 错误：使用负数作为 zoom 参数
-graph.zoom(-0.2); // 不推荐，可能导致异常行为
+// ❌ Incorrect: Using a negative number as the zoom parameter
+graph.zoom(-0.2); // Not recommended, may cause abnormal behavior
 
-// ✅ 正确：使用正数或相对值
-graph.zoom(0.8);  // 缩小
-graph.zoom(1.2);  // 放大
-graph.zoomTo(1.0); // 设置绝对缩放比例
+// ✅ Correct: Using a positive number or relative value
+graph.zoom(0.8);  // Zoom out
+graph.zoom(1.2);  // Zoom in
+graph.zoomTo(1.0); // Set absolute zoom ratio
 ```
 
-### 19. 错误使用 `zoomToRect` 方法
+### 19. Incorrect Usage of `zoomToRect` Method
 
 ```javascript
-// ❌ 错误：语法错误或拼写错误导致渲染失败
+// ❌ Incorrect: Syntax or spelling errors causing rendering failure
 graph.zoomToRect({
   x: 0,
   y: 0,
   width: 400,
   height: 300
-}); // 注意结尾不能有分号或其他语法错误
+}); // Note: No semicolon or other syntax errors at the end
 
-// ✅ 正确：使用 zoomToRect 缩放到指定矩形区域
+// ✅ Correct: Using zoomToRect to zoom to a specified rectangular area
 graph.zoomToRect({
   x: 0,
   y: 0,
@@ -601,13 +600,13 @@ graph.zoomToRect({
 });
 ```
 
-### 20. 错误使用 `container` 变量（重复声明）
+### 20. Incorrect Use of `container` Variable (Duplicate Declaration)
 
 ```javascript
-// ❌ 错误：在代码中重复声明 container 变量
+// ❌ Incorrect: Repeated declaration of container variable in the code
 const container = document.getElementById('my-container');
 const graph = new Graph({ container });
 
-// ✅ 正确：使用字符串 'container'
+// ✅ Correct: Use the string 'container'
 const graph = new Graph({ container: 'container' });
 ```

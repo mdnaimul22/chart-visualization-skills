@@ -1,16 +1,15 @@
 ---
 id: "x6-core-events"
-title: "X6 事件系统"
+title: "X6 Event System"
 description: |
-  X6 画布、节点、边的事件监听与处理。
-  包含点击、拖拽、变更、键盘等事件的使用方式。
+  Event listening and handling for X6 canvas, nodes, and edges.
+  Includes usage of events such as click, drag, change, and keyboard interactions.
 
 library: "x6"
 version: "3.x"
 category: "core"
 subcategory: "events"
 tags:
-  - "事件"
   - "event"
   - "click"
   - "mouseenter"
@@ -22,7 +21,7 @@ tags:
   - "node:click"
   - "edge:click"
   - "blank:click"
-  - "交互"
+  - "interaction"
 
 related:
   - "x6-core-graph-init"
@@ -30,53 +29,53 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "监听节点点击事件"
-  - "监听边的选中状态"
-  - "监听画布空白区域点击"
-  - "监听节点移动完成"
-  - "监听节点/边的添加和删除"
+  - "Listen for node click events"
+  - "Listen for edge selection state"
+  - "Listen for canvas blank area clicks"
+  - "Listen for node move completion"
+  - "Listen for node/edge addition and removal"
 
 anti_patterns:
-  - "不要用位置参数解构事件回调，必须用对象解构"
-  - "不要在高频事件（mousemove）中执行重计算"
+  - "Do not use positional arguments to destructure event callbacks; use object destructuring instead"
+  - "Avoid performing heavy computations in high-frequency events (e.g., mousemove)"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 事件回调格式
+## Event Callback Format
 
-**重要**：X6 事件回调参数是**对象解构**，不是位置参数。
+**Important**: X6 event callback parameters are **object destructuring**, not positional arguments.
 
 ```javascript
-// ✅ 正确：对象解构
+// ✅ Correct: Object destructuring
 graph.on('node:click', ({ node, e }) => {
   console.log('Clicked node:', node.id);
 });
 
-// ❌ 错误：位置参数
+// ❌ Incorrect: Positional arguments
 graph.on('node:click', (node, e) => { ... });
 ```
 
-## 节点事件
+## Node Events
 
 ```javascript
-// 点击
+// Click
 graph.on('node:click', ({ node, e }) => {
   console.log('Clicked:', node.id);
 });
 
-// 双击
+// Double click
 graph.on('node:dblclick', ({ node, e }) => {
   console.log('Double clicked:', node.id);
 });
 
-// 右键
+// Right click
 graph.on('node:contextmenu', ({ node, e }) => {
   e.preventDefault();
 });
 
-// 鼠标进入/离开
+// Mouse enter/leave
 graph.on('node:mouseenter', ({ node }) => {
   node.attr('body/stroke', '#1890ff');
 });
@@ -85,33 +84,33 @@ graph.on('node:mouseleave', ({ node }) => {
   node.attr('body/stroke', '#8f8f8f');
 });
 
-// 节点移动中
+// Node moving
 graph.on('node:moving', ({ node, x, y }) => {
   console.log('Moving to:', x, y);
 });
 
-// 节点移动完成
+// Node move completed
 graph.on('node:moved', ({ node }) => {
   const pos = node.getPosition();
   console.log('Moved to:', pos.x, pos.y);
 });
 
-// 节点大小改变
+// Node size changed
 graph.on('node:resized', ({ node }) => {
   const size = node.getSize();
   console.log('Resized to:', size.width, size.height);
 });
 ```
 
-## 边事件
+## Edge Events
 
 ```javascript
-// 点击
+// Click
 graph.on('edge:click', ({ edge, e }) => {
   console.log('Edge:', edge.id);
 });
 
-// 鼠标进入/离开
+// Mouse Enter/Leave
 graph.on('edge:mouseenter', ({ edge }) => {
   edge.attr('line/stroke', '#1890ff');
   edge.attr('line/strokeWidth', 2);
@@ -122,7 +121,7 @@ graph.on('edge:mouseleave', ({ edge }) => {
   edge.attr('line/strokeWidth', 1);
 });
 
-// 连线完成
+// Connection Complete
 graph.on('edge:connected', ({ edge, isNew }) => {
   if (isNew) {
     console.log('New edge created:', edge.id);
@@ -130,49 +129,49 @@ graph.on('edge:connected', ({ edge, isNew }) => {
 });
 ```
 
-## 画布事件
+## Canvas Events
 
 ```javascript
-// 点击空白区域
+// Click on blank area
 graph.on('blank:click', ({ e }) => {
-  // 取消选择
+  // Clear selection
   graph.cleanSelection();
 });
 
-// 画布缩放
+// Canvas zoom
 graph.on('scale', ({ sx, sy }) => {
   console.log('Scale:', sx, sy);
 });
 
-// 画布平移
+// Canvas pan
 graph.on('translate', ({ tx, ty }) => {
   console.log('Translate:', tx, ty);
 });
 ```
 
-## 元素变更事件
+## Element Change Events
 
 ```javascript
-// 节点/边被添加
+// Node/Edge Added
 graph.on('cell:added', ({ cell }) => {
   console.log('Added:', cell.id, cell.isNode() ? 'node' : 'edge');
 });
 
-// 节点/边被删除
+// Node/Edge Removed
 graph.on('cell:removed', ({ cell }) => {
   console.log('Removed:', cell.id);
 });
 
-// 属性变更
+// Attribute Changed
 graph.on('cell:changed', ({ cell, options }) => {
   console.log('Changed:', cell.id);
 });
 ```
 
-## Selection 事件
+## Selection Event
 
 ```javascript
-// 选中变化（需要启用 selecting 插件）
+// Selection change (requires enabling the selecting plugin)
 graph.on('selection:changed', ({ added, removed, selected }) => {
   console.log('Selected nodes:', selected.length);
   added.forEach(cell => cell.attr('body/stroke', '#1890ff'));
@@ -180,10 +179,10 @@ graph.on('selection:changed', ({ added, removed, selected }) => {
 });
 ```
 
-## History 事件
+## History Events
 
 ```javascript
-// 撤销/重做（需要启用 history 插件）
+// Undo/Redo (requires enabling the history plugin)
 graph.on('history:undo', () => {
   console.log('Undo performed');
 });
@@ -193,24 +192,24 @@ graph.on('history:redo', () => {
 });
 ```
 
-## 事件管理
+## Event Management
 
 ```javascript
-// 监听一次
+// Listen once
 graph.once('node:click', ({ node }) => { ... });
 
-// 移除监听
+// Remove listener
 const handler = ({ node }) => { ... };
 graph.on('node:click', handler);
 graph.off('node:click', handler);
 
-// 移除所有监听
+// Remove all listeners
 graph.off('node:click');
 ```
 
-## 常用事件模式
+## Common Event Patterns
 
-### 节点状态切换
+### Node State Switching
 
 ```javascript
 graph.on('node:click', ({ node }) => {
@@ -222,17 +221,17 @@ graph.on('node:click', ({ node }) => {
 });
 ```
 
-### 高亮相邻节点
+### Highlight Adjacent Nodes
 
 ```javascript
 graph.on('node:click', ({ node }) => {
-  // 重置所有节点样式
+  // Reset all node styles
   graph.getNodes().forEach(n => {
     n.attr('body/fill', '#fff');
   });
-  // 高亮当前节点
+  // Highlight the current node
   node.attr('body/fill', '#e6f7ff');
-  // 高亮相邻节点
+  // Highlight adjacent nodes
   const neighbors = graph.getNeighbors(node);
   neighbors.forEach(n => {
     n.attr('body/fill', '#d9f7be');
@@ -240,14 +239,14 @@ graph.on('node:click', ({ node }) => {
 });
 ```
 
-### 删除选中元素
+### Delete Selected Elements
 
 ```javascript
 graph.on('blank:click', () => {
   graph.cleanSelection();
 });
 
-// 配合 keyboard 插件
+// Works with the keyboard plugin
 graph.bindKey('delete', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) {
@@ -256,12 +255,12 @@ graph.bindKey('delete', () => {
 });
 ```
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/x6'
 
-// 创建画布
+// Create canvas
 const graph = new Graph({
   container: document.getElementById('container'),
   width: 800,
@@ -270,20 +269,20 @@ const graph = new Graph({
   grid: { visible: true },
 })
 
-// 监听画布事件
+// Listen for canvas events
 graph.on('blank:click', ({ e }) => {
-  console.log('点击空白区域')
+  console.log('Clicked on blank area')
 })
 
 graph.on('cell:added', ({ cell }) => {
-  console.log('添加元素:', cell.id)
+  console.log('Element added:', cell.id)
 })
 
 graph.on('cell:removed', ({ cell }) => {
-  console.log('删除元素:', cell.id)
+  console.log('Element removed:', cell.id)
 })
 
-// 添加节点
+// Add node
 graph.addNode({
   shape: 'rect',
   x: 100,
@@ -302,7 +301,7 @@ graph.addNode({
   }
 })
 
-// 监听节点事件
+// Listen for node events
 graph.on('node:mouseenter', ({ node }) => {
   node.attr('body/stroke', '#1890ff')
   node.attr('body/strokeWidth', 2)
@@ -314,23 +313,23 @@ graph.on('node:mouseleave', ({ node }) => {
 })
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误：Selection 构造函数使用错误
+### Error: Incorrect Usage of Selection Constructor
 
 ```javascript
-// ❌ 错误：直接使用 new Selection()
+// ❌ Incorrect: Directly using new Selection()
 graph.use(new Selection({ enabled: true, rubberband: true }));
 
-// ✅ 正确：使用 graph.use() 并正确配置插件
+// ✅ Correct: Using graph.use() and properly configuring the plugin
 import { Selection } from '@antv/x6-plugin-selection'
 graph.use(new Selection({ enabled: true, rubberband: true }))
 ```
 
-### 错误：插件初始化方式错误
+### Error: Incorrect Plugin Initialization Method
 
 ```javascript
-// ❌ 错误：使用 plugins 数组初始化插件
+// ❌ Incorrect: Initializing plugins using the plugins array
 const graph = new Graph({
   plugins: [
     new Selection(),
@@ -341,7 +340,7 @@ const graph = new Graph({
   ]
 });
 
-// ✅ 正确：使用 graph.use() 方法初始化插件
+// ✅ Correct: Initializing plugins using the graph.use() method
 import { Selection, Snapline, History } from '@antv/x6-plugin-selection'
 
 graph.use(new Selection({ enabled: true, rubberband: true }));
@@ -349,15 +348,15 @@ graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 ```
 
-### 错误：节点注册方式错误
+### Error: Incorrect Node Registration Method
 
 ```javascript
-// ❌ 错误：使用 graph.registerNode 注册节点
+// ❌ Incorrect: Using graph.registerNode to register a node
 graph.registerNode('start-event', {
   // ...
 }, true);
 
-// ✅ 正确：直接使用内置 shape 或通过继承创建节点
+// ✅ Correct: Directly use built-in shapes or create nodes through inheritance
 const start = graph.addNode({
   shape: 'circle',
   x: 80,
@@ -382,28 +381,28 @@ const start = graph.addNode({
 });
 ```
 
-### 错误：创建边时未正确绑定上下文
+### Error: Context Not Properly Bound When Creating Edge
 
 ```javascript
-// ❌ 错误：在 createEdge 中使用 graph.createEdge
+// ❌ Error: Using graph.createEdge in createEdge
 connecting: {
   createEdge() {
-    return graph.createEdge({ ... }); // 错误：this 指向问题
+    return graph.createEdge({ ... }); // Error: this binding issue
   }
 }
 
-// ✅ 正确：使用 this.createEdge
+// ✅ Correct: Using this.createEdge
 connecting: {
   createEdge() {
-    return this.createEdge({ ... }); // 正确：this 指向 graph 实例
+    return this.createEdge({ ... }); // Correct: this refers to the graph instance
   }
 }
 ```
 
-### 错误：节点属性设置不完整导致渲染异常
+### Error: Incomplete Node Attribute Settings Cause Rendering Abnormalities
 
 ```javascript
-// ❌ 错误：缺少必要的属性设置
+// ❌ Error: Missing necessary attribute settings
 const start = graph.addNode({
   shape: 'circle',
   x: 80,
@@ -412,7 +411,7 @@ const start = graph.addNode({
   height: 40
 });
 
-// ✅ 正确：设置完整的节点属性
+// ✅ Correct: Complete node attribute settings
 const start = graph.addNode({
   shape: 'circle',
   x: 80,

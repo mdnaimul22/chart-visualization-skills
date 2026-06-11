@@ -1,16 +1,15 @@
 ---
 id: "x6-core-node"
-title: "X6 节点配置与自定义"
+title: "X6 Node Configuration and Customization"
 description: |
-  X6 节点的创建、内置形状、样式配置、自定义节点注册。
-  包含 rect/circle/polygon/html 等内置节点及自定义扩展方式。
+  Creation, built-in shapes, style configuration, and custom node registration in X6.
+  Includes built-in nodes like rect/circle/polygon/html and custom extension methods.
 
 library: "x6"
 version: "3.x"
 category: "core"
 subcategory: "node"
 tags:
-  - "节点"
   - "node"
   - "shape"
   - "rect"
@@ -18,12 +17,11 @@ tags:
   - "ellipse"
   - "polygon"
   - "html"
-  - "自定义节点"
-  - "注册节点"
+  - "custom node"
+  - "register node"
   - "register"
   - "attrs"
   - "label"
-  - "菱形"
   - "diamond"
 
 related:
@@ -32,41 +30,41 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "添加矩形/圆形/椭圆节点"
-  - "创建菱形判断节点"
-  - "注册自定义形状"
-  - "创建 HTML 富文本节点"
-  - "设置节点样式和标签"
-  - "动态修改节点属性"
+  - "Add rectangle/circle/ellipse nodes"
+  - "Create diamond decision nodes"
+  - "Register custom shapes"
+  - "Create HTML rich text nodes"
+  - "Set node styles and labels"
+  - "Dynamically modify node attributes"
 
 anti_patterns:
-  - "不要使用 CSS 属性名（用 SVG 属性）"
-  - "不要遗漏 x/y 坐标"
+  - "Do not use CSS property names (use SVG attributes)"
+  - "Do not omit x/y coordinates"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 添加节点
+## Add Node
 
 ```javascript
 const node = graph.addNode({
-  shape: 'rect',          // 形状类型
-  x: 100,                 // 左上角 X 坐标
-  y: 60,                  // 左上角 Y 坐标
-  width: 120,             // 宽度
-  height: 50,             // 高度
-  label: 'Hello',         // 标签文本（简写）
-  attrs: {                // SVG 属性
+  shape: 'rect',          // Shape type
+  x: 100,                 // Top-left corner X coordinate
+  y: 60,                  // Top-left corner Y coordinate
+  width: 120,             // Width
+  height: 50,             // Height
+  label: 'Hello',         // Label text (shorthand)
+  attrs: {                // SVG attributes
     body: {
       fill: '#fff',
       stroke: '#8f8f8f',
       strokeWidth: 1,
-      rx: 6,              // 圆角 X
-      ry: 6,              // 圆角 Y
+      rx: 6,              // Border radius X
+      ry: 6,              // Border radius Y
     },
     label: {
-      text: 'Hello',     // 等价于外层 label
+      text: 'Hello',     // Equivalent to outer label
       fontSize: 14,
       fill: '#333',
     },
@@ -74,9 +72,9 @@ const node = graph.addNode({
 });
 ```
 
-## 内置节点形状
+## Built-in Node Shapes
 
-### rect（矩形）— 最常用
+### rect (Rectangle) — Most Commonly Used
 
 ```javascript
 graph.addNode({
@@ -90,13 +88,13 @@ graph.addNode({
 });
 ```
 
-### circle（圆形）
+### circle (Circle)
 
 ```javascript
 graph.addNode({
   shape: 'circle',
   x: 200, y: 100,
-  width: 60, height: 60,   // 圆形时 width = height = 直径
+  width: 60, height: 60,   // For a circle, width = height = diameter
   label: 'Start',
   attrs: {
     body: { fill: '#f6ffed', stroke: '#52c41a', strokeWidth: 2 },
@@ -104,7 +102,7 @@ graph.addNode({
 });
 ```
 
-### ellipse（椭圆）
+### ellipse (Ellipse)
 
 ```javascript
 graph.addNode({
@@ -118,17 +116,17 @@ graph.addNode({
 });
 ```
 
-### polygon（多边形 / 菱形）
+### polygon (Polygon / Diamond)
 
 ```javascript
-// 菱形（判断节点）
+// Diamond (Node Judgment)
 Graph.registerNode('diamond', {
   inherit: 'polygon',
   width: 80,
   height: 80,
   attrs: {
     body: {
-      refPoints: '0,10 10,0 20,10 10,20',  // 菱形顶点
+      refPoints: '0,10 10,0 20,10 10,20',  // Diamond vertices
       fill: '#fff',
       stroke: '#8f8f8f',
       strokeWidth: 1,
@@ -139,7 +137,7 @@ Graph.registerNode('diamond', {
 graph.addNode({ shape: 'diamond', x: 200, y: 100, label: 'Decision?' });
 ```
 
-### text（纯文本）
+### text (Plain Text)
 
 ```javascript
 graph.addNode({
@@ -151,7 +149,7 @@ graph.addNode({
 });
 ```
 
-### image（图片节点）
+### image (Image Node)
 
 ```javascript
 graph.addNode({
@@ -162,7 +160,7 @@ graph.addNode({
 });
 ```
 
-## HTML 自定义节点
+## HTML Custom Node
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -171,7 +169,7 @@ Shape.HTML.register({
   shape: 'custom-html',
   width: 180,
   height: 80,
-  effect: ['data'],      // 当 data 变化时重新渲染
+  effect: ['data'],      // Re-render when data changes
   html(cell) {
     const data = cell.getData() || {};
     const div = document.createElement('div');
@@ -188,83 +186,83 @@ graph.addNode({
 });
 ```
 
-## 注册自定义节点
+## Register Custom Node
 
 ```javascript
 Graph.registerNode('my-rect', {
-  inherit: 'rect',           // 继承内置 rect
-  width: 120,                // 默认宽度
-  height: 50,                // 默认高度
+  inherit: 'rect',           // Inherit from built-in rect
+  width: 120,                // Default width
+  height: 50,                // Default height
   attrs: {
     body: { fill: '#e6f7ff', stroke: '#1890ff', strokeWidth: 2, rx: 8, ry: 8 },
     label: { fontSize: 14, fill: '#333' },
   },
-  ports: {                   // 默认端口配置
+  ports: {                   // Default port configuration
     groups: {
       in: { position: 'top', attrs: { circle: { magnet: true, r: 5, stroke: '#1890ff' } } },
       out: { position: 'bottom', attrs: { circle: { magnet: true, r: 5, stroke: '#1890ff' } } },
     },
   },
-}, true);  // true 表示覆盖已有同名注册
+}, true);  // true indicates overriding existing registration with the same name
 
 graph.addNode({ shape: 'my-rect', x: 100, y: 80, label: 'Custom' });
 ```
 
-## 动态修改节点
+## Dynamically Modify Nodes
 
 ```javascript
-// 修改位置
+// Modify position
 node.setPosition(200, 100);
 
-// 修改大小
+// Modify size
 node.setSize(160, 60);
 
-// 修改属性
+// Modify attributes
 node.attr('body/fill', '#e6f7ff');
 node.attr('label/text', 'Updated');
 
-// 修改数据
+// Modify data
 node.setData({ status: 'running' });
 
-// 获取信息
+// Retrieve information
 const { x, y } = node.getPosition();
 const { width, height } = node.getSize();
 const data = node.getData();
 ```
 
-## 节点 ID
+## Node ID
 
 ```javascript
-// 指定 ID
+// Specify ID
 graph.addNode({ id: 'node-1', shape: 'rect', x: 40, y: 40, width: 100, height: 40 });
 
-// 通过 ID 获取节点
+// Retrieve node by ID
 const node = graph.getCellById('node-1');
 
-// 不指定 ID 则自动生成 UUID
+// Automatically generate UUID if ID is not specified
 const node2 = graph.addNode({ shape: 'rect', x: 200, y: 40, width: 100, height: 40 });
-console.log(node2.id); // 自动生成的 UUID
+console.log(node2.id); // Automatically generated UUID
 ```
 
-## 节点层级
+## Node Hierarchy
 
 ```javascript
-// 设置 zIndex
+// Set zIndex
 graph.addNode({ shape: 'rect', x: 40, y: 40, width: 100, height: 40, zIndex: 10 });
 
-// 动态调整
-node.toFront();   // 置顶
-node.toBack();    // 置底
+// Dynamic Adjustment
+node.toFront();   // Bring to front
+node.toBack();    // Send to back
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：节点拖拽范围限制
+### Error 1: Node Dragging Range Restriction
 
-错误示例（使用事件手动限制）：
+Incorrect Example (Using Event for Manual Restriction):
 
 ```javascript
-// ❌ 错误做法：使用 node:move 事件手动限制
+// ❌ Incorrect Approach: Using node:move event for manual restriction
 graph.on('node:move', ({ node }) => {
   const boundary = { x: 100, y: 100, width: 600, height: 400 };
   const nodeBBox = node.getBBox();
@@ -286,10 +284,10 @@ graph.on('node:move', ({ node }) => {
 });
 ```
 
-正确做法（使用 `translating.restrict` 配置）：
+Correct Approach (Using `translating.restrict` Configuration):
 
 ```javascript
-// ✅ 正确做法：使用 graph 配置项
+// ✅ Correct Approach: Using graph configuration
 const graph = new Graph({
   container: 'container',
   width: 600,
@@ -305,12 +303,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 2：节点嵌套关系处理
+### Error 2: Handling Node Nesting Relationships
 
-错误示例（使用 parent 属性）：
+Incorrect Example (Using the `parent` Property):
 
 ```javascript
-// ❌ 错误做法：通过 parent 字段设置嵌套关系
+// ❌ Incorrect Approach: Setting nesting relationships via the `parent` field
 graph.addNode({
   id: 'child1',
   shape: 'rect',
@@ -323,10 +321,10 @@ graph.addNode({
 });
 ```
 
-正确做法（使用 `addChild` 方法）：
+Correct Approach (Using the `addChild` Method):
 
 ```javascript
-// ✅ 正确做法：使用 addChild 方法建立父子关系
+// ✅ Correct Approach: Establishing parent-child relationships using the `addChild` method
 const outerGroup = graph.addNode({ shape: 'rect', x: 40, y: 40, width: 400, height: 240 });
 const innerGroup = graph.addNode({ shape: 'rect', x: 80, y: 100, width: 200, height: 140 });
 const child1 = graph.addNode({ shape: 'rect', x: 100, y: 160, width: 80, height: 40 });
@@ -335,24 +333,24 @@ outerGroup.addChild(innerGroup);
 innerGroup.addChild(child1);
 ```
 
-### 错误 3：边连接点配置
+### Error 3: Edge Connection Point Configuration
 
-错误示例（在 graph 配置中设置但未生效）：
+Incorrect Example (Set in graph configuration but not taking effect):
 
 ```javascript
-// ❌ 错误做法：connectionPoint 设置不完整
+// ❌ Incorrect Approach: Incomplete connectionPoint configuration
 const graph = new Graph({
   container: 'container',
   connecting: {
-    connectionPoint: 'boundary', // 只设置了连接点类型，缺少创建边的配置
+    connectionPoint: 'boundary', // Only sets the connection point type, missing edge creation configuration
   },
 });
 ```
 
-正确做法（完整配置）：
+Correct Approach (Complete Configuration):
 
 ```javascript
-// ✅ 正确做法：完整配置连接点和创建边的行为
+// ✅ Correct Approach: Complete configuration of connection point and edge creation behavior
 const graph = new Graph({
   container: 'container',
   connecting: {
@@ -366,12 +364,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 4：节点垂直方向拖拽限制
+### Error 4: Vertical Drag Restriction for Nodes
 
-错误示例（使用复杂事件处理）：
+Incorrect Example (Using Complex Event Handling):
 
 ```javascript
-// ❌ 错误做法：使用复杂的事件处理逻辑
+// ❌ Incorrect Approach: Using complex event handling logic
 graph.on('node:mousemove', ({ node }) => {
   const nodeId = node.id;
   const nodeY = node.position().y;
@@ -406,10 +404,10 @@ graph.on('node:mousemove', ({ node }) => {
 });
 ```
 
-正确做法（使用 `translating.restrict` 限制移动方向）：
+Correct Approach (Using `translating.restrict` to Limit Movement Direction):
 
 ```javascript
-// ✅ 正确做法：使用 translating.restrict 限制节点只能垂直移动
+// ✅ Correct Approach: Using translating.restrict to allow only vertical node movement
 const graph = new Graph({
   container: 'container',
   translating: {
@@ -422,12 +420,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 5：边连接器配置不生效
+### Error 5: Edge Connector Configuration Not Taking Effect
 
-错误示例（边连接器配置不正确）：
+Error Example (Incorrect Edge Connector Configuration):
 
 ```javascript
-// ❌ 错误做法：在 graph 配置中设置但未在边中生效
+// ❌ Incorrect Approach: Setting in graph configuration but not taking effect in edges
 const graph = new Graph({
   container: 'container',
   connecting: {
@@ -439,10 +437,10 @@ const graph = new Graph({
 });
 ```
 
-正确做法（在边中显式指定连接器）：
+Correct Approach (Explicitly Specifying Connector in Edge):
 
 ```javascript
-// ✅ 正确做法：在添加边时显式指定 connector
+// ✅ Correct Approach: Explicitly specifying connector when adding an edge
 const edge = graph.addEdge({
   source: node1,
   target: node2,
@@ -456,12 +454,12 @@ const edge = graph.addEdge({
 });
 ```
 
-### 错误 6：节点 parent 属性无法正确嵌套
+### Error 6: Node parent Property Cannot Be Properly Nested
 
-错误示例（使用 parent 属性设置嵌套关系）：
+Error Example (Using parent Property to Set Nesting Relationship):
 
 ```javascript
-// ❌ 错误做法：直接使用 parent 属性
+// ❌ Incorrect Approach: Directly Using parent Property
 graph.addNode({
   id: 'child1',
   shape: 'rect',
@@ -474,10 +472,10 @@ graph.addNode({
 });
 ```
 
-正确做法（使用 addChild 方法）：
+Correct Approach (Using addChild Method):
 
 ```javascript
-// ✅ 正确做法：使用 addChild 方法建立父子关系
+// ✅ Correct Approach: Using addChild Method to Establish Parent-Child Relationship
 const outerGroup = graph.addNode({ shape: 'rect', x: 40, y: 40, width: 400, height: 240 });
 const innerGroup = graph.addNode({ shape: 'rect', x: 80, y: 100, width: 200, height: 140 });
 const child1 = graph.addNode({ shape: 'rect', x: 100, y: 160, width: 80, height: 40 });
@@ -486,12 +484,12 @@ outerGroup.addChild(innerGroup);
 innerGroup.addChild(child1);
 ```
 
-### 错误 7：节点拖拽范围限制不准确
+### Error 7: Inaccurate Node Dragging Range Restriction
 
-错误示例（使用复杂事件处理）：
+Error Example (Using Complex Event Handling):
 
 ```javascript
-// ❌ 错误做法：使用复杂的事件处理逻辑
+// ❌ Incorrect Approach: Using complex event handling logic
 graph.on('node:mousemove', ({ node }) => {
   const position = node.position();
   const size = node.size();
@@ -510,10 +508,10 @@ graph.on('node:mousemove', ({ node }) => {
 });
 ```
 
-正确做法（使用 `translating.restrict` 配置）：
+Correct Approach (Using `translating.restrict` Configuration):
 
 ```javascript
-// ✅ 正确做法：使用 translating.restrict 配置
+// ✅ Correct Approach: Using translating.restrict configuration
 const graph = new Graph({
   container: 'container',
   translating: {
@@ -527,12 +525,12 @@ const graph = new Graph({
 });
 ```
 
-### 错误 8：边连接器使用 smooth 时未正确配置
+### Error 8: Incorrect Configuration When Using `smooth` Connector for Edges
 
-错误示例（边连接器配置不正确）：
+Error Example (Incorrect Edge Connector Configuration):
 
 ```javascript
-// ❌ 错误做法：在 graph 配置中设置但未在边中生效
+// ❌ Incorrect Approach: Setting in graph configuration but not effective in edges
 const graph = new Graph({
   container: 'container',
   connecting: {
@@ -544,10 +542,10 @@ const graph = new Graph({
 });
 ```
 
-正确做法（在边中显式指定连接器）：
+Correct Approach (Explicitly Specifying Connector in Edges):
 
 ```javascript
-// ✅ 正确做法：在添加边时显式指定 connector
+// ✅ Correct Approach: Explicitly specify connector when adding an edge
 const edge = graph.addEdge({
   source: node1,
   target: node2,
@@ -561,25 +559,25 @@ const edge = graph.addEdge({
 });
 ```
 
-### 错误 9：使用 graph.render() 导致报错
+### Error 9: Using graph.render() Causes an Error
 
-错误示例（调用 graph.render() 方法）：
+Error Example (Calling graph.render() Method):
 
 ```javascript
-// ❌ 错误做法：调用 graph.render()
+// ❌ Incorrect Approach: Calling graph.render()
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
 });
 
-graph.render(); // 报错：graph.render is not a function
+graph.render(); // Error: graph.render is not a function
 ```
 
-正确做法（无需调用 graph.render()）：
+Correct Approach (No Need to Call graph.render()):
 
 ```javascript
-// ✅ 正确做法：无需调用 graph.render()
+// ✅ Correct Approach: No need to call graph.render()
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -587,16 +585,16 @@ const graph = new Graph({
 });
 ```
 
-### 错误 10：在代码中声明 `const container`
+### Error 10: Declaring `const container` in Code
 
-`container` 变量由运行环境自动注入，**禁止**在代码中重复声明，否则报 `Identifier 'container' has already been declared`。
+The `container` variable is automatically injected by the runtime environment and **must not** be redeclared in the code, otherwise it will throw the error `Identifier 'container' has already been declared`.
 
 ```javascript
-// ❌ 错误做法：重复声明 container 变量
+// ❌ Incorrect: Redeclaring the container variable
 const container = document.getElementById('container');
 const graph = new Graph({ container });
 
-// ✅ 正确做法：直接使用字符串 'container'
+// ✅ Correct: Directly use the string 'container'
 const graph = new Graph({
   container: 'container',
   width: 800,
@@ -604,21 +602,21 @@ const graph = new Graph({
 });
 ```
 
-### 错误 11：使用未注册的自定义边 shape
+### Error 11: Using Unregistered Custom Edge Shape
 
-**⚠️ 关键约束：禁止使用未经 `Graph.registerEdge()` 注册的自定义边 shape 名称。**
+**⚠️ Key Constraint: Prohibit the use of custom edge shape names that have not been registered via `Graph.registerEdge()`.**
 
-X6 内置的边 shape 只有 `'edge'` 和 `'double-edge'`。如果需要自定义边样式，**不要发明新的 shape 名称**，而是在 `attrs` 中配置样式即可：
+X6 provides only two built-in edge shapes: `'edge'` and `'double-edge'`. If you need to customize edge styles, **do not invent new shape names**. Instead, configure the styles within the `attrs` property:
 
 ```javascript
-// ❌ 错误：使用未注册的 shape 名称 → 报错 "Edge with name 'xxx' does not exist"
+// ❌ Error: Using an unregistered shape name → Throws "Edge with name 'xxx' does not exist"
 graph.addEdge({
-  shape: 'my-custom-edge',  // 未注册，会报错！
+  shape: 'my-custom-edge',  // Unregistered, will throw an error!
   source: 'node1',
   target: 'node2',
 });
 
-// ✅ 正确方式 1：使用内置 'edge' shape + 自定义 attrs
+// ✅ Correct Approach 1: Use built-in 'edge' shape + custom attrs
 graph.addEdge({
   shape: 'edge',
   source: 'node1',
@@ -633,7 +631,7 @@ graph.addEdge({
   },
 });
 
-// ✅ 正确方式 2：先注册再使用
+// ✅ Correct Approach 2: Register before use
 Graph.registerEdge(
   'my-custom-edge',
   {
@@ -644,18 +642,18 @@ Graph.registerEdge(
   },
   true,
 );
-// 注册后才能使用
+// Use after registration
 graph.addEdge({ shape: 'my-custom-edge', source: 'node1', target: 'node2' });
 ```
 
-**内置可用的边 shape：** `'edge'`、`'double-edge'`。其他所有 shape 名称必须先通过 `Graph.registerEdge()` 注册。
+**Available built-in edge shapes:** `'edge'`, `'double-edge'`. All other shape names must be registered first using `Graph.registerEdge()`.
 
-### 错误 12：节点数据格式错误
+### Error 12: Incorrect Node Data Format
 
-错误示例（节点数据格式错误）：
+Error Example (Incorrect Node Data Format):
 
 ```javascript
-// ❌ 错误做法：节点数据格式错误
+// ❌ Incorrect Approach: Incorrect Node Data Format
 const data = [
   { shape: 'rect', x: 100, y: 20, width: 200, height: 44, label: 'Item 1' },
   { shape: 'rect', x: 10  shape: 'rect', x: 100, y: 140, width: 200, height: 44, label: 'Item 4' },
@@ -663,10 +661,10 @@ const data = [
 ];
 ```
 
-正确做法（节点数据格式正确）：
+Correct Approach (Correct Node Data Format):
 
 ```javascript
-// ✅ 正确做法：节点数据格式正确
+// ✅ Correct Approach: Correct Node Data Format
 const data = [
   { shape: 'rect', x: 100, y: 20, width: 200, height: 44, label: 'Item 1' },
   { shape: 'rect', x: 100, y: 80, width: 200, height: 44, label: 'Item 2' },
@@ -676,16 +674,16 @@ const data = [
 ];
 ```
 
-### 错误 13：使用不存在的 graph.highlightNode() / graph.highlightCell() 方法
+### Error 13: Using Non-existent `graph.highlightNode()` / `graph.highlightCell()` Methods
 
-**⚠️ X6 没有 `graph.highlightNode()` 和 `graph.highlightCell()` 方法。**
+**⚠️ X6 does not have `graph.highlightNode()` and `graph.highlightCell()` methods.**
 
 ```javascript
-// ❌ 错误：这些方法都不存在
+// ❌ Error: These methods do not exist
 graph.highlightNode(node);   // TypeError
 graph.highlightCell(cell);   // TypeError
 
-// ✅ 正确方式 1：通过 node.attr() 修改样式实现高亮
+// ✅ Correct Approach 1: Highlight by modifying styles using `node.attr()`
 const neighbors = graph.getNeighbors(centerNode);
 neighbors.forEach((node) => {
   node.attr('body/fill', '#d9f7be');
@@ -693,29 +691,29 @@ neighbors.forEach((node) => {
   node.attr('body/strokeWidth', 2);
 });
 
-// ✅ 正确方式 2：通过 CSS class 实现高亮（需配合样式表）
+// ✅ Correct Approach 2: Highlight using CSS classes (requires stylesheet)
 neighbors.forEach((node) => {
   const view = graph.findViewByCell(node);
   if (view) view.addClass('highlighted');
 });
 ```
 
-### 错误 14：SVG 渐变定义语法错误
+### Error 14: SVG Gradient Definition Syntax Error
 
-**⚠️ X6 没有 `graph.defs` 属性，禁止使用 `document.createElementNS` 手动创建 SVG 渐变元素。**
+**⚠️ X6 does not have a `graph.defs` property. Do not use `document.createElementNS` to manually create SVG gradient elements.**
 
 ```javascript
-// ❌ 错误：graph.defs 不存在，且 `graph.svg defs()` 是语法错误
+// ❌ Error: graph.defs does not exist, and `graph.svg defs()` is a syntax error
 const gradientId = 'gradient-blue-green';
 const defs = graph.defs;  // undefined
-// 或
-const svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs'); // 不要这样做
+// or
+const svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs'); // Do not do this
 ```
 
-正确做法（使用 attrs.fill 配置渐变）：
+Correct Approach (Using attrs.fill to Configure Gradient):
 
 ```javascript
-// ✅ 正确做法：使用 attrs.fill 配置渐变
+// ✅ Correct Approach: Using attrs.fill to Configure Gradient
 graph.addNode({
   shape: 'rect',
   x: 100,

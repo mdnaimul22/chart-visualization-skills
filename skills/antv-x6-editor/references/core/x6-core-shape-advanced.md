@@ -1,9 +1,9 @@
 ---
 id: "x6-core-shape-advanced"
-title: "X6 高级内置 Shape"
+title: "X6 Advanced Built-in Shapes"
 description: |
-  X6 除了 rect、circle、ellipse 等基础 shape 外，还提供 path、polyline、polygon、text-block 等高级 shape。
-  适用于自定义路径图形、折线连接、多边形、富文本节点等场景。
+  In addition to basic shapes like rect, circle, and ellipse, X6 provides advanced shapes such as path, polyline, polygon, and text-block.
+  These are suitable for scenarios like custom path graphics, polyline connections, polygons, and rich text nodes.
 
 library: "x6"
 version: "3.x"
@@ -15,56 +15,56 @@ tags:
   - "polyline"
   - "polygon"
   - "text-block"
-  - "自定义形状"
-  - "SVG路径"
-  - "折线"
-  - "富文本"
+  - "custom shape"
+  - "SVG path"
+  - "polyline"
+  - "rich text"
 
 related:
   - "x6-core-node"
   - "x6-intermediate-custom-node"
 
 use_cases:
-  - "绘制自定义 SVG 路径节点"
-  - "绘制折线形状节点"
-  - "创建富文本节点"
-  - "绘制多边形节点"
+  - "Drawing custom SVG path nodes"
+  - "Drawing polyline shape nodes"
+  - "Creating rich text nodes"
+  - "Drawing polygon nodes"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 内置 Shape 完整列表
+## Complete List of Built-in Shapes
 
-X6 3.x 提供以下内置 shape：
+X6 3.x provides the following built-in shapes:
 
-| Shape | 说明 | 主要用途 |
-|-------|------|---------|
-| `rect` | 矩形 | 最常用的节点形状 |
-| `circle` | 圆形 | 状态节点、起止节点 |
-| `ellipse` | 椭圆 | 决策节点 |
-| `polygon` | 多边形 | 自定义多边形（菱形、六边形等） |
-| `polyline` | 折线形 | 折线路径形状 |
-| `path` | SVG 路径 | 任意 SVG path 形状 |
-| `text` | 纯文本 | 文字标签节点 |
-| `text-block` | 富文本块 | 自动换行的文本节点 |
-| `image` | 图片 | 图片节点 |
-| `html` | HTML | 自定义 HTML 内容节点 |
+| Shape | Description | Primary Use |
+|-------|-------------|-------------|
+| `rect` | Rectangle | Most commonly used node shape |
+| `circle` | Circle | Status node, start/end node |
+| `ellipse` | Ellipse | Decision node |
+| `polygon` | Polygon | Custom polygons (rhombus, hexagon, etc.) |
+| `polyline` | Polyline | Polyline path shape |
+| `path` | SVG Path | Any SVG path shape |
+| `text` | Plain Text | Text label node |
+| `text-block` | Rich Text Block | Auto-wrapping text node |
+| `image` | Image | Image node |
+| `html` | HTML | Custom HTML content node |
 
 ---
 
-## Path 节点
+## Path Node
 
-`path` shape 使用 SVG path 数据定义任意形状。通过 `path` 属性（快捷方式）或 `attrs.body.refD` 设置路径数据。
+The `path` shape uses SVG path data to define arbitrary shapes. Set the path data via the `path` attribute (shortcut) or `attrs.body.refD`.
 
-### 基本用法
+### Basic Usage
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({ container: 'container' });
 
-// 使用 path 快捷属性
+// Using the path shortcut property
 graph.addNode({
   shape: 'path',
   x: 100,
@@ -81,7 +81,7 @@ graph.addNode({
   },
 });
 
-// 使用 attrs.body.refD（路径会自动缩放到节点尺寸）
+// Using attrs.body.refD (the path will automatically scale to the node size)
 graph.addNode({
   shape: 'path',
   x: 300,
@@ -99,27 +99,27 @@ graph.addNode({
 });
 ```
 
-### 关键说明
+### Key Notes
 
-- `path` 属性是 `attrs.body.refD` 的快捷写法
-- `refD` 中的路径坐标会按节点的 `width`/`height` 等比缩放
-- markup 结构：`rect(bg)` + `path(body)` + `text(label)`
-- `bg` 是透明的背景矩形，用于事件捕获
+- The `path` attribute is a shorthand for `attrs.body.refD`
+- The path coordinates in `refD` are scaled proportionally based on the node's `width`/`height`
+- Markup structure: `rect(bg)` + `path(body)` + `text(label)`
+- `bg` is a transparent background rectangle used for event capturing
 
 ---
 
-## Polyline 节点
+## Polyline Node
 
-`polyline` shape 继承自 `polygon`，用于绘制折线/多边形形状。
+The `polyline` shape inherits from `polygon` and is used to draw polyline/polygon shapes.
 
-### 基本用法
+### Basic Usage
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({ container: 'container' });
 
-// 折线形状（不闭合）
+// Polyline shape (not closed)
 graph.addNode({
   shape: 'polyline',
   x: 100,
@@ -137,12 +137,12 @@ graph.addNode({
 });
 ```
 
-### 与 Polygon 的区别
+### Differences from Polygon
 
-- `polygon`：闭合多边形，自动闭合路径
-- `polyline`：折线形状，不自动闭合（除非首尾点相同）
+- `polygon`: Closed polygon, automatically closes the path
+- `polyline`: Polyline shape, does not automatically close (unless the start and end points are the same)
 
-### Polygon 示例（菱形）
+### Polygon Example (Rhombus)
 
 ```javascript
 graph.addNode({
@@ -164,11 +164,11 @@ graph.addNode({
 
 ---
 
-## Text-Block 节点
+## Text-Block Node
 
-`text-block` shape 支持自动换行的富文本内容，在支持 `foreignObject` 的浏览器中使用 HTML div 渲染文本，否则回退到 SVG text。
+The `text-block` shape supports rich text content with automatic line breaks. It renders text using an HTML div in browsers that support `foreignObject`, otherwise it falls back to SVG text.
 
-### 基本用法
+### Basic Usage
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -181,7 +181,7 @@ graph.addNode({
   y: 50,
   width: 200,
   height: 80,
-  text: '这是一段自动换行的长文本内容，text-block 会自动根据节点宽度进行换行显示。',
+  text: 'This is a long text content with automatic line breaks. The text-block will automatically wrap the text based on the node width.',
   attrs: {
     body: {
       fill: '#f0f0f0',
@@ -199,20 +199,20 @@ graph.addNode({
 });
 ```
 
-### 关键说明
+### Key Notes
 
-- 使用 `text` 属性（快捷方式）设置文本内容
-- 文本自动根据节点宽度换行
-- `attrs.label.style` 设置字体样式（CSS 样式，因为使用 HTML 渲染）
-- 适合需要多行文本显示的场景
+- Use the `text` property (shortcut) to set the text content
+- Text automatically wraps based on node width
+- `attrs.label.style` sets the font style (CSS style, as HTML rendering is used)
+- Suitable for scenarios requiring multi-line text display
 
 ---
 
-## 自定义箭头标记
+## Custom Arrow Markers
 
-在 X6 中，可以通过在边的 `attrs.line` 中直接定义 `sourceMarker` 和 `targetMarker` 来使用自定义 SVG path 作为箭头标记。
+In X6, custom SVG paths can be used as arrow markers by directly defining `sourceMarker` and `targetMarker` in the `attrs.line` of an edge.
 
-### 基本用法
+### Basic Usage
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -248,58 +248,58 @@ graph.addEdge({
 });
 ```
 
-### 关键说明
+### Key Notes
 
-- `sourceMarker` 和 `targetMarker` 可以是字符串（预设标记）或对象（自定义标记）
-- 自定义标记对象中必须包含 `tagName` 和 `d` 属性
-- `d` 属性定义 SVG path 路径
-- 可通过 `stroke`、`fill` 等属性设置样式
+- `sourceMarker` and `targetMarker` can be strings (preset markers) or objects (custom markers)
+- Custom marker objects must include `tagName` and `d` properties
+- The `d` property defines the SVG path
+- Styles can be set via properties such as `stroke`, `fill`, etc.
 
 ---
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1: Path 节点使用 d 而非 refD
+### Error 1: Using `d` Instead of `refD` for Path Nodes
 
 ```javascript
-// ❌ 错误：使用 d 属性，路径不会缩放
+// ❌ Incorrect: Using `d` attribute, the path does not scale
 attrs: { body: { d: 'M 0 0 L 100 50 L 0 100 Z' } }
 
-// ✅ 正确：使用 refD，路径按节点尺寸缩放
+// ✅ Correct: Using `refD`, the path scales according to the node size
 attrs: { body: { refD: 'M 0 0 L 1 0.5 L 0 1 Z' } }
 
-// ✅ 正确：使用 path 快捷属性
+// ✅ Correct: Using the `path` shorthand property
 graph.addNode({ shape: 'path', path: 'M 0 0 L 100 50 L 0 100 Z', ... })
 ```
 
-### 错误 2: 混淆 polygon 和 polyline
+### Error 2: Confusing Polygon and Polyline
 
 ```javascript
-// polygon 自动闭合，无需重复首点
-attrs: { body: { refPoints: '0,0 1,0 1,1 0,1' } }  // 自动闭合为矩形
+// Polygon automatically closes, no need to repeat the first point
+attrs: { body: { refPoints: '0,0 1,0 1,1 0,1' } }  // Automatically closes to form a rectangle
 
-// polyline 不自动闭合，如需闭合要手动加首点
-attrs: { body: { refPoints: '0,0 1,0 1,1 0,1 0,0' } }  // 手动闭合
+// Polyline does not automatically close, manual closure requires adding the first point
+attrs: { body: { refPoints: '0,0 1,0 1,1 0,1 0,0' } }  // Manually closed
 ```
 
-### 错误 3: text-block 使用 label 而非 text
+### Error 3: Using `label` instead of `text` for `text-block`
 
 ```javascript
-// ❌ 错误：label 属性对 text-block 无效
-graph.addNode({ shape: 'text-block', label: '文本内容' })
+// ❌ Incorrect: `label` property is invalid for `text-block`
+graph.addNode({ shape: 'text-block', label: 'Text Content' })
 
-// ✅ 正确：使用 text 属性
-graph.addNode({ shape: 'text-block', text: '文本内容' })
+// ✅ Correct: Use `text` property
+graph.addNode({ shape: 'text-block', text: 'Text Content' })
 ```
 
-### 错误 4: 错误使用 graph.markers.register 注册自定义箭头
+### Error 4: Incorrect Use of `graph.markers.register` to Register Custom Arrows
 
 ```javascript
-// ❌ 错误：X6 中没有 graph.markers.register 方法
+// ❌ Incorrect: There is no `graph.markers.register` method in X6
 const customMarker = { tagName: 'path', attrs: { d: 'M 0 -6 L 12 0 L 0 6 Z' } }
 graph.markers.register('custom-marker', customMarker)
 
-// ✅ 正确：在 attrs.line 中直接定义 marker
+// ✅ Correct: Define the marker directly in `attrs.line`
 graph.addEdge({
   source: node1,
   target: node2,

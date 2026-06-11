@@ -1,8 +1,8 @@
 ---
 id: "x6-core-filter"
-title: "X6 SVG 滤镜（Filter）"
+title: "X6 SVG Filter"
 description: |
-  X6 内置 SVG 滤镜：outline 描边、highlight 高亮、blur 模糊、dropShadow 阴影、grayScale 灰度、sepia 褐色、saturate 饱和度、hueRotate 色相旋转、invert 反色、brightness 亮度、contrast 对比度。
+  X6 built-in SVG filters: outline, highlight, blur, dropShadow, grayScale, sepia, saturate, hueRotate, invert, brightness, contrast.
 
 library: "x6"
 version: "3.x"
@@ -11,9 +11,9 @@ subcategory: "filter"
 tags:
   - "filter"
   - "滤镜"
-  - "阴影"
-  - "模糊"
-  - "高亮"
+  - "shadow"
+  - "blur"
+  - "highlight"
   - "outline"
   - "drop-shadow"
   - "blur"
@@ -26,19 +26,19 @@ related:
   - "x6-core-highlighter"
 
 use_cases:
-  - "节点添加阴影效果"
-  - "节点高亮描边"
-  - "节点模糊效果"
-  - "节点灰度/禁用状态"
-  - "鼠标悬停高亮"
+  - "Adding shadow effects to nodes"
+  - "Highlighting node outlines"
+  - "Applying blur effects to nodes"
+  - "Grayscale/disabled state for nodes"
+  - "Mouse hover highlights"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
-通过节点/边的 `attrs` 中 `filter` 属性使用内置滤镜：
+Use built-in filters through the `filter` property in the `attrs` of nodes/edges:
 
 ```javascript
 graph.addNode({
@@ -59,11 +59,11 @@ graph.addNode({
 });
 ```
 
-## 内置滤镜列表
+## Built-in Filter List
 
-### dropShadow（阴影）
+### dropShadow (Shadow)
 
-为元素添加投影阴影：
+Add a drop shadow to an element:
 
 ```javascript
 attrs: {
@@ -71,20 +71,20 @@ attrs: {
     filter: {
       name: 'dropShadow',
       args: {
-        dx: 2,        // 水平偏移，默认 0
-        dy: 2,        // 垂直偏移，默认 0
-        blur: 4,      // 模糊半径，默认 4
-        color: 'black',  // 阴影颜色，默认 'black'
-        opacity: 0.3, // 阴影透明度，默认 1
+        dx: 2,        // Horizontal offset, default 0
+        dy: 2,        // Vertical offset, default 0
+        blur: 4,      // Blur radius, default 4
+        color: 'black',  // Shadow color, default 'black'
+        opacity: 0.3, // Shadow opacity, default 1
       },
     },
   },
 }
 ```
 
-### outline（外描边）
+### outline (Outer Stroke)
 
-在元素外围添加一圈描边（不影响元素本身）：
+Add a stroke around the outer edge of an element (does not affect the element itself):
 
 ```javascript
 attrs: {
@@ -92,19 +92,19 @@ attrs: {
     filter: {
       name: 'outline',
       args: {
-        color: 'blue',   // 描边颜色，默认 'blue'
-        width: 2,        // 描边宽度，默认 1
-        margin: 3,       // 描边与元素的间距，默认 2
-        opacity: 1,      // 描边透明度，默认 1
+        color: 'blue',   // Stroke color, default 'blue'
+        width: 2,        // Stroke width, default 1
+        margin: 3,       // Distance between stroke and element, default 2
+        opacity: 1,      // Stroke opacity, default 1
       },
     },
   },
 }
 ```
 
-### highlight（高亮光晕）
+### highlight (Glow Effect)
 
-在元素外围添加发光效果：
+Adds a glowing effect around the element:
 
 ```javascript
 attrs: {
@@ -112,17 +112,17 @@ attrs: {
     filter: {
       name: 'highlight',
       args: {
-        color: 'red',    // 高亮颜色，默认 'red'
-        width: 2,        // 高亮扩展宽度，默认 1
-        blur: 5,         // 模糊半径，默认 0
-        opacity: 0.8,    // 高亮透明度，默认 1
+        color: 'red',    // Highlight color, default 'red'
+        width: 2,        // Highlight expansion width, default 1
+        blur: 5,         // Blur radius, default 0
+        opacity: 0.8,    // Highlight opacity, default 1
       },
     },
   },
 }
 ```
 
-### blur（高斯模糊）
+### blur (Gaussian Blur)
 
 ```javascript
 attrs: {
@@ -130,15 +130,15 @@ attrs: {
     filter: {
       name: 'blur',
       args: {
-        x: 3,  // 水平模糊量，默认 2
-        y: 3,  // 垂直模糊量（可选，默认与 x 相同）
+        x: 3,  // Horizontal blur amount, default is 2
+        y: 3,  // Vertical blur amount (optional, defaults to the same as x)
       },
     },
   },
 }
 ```
 
-### grayScale（灰度）
+### grayScale (Grayscale)
 
 ```javascript
 attrs: {
@@ -146,14 +146,14 @@ attrs: {
     filter: {
       name: 'grayScale',
       args: {
-        amount: 1,  // 灰度程度，0~1，1 为完全灰度
+        amount: 1,  // Grayscale level, 0~1, 1 for complete grayscale
       },
     },
   },
 }
 ```
 
-### sepia（褐色/复古）
+### Sepia (Brown/Vintage)
 
 ```javascript
 attrs: {
@@ -168,7 +168,7 @@ attrs: {
 }
 ```
 
-### saturate（饱和度）
+### saturate (Saturation)
 
 ```javascript
 attrs: {
@@ -176,14 +176,14 @@ attrs: {
     filter: {
       name: 'saturate',
       args: {
-        amount: 0.5,  // < 1 降低饱和度，> 1 增加饱和度
+        amount: 0.5,  // < 1 decreases saturation, > 1 increases saturation
       },
     },
   },
 }
 ```
 
-### hueRotate（色相旋转）
+### hueRotate (Hue Rotation)
 
 ```javascript
 attrs: {
@@ -191,14 +191,14 @@ attrs: {
     filter: {
       name: 'hueRotate',
       args: {
-        angle: 90,  // 旋转角度（度）
+        angle: 90,  // Rotation angle (degrees)
       },
     },
   },
 }
 ```
 
-### invert（反色）
+### invert (Inversion)
 
 ```javascript
 attrs: {
@@ -206,14 +206,14 @@ attrs: {
     filter: {
       name: 'invert',
       args: {
-        amount: 1,  // 0~1，1 为完全反色
+        amount: 1,  // 0~1, 1 for complete inversion
       },
     },
   },
 }
 ```
 
-### brightness（亮度）
+### brightness
 
 ```javascript
 attrs: {
@@ -221,14 +221,14 @@ attrs: {
     filter: {
       name: 'brightness',
       args: {
-        amount: 1.5,  // < 1 变暗，> 1 变亮
+        amount: 1.5,  // < 1 darkens, > 1 brightens
       },
     },
   },
 }
 ```
 
-### contrast（对比度）
+### contrast (Contrast)
 
 ```javascript
 attrs: {
@@ -236,14 +236,14 @@ attrs: {
     filter: {
       name: 'contrast',
       args: {
-        amount: 2,  // < 1 降低对比度，> 1 增加对比度
+        amount: 2,  // < 1 decreases contrast, > 1 increases contrast
       },
     },
   },
 }
 ```
 
-## 动态添加/移除滤镜
+## Dynamically Adding/Removing Filters
 
 ```javascript
 const node = graph.addNode({
@@ -251,7 +251,7 @@ const node = graph.addNode({
   attrs: { body: { fill: '#EFF4FF', stroke: '#5F95FF' } },
 });
 
-// 鼠标悬停时添加阴影
+// Add shadow on mouse hover
 graph.on('node:mouseenter', ({ node }) => {
   node.attr('body/filter', {
     name: 'dropShadow',
@@ -259,15 +259,15 @@ graph.on('node:mouseenter', ({ node }) => {
   });
 });
 
-// 鼠标离开时移除滤镜
+// Remove filter on mouse leave
 graph.on('node:mouseleave', ({ node }) => {
   node.attr('body/filter', null);
 });
 ```
 
-## 禁用状态示例
+## Disabled State Example
 
-使用灰度滤镜表示节点"禁用"：
+Use a grayscale filter to represent a node as "disabled":
 
 ```javascript
 function setNodeDisabled(node, disabled) {
@@ -281,12 +281,12 @@ function setNodeDisabled(node, disabled) {
 }
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ filter 直接写 CSS filter 字符串
+### ❌ filter directly writes CSS filter string
 
 ```javascript
-// 错误：不支持 CSS filter 字符串语法
+// Error: CSS filter string syntax is not supported
 attrs: {
   body: {
     filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.3))',  // ❌
@@ -295,7 +295,7 @@ attrs: {
 ```
 
 ```javascript
-// 正确：使用 X6 的对象语法
+// Correct: Use X6's object syntax
 attrs: {
   body: {
     filter: {
@@ -306,13 +306,13 @@ attrs: {
 }
 ```
 
-### ❌ 滤镜名称拼写错误
+### ❌ Incorrect Spelling of Filter Names
 
 ```javascript
-// 错误：名称拼写不正确
-filter: { name: 'drop-shadow', args: {...} }  // ❌ 应为 'dropShadow'
-filter: { name: 'grayscale', args: {...} }    // ❌ 应为 'grayScale'
-filter: { name: 'hue-rotate', args: {...} }   // ❌ 应为 'hueRotate'
+// Incorrect: Misspelled filter names
+filter: { name: 'drop-shadow', args: {...} }  // ❌ Should be 'dropShadow'
+filter: { name: 'grayscale', args: {...} }    // ❌ Should be 'grayScale'
+filter: { name: 'hue-rotate', args: {...} }   // ❌ Should be 'hueRotate'
 ```
 
-正确的滤镜名称（驼峰命名）：`dropShadow`、`grayScale`、`hueRotate`
+Correct filter names (camelCase): `dropShadow`, `grayScale`, `hueRotate`

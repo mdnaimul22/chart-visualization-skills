@@ -1,9 +1,9 @@
 ---
 id: x6-imperative-api
-title: X6 命令式 API 完整指南
+title: Complete Guide to X6 Imperative API
 description: |
-  X6 3.x 命令式 API 完整指南：画布创建、节点边操作、网格配置、边标签、事件交互、
-  插件系统、导出功能、自定义节点注册、拖拽限制、高亮配置等核心用法。
+  Complete guide to X6 3.x Imperative API: Canvas creation, node and edge operations, grid configuration, edge labels, event interaction,
+  plugin system, export functionality, custom node registration, drag restrictions, highlighting configuration, and other core usages.
 library: x6
 version: 3.x
 category: basic
@@ -30,30 +30,30 @@ related:
   - x6-plugins
 
 use_cases:
-  - "使用命令式 API 创建节点和边"
-  - "配置画布网格和背景"
-  - "添加边的多位置标签"
-  - "实现节点点击选中交互"
-  - "使用插件实现撤销重做"
-  - "导出画布为 PNG/SVG"
-  - "注册自定义节点并配置连接桩"
-  - "限制节点拖拽方向"
-  - "配置连接桩高亮效果"
+  - "Create nodes and edges using imperative API"
+  - "Configure canvas grid and background"
+  - "Add multi-position labels to edges"
+  - "Implement node click selection interaction"
+  - "Use plugins to implement undo/redo"
+  - "Export canvas as PNG/SVG"
+  - "Register custom nodes and configure connection ports"
+  - "Restrict node drag direction"
+  - "Configure connection port highlighting effect"
 
 difficulty: beginner
 ---
 
-## 概述
+## Overview
 
-当用户要求使用 X6 绘制图表、展示关系或实现画布交互时，**必须输出完整的、可运行的 JavaScript 代码**。核心流程：
+When users request to draw charts, display relationships, or implement canvas interactions using X6, **a complete and executable JavaScript code must be provided**. The core process is as follows:
 
-1. 从 `@antv/x6` 导入 `Graph` 及所需插件
-2. 使用 `new Graph({ container: 'container', ... })` 创建画布实例
-3. 使用 `graph.addNode()` / `graph.addEdge()` 构建内容
-4. 如需插件，使用 `graph.use(new Plugin(options))` 注册
-5. 如需交互，使用 `graph.on()` 绑定事件
+1. Import `Graph` and required plugins from `@antv/x6`
+2. Create a canvas instance using `new Graph({ container: 'container', ... })`
+3. Build content using `graph.addNode()` / `graph.addEdge()`
+4. If plugins are needed, register them using `graph.use(new Plugin(options))`
+5. If interactions are required, bind events using `graph.on()`
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -97,11 +97,11 @@ graph.addEdge({
 });
 ```
 
-## 核心 API
+## Core API
 
-### 1. 添加节点与边
+### 1. Adding Nodes and Edges
 
-`source`/`target` 可传入节点实例、节点 ID 字符串、或 `{ cell: node, port: 'portId' }` 对象。
+`source`/`target` can accept node instances, node ID strings, or `{ cell: node, port: 'portId' }` objects.
 
 ```javascript
 const nodeA = graph.addNode({
@@ -135,7 +135,7 @@ graph.addEdge({
 });
 ```
 
-### 2. 画布网格配置
+### 2. Canvas Grid Configuration
 
 ```javascript
 const graph = new Graph({
@@ -150,9 +150,9 @@ const graph = new Graph({
 });
 ```
 
-### 3. 边的多标签
+### 3. Multiple Labels on Edges
 
-通过 `labels` 数组在边的不同位置添加标签，`position` 取值 0~1。
+Add labels at different positions on an edge using the `labels` array, where `position` ranges from 0 to 1.
 
 ```javascript
 graph.addEdge({
@@ -185,9 +185,9 @@ graph.addEdge({
 });
 ```
 
-### 4. 事件交互与动态样式
+### 4. Event Interaction and Dynamic Styling
 
-使用 `node.attr('path/prop', value)` 动态修改样式。
+Use `node.attr('path/prop', value)` to dynamically modify styles.
 
 ```javascript
 let selectedNode = null;
@@ -211,7 +211,7 @@ graph.on('blank:click', () => {
 });
 ```
 
-### 5. 节点可见性
+### 5. Node Visibility
 
 ```javascript
 const node = graph.addNode({ shape: 'rect', x: 60, y: 140, width: 100, height: 40, label: 'Hidden' });
@@ -219,37 +219,37 @@ node.hide();
 node.show();
 ```
 
-### 6. 插件系统
+### 6. Plugin System
 
-从 `@antv/x6` 导入插件类，通过 `graph.use()` 注册。注册后便捷方法自动挂载到 graph。
+Import the plugin class from `@antv/x6` and register it using `graph.use()`. After registration, the convenience methods are automatically mounted to the graph.
 
 ```javascript
 import { Graph, History, Snapline, Selection, Export } from '@antv/x6';
 
 const graph = new Graph({ container: 'container' });
 
-// 注册插件
+// Register plugins
 graph.use(new History({ enabled: true }));
 graph.use(new Snapline({ enabled: true }));
 graph.use(new Selection({ enabled: true, rubberband: true, showNodeSelectionBox: true }));
 graph.use(new Export());
 
-// History 事件
+// History event
 graph.on('history:change', () => {
   console.log('Can Undo:', graph.canUndo());
   console.log('Can Redo:', graph.canRedo());
 });
 
-// 动态启用/禁用
+// Dynamically enable/disable
 graph.disableSnapline();
 graph.enableSnapline();
 graph.disableSelection();
 graph.enableSelection();
 ```
 
-### 7. 导出画布
+### 7. Export Canvas
 
-需先注册 Export 插件，然后调用导出方法。
+First, register the Export plugin, then call the export method.
 
 ```javascript
 import { Graph, Export } from '@antv/x6';
@@ -262,7 +262,7 @@ graph.toPNG((dataUri) => {
 });
 ```
 
-### 8. 自定义节点注册与连接桩
+### 8. Custom Node Registration and Connection Ports
 
 ```javascript
 Graph.registerNode(
@@ -314,9 +314,9 @@ graph.addEdge({
 });
 ```
 
-### 9. 拖拽限制
+### 9. Drag Restrictions
 
-通过 `translating.restrict` 返回 `{ x, y, width, height }` 限制移动区域。`width: 1` 表示仅垂直方向移动。
+Use `translating.restrict` to return `{ x, y, width, height }` to restrict the movement area. `width: 1` indicates movement only in the vertical direction.
 
 ```javascript
 const graph = new Graph({
@@ -330,9 +330,9 @@ const graph = new Graph({
 });
 ```
 
-### 10. 高亮效果与连线交互
+### 10. Highlighting Effects and Connection Interactions
 
-通过 `highlighting` + `connecting` 配合实现连接桩高亮。
+Achieve connector highlighting through the combination of `highlighting` + `connecting`.
 
 ```javascript
 const graph = new Graph({
@@ -358,19 +358,19 @@ const graph = new Graph({
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-| 错误模式 | 修正方案 |
+| Error Pattern | Fix |
 |---------|---------|
-| **未生成任何代码** | 必须输出完整代码：`import` → `new Graph()` → `addNode` → `addEdge` |
-| **遗漏 Graph 实例化** | 始终以 `new Graph({ container: 'container' })` 开头 |
-| **边连接混淆 ID 与实例** | 推荐直接用节点实例；用字符串 ID 需确保节点设置了相同 `id` |
-| **自定义节点未注册** | 使用前先 `Graph.registerNode('name', config, true)` |
-| **插件未导入或未启用** | 从 `@antv/x6` 导入，`new Plugin({ enabled: true })` + `graph.use()` |
-| **样式修改语法错误** | 使用 `node.attr('body/stroke', '#1890ff')` 而非直接赋值 |
-| **使用 `new Node()` / `new Edge()`** | 应使用 `graph.addNode()` / `graph.addEdge()` |
-| **调用 `graph.render()`** | 命令式 API 自动渲染，无需手动调用 |
-| **`connecting.createEdge` 中用 `new Edge()`** | 应使用 `this.createEdge({ ... })` |
-| **`translating.restrict` 返回格式错误** | 必须返回 `{ x, y, width, height }` |
-| **使用废弃高亮配置项** | 用 `magnetAvailable` / `magnetAdsorbed`，不要用 `nodeHover` / `magnetHover` |
-| **导出前未注册 Export 插件** | 先 `graph.use(new Export())`，再调用 `graph.toPNG()` |
+| **No code generated** | Must output complete code: `import` → `new Graph()` → `addNode` → `addEdge` |
+| **Missing Graph instantiation** | Always start with `new Graph({ container: 'container' })` |
+| **Edge connection confusion between ID and instance** | Recommended to use node instances directly; if using string IDs, ensure nodes have the same `id` set |
+| **Custom node not registered** | Register before use with `Graph.registerNode('name', config, true)` |
+| **Plugin not imported or enabled** | Import from `@antv/x6`, `new Plugin({ enabled: true })` + `graph.use()` |
+| **Style modification syntax error** | Use `node.attr('body/stroke', '#1890ff')` instead of direct assignment |
+| **Using `new Node()` / `new Edge()`** | Should use `graph.addNode()` / `graph.addEdge()` |
+| **Calling `graph.render()`** | Imperative API renders automatically, no need to call manually |
+| **`new Edge()` in `connecting.createEdge`** | Should use `this.createEdge({ ... })` |
+| **Incorrect return format in `translating.restrict`** | Must return `{ x, y, width, height }` |
+| **Using deprecated highlight options** | Use `magnetAvailable` / `magnetAdsorbed`, avoid `nodeHover` / `magnetHover` |
+| **Export plugin not registered before export** | First `graph.use(new Export())`, then call `graph.toPNG()` |

@@ -1,8 +1,8 @@
 ---
 id: "x6-core-grid"
-title: "X6 网格配置"
+title: "X6 Grid Configuration"
 description: |
-  X6 画布网格配置：dot 点阵、fixedDot 固定点阵、mesh 网格线、doubleMesh 双层网格，以及网格颜色、大小、可见性控制。
+  X6 canvas grid configuration: dot grid, fixedDot fixed grid, mesh grid lines, doubleMesh double-layer grid, and grid color, size, visibility control.
 
 library: "x6"
 version: "3.x"
@@ -14,27 +14,27 @@ tags:
   - "dot"
   - "mesh"
   - "doubleMesh"
-  - "对齐"
-  - "背景网格"
+  - "alignment"
+  - "background grid"
 
 related:
   - "x6-core-graph-init"
   - "x6-core-background"
 
 use_cases:
-  - "显示点阵网格"
-  - "显示网格线"
-  - "自定义网格颜色和大小"
-  - "动态显示/隐藏网格"
-  - "双层网格（主次网格线）"
+  - "Display dot grid"
+  - "Display grid lines"
+  - "Customize grid color and size"
+  - "Dynamically show/hide grid"
+  - "Double-layer grid (primary and secondary grid lines)"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
-网格在 Graph 构造函数中通过 `grid` 字段配置：
+The grid is configured in the Graph constructor via the `grid` field:
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -45,27 +45,27 @@ const graph = new Graph({
   height: 600,
   grid: {
     visible: true,
-    size: 10,  // 网格步长（像素）
+    size: 10,  // Grid step size (pixels)
   },
 });
 ```
 
-## 配置项
+## Configuration Options
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `visible` | boolean | `false` | 是否显示网格 |
-| `size` | number | `10` | 网格步长（节点移动时吸附到的最小间隔） |
-| `type` | string | `'dot'` | 网格类型：`'dot'`、`'fixedDot'`、`'mesh'`、`'doubleMesh'` |
-| `args` | object | - | 网格类型对应的参数 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `visible` | boolean | `false` | Whether to display the grid |
+| `size` | number | `10` | Grid step size (minimum interval nodes snap to when moving) |
+| `type` | string | `'dot'` | Grid type: `'dot'`, `'fixedDot'`, `'mesh'`, `'doubleMesh'` |
+| `args` | object | - | Parameters corresponding to the grid type |
 
-**注意**：即使 `visible: false`，`size` 仍然生效——节点拖拽时会吸附到 `size` 为步长的网格点上。
+**Note**: Even if `visible: false`, `size` still takes effect—nodes will snap to grid points with `size` as the step size during dragging.
 
-## 网格类型
+## Grid Type
 
-### dot（点阵，默认）
+### dot (Dot Matrix, Default)
 
-显示为均匀分布的点，缩放时点的大小随之变化：
+Displayed as evenly distributed dots, the size of which changes with zoom:
 
 ```javascript
 const graph = new Graph({
@@ -75,16 +75,16 @@ const graph = new Graph({
     size: 10,
     type: 'dot',
     args: {
-      color: '#aaaaaa',   // 点的颜色
-      thickness: 1,        // 点的大小
+      color: '#aaaaaa',   // Dot color
+      thickness: 1,        // Dot size
     },
   },
 });
 ```
 
-### fixedDot（固定点阵）
+### fixedDot (Fixed Dot Grid)
 
-与 `dot` 类似，但缩放比例 ≤ 1 时点的大小保持不变（不会太小看不清）：
+Similar to `dot`, but the size of the dots remains unchanged when the zoom ratio ≤ 1 (they won't become too small to see clearly):
 
 ```javascript
 const graph = new Graph({
@@ -101,9 +101,9 @@ const graph = new Graph({
 });
 ```
 
-### mesh（网格线）
+### mesh (Grid Lines)
 
-显示为交叉网格线：
+Displayed as intersecting grid lines:
 
 ```javascript
 const graph = new Graph({
@@ -113,16 +113,16 @@ const graph = new Graph({
     size: 10,
     type: 'mesh',
     args: {
-      color: 'rgba(224, 224, 224, 1)',  // 线条颜色
-      thickness: 1,                      // 线条粗细
+      color: 'rgba(224, 224, 224, 1)',  // Line color
+      thickness: 1,                      // Line thickness
     },
   },
 });
 ```
 
-### doubleMesh（双层网格）
+### doubleMesh (Double Mesh)
 
-显示两层网格线——主网格和次网格，次网格通过 `factor` 倍数放大间距：
+Displays two layers of grid lines—primary grid and secondary grid, with the secondary grid spacing amplified by a `factor` multiplier:
 
 ```javascript
 const graph = new Graph({
@@ -132,45 +132,45 @@ const graph = new Graph({
     size: 10,
     type: 'doubleMesh',
     args: [
-      // 第一层：细密网格
+      // First layer: Fine grid
       {
         color: 'rgba(224, 224, 224, 1)',
         thickness: 1,
       },
-      // 第二层：粗疏网格（间距 = size * factor）
+      // Second layer: Coarse grid (spacing = size * factor)
       {
         color: 'rgba(224, 224, 224, 0.2)',
         thickness: 3,
-        factor: 4,  // 间距为基础 size 的 4 倍
+        factor: 4,  // Spacing is 4 times the base size
       },
     ],
   },
 });
 ```
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 获取网格步长
+// Get grid step size
 graph.getGridSize();  // number
 
-// 设置网格步长
+// Set grid step size
 graph.setGridSize(20);
 
-// 显示网格
+// Show grid
 graph.showGrid();
 
-// 隐藏网格
+// Hide grid
 graph.hideGrid();
 
-// 重新绘制网格（切换类型）
+// Redraw grid (switch type)
 graph.drawGrid({
   type: 'mesh',
   args: { color: '#ddd', thickness: 1 },
 });
 ```
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -190,9 +190,9 @@ const graph = new Graph({
   },
 });
 
-// 节点会自动吸附到 20px 步长的网格点
+// Nodes will automatically snap to grid points with a step of 20px
 graph.addNode({
-  x: 100,  // 实际位置会吸附到 size 的整数倍
+  x: 100,  // Actual position will snap to multiples of size
   y: 100,
   width: 80,
   height: 40,
@@ -200,29 +200,29 @@ graph.addNode({
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 混淆 size 和 visible
+### ❌ Confusing size with visible
 
 ```javascript
-// 错误理解：以为 visible: false 就没有网格效果
+// Incorrect understanding: Assuming visible: false means no grid effect
 const graph = new Graph({
   container: 'container',
   grid: { visible: false, size: 20 },
 });
-// 实际上节点拖拽时仍会吸附到 20px 网格！
+// In reality, nodes will still snap to a 20px grid during dragging!
 ```
 
-### ❌ doubleMesh 的 args 传对象而非数组
+### ❌ doubleMesh's args should be an array instead of an object
 
 ```javascript
-// 错误：doubleMesh 的 args 必须是数组
+// Error: doubleMesh's args must be an array
 grid: {
   type: 'doubleMesh',
-  args: { color: '#eee', thickness: 1 },  // ❌ 应为数组
+  args: { color: '#eee', thickness: 1 },  // ❌ Should be an array
 }
 
-// 正确
+// Correct
 grid: {
   type: 'doubleMesh',
   args: [

@@ -1,9 +1,9 @@
 ---
 id: "x6-core-connector-advanced"
-title: "X6 高级连接器（Connector）"
+title: "X6 Advanced Connector"
 description: |
-  X6 除了常用的 normal、rounded、smooth 连接器外，还提供 loop（自环连接器）和 jumpover（跳线连接器）。
-  适用于自环边绘制、交叉线跳线显示等场景。
+  In addition to the commonly used normal, rounded, and smooth connectors, X6 also provides loop (self-loop connector) and jumpover (jump wire connector).
+  These are suitable for scenarios such as self-loop edge drawing and cross-line jump wire display.
 
 library: "x6"
 version: "3.x"
@@ -23,38 +23,38 @@ related:
   - "x6-core-router-advanced"
 
 use_cases:
-  - "自环边的曲线绘制"
-  - "交叉连线的跳线显示"
-  - "避免连线视觉重叠"
-  - "状态机自环"
+  - "Curved drawing of self-loop edges"
+  - "Jump wire display for crossing connections"
+  - "Avoiding visual overlap of connections"
+  - "State machine self-loop"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 连接器完整列表
+## Full List of Connectors
 
-| Connector | 说明 | 典型场景 |
-|-----------|------|---------|
-| `normal` | 默认，直线连接各路由点 | 简单连线 |
-| `rounded` | 圆角折线 | 流程图 |
-| `smooth` | 贝塞尔曲线 | 平滑连线 |
-| `jumpover` | 跳线，交叉处产生弧形跳跃 | 复杂布线图 |
-| `loop` | 自环曲线 | 自环边 |
+| Connector | Description | Typical Use Cases |
+|-----------|-------------|------------|
+| `normal` | Default, straight line connecting route points | Simple connections |
+| `rounded` | Rounded corners with folds | Flowcharts |
+| `smooth` | Bezier curve | Smooth connections |
+| `jumpover` | Jump line, producing arc jumps at intersections | Complex wiring diagrams |
+| `loop` | Self-loop curve | Self-loop edges |
 
 ---
 
-## Loop 连接器
+## Loop Connector
 
-专为自环边设计的连接器，使用二次贝塞尔曲线（Q 命令）绘制弧线，配合 `loop` 路由器使用。
+A connector specifically designed for self-loop edges, using quadratic Bézier curves (Q command) to draw arcs, and works in conjunction with the `loop` router.
 
-### 配置项
+### Configuration Options
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `split` | `boolean \| number` | - | 是否拆分曲线 |
+| Property | Type | Default Value | Description |
+|----------|------|---------------|-------------|
+| `split` | `boolean \| number` | - | Whether to split the curve |
 
-### 示例
+### Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -67,11 +67,11 @@ const node = graph.addNode({
   y: 100,
   width: 100,
   height: 50,
-  label: '状态 A',
+  label: 'State A',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 6, ry: 6 } },
 });
 
-// 自环边：必须同时使用 loop 路由器和 loop 连接器
+// Self-loop edge: Must use both loop router and loop connector
 graph.addEdge({
   source: node,
   target: node,
@@ -80,40 +80,40 @@ graph.addEdge({
     args: { width: 60, height: 100, angle: 'auto' },
   },
   connector: { name: 'loop' },
-  label: '重试',
+  label: 'Retry',
   attrs: {
     line: { stroke: '#f5222d', strokeWidth: 2, targetMarker: 'classic' },
   },
 });
 ```
 
-### 关键说明
+### Key Notes
 
-- **必须配合 `loop` 路由器使用**，路由器提供中间控制点，连接器据此绘制曲线
-- 生成的路径使用两段 Q（二次贝塞尔曲线）拼接
+- **Must be used in conjunction with the `loop` router**, which provides intermediate control points for the connector to draw curves accordingly
+- The generated path is composed of two Q (quadratic Bézier curves) segments
 
 ---
 
-## Jumpover 连接器
+## Jumpover Connector
 
-当多条边交叉时，在交叉点处绘制跳线弧形，避免视觉混淆。
+When multiple edges intersect, draw a jumper arc at the intersection to avoid visual confusion.
 
-### 配置项
+### Configuration Options
 
-| 属性 | 类型 | 默认值 | 说明 |
+| Property | Type | Default Value | Description |
 |------|------|--------|------|
-| `size` | `number` | `5` | 跳线弧的大小（半径） |
-| `type` | `'arc' \| 'gap' \| 'cubic'` | `'arc'` | 跳线样式类型 |
-| `radius` | `number` | `0` | 折线圆角半径 |
-| `ignoreConnectors` | `string[]` | `['smooth']` | 忽略与哪些连接器类型的交叉 |
+| `size` | `number` | `5` | Size (radius) of the jumper arc |
+| `type` | `'arc' \| 'gap' \| 'cubic'` | `'arc'` | Jumper style type |
+| `radius` | `number` | `0` | Radius of the rounded corners of the polyline |
+| `ignoreConnectors` | `string[]` | `['smooth']` | Ignore intersections with which connector types |
 
-### 跳线类型说明
+### Jump Line Type Description
 
-- **`arc`**：半圆弧跳过（默认），最常用
-- **`gap`**：断开间隙
-- **`cubic`**：三次曲线跳过，更平滑
+- **`arc`**：Semi-circular arc jump (default), most commonly used
+- **`gap`**：Disconnected gap
+- **`cubic`**：Cubic curve jump, smoother
 
-### 示例
+### Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -131,7 +131,7 @@ const graph = new Graph({
   },
 });
 
-// 创建多条交叉的边
+// Create multiple intersecting edges
 const node1 = graph.addNode({
   shape: 'rect', x: 50, y: 50, width: 80, height: 40, label: 'A',
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 4, ry: 4 } },
@@ -149,7 +149,7 @@ const node4 = graph.addNode({
   attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 4, ry: 4 } },
 });
 
-// 两条交叉边
+// Two intersecting edges
 graph.addEdge({
   source: node1,
   target: node4,
@@ -165,10 +165,10 @@ graph.addEdge({
 });
 ```
 
-### 单条边设置 jumpover
+### Single Edge Setting jumpover
 
 ```javascript
-// 在单条边上设置
+// Set on a single edge
 graph.addEdge({
   source: node1,
   target: node2,
@@ -184,10 +184,10 @@ graph.addEdge({
 });
 ```
 
-### 全局默认设置 jumpover
+### Global Default Settings jumpover
 
 ```javascript
-// 在 Graph 初始化时全局配置
+// Global configuration during Graph initialization
 const graph = new Graph({
   container: 'container',
   connecting: {
@@ -201,13 +201,13 @@ const graph = new Graph({
 
 ---
 
-## 连接器简写与对象写法
+## Connector Abbreviation and Object Notation
 
 ```javascript
-// 简写（无参数时）
+// Abbreviation (no parameters)
 graph.addEdge({ source, target, connector: 'rounded' });
 
-// 对象写法（带参数时）
+// Object notation (with parameters)
 graph.addEdge({
   source,
   target,
@@ -220,19 +220,19 @@ graph.addEdge({
 
 ---
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1: 自环边只用 loop 连接器不用 loop 路由器
+### Error 1: Self-loop Edge Uses Only `loop` Connector Without `loop` Router
 
 ```javascript
-// ❌ 错误：缺少 loop 路由器，连接器没有正确的控制点
+// ❌ Incorrect: Missing `loop` router, connector lacks proper control points
 graph.addEdge({
   source: node,
   target: node,
   connector: { name: 'loop' },
 });
 
-// ✅ 正确：路由器和连接器配合使用
+// ✅ Correct: Router and connector used together
 graph.addEdge({
   source: node,
   target: node,
@@ -241,26 +241,26 @@ graph.addEdge({
 });
 ```
 
-### 错误 2: jumpover 不生效
+### Error 2: jumpover Not Taking Effect
 
 ```javascript
-// ❌ 错误：只给一条边设置 jumpover，另一条边用 smooth（默认被忽略）
-// jumpover 默认忽略 smooth 连接器的交叉
+// ❌ Incorrect: Only one edge is set with jumpover, while the other uses smooth (default is ignored)
+// jumpover by default ignores intersections with smooth connectors
 
-// ✅ 正确：确保需要跳线的边都使用 jumpover 或非忽略的连接器
-// 或修改 ignoreConnectors 参数
+// ✅ Correct: Ensure all edges that need to jump over use jumpover or non-ignored connectors
+// or modify the ignoreConnectors parameter
 connector: {
   name: 'jumpover',
-  args: { ignoreConnectors: [] },  // 不忽略任何连接器
+  args: { ignoreConnectors: [] },  // Do not ignore any connectors
 }
 ```
 
-### 错误 3: jumpover 的 type 拼写错误
+### Error 3: Spelling Error in `jumpover`'s `type`
 
 ```javascript
-// ❌ 错误
+// ❌ Incorrect
 connector: { name: 'jumpover', args: { type: 'curve' } }
 
-// ✅ 正确：type 取值为 'arc' | 'gap' | 'cubic'
+// ✅ Correct: `type` value should be 'arc' | 'gap' | 'cubic'
 connector: { name: 'jumpover', args: { type: 'cubic' } }
 ```

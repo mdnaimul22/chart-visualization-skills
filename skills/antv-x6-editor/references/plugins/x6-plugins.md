@@ -1,16 +1,15 @@
 ---
 id: "x6-plugins"
-title: "X6 插件配置"
+title: "X6 Plugin Configuration"
 description: |
-  X6 内置插件的使用方式：Selection、Snapline、History、Clipboard、
-  Keyboard、MiniMap、Scroller、Transform 等。
+  Usage of built-in plugins in X6: Selection, Snapline, History, Clipboard,
+  Keyboard, MiniMap, Scroller, Transform, etc.
 
 library: "x6"
 version: "3.x"
 category: "plugins"
 subcategory: "all"
 tags:
-  - "插件"
   - "plugin"
   - "import"
   - "Illegal constructor"
@@ -53,114 +52,112 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "启用节点框选"
-  - "添加对齐辅助线"
-  - "实现撤销重做"
-  - "配置快捷键"
-  - "添加小地图导航"
-  - "启用滚动画布"
-  - "节点缩放旋转"
-  - "侧边栏拖拽创建节点"
+  - "Enable node box selection"
+  - "Add alignment guides"
+  - "Implement undo/redo"
+  - "Configure keyboard shortcuts"
+  - "Add minimap navigation"
+  - "Enable canvas scrolling"
+  - "Node scaling and rotation"
+  - "Sidebar drag-and-drop node creation"
 
 anti_patterns:
-  - "不要使用 @antv/x6-plugin-xxx 独立包（已废弃）"
-  - "不要在 Graph 构造函数中传入 selecting/snapline/history 等选项（3.x 不支持）"
+  - "Do not use the standalone @antv/x6-plugin-xxx package (deprecated)"
+  - "Do not pass selecting/snapline/history options in the Graph constructor (not supported in 3.x)"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 插件使用方式
+## Plugin Usage
 
-X6 3.x 中，插件从 `@antv/x6` 直接导入，通过 `graph.use(new Plugin(options))` 注册。每个插件实现 `GraphPlugin` 接口。
+In X6 3.x, plugins are imported directly from `@antv/x6` and registered using `graph.use(new Plugin(options))`. Each plugin implements the `GraphPlugin` interface.
 
 ```javascript
 import { Graph, Selection, Snapline, History } from '@antv/x6';
 
 const graph = new Graph({ container: 'container' });
 
-// 通过 graph.use() 注册插件
+// Register plugins using graph.use()
 graph.use(new Selection({ enabled: true }));
 graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 ```
 
-## ⚠️ 插件 import 速查表（输出代码前必查）
+## ⚠️ Plugin Import Quick Reference (Check Before Outputting Code)
 
-X6 11 个内置插件都从 `@antv/x6` **主包**导入；**用到哪些，就必须在 import 行里列出哪些**。
+All 11 built-in plugins in X6 are imported from the `@antv/x6` **main package**; **only those used must be listed in the import statement**.
 
-| 用到的写法                                            | 必须 import                          |
-| ----------------------------------------------------- | ------------------------------------ |
-| `new Selection(...)` 或 `graph.select/unselect/...`   | `Selection`                          |
-| `new Snapline(...)`                                   | `Snapline`                           |
-| `new History(...)` 或 `graph.undo/redo`               | `History`                            |
-| `new Clipboard(...)` 或 `graph.copy/paste/cut`        | `Clipboard`                          |
-| `new Keyboard(...)` 或 `graph.bindKey`                | `Keyboard`                           |
-| `new MiniMap(...)`                                    | `MiniMap`                            |
-| `new Scroller(...)`                                   | `Scroller`                           |
-| `new Transform(...)`                                  | `Transform`                          |
-| `new Export()` 或 `graph.toPNG/toSVG/toJPEG`          | `Export`                             |
-| `new Stencil(...)`                                    | `Stencil`                            |
-| `new Dnd(...)`                                        | `Dnd`                                |
-| `Shape.HTML.register(...)` / `Shape.HTML.create(...)` | `Shape`（不是 `HTML`）               |
+| Usage                                            | Required Import                          |
+| ------------------------------------------------ | ---------------------------------------- |
+| `new Selection(...)` or `graph.select/unselect/...` | `Selection`                              |
+| `new Snapline(...)`                              | `Snapline`                               |
+| `new History(...)` or `graph.undo/redo`          | `History`                                |
+| `new Clipboard(...)` or `graph.copy/paste/cut`   | `Clipboard`                              |
+| `new Keyboard(...)` or `graph.bindKey`           | `Keyboard`                               |
+| `new MiniMap(...)`                               | `MiniMap`                                |
+| `new Scroller(...)`                              | `Scroller`                               |
+| `new Transform(...)`                             | `Transform`                              |
+| `new Export()` or `graph.toPNG/toSVG/toJPEG`     | `Export`                                 |
+| `new Stencil(...)`                               | `Stencil`                                |
+| `new Dnd(...)`                                   | `Dnd`                                    |
+| `Shape.HTML.register(...)` / `Shape.HTML.create(...)` | `Shape` (not `HTML`)                     |
 
-> 推荐**单行合并** import，避免遗漏：
+> It is recommended to **merge imports into a single line** to avoid omissions:
 >
 > ```javascript
 > import { Graph, Shape, Selection, Keyboard, History, Clipboard } from '@antv/x6';
 > ```
 
-### ❌ 漏 import Selection 会引发 `Failed to construct 'Selection': Illegal constructor`
+### ❌ Missing `import Selection` Causes `Failed to construct 'Selection': Illegal constructor`
 
-评测和 Playground 用的是 X6 **UMD 构建**（`window.X6`），执行前会按 `import` 列表从 `window.X6` 解构出对应类。如果 `Selection` 没出现在 import 里，**标识符 `Selection` 会回退到 `window.Selection`**（浏览器原生 Selection 接口，**不是构造函数**），随后 `new Selection({...})` 抛 `Illegal constructor`。
+The evaluation and Playground use the X6 **UMD build** (`window.X6`), which deconstructs corresponding classes from `window.X6` based on the `import` list before execution. If `Selection` is not included in the import, the **identifier `Selection` falls back to `window.Selection`** (the browser's native Selection interface, **not a constructor**), and subsequently `new Selection({...})` throws `Illegal constructor`.
 
 ```javascript
-// ❌ 漏写 Selection 导致 Illegal constructor
+// ❌ Missing Selection import leads to Illegal constructor
 import { Graph } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
-graph.use(new Selection({ enabled: true, rubberband: true })); // ❌ Selection 未 import → 回退到 window.Selection
+graph.use(new Selection({ enabled: true, rubberband: true })); // ❌ Selection not imported → falls back to window.Selection
 ```
 
 ```javascript
-// ✅ 必须把 Selection 写进 import
+// ✅ Must include Selection in the import
 import { Graph, Selection } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Selection({ enabled: true, rubberband: true })); // ✅
 ```
 
-### ❌ `Embedding` / `Connecting` / `Mousewheel` / `Panning` 不是插件，禁止 `new` / `graph.use`
+### ❌ `Embedding` / `Connecting` / `Mousewheel` / `Panning` are not plugins, do not use `new` / `graph.use`
 
-X6 3.x 只有 **11 个插件**（上表所列），下列概念**全部是 `new Graph({ ... })` 构造选项**，不是插件类：
+X6 3.x has only **11 plugins** (listed in the table above). The following concepts are **all `new Graph({ ... })` constructor options**, not plugin classes:
 
-| 概念             | 错误写法（运行时报错）                          | 正确写法（Graph 构造选项）                                                          |
-| ---------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------- |
-| 节点嵌入         | `import { Embedding } from '@antv/x6'` / `new Embedding(...)` / `graph.use(new Embedding(...))` → `Embedding is not a constructor` | `new Graph({ embedding: { enabled: true, findParent: 'bbox', validate: ({ child, parent }) => true } })` |
-| 连线交互         | `new Connecting(...)` / `graph.use(...)`        | `new Graph({ connecting: { snap: true, allowBlank: false, router: 'manhattan', connector: 'rounded' } })` |
-| 滚轮缩放         | `new Mousewheel(...)`                           | `new Graph({ mousewheel: { enabled: true, modifiers: ['ctrl'], factor: 1.1 } })`     |
-| 平移画布         | `new Panning(...)`                              | `new Graph({ panning: { enabled: true, modifiers: 'shift' } })`                      |
-| 网格 / 背景      | `new Grid(...)` / `new Background(...)`         | `new Graph({ grid: true, background: { color: '#f5f5f5' } })`                       |
-| 平移节点         | `new Translating(...)`                          | `new Graph({ translating: { restrict: true } })`                                     |
-| 高亮             | `new Highlighting(...)`                         | `new Graph({ highlighting: { magnetAvailable: { name: 'stroke', args: {...} } } })` |
+| Concept          | Incorrect Usage (Runtime Error)                                  | Correct Usage (Graph Constructor Options)                                                          |
+| ---------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Node Embedding   | `import { Embedding } from '@antv/x6'` / `new Embedding(...)` / `graph.use(new Embedding(...))` → `Embedding is not a constructor` | `new Graph({ embedding: { enabled: true, findParent: 'bbox', validate: ({ child, parent }) => true } })` |
+| Edge Connecting  | `new Connecting(...)` / `graph.use(...)`                        | `new Graph({ connecting: { snap: true, allowBlank: false, router: 'manhattan', connector: 'rounded' } })` |
+| Mousewheel Zoom  | `new Mousewheel(...)`                                           | `new Graph({ mousewheel: { enabled: true, modifiers: ['ctrl'], factor: 1.1 } })`     |
+| Panning          | `new Panning(...)`                                              | `new Graph({ panning: { enabled: true, modifiers: 'shift' } })`                      |
+| Grid / Background| `new Grid(...)` / `new Background(...)`                         | `new Graph({ grid: true, background: { color: '#f5f5f5' } })`                       |
+| Node Translating | `new Translating(...)`                                          | `new Graph({ translating: { restrict: true } })`                                     |
+| Highlighting     | `new Highlighting(...)`                                         | `new Graph({ highlighting: { magnetAvailable: { name: 'stroke', args: {...} } } })` |
 
-> 简易判断：只要在 X6 文档 / 源码里出现 `interface XxxOptions extends ...` 而不是 `class Xxx extends Base`，就**一定**是 Graph 构造选项，不能 `new` / `graph.use`。
-
-
+> Quick Rule: If it appears as `interface XxxOptions extends ...` instead of `class Xxx extends Base` in X6 documentation or source code, it is **definitely** a Graph constructor option and cannot be used with `new` / `graph.use`.
 
 ```javascript
-// ❌ Keyboard / History 未 import
+// ❌ Keyboard / History not imported
 import { Graph } from '@antv/x6';
 graph.use(new Keyboard({ enabled: true })); // ❌ Keyboard is not a constructor
 graph.use(new History({ enabled: true }));  // ❌ History is not a constructor
 ```
 
 ```javascript
-// ✅ 全部写进同一行 import
+// ✅ Import all in the same line
 import { Graph, Keyboard, History } from '@antv/x6';
 graph.use(new Keyboard({ enabled: true }));
 graph.use(new History({ enabled: true }));
 ```
 
-### ❌ 用 `Shape.HTML.register` 却忘了 import `Shape`
+### ❌ Using `Shape.HTML.register` but forgetting to import `Shape`
 
 ```javascript
 // ❌
@@ -174,7 +171,7 @@ import { Graph, Shape } from '@antv/x6';
 Shape.HTML.register({ shape: 'form', html() { /* ... */ } });
 ```
 
-## Selection（框选）
+## Selection (Box Selection)
 
 ```javascript
 import { Graph, Selection } from '@antv/x6';
@@ -182,21 +179,21 @@ import { Graph, Selection } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Selection({
   enabled: true,
-  rubberband: true,        // 启用框选
-  multiple: true,          // 允许多选
-  showNodeSelectionBox: true,  // 显示选中框
-  multipleSelectionModifiers: ['ctrl', 'meta'],  // 多选修饰键
+  rubberband: true,        // Enable box selection
+  multiple: true,          // Allow multiple selection
+  showNodeSelectionBox: true,  // Show selection box
+  multipleSelectionModifiers: ['ctrl', 'meta'],  // Multi-selection modifier keys
 }));
 
-// 编程式操作（插件注册后自动挂载到 graph 实例）
-graph.select(node);              // 选中
-graph.unselect(node);            // 取消选中
-graph.isSelected(node);          // 是否选中
-graph.getSelectedCells();        // 获取所有选中元素
-graph.cleanSelection();          // 清空选择
+// Programmatic operations (automatically mounted to the graph instance after plugin registration)
+graph.select(node);              // Select
+graph.unselect(node);            // Deselect
+graph.isSelected(node);          // Check if selected
+graph.getSelectedCells();        // Get all selected elements
+graph.cleanSelection();          // Clear selection
 ```
 
-## Snapline（对齐线）
+## Snapline
 
 ```javascript
 import { Graph, Snapline } from '@antv/x6';
@@ -204,11 +201,11 @@ import { Graph, Snapline } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Snapline({
   enabled: true,
-  tolerance: 10,           // 吸附容差（像素）
+  tolerance: 10,           // Snap tolerance (pixels)
 }));
 ```
 
-## History（撤销/重做）
+## History (Undo/Redo)
 
 ```javascript
 import { Graph, History } from '@antv/x6';
@@ -216,34 +213,34 @@ import { Graph, History } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new History({ enabled: true }));
 
-// 撤销
+// Undo
 graph.undo();
 
-// 重做
+// Redo
 graph.redo();
 
-// 是否可撤销/重做
+// Check if undo/redo is possible
 graph.canUndo();
 graph.canRedo();
 
-// 监听事件
+// Listen for events
 graph.on('history:undo', () => console.log('Undone'));
 graph.on('history:redo', () => console.log('Redone'));
 
-// 批量操作合并为一次撤销步骤（⚠️ 禁止使用 graph.history.batch()，该方法不存在）
+// Batch operations into a single undo step (⚠️ Do not use graph.history.batch(), as this method does not exist)
 graph.startBatch('custom-batch');
-// 执行多个操作...
+// Perform multiple operations...
 graph.stopBatch('custom-batch');
 
-// 或使用 batchUpdate 简写
+// Or use batchUpdate shorthand
 graph.batchUpdate('custom-batch', () => {
-  // 这里的所有操作会合并为一次撤销步骤
+  // All operations here will be combined into a single undo step
   graph.addNode({ shape: 'rect', x: 100, y: 100, width: 80, height: 40 });
   graph.addNode({ shape: 'rect', x: 300, y: 100, width: 80, height: 40 });
 });
 ```
 
-## Clipboard（复制/粘贴）
+## Clipboard (Copy/Paste)
 
 ```javascript
 import { Graph, Clipboard } from '@antv/x6';
@@ -251,17 +248,17 @@ import { Graph, Clipboard } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Clipboard({ enabled: true }));
 
-// 复制选中元素
+// Copy selected elements
 graph.copy(graph.getSelectedCells());
 
-// 粘贴（偏移 20px）
+// Paste (offset by 20px)
 graph.paste({ offset: 20 });
 
-// 剪切
-graph.cut(graph.getSelected( ));
+// Cut
+graph.cut(graph.getSelected());
 ```
 
-## Keyboard（快捷键）
+## Keyboard (Shortcuts)
 
 ```javascript
 import { Graph, Keyboard } from '@antv/x6';
@@ -269,10 +266,10 @@ import { Graph, Keyboard } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Keyboard({
   enabled: true,
-  global: true,            // 全局快捷键（不限于画布焦点）
+  global: true,            // Global shortcuts (not limited to canvas focus)
 }));
 
-// 绑定快捷键
+// Bind shortcuts
 graph.bindKey('ctrl+c', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) graph.copy(cells);
@@ -300,7 +297,7 @@ graph.bindKey('ctrl+a', () => {
 });
 ```
 
-## Scroller（滚动画布）
+## Scroller (Canvas Scrolling)
 
 ```javascript
 import { Graph, Scroller } from '@antv/x6';
@@ -308,13 +305,13 @@ import { Graph, Scroller } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Scroller({
   enabled: true,
-  pannable: true,          // 画布可平移
-  pageVisible: true,       // 显示分页
+  pannable: true,          // Canvas is pannable
+  pageVisible: true,       // Show pagination
   pageBreak: false,
 }));
 ```
 
-## MiniMap（小地图）
+## MiniMap
 
 ```javascript
 import { Graph, MiniMap } from '@antv/x6';
@@ -322,15 +319,15 @@ import { Graph, MiniMap } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new MiniMap({
   enabled: true,
-  container: document.getElementById('minimap'),  // 小地图容器
+  container: document.getElementById('minimap'),  // MiniMap container
   width: 200,
   height: 160,
 }));
 ```
 
-**注意**：MiniMap 需要一个独立的 DOM 容器。
+**Note**: MiniMap requires a separate DOM container.
 
-## Transform（节点缩放/旋转）
+## Transform (Node Scaling/Rotation)
 
 ```javascript
 import { Graph, Transform } from '@antv/x6';
@@ -338,17 +335,17 @@ import { Graph, Transform } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Transform({
   resizing: {
-    enabled: true,           // 允许调整大小
+    enabled: true,           // Enable resizing
   },
   rotating: {
-    enabled: true,           // 允许旋转
+    enabled: true,           // Enable rotation
   },
 }));
 ```
 
-## Stencil（侧边栏拖拽面板）
+## Stencil (Sidebar Drag Panel)
 
-Stencil 用于创建可拖拽的节点面板（工具箱）：
+Stencil is used to create a draggable node panel (toolbox):
 
 ```javascript
 import { Graph, Stencil } from '@antv/x6';
@@ -367,7 +364,7 @@ graph.use(stencil);
 
 document.getElementById('stencil').appendChild(stencil.container);
 
-// 向分组中加载节点模板
+// Load node templates into groups
 const basicNodes = [
   graph.createNode({ shape: 'rect', width: 80, height: 40, label: 'Rect' }),
   graph.createNode({ shape: 'circle', width: 60, height: 60, label: 'Circle' }),
@@ -380,9 +377,9 @@ const customNodes = [
 stencil.load(customNodes, 'custom');
 ```
 
-## Dnd（拖拽创建）
+## Dnd (Drag-and-Drop Creation)
 
-简单的拖拽创建节点（不需要侧边栏）：
+Simple drag-and-drop node creation (without sidebar):
 
 ```javascript
 import { Graph, Dnd } from '@antv/x6';
@@ -392,7 +389,7 @@ const graph = new Graph({ container: 'container' });
 const dnd = new Dnd({ target: graph });
 graph.use(dnd);
 
-// 从外部元素开始拖拽
+// Start dragging from an external element
 document.getElementById('drag-source').addEventListener('mousedown', (e) => {
   const node = graph.createNode({
     shape: 'rect',
@@ -404,7 +401,7 @@ document.getElementById('drag-source').addEventListener('mousedown', (e) => {
 });
 ```
 
-## 组合使用示例
+## Combined Usage Example
 
 ```javascript
 import { Graph, Selection, Snapline, History, Clipboard, Keyboard, Transform } from '@antv/x6';
@@ -420,7 +417,7 @@ const graph = new Graph({
   connecting: { allowBlank: false, router: 'orth', connector: 'rounded' },
 });
 
-// 注册插件
+// Register plugins
 graph.use(new Selection({ enabled: true, rubberband: true, showNodeSelectionBox: true }));
 graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
@@ -428,7 +425,7 @@ graph.use(new Clipboard({ enabled: true }));
 graph.use(new Keyboard({ enabled: true, global: true }));
 graph.use(new Transform({ resizing: { enabled: true } }));
 
-// 快捷键绑定
+// Shortcut key bindings
 graph.bindKey('ctrl+c', () => graph.copy(graph.getSelectedCells()));
 graph.bindKey('ctrl+v', () => graph.paste({ offset: 20 }));
 graph.bindKey('ctrl+z', () => graph.undo());
@@ -436,26 +433,26 @@ graph.bindKey('ctrl+shift+z', () => graph.redo());
 graph.bindKey('delete', () => graph.removeCells(graph.getSelectedCells()));
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 错误：在构造函数中传入插件选项
+### ❌ Error: Passing Plugin Options in the Constructor
 
-**问题代码**：
+**Problematic Code**:
 ```javascript
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({
   container: 'container',
-  selecting: { enabled: true },  // ❌ 3.x 不支持
-  snapline: { enabled: true },   // ❌ 3.x 不支持
-  history: { enabled: true },    // ❌ 3.x 不支持
+  selecting: { enabled: true },  // ❌ Not supported in 3.x
+  snapline: { enabled: true },   // ❌ Not supported in 3.x
+  history: { enabled: true },    // ❌ Not supported in 3.x
 });
 ```
 
-**错误原因**：
-X6 3.x 中插件通过 `graph.use()` 注册，不支持构造函数选项模式。
+**Cause of Error**:
+In X6 3.x, plugins are registered using `graph.use()`, and the constructor options pattern is not supported.
 
-**修正代码**：
+**Corrected Code**:
 ```javascript
 import { Graph, Selection, Snapline, History } from '@antv/x6';
 
@@ -465,48 +462,48 @@ graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 ```
 
-### ❌ 错误：使用 `@antv/x6-plugin-xxx` 独立包
+### ❌ Error: Using `@antv/x6-plugin-xxx` standalone packages
 
-**问题代码**：
+**Problematic Code**:
 ```javascript
-import { Selection } from '@antv/x6-plugin-selection';  // ❌ 已废弃
-import { History } from '@antv/x6-plugin-history';      // ❌ 已废弃
+import { Selection } from '@antv/x6-plugin-selection';  // ❌ Deprecated
+import { History } from '@antv/x6-plugin-history';      // ❌ Deprecated
 ```
 
-**错误原因**：
-独立插件包已废弃，3.x 中所有插件直接从 `@antv/x6` 导出。
+**Cause of Error**:
+Standalone plugin packages are deprecated. In 3.x, all plugins are directly exported from `@antv/x6`.
 
-**修正代码**：
+**Corrected Code**:
 ```javascript
-import { Graph, Selection, History } from '@antv/x6';  // ✅ 正确
+import { Graph, Selection, History } from '@antv/x6';  // ✅ Correct
 ```
 
-### ❌ 错误：调用 `graph.render()`
+### ❌ Error: Calling `graph.render()`
 
-**问题代码**：
-```javascript
-const data = { nodes: [...], edges: [...] };
-graph.fromJSON(data);
-graph.render(); // ❌ 错误
-```
-
-**错误原因**：
-`graph.fromJSON()` 会自动渲染，无需手动调用 `render()`。
-
-**修正代码**：
+**Problematic Code**:
 ```javascript
 const data = { nodes: [...], edges: [...] };
 graph.fromJSON(data);
+graph.render(); // ❌ Error
 ```
 
-### ❌ 错误：未正确初始化画布容器或缺少基础节点导致白屏
+**Cause of Error**:
+`graph.fromJSON()` automatically renders the graph, so there's no need to manually call `render()`.
 
-**问题代码**：
+**Corrected Code**:
+```javascript
+const data = { nodes: [...], edges: [...] };
+graph.fromJSON(data);
+```
+
+### ❌ Error: White Screen Due to Incorrect Initialization of Canvas Container or Missing Base Nodes
+
+**Problematic Code**:
 ```javascript
 import { Graph, Selection, Snapline, History, Keyboard } from '@antv/x6';
 
 const graph = new Graph({
-  container: container, // ❌ 应使用字符串 container: 'container'
+  container: container, // ❌ Should use string: container: 'container'
 });
 
 graph.use(new Selection({ enabled: true }));
@@ -514,19 +511,19 @@ graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 graph.use(new Keyboard({ enabled: true }));
 
-// ❌ 没有添加任何节点或边，画布为空白
+// ❌ No nodes or edges added, resulting in a blank canvas
 ```
 
-**错误原因**：
-1. `container` 参数应为 DOM 元素或其 ID 字符串。
-2. 画布中没有添加任何节点或边，导致白屏。
+**Cause of Error**:
+1. The `container` parameter should be a DOM element or its ID string.
+2. No nodes or edges were added to the canvas, resulting in a white screen.
 
-**修正代码**：
+**Corrected Code**:
 ```javascript
 import { Graph, Selection, Snapline, History, Keyboard, Clipboard } from '@antv/x6';
 
 const graph = new Graph({
-  container: 'container', // ✅ 正确：使用字符串 ID
+  container: 'container', // ✅ Correct: Use string ID
   width: 800,
   height: 600,
   background: { color: '#F2F7FA' },
@@ -536,19 +533,19 @@ const graph = new Graph({
   connecting: { allowBlank: false, router: 'orth', connector: 'rounded' },
 });
 
-// 注册插件
+// Register plugins
 graph.use(new Selection({ enabled: true, rubberband: true }));
 graph.use(new Snapline({ enabled: true }));
 graph.use(new History({ enabled: true }));
 graph.use(new Keyboard({ enabled: true }));
 graph.use(new Clipboard({ enabled: true }));
 
-// 添加基础节点和边
+// Add base nodes and edges
 const node1 = graph.addNode({ shape: 'rect', x: 100, y: 100, width: 80, height: 40, label: 'Start' });
 const node2 = graph.addNode({ shape: 'circle', x: 300, y: 100, width: 60, height: 60, label: 'End' });
 graph.addEdge({ source: node1, target: node2 });
 
-// 快捷键绑定
+// Shortcut key bindings
 graph.bindKey('delete', () => {
   const cells = graph.getSelectedCells();
   if (cells.length) graph.removeCells(cells);
@@ -559,20 +556,20 @@ graph.bindKey('ctrl+c', () => graph.copy(graph.getSelectedCells()));
 graph.bindKey('ctrl+v', () => graph.paste({ offset: 20 }));
 ```
 
-### ❌ 错误：插件方法调用错误（如 keyboard.bindKey）
+### ❌ Error: Incorrect Plugin Method Invocation (e.g., `keyboard.bindKey`)
 
-**问题代码**：
+**Problematic Code**:
 ```javascript
 const keyboard = new Keyboard({ enabled: true, global: true });
 graph.use(keyboard);
 
-keyboard.bindKey(['delete', 'backspace'], () => { ... }); // ❌ 错误
+keyboard.bindKey(['delete', 'backspace'], () => { ... }); // ❌ Error
 ```
 
-**错误原因**：
-插件方法应通过 `graph` 实例调用，而不是插件实例。
+**Cause of Error**:  
+Plugin methods should be invoked through the `graph` instance, not the plugin instance.
 
-**修正代码**：
+**Corrected Code**:
 ```javascript
 graph.use(new Keyboard({ enabled: true, global: true }));
 
@@ -582,9 +579,9 @@ graph.bindKey(['delete', 'backspace'], () => {
 });
 ```
 
-### ❌ 错误：History 插件的 batch 方法不存在
+### ❌ Error: The `batch` method does not exist in the History plugin
 
-**问题代码**：
+**Problematic Code**:
 ```javascript
 graph.history.batch(() => {
   const node1 = graph.addNode(data[0]);
@@ -593,10 +590,10 @@ graph.history.batch(() => {
 });
 ```
 
-**错误原因**：
-History 插件没有 `batch` 方法，应使用 `graph.startBatch()` 和 `graph.stopBatch()` 来控制批量操作。
+**Cause of Error**:
+The History plugin does not have a `batch` method. Use `graph.startBatch()` and `graph.stopBatch()` to control batch operations.
 
-**修正代码**：
+**Corrected Code**:
 ```javascript
 graph.startBatch('custom-batch');
 
@@ -608,4 +605,3 @@ graph.stopBatch('custom-batch');
 ```
 
 ---
-</skill>

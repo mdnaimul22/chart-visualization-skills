@@ -1,20 +1,20 @@
 ---
 id: "x6-pattern-org-chart"
-title: "X6 组织架构图"
+title: "X6 Organizational Chart"
 description: |
-  使用 X6 构建组织架构图（Org Chart）的最佳实践：树形层级布局、自定义人员卡片节点、折叠展开子树等。
+  Best practices for building an Organizational Chart (Org Chart) using X6: tree hierarchy layout, custom employee card nodes, collapsing and expanding subtrees, etc.
 
 library: "x6"
 version: "3.x"
 category: "patterns"
 subcategory: "org-chart"
 tags:
-  - "组织架构图"
+  - "Organizational Chart"
   - "org chart"
-  - "组织结构"
-  - "树形图"
-  - "人员关系"
-  - "层级结构"
+  - "Organizational Structure"
+  - "Tree Diagram"
+  - "Employee Relationships"
+  - "Hierarchical Structure"
 
 related:
   - "x6-intermediate-group"
@@ -23,24 +23,24 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "公司组织架构展示"
-  - "团队层级关系"
-  - "汇报关系图"
-  - "部门结构可视化"
+  - "Company Organizational Structure Display"
+  - "Team Hierarchy Relationships"
+  - "Reporting Relationship Diagram"
+  - "Department Structure Visualization"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 场景特点
+## Scene Characteristics
 
-组织架构图的核心特征：
-- **树形结构**：自上而下的层级关系
-- **自定义卡片节点**：包含姓名、职位、头像等信息
-- **竖直边**：连线通常为正交或平滑曲线，从父节点底部到子节点顶部
-- **折叠/展开**：子树可折叠，节点多时提升可读性
+The core features of an organizational structure chart:
+- **Tree Structure**: Top-down hierarchical relationship
+- **Custom Card Nodes**: Contains information such as name, position, and avatar
+- **Vertical Edges**: Connections are typically orthogonal or smooth curves, from the bottom of the parent node to the top of the child node
+- **Collapse/Expand**: Subtrees can be collapsed, improving readability when there are many nodes
 
-## 注册卡片节点
+## Register Card Node
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -69,7 +69,7 @@ Graph.registerNode('org-card', {
     groups: {
       top: {
         position: 'top',
-        attrs: { circle: { r: 0 } },  // 隐藏端口圆点
+        attrs: { circle: { r: 0 } },  // Hide port circle
       },
       bottom: {
         position: 'bottom',
@@ -84,7 +84,7 @@ Graph.registerNode('org-card', {
 }, true);
 ```
 
-## 完整示例
+## Complete Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -96,37 +96,37 @@ const graph = new Graph({
   background: { color: '#F8FAFC' },
   panning: { enabled: true, modifiers: 'ctrl' },
   mousewheel: { enabled: true, modifiers: 'ctrl' },
-  interacting: { nodeMovable: false },  // 组织架构图通常禁止自由拖拽
+  interacting: { nodeMovable: false },  // Organizational charts typically disable free dragging
 });
 
-// 定义组织数据
+// Define organizational data
 const orgData = {
   id: 'ceo',
-  label: 'CEO\n张三',
+  label: 'CEO\nJohn Doe',
   children: [
     {
       id: 'cto',
-      label: 'CTO\n李四',
+      label: 'CTO\nJane Smith',
       children: [
-        { id: 'fe-lead', label: '前端负责人\n王五' },
-        { id: 'be-lead', label: '后端负责人\n赵六' },
+        { id: 'fe-lead', label: 'Frontend Lead\nTom Brown' },
+        { id: 'be-lead', label: 'Backend Lead\nEmily White' },
       ],
     },
     {
       id: 'cfo',
-      label: 'CFO\n孙七',
+      label: 'CFO\nMichael Green',
       children: [
-        { id: 'finance', label: '财务经理\n周八' },
+        { id: 'finance', label: 'Finance Manager\nSarah Lee' },
       ],
     },
     {
       id: 'coo',
-      label: 'COO\n吴九',
+      label: 'COO\nWilliam Harris',
     },
   ],
 };
 
-// 递归创建节点和边
+// Recursively create nodes and edges
 function buildOrgChart(data, parentId, yOffset, xCenter) {
   const node = graph.addNode({
     id: data.id,
@@ -165,9 +165,9 @@ function buildOrgChart(data, parentId, yOffset, xCenter) {
 buildOrgChart(orgData, null, 50, 500);
 ```
 
-## 使用 @antv/hierarchy 布局
+## Using @antv/hierarchy Layout
 
-对于复杂树形结构，推荐使用 `@antv/hierarchy` 自动计算布局：
+For complex tree structures, it is recommended to use `@antv/hierarchy` for automatic layout calculations:
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -181,7 +181,7 @@ const result = Hierarchy.compactBox(orgData, {
   getVGap: () => 60,
 });
 
-// result 包含计算好的 x, y 坐标
+// result contains the calculated x, y coordinates
 function renderTree(node) {
   graph.addNode({
     id: node.id,
@@ -210,23 +210,23 @@ function renderTree(node) {
 renderTree(result);
 ```
 
-## 折叠展开子树
+## Collapse/Expand Subtree
 
 ```javascript
-// 标记节点是否已折叠
+// Mark whether the node is collapsed
 function toggleCollapse(nodeId) {
   const node = graph.getCellById(nodeId);
   const collapsed = node.getData()?.collapsed;
 
-  // 获取所有后代节点和边
+  // Get all descendant nodes and edges
   const descendants = getDescendants(nodeId);
 
   if (collapsed) {
-    // 展开：显示后代
+    // Expand: Show descendants
     descendants.forEach((cell) => cell.show());
     node.setData({ collapsed: false });
   } else {
-    // 折叠：隐藏后代
+    // Collapse: Hide descendants
     descendants.forEach((cell) => cell.hide());
     node.setData({ collapsed: true });
   }
@@ -249,16 +249,16 @@ function getDescendants(nodeId) {
   return result;
 }
 
-// 双击节点折叠/展开
+// Double-click node to collapse/expand
 graph.on('node:dblclick', ({ node }) => {
   toggleCollapse(node.id);
 });
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **正交路由 + 无箭头**：组织架构图通常不需要箭头，设置 `targetMarker: null`
-2. **禁止自由拖拽**：`interacting: { nodeMovable: false }` 保持布局整齐
-3. **自上而下布局**：使用 `@antv/hierarchy` 的 `direction: 'TB'`
-4. **颜色区分层级**：不同层级使用不同颜色标识
-5. **大组织启用虚拟渲染**：超过 100 人的组织图配置 `virtual: true`
+1. **Orthogonal Routing + No Arrows**: Organizational charts typically do not require arrows. Set `targetMarker: null`.
+2. **Disable Free Dragging**: Use `interacting: { nodeMovable: false }` to maintain a neat layout.
+3. **Top-to-Bottom Layout**: Utilize `@antv/hierarchy` with `direction: 'TB'`.
+4. **Color-Coded Hierarchy**: Use different colors to distinguish between hierarchy levels.
+5. **Enable Virtual Rendering for Large Organizations**: For organizational charts with more than 100 people, configure `virtual: true`.

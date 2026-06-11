@@ -1,10 +1,10 @@
 ---
 id: "x6-core-geometry"
-title: "X6 Geometry 几何工具"
+title: "X6 Geometry Tools"
 description: |
-  X6 内置的几何工具集，包括 Point / Line / Rectangle / Ellipse / Polyline / Path / Curve
-  以及 Angle、util 工具函数。本文档基于 src/geometry/*.ts 真实源码，
-  整理常用 API、典型场景（计算节点位置、路径长度、相交判断、角度转换等）。
+  X6's built-in geometry toolkit, including Point / Line / Rectangle / Ellipse / Polyline / Path / Curve,
+  as well as Angle and util utility functions. This document is based on the actual source code in src/geometry/*.ts,
+  organizing commonly used APIs and typical scenarios (calculating node positions, path lengths, intersection judgments, angle conversions, etc.).
 
 library: "x6"
 version: "3.x"
@@ -34,126 +34,126 @@ related:
   - "x6-core-router-advanced"
 
 use_cases:
-  - "在自定义 router / connector 中计算路径几何"
-  - "判断点是否落在某个节点 BBox 内"
-  - "计算两点距离 / 中点 / 角度"
-  - "用 Rectangle 求交点 / 包含关系"
-  - "把鼠标坐标对齐到网格"
-  - "角度与弧度互转"
+  - "Calculate path geometry in custom routers / connectors"
+  - "Determine if a point falls within a node's BBox"
+  - "Calculate distance / midpoint / angle between two points"
+  - "Find intersection points / containment relationships using Rectangle"
+  - "Align mouse coordinates to a grid"
+  - "Convert between angles and radians"
 
 anti_patterns:
-  - "把 Geometry 类与 DOM 元素混用"
-  - "对 Point / Rectangle 实例直接读写属性后忘了调用 graph.refresh()"
-  - "用 Math.atan2 自己拼角度，而忽略 X6 内置 Angle.toDeg"
+  - "Mixing Geometry classes with DOM elements"
+  - "Directly reading/writing properties of Point / Rectangle instances without calling graph.refresh()"
+  - "Manually calculating angles using Math.atan2 instead of utilizing X6's built-in Angle.toDeg"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 概述
+## Overview
 
-X6 把所有几何计算抽象在 `src/geometry/` 模块，统一通过 `@antv/x6` 顶层导出。这些类**与 DOM 解耦**——它们只是数学对象，可以在自定义 router、connector、connection-point、attr、tool 等任何回调里使用。
+X6 abstracts all geometric calculations in the `src/geometry/` module, uniformly exported through the `@antv/x6` top-level namespace. These classes are **decoupled from the DOM**—they are purely mathematical objects and can be used in any callback, such as custom routers, connectors, connection points, attributes, tools, etc.
 
 ```javascript
 import { Point, Line, Rectangle, Ellipse, Polyline, Path, Curve, Angle } from '@antv/x6';
 ```
 
-> 所有 Geometry 子类都继承自 `Geometry` 基类，方法链式调用（多数返回 `this`）。
+> All Geometry subclasses inherit from the `Geometry` base class, supporting method chaining (most methods return `this`).
 
-## Angle（角度工具，函数式导出）
+## Angle (Angle Utility, Functional Export)
 
-源码：`src/geometry/angle.ts`。直接命名空间导入：
+Source code: `src/geometry/angle.ts`. Direct namespace import:
 
 ```javascript
 import { Angle } from '@antv/x6';
 
-Angle.toDeg(Math.PI);          // 180   弧度 → 度
-Angle.toRad(180);              // π     度 → 弧度
-Angle.toRad(720, true);        // 4π    第二参数 over360=true 时不取模 360
-Angle.normalize(-30);          // 330   把任意角度规整到 [0, 360)
+Angle.toDeg(Math.PI);          // 180   Radians → Degrees
+Angle.toRad(180);              // π     Degrees → Radians
+Angle.toRad(720, true);        // 4π    Second parameter over360=true disables modulo 360
+Angle.normalize(-30);          // 330   Normalize any angle to [0, 360)
 ```
 
-| API | 说明 |
+| API | Description |
 |-----|------|
-| `Angle.toDeg(rad)` | 弧度 → 角度，结果模 360 |
-| `Angle.toRad(deg, over360?)` | 角度 → 弧度，默认先 `deg % 360` |
-| `Angle.normalize(angle)` | 把任意值规整到 `[0, 360)` |
+| `Angle.toDeg(rad)` | Radians → Degrees, result modulo 360 |
+| `Angle.toRad(deg, over360?)` | Degrees → Radians, defaults to `deg % 360` |
+| `Angle.normalize(angle)` | Normalize any value to `[0, 360)` |
 
-## Point（二维点）
+## Point (2D Point)
 
-源码：`src/geometry/point.ts`。
+Source code: `src/geometry/point.ts`.
 
-### 创建
+### Creation
 
 ```javascript
 import { Point } from '@antv/x6';
 
 new Point(10, 20);
-Point.create(10, 20);                  // 等价
-Point.create({ x: 10, y: 20 });        // 从 PointLike
-Point.create([10, 20]);                // 从数组
-Point.fromPolar(100, Math.PI / 4);     // 极坐标 → 笛卡尔
+Point.create(10, 20);                  // Equivalent
+Point.create({ x: 10, y: 20 });        // From PointLike
+Point.create([10, 20]);                // From array
+Point.fromPolar(100, Math.PI / 4);     // Polar → Cartesian
 ```
 
-### 常用实例方法（链式）
+### Common Instance Methods (Chaining)
 
 ```javascript
 const p = new Point(10, 20);
 
-p.translate(5, 5);                     // (15, 25)，会修改自身并返回 this
-p.scale(2, 2);                         // (30, 50)，第三参数 origin 默认 (0,0)
-p.rotate(90, new Point(0, 0));         // 绕原点逆时针旋转 90°（度数，不是弧度）
-p.distance({ x: 0, y: 0 });            // 与另一点的距离
-p.equals({ x: 30, y: 50 });            // 是否相等
-const q = p.clone();                   // 深拷贝
-p.round(2);                            // 保留 2 位小数
+p.translate(5, 5);                     // (15, 25), modifies itself and returns this
+p.scale(2, 2);                         // (30, 50), third parameter origin defaults to (0,0)
+p.rotate(90, new Point(0, 0));         // Rotates counterclockwise by 90° around the origin (degrees, not radians)
+p.distance({ x: 0, y: 0 });            // Distance to another point
+p.equals({ x: 30, y: 50 });            // Checks if equal
+const q = p.clone();                   // Deep copy
+p.round(2);                            // Rounds to 2 decimal places
 p.toJSON();                            // { x, y }
 ```
 
-> ⚠️ `rotate` 的角度是**度数**而非弧度。
+> ⚠️ The angle for `rotate` is in **degrees**, not radians.
 
-### 典型场景：在自定义 connection-strategy 中计算端点
+### Typical Scenario: Calculating Endpoints in a Custom Connection Strategy
 
 ```javascript
 import { Graph, Point } from '@antv/x6';
 
 Graph.registerConnectionStrategy('snap-by-distance', (args) => {
   const { sourcePoint, targetPoint, type, terminal } = args;
-  // 把端点对齐到 10px 网格
+  // Align the endpoint to a 10px grid
   const aligned = new Point(targetPoint.x, targetPoint.y).round();
   return { ...terminal, x: aligned.x, y: aligned.y };
 });
 ```
 
-## Line（线段）
+## Line
 
-源码：`src/geometry/line.ts`。
+Source code: `src/geometry/line.ts`.
 
-### 创建
+### Creation
 
 ```javascript
 import { Line, Point } from '@antv/x6';
 
 new Line(0, 0, 100, 100);                       // (x1, y1, x2, y2)
-new Line({ x: 0, y: 0 }, { x: 100, y: 100 });   // 两个 PointLike
+new Line({ x: 0, y: 0 }, { x: 100, y: 100 });   // Two PointLike objects
 ```
 
-### 常用方法
+### Common Methods
 
 ```javascript
 const l = new Line(0, 0, 100, 0);
 
 l.start;                            // Point(0,0)
 l.end;                              // Point(100,0)
-l.center;                           // Point(50,0)（getter）
-l.getCenter();                      // 同上
+l.center;                           // Point(50,0) (getter)
+l.getCenter();                      // Same as above
 
 l.length();                         // 100
-l.angle();                          // 0（与 X 轴正方向夹角，度数）
+l.angle();                          // 0 (angle with the positive X-axis, in degrees)
 l.vector();                         // Point(100, 0)
 
-l.pointAt(0.5);                     // Point(50, 0)，0~1 比例
-l.pointAtLength(30);                // Point(30, 0)，按像素长度
+l.pointAt(0.5);                     // Point(50, 0), ratio 0~1
+l.pointAtLength(30);                // Point(30, 0), by pixel length
 
 l.containsPoint({ x: 50, y: 0 });   // true
 l.intersect(new Line(50, -10, 50, 10));  // [Point(50, 0)]
@@ -164,11 +164,11 @@ l.clone();
 l.equals(other);
 ```
 
-## Rectangle（矩形 / BBox，最常用）
+## Rectangle (Rectangle / BBox, Most Commonly Used)
 
-源码：`src/geometry/rectangle.ts`。多数 X6 API（`cell.getBBox()`、`node.getBBox()`、`graph.getContentBBox()`）返回的就是 `Rectangle`。
+Source code: `src/geometry/rectangle.ts`. Most X6 APIs (`cell.getBBox()`, `node.getBBox()`, `graph.getContentBBox()`) return a `Rectangle`.
 
-### 创建
+### Creation
 
 ```javascript
 import { Rectangle } from '@antv/x6';
@@ -180,7 +180,7 @@ Rectangle.create([10, 20, 100, 60]);
 Rectangle.fromEllipse(ellipse);
 ```
 
-### 中心 / 边角 / 尺寸
+### Center / Corner / Size
 
 ```javascript
 const r = new Rectangle(10, 20, 100, 60);
@@ -189,7 +189,7 @@ r.getCenter();           // Point(60, 50)
 r.getCenterX();          // 60
 r.getCenterY();          // 50
 r.getOrigin();           // Point(10, 20)
-r.getCorner();           // Point(110, 80) 右下
+r.getCorner();           // Point(110, 80) Bottom-right
 r.getTopLeft();
 r.getTopRight();
 r.getBottomLeft();
@@ -201,85 +201,85 @@ r.getRightMiddle();
 r.toJSON();              // { x, y, width, height }
 ```
 
-### 几何变换
+### Geometric Transformations
 
 ```javascript
 r.translate(5, 5);
-r.scale(2, 2);                                  // 第三参数 origin 默认 (0,0)
-r.rotate(45);                                   // 围绕中心旋转，返回旋转后的 BBox
-r.rotate90();                                   // 90° 旋转（专用快捷）
-r.inflate(10);                                  // 向四周膨胀 10px
+r.scale(2, 2);                                  // The third parameter origin defaults to (0,0)
+r.rotate(45);                                   // Rotate around the center, return the rotated BBox
+r.rotate90();                                   // 90° rotation (special shortcut)
+r.inflate(10);                                  // Expand 10px in all directions
 r.inflate(10, 20);                              // x +10, y +20
-r.normalize();                                  // 把负宽 / 负高翻正
+r.normalize();                                  // Convert negative width/height to positive
 r.round(2);
 ```
 
-### 判断
+### Judgment
 
 ```javascript
 r.containsPoint(50, 50);
 r.containsPoint({ x: 50, y: 50 });
 r.containsRect(other);
-r.intersectsWithLine(line);                      // 返回交点数组 | null
-r.intersectsWithRect(other);                     // 返回相交 Rectangle | null
-r.intersectsWithLineFromCenterToPoint(target);   // 从中心到 target 的射线与边的交点
+r.intersectsWithLine(line);                      // Returns intersection array | null
+r.intersectsWithRect(other);                     // Returns intersecting Rectangle | null
+r.intersectsWithLineFromCenterToPoint(target);   // Intersection of the ray from center to target with the edge
 r.equals(other);
 r.clone();
 ```
 
-### 典型场景：判断节点是否在画布可视区内
+### Typical Scenario: Determining if a Node is Within the Canvas Visible Area
 
 ```javascript
 import { Rectangle } from '@antv/x6';
 
-const viewport = Rectangle.create(graph.getGraphArea());  // 当前视口
+const viewport = Rectangle.create(graph.getGraphArea());  // Current viewport
 const visibleNodes = graph.getNodes().filter((n) => {
   return viewport.intersectsWithRect(n.getBBox()) != null;
 });
 ```
 
-## Ellipse（椭圆）
+## Ellipse
 
-源码：`src/geometry/ellipse.ts`。
+Source code: `src/geometry/ellipse.ts`.
 
 ```javascript
 import { Ellipse, Rectangle } from '@antv/x6';
 
 new Ellipse(centerX, centerY, semiAxisA, semiAxisB);
-Ellipse.fromRect(rect);              // 从内切矩形
+Ellipse.fromRect(rect);              // from inscribed rectangle
 
 const e = new Ellipse(50, 50, 40, 20);
-e.bbox();                            // 外接矩形 Rectangle
+e.bbox();                            // bounding box Rectangle
 e.center();                          // Point(50, 50)
 e.containsPoint({ x: 50, y: 50 });   // true
-e.intersectionWithLine(line);        // 与线段的交点
-e.tangentTheta(point);               // 切线角度
+e.intersectionWithLine(line);        // intersection with line segment
+e.tangentTheta(point);               // tangent angle
 e.clone();
 ```
 
-## Polyline（多段折线）
+## Polyline
 
-源码：`src/geometry/polyline.ts`。
+Source code: `src/geometry/polyline.ts`.
 
 ```javascript
 import { Polyline, Point } from '@antv/x6';
 
 const pl = new Polyline([new Point(0, 0), new Point(50, 50), new Point(100, 0)]);
-// 也支持 PointLike[] / [number, number][]
+// Also supports PointLike[] / [number, number][]
 new Polyline([[0, 0], [50, 50], [100, 0]]);
 new Polyline([{x:0,y:0}, {x:50,y:50}, {x:100,y:0}]);
 
-pl.length();                         // 折线总长度
-pl.pointAt(0.5);                     // 比例定位
-pl.pointAtLength(60);                // 按长度定位
-pl.bbox();                           // 外接 Rectangle
-pl.simplify();                       // 去掉共线点
+pl.length();                         // Total length of the polyline
+pl.pointAt(0.5);                     // Proportional positioning
+pl.pointAtLength(60);                // Positioning by length
+pl.bbox();                           // Bounding Rectangle
+pl.simplify();                       // Remove collinear points
 pl.clone();
 ```
 
-## Path / Curve（SVG 路径与三次贝塞尔）
+## Path / Curve (SVG Path and Cubic Bezier)
 
-源码：`src/geometry/path/*` 与 `src/geometry/curve.ts`。
+Source code: `src/geometry/path/*` and `src/geometry/curve.ts`.
 
 ```javascript
 import { Path, Curve } from '@antv/x6';
@@ -292,12 +292,12 @@ path
   .curveTo(80, 120, 20, 120, 0, 100)
   .close();
 
-path.length();                       // 弧长（近似）
-path.bbox();                         // 外接矩形
-path.pointAtLength(50);              // 沿路径取点
-path.serialize();                    // 输出标准 SVG d 字符串
+path.length();                       // Arc length (approximate)
+path.bbox();                         // Bounding box
+path.pointAtLength(50);              // Point at length along path
+path.serialize();                    // Output standard SVG d string
 
-// 三次贝塞尔
+// Cubic Bezier
 const c = new Curve(
   { x: 0, y: 0 },
   { x: 30, y: 100 },
@@ -306,13 +306,13 @@ const c = new Curve(
 );
 c.pointAt(0.5);
 c.length();
-c.divide(0.5);                       // 切割成两段
+c.divide(0.5);                       // Split into two segments
 ```
 
-Path 在自定义 connector / marker 中非常常用：
+Path is commonly used in custom connectors / markers:
 
 ```javascript
-// 自定义 connector
+// Custom connector
 import { Graph, Path, Point } from '@antv/x6';
 
 Graph.registerConnector('curve-connector', (sourcePoint, targetPoint) => {
@@ -327,26 +327,26 @@ Graph.registerConnector('curve-connector', (sourcePoint, targetPoint) => {
 }, true);
 ```
 
-## util（数值工具）
+## util (Numerical Utilities)
 
-源码：`src/geometry/util.ts`，不通过 `Geometry` 类名导出，需要从 `@antv/x6` 顶层引用：
+Source code: `src/geometry/util.ts`, not exported via the `Geometry` class name, needs to be imported from the top-level of `@antv/x6`:
 
 ```javascript
 import { round, random, clamp, snapToGrid, containsPoint, squaredLength } from '@antv/x6';
 
 round(3.14159, 2);                    // 3.14
 random();                             // 0~1
-random(10);                           // 0~10 整数
-random(5, 15);                        // 5~15 整数
+random(10);                           // 0~10 integer
+random(5, 15);                        // 5~15 integer
 clamp(150, 0, 100);                   // 100
 snapToGrid(73, 10);                   // 70
 containsPoint({ x:0, y:0, width:100, height:100 }, { x: 50, y: 50 });  // true
 squaredLength({ x:0, y:0 }, { x:3, y:4 });   // 25
 ```
 
-> `snapToGrid` 在实现"鼠标拖拽对齐网格"功能时极为常用。
+> `snapToGrid` is extremely common when implementing the "mouse drag alignment to grid" feature.
 
-## 端到端示例：用 geometry 工具实现"节点与边居中对齐"按钮
+## End-to-End Example: Implementing a "Center Nodes and Edges" Button Using the Geometry Tool
 
 ```javascript
 import { Graph, Rectangle, Point } from '@antv/x6';
@@ -358,73 +358,73 @@ const graph = new Graph({
   mousewheel: { enabled: true, modifiers: 'ctrl' },
 });
 
-// 添加示例内容
+// Add sample content
 const a = graph.addNode({ shape: 'rect', x: 40,  y: 40,  width: 80, height: 40, label: 'A' });
 const b = graph.addNode({ shape: 'rect', x: 320, y: 220, width: 80, height: 40, label: 'B' });
 graph.addEdge({ source: a, target: b });
 
 graph.centerContent();
 
-// 业务方法：把所有节点中心对齐到画布水平中线
+// Business method: Align all node centers to the horizontal centerline of the canvas
 function centerHorizontally() {
   const area = Rectangle.create(graph.getGraphArea());
   const cy = area.getCenterY();
   graph.getNodes().forEach((node) => {
     const bbox = node.getBBox();
-    const newY = cy - bbox.height / 2 - area.y; // 转换为节点坐标
+    const newY = cy - bbox.height / 2 - area.y; // Convert to node coordinates
     node.position(node.position().x, newY);
   });
 }
 
-// 调用方式：
+// Usage:
 // centerHorizontally();
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 把度数当弧度传给 Point.rotate
+### ❌ Passing Degrees as Radians to Point.rotate
 
 ```javascript
-// 错误：rotate 接受的是「度数」
-new Point(10, 0).rotate(Math.PI / 2);   // 实际只旋转 1.57°
+// Error: rotate accepts "degrees"
+new Point(10, 0).rotate(Math.PI / 2);   // Actually rotates only 1.57°
 
-// 正确
+// Correct
 new Point(10, 0).rotate(90);
-// 或者从弧度转换
+// Or convert from radians
 import { Angle } from '@antv/x6';
 new Point(10, 0).rotate(Angle.toDeg(Math.PI / 2));
 ```
 
-### ❌ 把 Geometry 对象当 DOM 用
+### ❌ Treating Geometry Objects as DOM Elements
 
 ```javascript
-// 错误：Rectangle 只是数学对象，没有 DOM 引用
+// Error: Rectangle is a mathematical object without DOM reference
 const r = new Rectangle(0, 0, 100, 100);
 r.style.background = 'red';            // ❌ TypeError
 
-// 正确：要给画布元素加样式，请用 cell.attr(...) 或 cell.setProp(...)
+// Correct: To style canvas elements, use cell.attr(...) or cell.setProp(...)
 node.attr('body/fill', 'red');
 ```
 
-### ❌ 修改 Rectangle 实例属性后忘了同步回 cell
+### ❌ Forgot to Sync Back to Cell After Modifying Rectangle Instance Properties
 
 ```javascript
-// 错误：node.getBBox() 返回的是新的 Rectangle 拷贝，修改它不会影响节点
+// Error: node.getBBox() returns a new Rectangle copy, modifying it does not affect the node
 const bbox = node.getBBox();
-bbox.x += 50;                          // ❌ 节点位置没变
+bbox.x += 50;                          // ❌ Node position remains unchanged
 
-// 正确：通过节点 API
+// Correct: Use node API
 node.translate(50, 0);
-// 或
+// Or
 node.position(node.position().x + 50, node.position().y);
 ```
 
-### ❌ 用 `snapToGrid` 时把 gridSize 写成 0
+### ❌ Setting `gridSize` to 0 when using `snapToGrid`
 
 ```javascript
-// 错误：会得到 NaN
+// Error: Will result in NaN
 snapToGrid(73, 0);
 
-// 正确：grid 必须 > 0
+// Correct: grid must be > 0
 snapToGrid(73, graph.getGridSize() || 10);
 ```

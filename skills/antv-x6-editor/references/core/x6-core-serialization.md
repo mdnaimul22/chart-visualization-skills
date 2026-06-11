@@ -1,25 +1,25 @@
 ---
 id: "x6-core-serialization"
-title: "X6 数据序列化与持久化"
+title: "X6 Data Serialization and Persistence"
 description: |
-  X6 图数据的导入导出、JSON 序列化、清空与重载。
-  包含 toJSON/fromJSON/clearCells 等方法的使用。
+  Importing, exporting, JSON serialization, clearing, and reloading of X6 graph data.
+  Includes usage of methods such as toJSON/fromJSON/clearCells.
 
 library: "x6"
 version: "3.x"
 category: "core"
 subcategory: "serialization"
 tags:
-  - "序列化"
+  - "serialization"
   - "toJSON"
   - "fromJSON"
   - "clearCells"
-  - "导入"
-  - "导出"
-  - "持久化"
-  - "数据"
-  - "保存"
-  - "加载"
+  - "import"
+  - "export"
+  - "persistence"
+  - "data"
+  - "save"
+  - "load"
 
 related:
   - "x6-core-graph-init"
@@ -27,34 +27,34 @@ related:
   - "x6-core-edge"
 
 use_cases:
-  - "保存画布数据到后端"
-  - "从后端加载图数据"
-  - "清空画布重新加载"
-  - "批量导入节点和边"
+  - "Save canvas data to the backend"
+  - "Load graph data from the backend"
+  - "Clear the canvas and reload"
+  - "Batch import nodes and edges"
 
 anti_patterns:
-  - "不要手动构造 cells 数组的内部字段"
-  - "不要在 fromJSON 后再次 addNode 已存在的节点"
+  - "Do not manually construct internal fields of the cells array"
+  - "Do not addNode existing nodes again after fromJSON"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 导出数据
+## Export Data
 
 ```javascript
-// 导出整个画布数据
+// Export the entire canvas data
 const data = graph.toJSON();
-// 返回格式: { cells: [...] }
-// cells 包含所有节点和边的完整配置
+// Return format: { cells: [...] }
+// cells contains the complete configuration of all nodes and edges
 
 console.log(JSON.stringify(data));
 ```
 
-## 导入数据
+## Importing Data
 
 ```javascript
-// 方式1：fromJSON 加载完整数据（会清空已有内容）
+// Method 1: Load complete data using fromJSON (clears existing content)
 graph.fromJSON({
   nodes: [
     { id: 'node1', shape: 'rect', x: 40, y: 40, width: 100, height: 40, label: 'Node 1' },
@@ -65,34 +65,34 @@ graph.fromJSON({
   ],
 });
 
-// 方式2：加载 toJSON 导出的数据
+// Method 2: Load data exported using toJSON
 const savedData = graph.toJSON();
-// ... 稍后 ...
+// ... later ...
 graph.fromJSON(savedData);
 ```
 
-## 清空画布
+## Clear Canvas
 
 ```javascript
-// 清空所有节点和边
+// Clear all nodes and edges
 graph.clearCells();
 
-// 清空后重新加载
+// Reload after clearing
 graph.clearCells();
 graph.fromJSON(newData);
 ```
 
-## 批量操作
+## Batch Operations
 
 ```javascript
-// 批量添加
+// Batch Addition
 const nodes = [
   { shape: 'rect', x: 40, y: 40, width: 100, height: 40, label: 'A' },
   { shape: 'rect', x: 200, y: 40, width: 100, height: 40, label: 'B' },
 ];
 nodes.forEach(config => graph.addNode(config));
 
-// 冻结画布避免频繁重绘（性能优化）
+// Freeze the canvas to avoid frequent repainting (performance optimization)
 graph.freeze();
 for (let i = 0; i < 100; i++) {
   graph.addNode({ shape: 'rect', x: (i % 10) * 110, y: Math.floor(i / 10) * 70, width: 90, height: 40 });
@@ -100,58 +100,58 @@ for (let i = 0; i < 100; i++) {
 graph.unfreeze();
 ```
 
-## 获取元素
+## Get Elements
 
 ```javascript
-// 获取所有元素（节点 + 边）
+// Get all elements (nodes + edges)
 const allCells = graph.getCells();
 
-// 仅获取节点
+// Get only nodes
 const allNodes = graph.getNodes();
 
-// 仅获取边
+// Get only edges
 const allEdges = graph.getEdges();
 
-// 通过 ID 获取
+// Get by ID
 const cell = graph.getCellById('node1');
 
-// 获取相邻节点
+// Get neighboring nodes
 const neighbors = graph.getNeighbors(node);
 
-// 获取连接的边
+// Get connected edges
 const connectedEdges = graph.getConnectedEdges(node);
 ```
 
-## 删除元素
+## Remove Elements
 
 ```javascript
-// 删除单个节点（连带的边也会被删除）
+// Remove a single node (associated edges will also be removed)
 graph.removeNode('node1');
-// 或
+// or
 graph.removeCell(node);
 
-// 删除单个边
+// Remove a single edge
 graph.removeEdge('edge1');
 
-// 批量删除
+// Batch removal
 graph.removeCells([node1, node2, edge1]);
 ```
 
-## 销毁画布
+## Destroy Canvas
 
 ```javascript
-// 销毁实例，释放所有资源和事件
+// Destroy the instance, release all resources and events
 graph.dispose();
 ```
 
-## 完整持久化示例
+## Full Persistence Example
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({ container: 'container', background: { color: '#F2F7FA' } });
 
-// 加载数据
+// Load data
 const initialData = {
   nodes: [
     { id: 'start', shape: 'rect', x: 40, y: 80, width: 100, height: 40, label: 'Start',
@@ -166,13 +166,13 @@ const initialData = {
 
 graph.fromJSON(initialData);
 
-// 保存
+// Save
 function save() {
   const data = graph.toJSON();
   localStorage.setItem('graph-data', JSON.stringify(data));
 }
 
-// 加载
+// Load
 function load() {
   const raw = localStorage.getItem('graph-data');
   if (raw) {
@@ -181,12 +181,12 @@ function load() {
 }
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误1：使用 toJSON 导出的数据直接传给 fromJSON 导致报错
+### Error 1: Directly Passing Data Exported by toJSON to fromJSON Causes an Error
 
 ```javascript
-// ❌ 错误示例：直接使用 toJSON 返回值加载数据
+// ❌ Incorrect Example: Directly Using the Return Value of toJSON to Load Data
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'node1', shape: 'rect', label: 'Node 1', x: 40, y: 40, width: 80, height: 40 },
@@ -194,50 +194,50 @@ graph.fromJSON([
   { id: 'edge1', source: 'node1', target: 'node2', label: 'Edge' }
 ]);
 
-const exportedData = graph.toJSON(); // 返回 { cells: [...] }
-// 下面这行会报错：The `shape` should be specified when creating a node/edge instance
+const exportedData = graph.toJSON(); // Returns { cells: [...] }
+// The following line will throw an error: The `shape` should be specified when creating a node/edge instance
 graph2.fromJSON(exportedData); 
 ```
 
 ```javascript
-// ✅ 正确做法：使用 toJSON 返回值中的 cells 字段
+// ✅ Correct Approach: Using the cells Field from the toJSON Return Value
 const exportedData = graph.toJSON();
-graph2.fromJSON(exportedData.cells); // 注意这里传的是 cells 数组
+graph2.fromJSON(exportedData.cells); // Note: Pass the cells array here
 
-// 或者使用完整结构
+// Or use the complete structure
 graph2.fromJSON({ nodes: exportedData.cells.filter(c => c.shape), edges: exportedData.cells.filter(c => !c.shape) });
 ```
 
-### 错误2：节点或边缺少必要的 shape 字段
+### Error 2: Missing Required `shape` Field in Nodes or Edges
 
 ```javascript
-// ❌ 错误示例：缺少 shape 字段
+// ❌ Incorrect Example: Missing `shape` field
 graph.fromJSON([
-  { id: 'node1', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' }, // 缺少 shape
-  { source: 'node1', target: 'node2' } // 缺少 shape，默认为 edge
+  { id: 'node1', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' }, // Missing shape
+  { source: 'node1', target: 'node2' } // Missing shape, defaults to edge
 ]);
 ```
 
 ```javascript
-// ✅ 正确做法：确保每个节点都有 shape 字段
+// ✅ Correct Approach: Ensure each node has a `shape` field
 graph.fromJSON([
   { id: 'node1', shape: 'rect', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' },
   { id: 'edge1', shape: 'edge', source: 'node1', target: 'node2' }
 ]);
 ```
 
-### 错误3：节点引用不存在的目标节点
+### Error 3: Edge References Non-Existent Target Node
 
 ```javascript
-// ❌ 错误示例：边引用了不存在的节点
+// ❌ Incorrect Example: Edge references a non-existent node
 graph.fromJSON([
   { id: 'node1', shape: 'rect', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' },
-  { source: 'node1', target: 'node2' } // node2 不存在
+  { source: 'node1', target: 'node2' } // node2 does not exist
 ]);
 ```
 
 ```javascript
-// ✅ 正确做法：确保所有被引用的节点都已定义
+// ✅ Correct Approach: Ensure all referenced nodes are defined
 graph.fromJSON([
   { id: 'node1', shape: 'rect', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' },
   { id: 'node2', shape: 'rect', x: 240, y: 40, width: 80, height: 40, label: 'Node 2' },
@@ -245,20 +245,20 @@ graph.fromJSON([
 ]);
 ```
 
-### 错误4：使用 fromJSON 时传递数组格式但未正确区分节点和边
+### Error 4: Passing Array Format with fromJSON Without Properly Distinguishing Nodes and Edges
 
 ```javascript
-// ❌ 错误示例：混合节点和边在同一个数组中传递给 fromJSON
+// ❌ Incorrect Example: Mixing nodes and edges in the same array passed to fromJSON
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'source', shape: 'rect', label: 'Source', x: 40, y: 40, width: 100, height: 40 },
   { id: 'target', shape: 'rect', label: 'Target', x: 200, y: 160, width: 100, height: 40 },
-  { source: 'source', target: 'target' } // 边没有 shape 字段，会被误认为是节点
+  { source: 'source', target: 'target' } // Edge without shape field, mistakenly treated as a node
 ]);
 ```
 
 ```javascript
-// ✅ 正确做法：使用对象结构分别指定 nodes 和 edges
+// ✅ Correct Approach: Using object structure to separately specify nodes and edges
 graph.fromJSON({
   nodes: [
     { id: 'source', shape: 'rect', label: 'Source', x: 40, y: 40, width: 100, height: 40 },
@@ -270,44 +270,44 @@ graph.fromJSON({
 });
 ```
 
-### 错误5：toJSON 返回值结构误解
+### Error 5: Misunderstanding the Structure of toJSON Return Value
 
 ```javascript
-// ❌ 错误示例：将 toJSON 返回值直接用于 fromJSON
+// ❌ Incorrect Example: Directly using the toJSON return value for fromJSON
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'node1', shape: 'rect', x: 40, y: 40, width: 80, height: 40, label: 'Node 1' },
   { source: 'node1', target: 'node2' }
 ]);
 
-const data = graph.toJSON(); // 返回 { cells: [...] }
-// 下面这行会报错：The `shape` should be specified when creating a node/edge instance
+const data = graph.toJSON(); // Returns { cells: [...] }
+// The following line will throw an error: The `shape` should be specified when creating a node/edge instance
 graph2.fromJSON(data);
 ```
 
 ```javascript
-// ✅ 正确做法：使用 toJSON 返回值中的 cells 字段
+// ✅ Correct Approach: Using the cells field from the toJSON return value
 const data = graph.toJSON();
-graph2.fromJSON(data.cells); // 注意这里传的是 cells 数组
+graph2.fromJSON(data.cells); // Note that the cells array is passed here
 
-// 或者使用完整结构
+// Or use the complete structure
 graph2.fromJSON({ nodes: data.cells.filter(c => c.shape), edges: data.cells.filter(c => !c.shape) });
 ```
 
-### 错误6：使用 fromJSON 加载节点和边时未正确处理边的 shape 字段
+### Error 6: Incorrect Handling of the `shape` Field for Edges When Loading Nodes and Edges Using `fromJSON`
 
 ```javascript
-// ❌ 错误示例：边缺少 shape 字段
+// ❌ Incorrect Example: Edge Missing `shape` Field
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'source', shape: 'rect', label: 'Source', x: 40, y: 40, width: 100, height: 40 },
   { id: 'target', shape: 'rect', label: 'Target', x: 200, y: 160, width: 100, height: 40 },
-  { source: 'source', target: 'target' } // 边没有 shape 字段，会被误认为是节点
+  { source: 'source', target: 'target' } // Edge without `shape` field, mistakenly treated as a node
 ]);
 ```
 
 ```javascript
-// ✅ 正确做法：确保边有 shape 字段
+// ✅ Correct Approach: Ensure Edge Has the `shape` Field
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'source', shape: 'rect', label: 'Source', x: 40, y: 40, width: 100, height: 40 },
@@ -316,20 +316,20 @@ graph.fromJSON([
 ]);
 ```
 
-### 错误7：使用 fromJSON 加载节点和边时传递数组格式但未正确区分节点和边
+### Error 7: Passing array format without correctly distinguishing nodes and edges when using fromJSON to load nodes and edges
 
 ```javascript
-// ❌ 错误示例：混合节点和边在同一个数组中传递给 fromJSON
+// ❌ Incorrect Example: Mixing nodes and edges in the same array passed to fromJSON
 const graph = new Graph({ container: 'container' });
 graph.fromJSON([
   { id: 'source', shape: 'rect', label: 'Source', x: 40, y: 40, width: 100, height: 40 },
   { id: 'target', shape: 'rect', label: 'Target', x: 200, y: 160, width: 100, height: 40 },
-  { source: 'source', target: 'target' } // 边没有 shape 字段，会被误认为是节点
+  { source: 'source', target: 'target' } // Edge without shape field, mistakenly treated as a node
 ]);
 ```
 
 ```javascript
-// ✅ 正确做法：使用对象结构分别指定 nodes 和 edges
+// ✅ Correct Approach: Using object structure to separately specify nodes and edges
 const graph = new Graph({ container: 'container' });
 graph.fromJSON({
   nodes: [

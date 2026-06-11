@@ -1,8 +1,8 @@
 ---
 id: "x6-plugin-transform"
-title: "X6 Transform 缩放旋转插件"
+title: "X6 Transform Scaling and Rotation Plugin"
 description: |
-  Transform 插件为节点提供可视化的缩放（Resize）和旋转（Rotate）操控手柄，用户可以通过拖拽手柄调整节点尺寸和角度。
+  The Transform plugin provides visual scaling (Resize) and rotation (Rotate) handles for nodes, allowing users to adjust node size and angle by dragging the handles.
 
 library: "x6"
 version: "3.x"
@@ -10,12 +10,12 @@ category: "plugins"
 subcategory: "transform"
 tags:
   - "Transform"
-  - "缩放"
-  - "旋转"
+  - "Scaling"
+  - "Rotation"
   - "resize"
   - "rotate"
-  - "拖拽调整大小"
-  - "节点变换"
+  - "Drag-to-resize"
+  - "Node transformation"
 
 related:
   - "x6-plugins"
@@ -23,17 +23,17 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "拖拽调整节点大小"
-  - "旋转节点角度"
-  - "限制节点最小/最大尺寸"
-  - "保持节点宽高比缩放"
-  - "禁止特定节点缩放"
+  - "Drag-to-resize nodes"
+  - "Rotate node angles"
+  - "Restrict node minimum/maximum size"
+  - "Maintain node aspect ratio during scaling"
+  - "Disable scaling for specific nodes"
 
 difficulty: "beginner"
 completeness: "full"
 ---
 
-## 基本用法
+## Basic Usage
 
 ```javascript
 import { Graph, Transform } from '@antv/x6';
@@ -45,75 +45,75 @@ graph.use(new Transform({
 }));
 ```
 
-## 配置项
+## Configuration Options
 
-### resizing 配置
+### resizing Configuration
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean \| function | `false` | 是否启用缩放，可传函数按节点过滤 |
-| `minWidth` | number | `0` | 最小宽度 |
-| `maxWidth` | number | `Infinity` | 最大宽度 |
-| `minHeight` | number | `0` | 最小高度 |
-| `maxHeight` | number | `Infinity` | 最大高度 |
-| `orthogonalResizing` | boolean | `true` | 是否启用正交缩放（仅水平/垂直方向） |
-| `restrictedResizing` | boolean \| number | `false` | 限制缩放范围（`true` 限制在画布内，数字为边距） |
-| `preserveAspectRatio` | boolean | `false` | 是否保持宽高比 |
-| `allowReverse` | boolean | `true` | 达到最小尺寸时是否允许控制点反转 |
-| `autoScrollOnResizing` | boolean | `true` | 缩放时是否自动滚动画布 |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean \| function | `false` | Whether to enable resizing, can pass a function to filter nodes |
+| `minWidth` | number | `0` | Minimum width |
+| `maxWidth` | number | `Infinity` | Maximum width |
+| `minHeight` | number | `0` | Minimum height |
+| `maxHeight` | number | `Infinity` | Maximum height |
+| `orthogonalResizing` | boolean | `true` | Whether to enable orthogonal resizing (only horizontal/vertical directions) |
+| `restrictedResizing` | boolean \| number | `false` | Restrict resizing range (`true` restricts within the canvas, number represents margin) |
+| `preserveAspectRatio` | boolean | `false` | Whether to maintain aspect ratio |
+| `allowReverse` | boolean | `true` | Whether to allow control points to reverse when reaching minimum size |
+| `autoScrollOnResizing` | boolean | `true` | Whether to automatically scroll the canvas during resizing |
 
-### rotating 配置
+### rotating Configuration
 
-| 配置项 | 类型 | 默认值 | 说明 |
-|--------|------|--------|------|
-| `enabled` | boolean \| function | `false` | 是否启用旋转，可传函数按节点过滤 |
-| `rotateGrid` | number | `15` | 旋转角度步进（每次吸附到的角度间隔） |
+| Configuration Item | Type | Default Value | Description |
+|--------------------|------|---------------|-------------|
+| `enabled` | boolean \| function | `false` | Whether to enable rotation, can pass a function to filter nodes |
+| `rotateGrid` | number | `15` | Rotation angle step (interval of angles snapped to each time) |
 
-## 编程式 API
+## Programmatic API
 
 ```javascript
-// 为指定节点创建变换控件
+// Create a transform widget for the specified node
 graph.createTransformWidget(node);
 
-// 清除所有变换控件
+// Clear all transform widgets
 graph.clearTransformWidgets();
 ```
 
-## 事件监听
+## Event Listening
 
 ```javascript
-// 缩放开始
+// Resize start
 graph.on('node:resize', ({ node, e }) => {
-  console.log('开始缩放:', node.id);
+  console.log('Resize started:', node.id);
 });
 
-// 缩放中
+// Resizing
 graph.on('node:resizing', ({ node, e }) => {
-  console.log('缩放中:', node.getSize());
+  console.log('Resizing:', node.getSize());
 });
 
-// 缩放结束
+// Resize end
 graph.on('node:resized', ({ node, e }) => {
-  console.log('缩放完成:', node.getSize());
+  console.log('Resize completed:', node.getSize());
 });
 
-// 旋转开始
+// Rotate start
 graph.on('node:rotate', ({ node, e }) => {
-  console.log('开始旋转:', node.id);
+  console.log('Rotation started:', node.id);
 });
 
-// 旋转中
+// Rotating
 graph.on('node:rotating', ({ node, e }) => {
-  console.log('旋转中:', node.getAngle());
+  console.log('Rotating:', node.getAngle());
 });
 
-// 旋转结束
+// Rotate end
 graph.on('node:rotated', ({ node, e }) => {
-  console.log('旋转完成:', node.getAngle());
+  console.log('Rotation completed:', node.getAngle());
 });
 ```
 
-## 完整示例：限制尺寸 + 保持比例
+## Complete Example: Size Constraints + Aspect Ratio Preservation
 
 ```javascript
 import { Graph, Transform } from '@antv/x6';
@@ -132,11 +132,11 @@ graph.use(new Transform({
     minHeight: 40,
     maxWidth: 400,
     maxHeight: 400,
-    preserveAspectRatio: true,  // 保持宽高比
+    preserveAspectRatio: true,  // Preserve aspect ratio
   },
   rotating: {
     enabled: true,
-    rotateGrid: 15,  // 每 15° 吸附
+    rotateGrid: 15,  // Snap every 15°
   },
 }));
 
@@ -150,33 +150,33 @@ graph.addNode({
 });
 ```
 
-## 按节点过滤
+## Filter by Node
 
-`enabled` 可以传入函数，按节点判断是否允许缩放/旋转：
+`enabled` can accept a function to determine whether scaling/rotation is allowed based on the node:
 
 ```javascript
 graph.use(new Transform({
   resizing: {
     enabled(node) {
-      // 仅 shape 为 'rect' 的节点可缩放
+      // Only nodes with shape 'rect' can be scaled
       return node.shape === 'rect';
     },
   },
   rotating: {
     enabled(node) {
-      // 通过节点 data 控制是否可旋转
+      // Control rotatability through node data
       return node.getData()?.rotatable !== false;
     },
   },
 }));
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 在构造函数中配置 resizing/rotating
+### ❌ Configuring resizing/rotating in the constructor
 
 ```javascript
-// 错误：3.x 不支持
+// Error: Not supported in 3.x
 const graph = new Graph({
   container: 'container',
   resizing: { enabled: true },   // ❌
@@ -185,7 +185,7 @@ const graph = new Graph({
 ```
 
 ```javascript
-// 正确
+// Correct
 import { Graph, Transform } from '@antv/x6';
 const graph = new Graph({ container: 'container' });
 graph.use(new Transform({
@@ -194,14 +194,14 @@ graph.use(new Transform({
 }));  // ✅
 ```
 
-### ❌ 混淆 Transform 和 CSS transform
+### ❌ Confusing Transform with CSS transform
 
 ```javascript
-// 错误：不要用 CSS 变换来旋转 X6 节点
-node.attr('body/transform', 'rotate(45deg)');  // ❌ 不生效且可能破坏布局
+// Incorrect: Do not use CSS transform to rotate X6 nodes
+node.attr('body/transform', 'rotate(45deg)');  // ❌ Ineffective and may break layout
 ```
 
 ```javascript
-// 正确：使用 node API 设置角度
-node.rotate(45);  // ✅ 通过 X6 模型层旋转
+// Correct: Use node API to set the angle
+node.rotate(45);  // ✅ Rotate through the X6 model layer
 ```

@@ -1,8 +1,8 @@
 ---
 id: "x6-pattern-uml"
-title: "X6 UML 类图"
+title: "X6 UML Class Diagram"
 description: |
-  使用 X6 构建 UML 类图的最佳实践：类/接口节点、属性和方法分区、继承/实现/关联/依赖等关系连线。
+  Best practices for building UML class diagrams using X6: class/interface nodes, attribute and method partitioning, inheritance/implementation/association/dependency relationship connections.
 
 library: "x6"
 version: "3.x"
@@ -23,33 +23,33 @@ related:
   - "x6-intermediate-custom-edge"
 
 use_cases:
-  - "软件架构类图"
-  - "类继承关系展示"
-  - "接口实现关系"
-  - "类属性和方法展示"
+  - "Software architecture class diagram"
+  - "Class inheritance relationship display"
+  - "Interface implementation relationship"
+  - "Class attribute and method display"
 
 difficulty: "advanced"
 completeness: "full"
 ---
 
-## 场景特点
+## Scene Characteristics
 
-UML 类图的核心特征：
-- **分区节点**：每个类节点分为三部分——类名、属性列表、方法列表
-- **关系连线**：继承（空心三角箭头）、实现（虚线+空心三角）、关联（实线）、依赖（虚线箭头）
-- **可见性标记**：`+`（public）、`-`（private）、`#`（protected）
-- **端口连接**：连线通常连接到节点四边
+Core features of UML class diagrams:
+- **Partitioned Nodes**: Each class node is divided into three parts—class name, attribute list, method list
+- **Relationship Lines**: Inheritance (hollow triangle arrow), Implementation (dashed line + hollow triangle), Association (solid line), Dependency (dashed arrow)
+- **Visibility Markers**: `+` (public), `-` (private), `#` (protected)
+- **Port Connections**: Lines typically connect to the four sides of nodes
 
-## 注册 UML 类节点
+## Register UML Class Node
 
-使用 `Shape.HTML.register()` 注册自定义 HTML 节点实现分区效果：
+Use `Shape.HTML.register()` to register a custom HTML node to implement a partitioned effect:
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
 
 Shape.HTML.register({
   shape: 'uml-class',
-  effect: ['data'],  // data 变化时重新渲染
+  effect: ['data'],  // Re-render when data changes
   html(node) {
     const data = node.getData() || {};
     const { className, stereotype, attributes, methods } = data;
@@ -57,7 +57,7 @@ Shape.HTML.register({
     const div = document.createElement('div');
     div.style.cssText = 'width:100%;height:100%;border:2px solid #333;background:#fff;font-family:monospace;font-size:12px;display:flex;flex-direction:column;overflow:hidden;';
 
-    // 类名区
+    // Class Name Section
     const header = document.createElement('div');
     header.style.cssText = 'padding:6px 8px;text-align:center;font-weight:bold;border-bottom:1px solid #333;';
     if (stereotype) {
@@ -66,7 +66,7 @@ Shape.HTML.register({
     header.innerHTML += `<div>${className || 'ClassName'}</div>`;
     div.appendChild(header);
 
-    // 属性区
+    // Attributes Section
     const attrSection = document.createElement('div');
     attrSection.style.cssText = 'padding:4px 8px;border-bottom:1px solid #333;min-height:20px;';
     (attributes || []).forEach((attr) => {
@@ -76,7 +76,7 @@ Shape.HTML.register({
     });
     div.appendChild(attrSection);
 
-    // 方法区
+    // Methods Section
     const methodSection = document.createElement('div');
     methodSection.style.cssText = 'padding:4px 8px;min-height:20px;';
     (methods || []).forEach((method) => {
@@ -91,7 +91,7 @@ Shape.HTML.register({
 });
 ```
 
-## 完整示例：类继承关系
+## Complete Example: Class Inheritance
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
@@ -110,7 +110,7 @@ const graph = new Graph({
   },
 });
 
-// 基类 Animal
+// Base Class Animal
 const animal = graph.addNode({
   shape: 'uml-class',
   x: 300,
@@ -132,7 +132,7 @@ const animal = graph.addNode({
   },
 });
 
-// 子类 Dog
+// Subclass Dog
 const dog = graph.addNode({
   shape: 'uml-class',
   x: 100,
@@ -151,7 +151,7 @@ const dog = graph.addNode({
   },
 });
 
-// 子类 Cat
+// Subclass Cat
 const cat = graph.addNode({
   shape: 'uml-class',
   x: 450,
@@ -170,7 +170,7 @@ const cat = graph.addNode({
   },
 });
 
-// 接口
+// Interface
 const serializable = graph.addNode({
   shape: 'uml-class',
   x: 600,
@@ -188,7 +188,7 @@ const serializable = graph.addNode({
   },
 });
 
-// 继承关系：空心三角箭头
+// Inheritance Relationship: Hollow Triangle Arrow
 graph.addEdge({
   source: dog.id,
   target: animal.id,
@@ -229,7 +229,7 @@ graph.addEdge({
   connector: 'rounded',
 });
 
-// 实现关系：虚线 + 空心三角箭头
+// Implementation Relationship: Dashed Line + Hollow Triangle Arrow
 graph.addEdge({
   source: cat.id,
   target: serializable.id,
@@ -252,9 +252,9 @@ graph.addEdge({
 });
 ```
 
-## 使用 SVG 节点替代方案
+## Using SVG Node Alternatives
 
-如果不需要 HTML 的复杂渲染，可以用纯 SVG markup 实现简化版：
+If complex HTML rendering is not required, a simplified version can be achieved using pure SVG markup:
 
 ```javascript
 Graph.registerNode('uml-class-simple', {
@@ -275,21 +275,21 @@ Graph.registerNode('uml-class-simple', {
 }, true);
 ```
 
-## UML 关系连线样式
+## UML Relationship Line Styles
 
-| 关系类型 | 线条样式 | 箭头 |
+| Relationship Type | Line Style | Arrow |
 |----------|----------|------|
-| 继承（Generalization） | 实线 | 空心三角 |
-| 实现（Realization） | 虚线 `strokeDasharray: '8 4'` | 空心三角 |
-| 关联（Association） | 实线 | 普通箭头或无 |
-| 依赖（Dependency） | 虚线 `strokeDasharray: '5 3'` | 开放箭头 `'classic'` |
-| 聚合（Aggregation） | 实线 | 空心菱形 |
-| 组合（Composition） | 实线 | 实心菱形 |
+| Generalization | Solid Line | Hollow Triangle |
+| Realization | Dashed Line `strokeDasharray: '8 4'` | Hollow Triangle |
+| Association | Solid Line | Normal Arrow or None |
+| Dependency | Dashed Line `strokeDasharray: '5 3'` | Open Arrow `'classic'` |
+| Aggregation | Solid Line | Hollow Diamond |
+| Composition | Solid Line | Solid Diamond |
 
-### 自定义菱形箭头（聚合/组合）
+### Custom Diamond Arrow (Aggregation/Combination)
 
 ```javascript
-// 空心菱形（聚合）
+// Hollow Diamond (Aggregation)
 targetMarker: {
   name: 'path',
   d: 'M 0 0 L 8 -5 L 16 0 L 8 5 Z',
@@ -298,7 +298,7 @@ targetMarker: {
   strokeWidth: 1.5,
 }
 
-// 实心菱形（组合）
+// Solid Diamond (Combination)
 targetMarker: {
   name: 'path',
   d: 'M 0 0 L 8 -5 L 16 0 L 8 5 Z',
@@ -308,10 +308,10 @@ targetMarker: {
 }
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **HTML 节点用于复杂分区**：属性、方法列表多时用 HTML 节点灵活度更高
-2. **正交路由**：`router: 'orth'` 保持连线整齐
-3. **节点高度动态计算**：`height = headerHeight + attrCount * lineHeight + methodCount * lineHeight`
-4. **继承箭头朝向父类**：source 是子类，target 是父类
-5. **虚线表示弱关系**：实现、依赖用虚线，继承、关联用实线
+1. **HTML Nodes for Complex Partitions**: Use HTML nodes for higher flexibility when dealing with multiple attributes and method lists.
+2. **Orthogonal Routing**: Use `router: 'orth'` to keep connections neat.
+3. **Dynamic Node Height Calculation**: `height = headerHeight + attrCount * lineHeight + methodCount * lineHeight`
+4. **Arrows Pointing to Parent Classes**: Source is the subclass, target is the parent class.
+5. **Dashed Lines for Weak Relationships**: Use dashed lines for implementation and dependency, solid lines for inheritance and association.

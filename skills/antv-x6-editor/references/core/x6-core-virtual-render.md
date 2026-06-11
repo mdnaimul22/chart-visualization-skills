@@ -1,9 +1,9 @@
 ---
 id: "x6-core-virtual-render"
-title: "X6 虚拟渲染"
+title: "X6 Virtual Rendering"
 description: |
-  X6 虚拟渲染机制，仅渲染可视区域内的节点和边，适用于大数据量场景（数千节点以上）。
-  通过 virtual 配置项启用，可设置缓冲边距，支持与 Scroller 插件联动。
+  X6 virtual rendering mechanism, rendering only nodes and edges within the visible area, suitable for large data scenarios (thousands of nodes or more).
+  Enabled via the virtual configuration option, it allows setting buffer margins and supports integration with the Scroller plugin.
 
 library: "x6"
 version: "3.x"
@@ -11,11 +11,11 @@ category: "core"
 subcategory: "virtual-render"
 tags:
   - "virtual"
-  - "虚拟渲染"
-  - "性能"
-  - "大数据量"
-  - "可视区域"
-  - "按需渲染"
+  - "virtual rendering"
+  - "performance"
+  - "large data"
+  - "visible area"
+  - "on-demand rendering"
   - "performance"
 
 related:
@@ -23,27 +23,27 @@ related:
   - "x6-plugins"
 
 use_cases:
-  - "渲染数千个节点的大型图"
-  - "优化画布滚动/缩放时的性能"
-  - "减少 DOM 节点数量"
-  - "大型流程图/血缘图的性能优化"
+  - "Rendering large graphs with thousands of nodes"
+  - "Optimizing performance during canvas scrolling/zooming"
+  - "Reducing the number of DOM nodes"
+  - "Performance optimization for large flowcharts/lineage graphs"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 核心概念
+## Core Concepts
 
-**虚拟渲染（Virtual Render）** 是一种性能优化策略：只渲染当前可视区域（加上缓冲边距）内的节点和边，视口外的元素不创建 DOM 节点。当用户平移、缩放画布时，自动更新渲染区域。
+**Virtual Render** is a performance optimization strategy: only nodes and edges within the currently visible area (plus a buffer margin) are rendered, and elements outside the viewport are not created as DOM nodes. When the user pans or zooms the canvas, the rendering area is automatically updated.
 
-适用场景：
-- 节点数量超过 500 个
-- 大型血缘图、组织架构图、网络拓扑图
-- 需要流畅的画布交互体验
+Applicable Scenarios:
+- Number of nodes exceeds 500
+- Large lineage graphs, organizational charts, network topology diagrams
+- Requires smooth canvas interaction experience
 
-## 配置方式
+## Configuration Methods
 
-### 基础启用
+### Basic Enablement
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -52,11 +52,11 @@ const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  virtual: true,  // 启用虚拟渲染，使用默认缓冲边距 120px
+  virtual: true,  // Enable virtual rendering with default buffer margin of 120px
 });
 ```
 
-### 自定义缓冲边距
+### Custom Buffer Margin
 
 ```javascript
 const graph = new Graph({
@@ -65,35 +65,35 @@ const graph = new Graph({
   height: 600,
   virtual: {
     enabled: true,
-    margin: 200,  // 可视区域外 200px 范围内的元素也会被渲染
+    margin: 200,  // Elements within 200px outside the visible area will also be rendered
   },
 });
 ```
 
-## 配置项
+## Configuration Options
 
-### virtual 参数
+### virtual Parameter
 
-| 类型 | 说明 |
+| Type | Description |
 |------|------|
-| `boolean` | `true` 启用，`false` 禁用 |
-| `{ enabled?: boolean; margin?: number }` | 对象形式，可配置缓冲边距 |
+| `boolean` | `true` to enable, `false` to disable |
+| `{ enabled?: boolean; margin?: number }` | Object form, allows configuring buffer margin |
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `enabled` | `boolean` | `true` | 是否启用 |
-| `margin` | `number` | `120` | 可视区域外的缓冲边距（像素），越大预渲染范围越大，滚动时白屏概率越低 |
+| `enabled` | `boolean` | `true` | Whether to enable |
+| `margin` | `number` | `120` | Buffer margin outside the visible area (in pixels), the larger the value, the larger the pre-rendering range, and the lower the probability of white screen during scrolling |
 
-## API 方法
+## API Methods
 
-| 方法 | 说明 |
-|------|------|
-| `graph.enableVirtualRender()` | 动态启用虚拟渲染 |
-| `graph.disableVirtualRender()` | 动态禁用虚拟渲染（恢复全量渲染） |
+| Method | Description |
+|--------|-------------|
+| `graph.enableVirtualRender()` | Dynamically enable virtual rendering |
+| `graph.disableVirtualRender()` | Dynamically disable virtual rendering (revert to full rendering) |
 
-## 与 Scroller 联动
+## Interacting with Scroller
 
-虚拟渲染会自动监听 Scroller 插件的滚动事件，在滚动时更新渲染区域：
+Virtual rendering automatically listens to the scroll events of the Scroller plugin and updates the rendering area during scrolling:
 
 ```javascript
 import { Graph, Scroller } from '@antv/x6';
@@ -105,11 +105,11 @@ const graph = new Graph({
   virtual: { enabled: true, margin: 150 },
 });
 
-// Scroller 注册后，虚拟渲染自动绑定其滚动事件
+// After Scroller is registered, virtual rendering automatically binds to its scroll events
 graph.use(new Scroller({ enabled: true }));
 ```
 
-## 完整示例：大数据量场景
+## Complete Example: Large Data Volume Scenario
 
 ```javascript
 import { Graph, Scroller, MiniMap } from '@antv/x6';
@@ -126,7 +126,7 @@ const graph = new Graph({
 graph.use(new Scroller({ enabled: true }));
 graph.use(new MiniMap({ enabled: true, container: document.getElementById('minimap-container') }));
 
-// 批量添加大量节点
+// Batch add a large number of nodes
 const nodes = [];
 const edges = [];
 
@@ -144,7 +144,7 @@ for (let i = 0; i < 2000; i++) {
     attrs: { body: { fill: '#fff', stroke: '#8f8f8f', rx: 4, ry: 4 } },
   });
 
-  // 添加横向边
+  // Add horizontal edges
   if (col > 0) {
     edges.push({
       source: `node-${i - 1}`,
@@ -158,10 +158,10 @@ graph.fromJSON({ nodes, edges });
 graph.centerContent();
 ```
 
-## 动态切换
+## Dynamic Switching
 
 ```javascript
-// 数据量小时禁用虚拟渲染（避免频繁计算可视区域的开销）
+// Disable virtual rendering when the data volume is small (to avoid the overhead of frequent visible area calculations)
 if (nodeCount < 200) {
   graph.disableVirtualRender();
 } else {
@@ -169,47 +169,47 @@ if (nodeCount < 200) {
 }
 ```
 
-## 注意事项
+## Notes
 
-1. **缓冲边距选择**：margin 过小会导致快速滚动时出现白屏（元素未及时渲染）；过大则降低优化效果。推荐 100~200px。
-2. **与 async 配合**：虚拟渲染通常搭配 `async: true`（默认值）使用，异步渲染进一步提升大数据量下的初始化性能。
-3. **事件监听**：虚拟渲染会监听 `translate`（平移）、`scale`（缩放）、`resize`（容器尺寸变化）事件和 Scroller 的滚动事件来更新渲染区域。
-4. **不影响数据**：虚拟渲染只影响 DOM 渲染，`graph.toJSON()` 仍导出所有元素数据。
+1. **Buffer Margin Selection**: A margin that is too small can cause a white screen during fast scrolling (elements not rendered in time); a margin that is too large reduces the optimization effect. A margin of 100~200px is recommended.
+2. **Use with async**: Virtual rendering is typically used with `async: true` (default value). Asynchronous rendering further improves initialization performance with large datasets.
+3. **Event Listening**: Virtual rendering listens to `translate` (panning), `scale` (zooming), `resize` (container size changes) events, and the Scroller's scroll event to update the rendering area.
+4. **No Impact on Data**: Virtual rendering only affects DOM rendering. `graph.toJSON()` still exports all element data.
 
-## 常见错误
+## Common Errors
 
-### ❌ 大数据量不启用虚拟渲染导致卡顿
+### ❌ Large Data Volume Without Virtual Rendering Causes Lag
 
 ```javascript
-// 问题：2000 个节点全量渲染，DOM 过多导致交互卡顿
+// Problem: Full rendering of 2000 nodes, excessive DOM elements lead to interaction lag
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
 });
-// 添加 2000 个节点... 画布非常卡
+// Add 2000 nodes... Canvas is very laggy
 
-// 解决：启用虚拟渲染
+// Solution: Enable virtual rendering
 const graph = new Graph({
   container: 'container',
   width: 800,
   height: 600,
-  virtual: true,  // ✅ 只渲染可视区域
+  virtual: true,  // ✅ Render only the visible area
 });
 ```
 
-### ❌ 小数据量启用虚拟渲染增加额外开销
+### ❌ Enabling Virtual Rendering for Small Datasets Increases Overhead
 
 ```javascript
-// 不推荐：只有 20 个节点时无需虚拟渲染
+// Not recommended: Virtual rendering is unnecessary for only 20 nodes
 const graph = new Graph({
   container: 'container',
-  virtual: { enabled: true, margin: 200 }, // 计算可视区域的开销大于渲染节省的时间
+  virtual: { enabled: true, margin: 200 }, // Calculating the visible area overhead exceeds the time saved by rendering
 });
 
-// 推荐：数据量小时不启用
+// Recommended: Do not enable for small datasets
 const graph = new Graph({
   container: 'container',
-  // virtual 默认 false
+  // virtual defaults to false
 });
 ```

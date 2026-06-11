@@ -1,8 +1,8 @@
 ---
 id: "x6-core-edge-anchor"
-title: "X6 边锚点（Edge Anchor）"
+title: "X6 Edge Anchor"
 description: |
-  边锚点决定边连接到另一条边时的锚定位置。当边的 source 或 target 是另一条边时，edge anchor 用于确定连接点在目标边上的位置。
+  Edge anchors determine the anchoring position when an edge connects to another edge. When the source or target of an edge is another edge, the edge anchor is used to determine the connection point on the target edge.
 library: x6
 version: 3.x
 category: "core"
@@ -13,24 +13,24 @@ tags:
   - connection
 ---
 
-# 边锚点（Edge Anchor）
+# Edge Anchor (边锚点)
 
-## 概述
+## Overview
 
-当一条边的 `source` 或 `target` 连接到另一条边（而非节点）时，需要使用 Edge Anchor 来确定连接点在目标边路径上的位置。
+When an edge's `source` or `target` connects to another edge (rather than a node), an Edge Anchor is required to determine the connection point's position on the target edge's path.
 
-## 内置 Edge Anchor 类型
+## Built-in Edge Anchor Types
 
-| 类型 | 说明 | 参数 |
-|------|------|------|
-| `ratio` | 按比例定位（默认 0.5 即中点） | `{ ratio: 0~1 }` |
-| `length` | 按绝对长度定位（从起点开始的像素距离） | `{ length: number }` |
-| `closest` | 距参考点最近的路径点 | 无 |
-| `orth` | 正交方向上距参考点最近的交点 | `{ fallbackAt?: number \| string }` |
+| Type | Description | Parameters |
+|------|-------------|------------|
+| `ratio` | Position by ratio (default 0.5, i.e., midpoint) | `{ ratio: 0~1 }` |
+| `length` | Position by absolute length (pixel distance from the start point) | `{ length: number }` |
+| `closest` | The path point closest to the reference point | None |
+| `orth` | The intersection point closest to the reference point in the orthogonal direction | `{ fallbackAt?: number \| string }` |
 
-## 使用方式
+## Usage
 
-边锚点通过 `source.anchor` 或 `target.anchor` 配置：
+Edge anchors are configured via `source.anchor` or `target.anchor`:
 
 ```javascript
 graph.addEdge({
@@ -39,11 +39,11 @@ graph.addEdge({
 });
 ```
 
-## 各类型详解
+## Detailed Explanation of Each Type
 
-### ratio — 按比例定位
+### ratio — Positioning by Ratio
 
-在目标边路径上按比例取点，`ratio` 为 0~1 之间的小数（默认 0.5 即中点）。如果 ratio > 1，会自动除以 100 作为百分比处理。
+Select a point on the target edge path by ratio, where `ratio` is a decimal between 0 and 1 (default is 0.5, i.e., the midpoint). If `ratio` > 1, it will be automatically divided by 100 and treated as a percentage.
 
 ```javascript
 graph.addEdge({
@@ -52,9 +52,9 @@ graph.addEdge({
 });
 ```
 
-### length — 按绝对长度定位
+### length — Positioning by Absolute Length
 
-从目标边起点沿路径前进指定像素距离的点（默认 20px）。
+A point located at a specified pixel distance (default 20px) along the path from the start of the target edge.
 
 ```javascript
 graph.addEdge({
@@ -63,9 +63,9 @@ graph.addEdge({
 });
 ```
 
-### closest — 最近点
+### closest — Closest Point
 
-取目标边路径上距离参考点最近的点。
+Retrieves the point on the target edge path that is closest to the reference point.
 
 ```javascript
 graph.addEdge({
@@ -74,9 +74,9 @@ graph.addEdge({
 });
 ```
 
-### orth — 正交锚点
+### orth — Orthogonal Anchor
 
-从参考点出发，沿水平或垂直方向与目标边路径的交点。如果找不到正交交点，回退到 `fallbackAt` 指定的位置（比例或长度），若未设置 `fallbackAt` 则回退到 `closest`。
+Starting from the reference point, find the intersection along the horizontal or vertical direction with the target edge path. If no orthogonal intersection is found, fall back to the position specified by `fallbackAt` (ratio or length). If `fallbackAt` is not set, fall back to `closest`.
 
 ```javascript
 graph.addEdge({
@@ -85,46 +85,46 @@ graph.addEdge({
 });
 ```
 
-## 与 Node Anchor 的区别
+## Difference from Node Anchor
 
-| 特性 | Node Anchor | Edge Anchor |
+| Feature | Node Anchor | Edge Anchor |
 |------|-------------|-------------|
-| 适用场景 | 边连接到节点 | 边连接到另一条边 |
-| 配置位置 | `source/target.anchor` | 同左（自动根据目标类型选用） |
-| 内置类型 | center、top、bottom、left、right 等 | ratio、length、closest、orth |
+| Applicable Scenario | Edge connects to a node | Edge connects to another edge |
+| Configuration Location | `source/target.anchor` | Same as left (automatically selected based on target type) |
+| Built-in Types | center, top, bottom, left, right, etc. | ratio, length, closest, orth |
 
-## 自定义 Edge Anchor
+## Custom Edge Anchor
 
-通过 `Graph.registerEdgeAnchor` 注册自定义边锚点：
+Register a custom edge anchor point using `Graph.registerEdgeAnchor`:
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 Graph.registerEdgeAnchor('myAnchor', (view, magnet, ref, options, type) => {
-  // view: EdgeView 实例
-  // ref: 参考点
-  // 返回 Point 对象
+  // view: EdgeView instance
+  // ref: reference point
+  // Returns a Point object
   const ratio = options.ratio || 0.5;
   return view.getPointAtRatio(ratio);
 });
 
-// 使用
+// Usage
 graph.addEdge({
   source: { cell: edge1.id, anchor: { name: 'myAnchor', args: { ratio: 0.7 } } },
   target: targetNode,
 });
 ```
 
-## 常见错误
+## Common Errors
 
 ```javascript
-// ❌ 错误：edge anchor 只在边连边时生效，节点连接请用 node anchor
+// ❌ Error: Edge anchor only works when connecting edges, use node anchor for node connections
 graph.addEdge({
-  source: { cell: node.id, anchor: { name: 'ratio' } }, // ratio 是 edge anchor，不适用于节点
+  source: { cell: node.id, anchor: { name: 'ratio' } }, // ratio is an edge anchor, not applicable to nodes
   target: targetNode,
 });
 
-// ✅ 正确：节点连接使用 node anchor
+// ✅ Correct: Use node anchor for node connections
 graph.addEdge({
   source: { cell: node.id, anchor: { name: 'center' } },
   target: targetNode,

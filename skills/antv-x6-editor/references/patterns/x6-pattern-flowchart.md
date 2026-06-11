@@ -1,24 +1,24 @@
 ---
 id: "x6-pattern-flowchart"
-title: "X6 流程图"
+title: "X6 Flowchart"
 description: |
-  使用 X6 构建流程图、审批流的最佳实践。
-  包含开始/结束/判断/步骤节点、条件分支、泳道图等模式。
+  Best practices for building flowcharts and approval workflows using X6.
+  Includes start/end/decision/step nodes, conditional branches, swimlane diagrams, and more.
 
 library: "x6"
 version: "3.x"
 category: "patterns"
 subcategory: "flowchart"
 tags:
-  - "流程图"
-  - "审批流"
-  - "条件分支"
-  - "菱形"
-  - "判断"
-  - "泳道"
-  - "开始结束"
-  - "状态机"
-  - "组织架构"
+  - "flowchart"
+  - "approval workflow"
+  - "conditional branch"
+  - "diamond"
+  - "decision"
+  - "swimlane"
+  - "start/end"
+  - "state machine"
+  - "organizational structure"
 
 related:
   - "x6-core-node"
@@ -27,27 +27,27 @@ related:
   - "x6-plugins"
 
 use_cases:
-  - "创建审批流程图"
-  - "绘制业务流程"
-  - "条件判断分支"
-  - "泳道图跨部门协作"
-  - "状态机图"
-  - "组织架构图"
+  - "Create approval flowcharts"
+  - "Draw business process diagrams"
+  - "Conditional decision branches"
+  - "Swimlane diagrams for cross-departmental collaboration"
+  - "State machine diagrams"
+  - "Organizational structure charts"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 流程图核心元素
+## Flowchart Core Elements
 
-| 元素 | 形状 | 用途 |
+| Element | Shape | Purpose |
 |------|------|------|
-| 开始/结束 | 圆形 / 圆角矩形 | 流程起止点 |
-| 步骤 | 矩形 | 处理步骤 |
-| 判断 | 菱形 | 条件分支 |
-| 连线 | 带箭头的边 | 流程方向 |
+| Start/End | Circle / Rounded Rectangle | Flow start/end point |
+| Step | Rectangle | Processing step |
+| Decision | Diamond | Conditional branch |
+| Connector | Arrowed edge | Flow direction |
 
-## 注册菱形节点
+## Register Diamond Node
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -68,7 +68,7 @@ Graph.registerNode('diamond', {
 }, true);
 ```
 
-## 完整流程图示例
+## Complete Flowchart Example
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -84,24 +84,24 @@ const graph = new Graph({
   grid: { visible: true },
 });
 
-// 开始
+// Start
 const start = graph.addNode({
   shape: 'circle', x: 220, y: 20, width: 60, height: 60, label: 'Start',
   attrs: { body: { stroke: '#52c41a', strokeWidth: 2, fill: '#f6ffed' } },
 });
 
-// 步骤
+// Step
 const submit = graph.addNode({
   shape: 'rect', x: 200, y: 120, width: 100, height: 40, label: 'Submit',
   attrs: { body: { stroke: '#8f8f8f', strokeWidth: 1, fill: '#fff', rx: 6, ry: 6 } },
 });
 
-// 判断
+// Decision
 const review = graph.addNode({
   shape: 'diamond', x: 210, y: 200, label: 'Approve?',
 });
 
-// 分支结果
+// Branch Results
 const approved = graph.addNode({
   shape: 'rect', x: 80, y: 320, width: 100, height: 40, label: 'Approved',
   attrs: { body: { stroke: '#52c41a', strokeWidth: 2, fill: '#f6ffed', rx: 6, ry: 6 } },
@@ -112,13 +112,13 @@ const rejected = graph.addNode({
   attrs: { body: { stroke: '#f5222d', strokeWidth: 2, fill: '#fff1f0', rx: 6, ry: 6 } },
 });
 
-// 结束
+// End
 const end = graph.addNode({
   shape: 'circle', x: 220, y: 420, width: 60, height: 60, label: 'End',
   attrs: { body: { stroke: '#f5222d', strokeWidth: 2, fill: '#fff1f0' } },
 });
 
-// 连线
+// Connections
 const edgeStyle = { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } };
 graph.addEdge({ source: start, target: submit, attrs: edgeStyle });
 graph.addEdge({ source: submit, target: review, attrs: edgeStyle });
@@ -130,9 +130,9 @@ graph.addEdge({ source: rejected, target: end, attrs: edgeStyle });
 graph.centerContent();
 ```
 
-## 状态机图
+## State Machine Diagram
 
-适用于订单状态、工作流状态等：
+Suitable for order status, workflow status, etc.:
 
 ```javascript
 const graph = new Graph({ container: 'container', background: { color: '#F2F7FA' } });
@@ -163,9 +163,9 @@ transitions.forEach(t => {
 });
 ```
 
-## 组织架构图
+## Organizational Structure Diagram
 
-使用 `router: 'orth'` 实现树形层级：
+Use `router: 'orth'` to implement tree hierarchy:
 
 ```javascript
 const graph = new Graph({
@@ -205,14 +205,14 @@ graph.addEdge({ source: cfo, target: acc, ...edgeStyle });
 graph.addEdge({ source: cfo, target: fin, ...edgeStyle });
 ```
 
-## 泳道图
+## Swimlane Diagram
 
-用大矩形节点作为泳道背景，流程节点置于不同泳道中：
+Using large rectangular nodes as the swimlane background, process nodes are placed in different swimlanes:
 
 ```javascript
 const graph = new Graph({ container: 'container', background: { color: '#F2F7FA' } });
 
-// 泳道背景（低 zIndex）
+// Swimlane background (low zIndex)
 graph.addNode({
   shape: 'rect', x: 20, y: 20, width: 560, height: 100, zIndex: 0,
   label: 'Sales Dept',
@@ -225,7 +225,7 @@ graph.addNode({
   attrs: { body: { fill: '#f6ffed', stroke: '#b7eb8f', rx: 6, ry: 6 }, label: { refX: 30, refY: 0.5, textAnchor: 'start' } },
 });
 
-// 流程节点（高 zIndex）
+// Process nodes (high zIndex)
 const task1 = graph.addNode({
   shape: 'rect', x: 140, y: 50, width: 100, height: 36, zIndex: 2, label: 'Receive',
   attrs: { body: { stroke: '#8f8f8f', strokeWidth: 1, fill: '#fff', rx: 4, ry: 4 } },
@@ -239,13 +239,13 @@ const task2 = graph.addNode({
 graph.addEdge({ source: task1, target: task2, router: 'orth', connector: 'rounded', attrs: { line: { stroke: '#8f8f8f', strokeWidth: 1, targetMarker: 'classic' } } });
 ```
 
-## 使用 fromJSON 批量加载图数据
+## Using fromJSON to Batch Load Graph Data
 
-使用 `graph.fromJSON` 方法可以一次性加载完整的图结构，包括节点和边。注意以下几点：
+The `graph.fromJSON` method can load a complete graph structure, including nodes and edges, in one go. Note the following points:
 
-- `container` 必须是 DOM 元素或其 ID 字符串
-- 不需要手动调用 `graph.render()`，`fromJSON` 会自动渲染
-- 节点和边的属性应符合 X6 规范
+- `container` must be a DOM element or its ID string
+- No need to manually call `graph.render()`, `fromJSON` will automatically render
+- Node and edge attributes should comply with X6 specifications
 
 ```javascript
 import { Graph } from '@antv/x6';
@@ -317,77 +317,77 @@ graph.fromJSON({
 graph.centerContent();
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误：graph.render is not a function
+### Error: graph.render is not a function
 
-**错误代码示例：**
+**Error Code Example:**
 
 ```javascript
 const graph = new Graph({ container: 'container' });
 graph.fromJSON(data);
-graph.render(); // ❌ 错误：graph.render is not a function
+graph.render(); // ❌ Error: graph.render is not a function
 ```
 
-**原因分析：**
-X6 的 `Graph` 实例没有 `render` 方法。使用 `fromJSON` 加载数据后会自动渲染，无需手动调用。
+**Cause Analysis:**
+The `Graph` instance in X6 does not have a `render` method. After using `fromJSON` to load data, rendering occurs automatically, so manual invocation is unnecessary.
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
 const graph = new Graph({ container: 'container' });
-graph.fromJSON(data); // ✅ 正确：自动渲染
-// graph.centerContent(); // 可选：居中内容
+graph.fromJSON(data); // ✅ Correct: Automatic rendering
+// graph.centerContent(); // Optional: Center content
 ```
 
-### 错误：在代码中声明 `const container`
+### Error: Declaring `const container` in the Code
 
-**错误代码示例：**
+**Example of Incorrect Code:**
 
 ```javascript
-// ❌ 错误：重复声明 container 变量（运行环境已注入）
+// ❌ Error: Repeated declaration of the container variable (already injected by the runtime environment)
 const container = document.getElementById('container');
-const graph = new Graph({ container }); // 报错：Identifier 'container' has already been declared
+const graph = new Graph({ container }); // Error: Identifier 'container' has already been declared
 ```
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
-// ✅ 正确：直接使用字符串 'container'
+// ✅ Correct: Directly use the string 'container'
 const graph = new Graph({ container: 'container' });
 ```
 
-### 错误：节点或边属性格式不正确
+### Error: Incorrect Node or Edge Attribute Format
 
-**错误代码示例：**
+**Error Code Example:**
 
 ```javascript
-// 错误的边定义
+// Incorrect edge definition
 {
   id: 'edge1',
   source: 'node1',
   target: 'node2',
-  label: '连接' // ❌ 错误：label 应在 attrs 中定义或使用 labels 数组
+  label: '连接' // ❌ Error: label should be defined within attrs or use the labels array
 }
 ```
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
-// 正确的边定义
+// Correct edge definition
 {
   source: 'node1',
   target: 'node2',
-  label: '连接', // ✅ 在 fromJSON 中可以直接使用 label
+  label: '连接', // ✅ In fromJSON, label can be used directly
   attrs: {
     line: { stroke: '#8f8f8f', strokeWidth: 1 }
   }
 }
 ```
 
-### 错误：使用了 graph.render() 导致运行时报错
+### Error: Using graph.render() Causes Runtime Error
 
-**错误代码示例：**
+**Error Code Example:**
 
 ```javascript
 import { Graph } from '@antv/x6'
@@ -403,13 +403,13 @@ const data = {
 }
 
 graph.fromJSON(data)
-graph.render() // ❌ 错误：graph.render is not a function
+graph.render() // ❌ Error: graph.render is not a function
 ```
 
-**原因分析：**
-X6 Graph 实例没有 `render` 方法，调用会导致运行时错误。`fromJSON` 方法会自动完成图的渲染。
+**Root Cause Analysis:**
+The X6 Graph instance does not have a `render` method. Calling it results in a runtime error. The `fromJSON` method automatically handles graph rendering.
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
 import { Graph } from '@antv/x6'
@@ -419,21 +419,21 @@ const graph = new Graph({
   background: { color: '#F2F7FA' },
 })
 
-graph.fromJSON(data) // ✅ 正确：自动渲染
-graph.centerContent() // 可选：居中内容
+graph.fromJSON(data) // ✅ Correct: Automatic rendering
+graph.centerContent() // Optional: Center content
 ```
 
-### 错误：导入了不存在的模块或使用了不支持的插件
+### Error: Imported Non-existent Module or Used Unsupported Plugin
 
-**错误代码示例：**
+**Error Code Example:**
 
 ```javascript
-import { Graph, Shape, Addon } from '@antv/x6' // ❌ 错误：导入了不存在的模块
+import { Graph, Shape, Addon } from '@antv/x6' // ❌ Error: Imported non-existent module
 
 const graph = new Graph({
   container: 'container',
   plugins: [
-    new Addon.Selection({ // ❌ 错误：插件不支持或导入错误
+    new Addon.Selection({ // ❌ Error: Plugin not supported or incorrectly imported
       enabled: true,
       multiple: true,
       rubberband: true,
@@ -443,38 +443,37 @@ const graph = new Graph({
 })
 ```
 
-**原因分析：**
-X6 的模块结构中没有 `Shape` 和 `Addon` 模块。插件需要通过 `@antv/x6-plugin-*` 系列包引入。
+**Root Cause Analysis:**
+X6's module structure does not include `Shape` and `Addon` modules. Plugins must be imported via the `@antv/x6-plugin-*` series of packages.
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
 import { Graph } from '@antv/x6'
 
 const graph = new Graph({
   container: 'container',
-  // 插件需要通过独立包引入，如 @antv/x6-plugin-selection
+  // Plugins must be imported via separate packages, e.g., @antv/x6-plugin-selection
 })
 ```
 
-### 错误：使用了嵌套节点但未正确配置嵌套关系
+### Error: Nested Nodes Used Without Properly Configured Nesting Relationship
 
-**错误代码示例：**
+**Error Code Example:**
 
 ```javascript
 const parentNode = graph.addNode({ ... })
 const childNode = graph.addNode({ ... })
 
-parentNode.addChild(childNode) // ❌ 错误：未正确配置嵌套关系
+parentNode.addChild(childNode) // ❌ Error: Nesting relationship not properly configured
 ```
 
-**原因分析：**
-X6 中嵌套节点需要在创建时通过 `parent` 属性指定父节点，或通过 `embedding` 插件进行管理。
+**Root Cause Analysis:**
+In X6, nested nodes require specifying the parent node via the `parent` property during creation or managing them through the `embedding` plugin.
 
-**正确做法：**
+**Correct Approach:**
 
 ```javascript
 const parentNode = graph.addNode({ id: 'parent', ... })
-const childNode = graph.addNode({ parent: 'parent', ... }) // ✅ 正确：通过 parent 属性指定
+const childNode = graph.addNode({ parent: 'parent', ... }) // ✅ Correct: Specified via parent property
 ```
-</skill>

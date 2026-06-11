@@ -1,8 +1,8 @@
 ---
 id: "x6-core-attr-registry"
-title: "X6 自定义属性注册（Attr Registry）"
+title: "X6 Custom Attribute Registration (Attr Registry)"
 description: |
-  X6 的属性注册机制，用于扩展节点/边的 attrs 配置项。支持自定义 set、position、offset 三种属性处理器。
+  X6's attribute registration mechanism is used to extend the attrs configuration options for nodes/edges. It supports three types of custom attribute processors: set, position, and offset.
 library: x6
 version: 3.x
 category: "core"
@@ -13,35 +13,35 @@ tags:
   - attrs
 ---
 
-# 自定义属性注册（Attr Registry）
+# Custom Attribute Registration (Attr Registry)
 
-## 概述
+## Overview
 
-X6 通过属性注册表（Attr Registry）管理所有 `attrs` 中可使用的特殊属性。除了标准 SVG 属性（如 `fill`、`stroke`）会直接设置到 DOM 元素上外，X6 还内置了一系列高级属性（如 `refX`、`refWidth`、`connection` 等），并支持用户自定义注册新属性。
+X6 manages all special attributes available in `attrs` through the Attribute Registry (Attr Registry). In addition to standard SVG attributes (such as `fill`, `stroke`) that are directly applied to DOM elements, X6 also includes a set of advanced attributes (e.g., `refX`, `refWidth`, `connection`, etc.) and supports user-defined registration of new attributes.
 
-## 内置特殊属性
+## Built-in Special Properties
 
-### 相对定位属性（ref 系列）
+### Relative Positioning Attributes (ref Series)
 
-基于参考元素（通常是节点 body）的 BBox 进行相对定位和尺寸计算：
+Perform relative positioning and size calculations based on the BBox of a reference element (usually the node body):
 
-| 属性 | 说明 | 值范围 |
+| Attribute | Description | Value Range |
 |------|------|--------|
-| `ref` | 指定参考元素的选择器 | CSS 选择器字符串 |
-| `refX` | 相对 X 坐标 | 0~1 为百分比，其他为绝对偏移 |
-| `refY` | 相对 Y 坐标 | 同上 |
-| `refDx` | 相对于参考元素右侧的 X 偏移 | 像素值 |
-| `refDy` | 相对于参考元素底部的 Y 偏移 | 像素值 |
-| `refWidth` | 相对宽度 | 0~1 为百分比，其他为绝对调整 |
-| `refHeight` | 相对高度 | 同上 |
-| `refRx` | 相对圆角 rx | 0~1 为百分比 |
-| `refRy` | 相对圆角 ry | 同上 |
-| `refCx` | 相对圆心 cx | 0~1 为百分比 |
-| `refCy` | 相对圆心 cy | 同上 |
-| `refR` | 相对半径（内切） | 0~1 为百分比 |
-| `refRCircumscribed` | 相对半径（外接） | 0~1 为百分比 |
-| `refD` | 相对路径 d（缩放适配） | SVG path 字符串 |
-| `refPoints` | 相对多边形点（缩放适配） | 点坐标字符串 |
+| `ref` | Selector specifying the reference element | CSS selector string |
+| `refX` | Relative X coordinate | 0~1 for percentage, otherwise absolute offset |
+| `refY` | Relative Y coordinate | Same as above |
+| `refDx` | X offset relative to the right side of the reference element | Pixel value |
+| `refDy` | Y offset relative to the bottom of the reference element | Pixel value |
+| `refWidth` | Relative width | 0~1 for percentage, otherwise absolute adjustment |
+| `refHeight` | Relative height | Same as above |
+| `refRx` | Relative corner radius rx | 0~1 for percentage |
+| `refRy` | Relative corner radius ry | Same as above |
+| `refCx` | Relative center cx | 0~1 for percentage |
+| `refCy` | Relative center cy | Same as above |
+| `refR` | Relative radius (inscribed) | 0~1 for percentage |
+| `refRCircumscribed` | Relative radius (circumscribed) | 0~1 for percentage |
+| `refD` | Relative path d (scale adaptation) | SVG path string |
+| `refPoints` | Relative polygon points (scale adaptation) | Point coordinate string |
 
 ```javascript
 graph.addNode({
@@ -50,19 +50,19 @@ graph.addNode({
   attrs: {
     body: { fill: '#fff', stroke: '#333' },
     icon: {
-      ref: 'body',       // 参考 body 元素
-      refX: 0.5,         // 水平居中（50%）
-      refY: 0.5,         // 垂直居中（50%）
-      refWidth: 0.3,     // 宽度为 body 的 30%
-      refHeight: 0.3,    // 高度为 body 的 30%
+      ref: 'body',       // Reference body element
+      refX: 0.5,         // Horizontally centered (50%)
+      refY: 0.5,         // Vertically centered (50%)
+      refWidth: 0.3,     // Width is 30% of body
+      refHeight: 0.3,    // Height is 30% of body
     },
   },
 });
 ```
 
-### 渐变色属性
+### Gradient Color Properties
 
-`fill` 和 `stroke` 支持传入渐变对象，X6 会自动创建 SVG `<defs>` 中的渐变定义：
+`fill` and `stroke` support passing in gradient objects, and X6 will automatically create gradient definitions in the SVG `<defs>`:
 
 ```javascript
 attrs: {
@@ -78,17 +78,17 @@ attrs: {
 }
 ```
 
-### 边连线属性
+### Edge Connection Attributes
 
-仅在边（Edge）的 attrs 中有效：
+Only effective in the `attrs` of an Edge:
 
-| 属性 | 说明 |
-|------|------|
-| `connection` | 自动跟随边路径（设为 `true` 或 `{ stubs }` 对象） |
-| `atConnectionLength` | 沿边路径指定长度处定位（保持切线方向） |
-| `atConnectionRatio` | 沿边路径指定比例处定位（保持切线方向） |
-| `atConnectionLengthIgnoreGradient` | 沿路径定位但不旋转 |
-| `atConnectionRatioIgnoreGradient` | 沿路径比例定位但不旋转 |
+| Attribute | Description |
+|-----------|-------------|
+| `connection` | Automatically follow the edge path (set to `true` or `{ stubs }` object) |
+| `atConnectionLength` | Position at a specified length along the edge path (maintain tangent direction) |
+| `atConnectionRatio` | Position at a specified ratio along the edge path (maintain tangent direction) |
+| `atConnectionLengthIgnoreGradient` | Position along the path but do not rotate |
+| `atConnectionRatioIgnoreGradient` | Position at a ratio along the path but do not rotate |
 
 ```javascript
 graph.addEdge({
@@ -97,7 +97,7 @@ graph.addEdge({
   attrs: {
     line: { connection: true, stroke: '#333', strokeWidth: 2 },
     label: {
-      atConnectionRatio: 0.5,  // 标签定位在边的 50% 处
+      atConnectionRatio: 0.5,  // Label positioned at 50% of the edge
       text: 'Hello',
       textAnchor: 'middle',
       textVerticalAnchor: 'middle',
@@ -106,41 +106,41 @@ graph.addEdge({
 });
 ```
 
-### 其他内置属性
+### Other Built-in Attributes
 
-| 属性 | 说明 |
-|------|------|
-| `text` | 设置文本内容（支持多行、text-path 等高级排版） |
-| `textWrap` | 文本自动换行配置 |
-| `title` | 设置 SVG `<title>` 子元素（tooltip） |
-| `html` | 设置元素的 innerHTML |
-| `style` | 设置 CSS 样式对象（通过 `elem.style`） |
-| `filter` | SVG 滤镜（支持对象形式的快捷语法） |
+| Attribute | Description |
+|-----------|-------------|
+| `text` | Sets the text content (supports multi-line, text-path, and other advanced typesetting) |
+| `textWrap` | Text auto-wrap configuration |
+| `title` | Sets the SVG `<title>` child element (tooltip) |
+| `html` | Sets the element's innerHTML |
+| `style` | Sets the CSS style object (via `elem.style`) |
+| `filter` | SVG filter (supports object-based shorthand syntax) |
 
-## 自定义属性注册
+## Custom Attribute Registration
 
-### 注册 API
+### Register API
 
-通过 `Graph.registerAttr(name, definition)` 注册自定义属性：
+Register custom attributes using `Graph.registerAttr(name, definition)`:
 
 ```javascript
 import { Graph } from '@antv/x6';
 
 Graph.registerAttr('myAttr', {
-  // qualify: 判断是否应用此属性处理器（可选）
+  // qualify: Determine whether to apply this attribute processor (optional)
   qualify(value, { elem, attrs, cell, view }) {
     return typeof value === 'number';
   },
-  // set: 返回要设置的 SVG 属性对象
+  // set: Return the SVG attribute object to be set
   set(value, { elem, refBBox, cell, view }) {
     return { opacity: value / 100 };
   },
 });
 ```
 
-### 三种属性定义类型
+### Three Types of Attribute Definitions
 
-#### 1. Set 属性 — 计算并设置 SVG 属性
+#### 1. Set Attribute — Calculate and Set SVG Attributes
 
 ```javascript
 Graph.registerAttr('highlightWidth', {
@@ -148,7 +148,7 @@ Graph.registerAttr('highlightWidth', {
     return typeof value === 'number';
   },
   set(value, { refBBox }) {
-    // 返回要设置到 DOM 元素的属性
+    // Return the attributes to be set on the DOM element
     return {
       strokeWidth: value,
       stroke: value > 2 ? 'red' : '#333',
@@ -157,7 +157,7 @@ Graph.registerAttr('highlightWidth', {
 });
 ```
 
-#### 2. Position 属性 — 计算元素位置偏移
+#### 2. Position Attribute — Calculate Element Position Offset
 
 ```javascript
 Graph.registerAttr('centerInParent', {
@@ -173,7 +173,7 @@ Graph.registerAttr('centerInParent', {
 });
 ```
 
-#### 3. Offset 属性 — 计算额外位移
+#### 3. Offset Attribute — Calculate Additional Displacement
 
 ```javascript
 Graph.registerAttr('circularOffset', {
@@ -188,13 +188,13 @@ Graph.registerAttr('circularOffset', {
 });
 ```
 
-### qualify 函数
+### qualify Function
 
-`qualify` 用于判断属性值是否应该由此自定义处理器处理。如果返回 `false`，该属性会作为普通 SVG 属性直接设置到元素上。
+The `qualify` function is used to determine whether an attribute value should be processed by this custom handler. If it returns `false`, the attribute will be set directly on the element as a regular SVG attribute.
 
 ```javascript
 Graph.registerAttr('fill', {
-  // 只有当 fill 值是对象时才走渐变处理，字符串值直接作为 SVG fill
+  // Only process gradient handling when the fill value is an object; string values are directly set as SVG fill
   qualify(value) {
     return typeof value === 'object' && value !== null;
   },
@@ -204,12 +204,12 @@ Graph.registerAttr('fill', {
 });
 ```
 
-## 完整示例：自定义进度条属性
+## Complete Example: Customizing Progress Bar Attributes
 
 ```javascript
 import { Graph } from '@antv/x6';
 
-// 注册一个 progress 属性，根据百分比动态设置宽度和颜色
+// Register a 'progress' attribute to dynamically set width and color based on percentage
 Graph.registerAttr('progress', {
   qualify(value) {
     return typeof value === 'number';
@@ -242,22 +242,22 @@ graph.addNode({
 });
 ```
 
-## 常见错误
+## Common Errors
 
 ```javascript
-// ❌ 错误：refX/refY 使用像素值但期望百分比效果
+// ❌ Error: refX/refY uses pixel values but expects percentage effect
 attrs: { icon: { refX: 100, refY: 50 } }
-// 当 refX > 1 时，被视为绝对偏移（像素），不是百分比
+// When refX > 1, it is treated as an absolute offset (pixels), not a percentage
 
-// ✅ 正确：使用 0~1 的小数表示百分比
-attrs: { icon: { refX: 0.5, refY: 0.5 } }  // 居中
+// ✅ Correct: Use decimals between 0~1 to represent percentages
+attrs: { icon: { refX: 0.5, refY: 0.5 } }  // Centered
 
-// ❌ 错误：对非边元素使用 connection 属性
+// ❌ Error: Using connection property on non-edge elements
 graph.addNode({
-  attrs: { body: { connection: true } }  // connection 只对边有效
+  attrs: { body: { connection: true } }  // connection is only valid for edges
 });
 
-// ✅ 正确：connection 用于边的 attrs
+// ✅ Correct: connection is used in edge attrs
 graph.addEdge({
   attrs: { line: { connection: true, stroke: '#333' } },
 });

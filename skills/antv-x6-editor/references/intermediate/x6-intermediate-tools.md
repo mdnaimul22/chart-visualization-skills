@@ -1,20 +1,19 @@
 ---
 id: "x6-intermediate-tools"
-title: "X6 工具（Tools）"
+title: "X6 Tools"
 description: |
-  X6 节点和边的小工具配置指南。
-  包含内置工具（button、button-remove、boundary、vertices、segments、node-editor、edge-editor、arrowhead）及自定义工具。
+  Configuration guide for X6 node and edge tools.
+  Includes built-in tools (button, button-remove, boundary, vertices, segments, node-editor, edge-editor, arrowhead) and custom tools.
 
 library: "x6"
 version: "3.x"
 category: "intermediate"
 subcategory: "tools"
 tags:
-  - "工具"
   - "tools"
   - "button"
   - "button-remove"
-  - "删除按钮"
+  - "remove button"
   - "boundary"
   - "vertices"
   - "segments"
@@ -23,8 +22,8 @@ tags:
   - "arrowhead"
   - "source-arrowhead"
   - "target-arrowhead"
-  - "小工具"
-  - "交互"
+  - "tool"
+  - "interaction"
 
 related:
   - "x6-core-node"
@@ -32,27 +31,27 @@ related:
   - "x6-core-events"
 
 use_cases:
-  - "为节点添加删除按钮"
-  - "为边添加路径点编辑工具"
-  - "双击编辑节点/边文本"
-  - "拖拽修改边的起点或终点"
-  - "hover 时显示工具"
+  - "Add a remove button to a node"
+  - "Add a path point editing tool to an edge"
+  - "Double-click to edit node/edge text"
+  - "Drag to modify the start or end point of an edge"
+  - "Display tools on hover"
 
 anti_patterns:
-  - "不要忘记在 mouseleave 时移除动态添加的工具"
-  - "node-editor 不再需要传入 event 参数（2.8.0+）"
+  - "Do not forget to remove dynamically added tools on mouseleave"
+  - "node-editor no longer requires the event parameter (2.8.0+)"
 ---
 
-# X6 工具（Tools）
+# X6 Tools
 
-工具是渲染在节点/边上的小部件，用于增强交互能力，如删除按钮、路径点编辑、文本编辑等。
+Tools are widgets rendered on nodes/edges to enhance interactivity, such as delete buttons, path point editing, text editing, etc.
 
-## 添加工具
+## Add Tools
 
-### 创建时添加
+### Add on Creation
 
 ```javascript
-// 节点工具
+// Node tool
 graph.addNode({
   shape: 'rect',
   x: 40,
@@ -69,7 +68,7 @@ graph.addNode({
   ],
 });
 
-// 边工具
+// Edge tool
 graph.addEdge({
   source: node1,
   target: node2,
@@ -77,23 +76,23 @@ graph.addEdge({
 });
 ```
 
-### 动态添加/移除
+### Dynamically Add/Remove
 
 ```javascript
-// 添加工具
+// Add tool
 node.addTools([{ name: 'button-remove', args: { x: 10, y: 10 } }]);
 
-// 检查是否有某工具
+// Check if a tool exists
 node.hasTool('button-remove'); // true
 
-// 移除指定工具
+// Remove specified tool
 node.removeTool('button-remove');
 
-// 移除所有工具
+// Remove all tools
 node.removeTools();
 ```
 
-### Hover 时显示工具
+### Display Tools on Hover
 
 ```javascript
 graph.on('node:mouseenter', ({ node }) => {
@@ -119,11 +118,11 @@ graph.on('edge:mouseleave', ({ edge }) => {
 });
 ```
 
-## 节点内置工具
+## Built-in Node Tools
 
-### button — 自定义按钮
+### button — Custom Button
 
-在节点指定位置渲染一个按钮，支持自定义点击交互。
+Renders a button at a specified position on the node, supporting custom click interactions.
 
 ```javascript
 node.addTools({
@@ -143,17 +142,17 @@ node.addTools({
 });
 ```
 
-| 参数 | 类型 | 说明 |
+| Parameter | Type | Description |
 |------|------|------|
-| `x` | number \| string | X 坐标（百分比表示相对位置） |
-| `y` | number \| string | Y 坐标 |
-| `offset` | `{ x, y }` | 在 x/y 基础上的偏移 |
-| `markup` | Markup | 按钮的 SVG 结构 |
-| `onClick` | Function | 点击回调 `({ e, cell, view }) => void` |
+| `x` | number \| string | X-coordinate (percentage represents relative position) |
+| `y` | number \| string | Y-coordinate |
+| `offset` | `{ x, y }` | Offset based on x/y |
+| `markup` | Markup | SVG structure of the button |
+| `onClick` | Function | Click callback `({ e, cell, view }) => void` |
 
-### button-remove — 删除按钮
+### button-remove — Remove Button
 
-button 的特例，点击时删除对应节点。支持 button 的所有配置。
+A special case of button, which deletes the corresponding node when clicked. Supports all configurations of button.
 
 ```javascript
 graph.addNode({
@@ -173,9 +172,9 @@ graph.addNode({
 });
 ```
 
-### boundary — 包围框
+### boundary — Bounding Box
 
-根据节点包围盒渲染一个矩形，仅用于可视化，不带交互。
+Renders a rectangle based on the node's bounding box, used only for visualization without interaction.
 
 ```javascript
 node.addTools({
@@ -192,38 +191,38 @@ node.addTools({
 });
 ```
 
-### node-editor — 文本编辑
+### node-editor — Text Editing
 
-提供节点上文本编辑功能，双击节点即可编辑文本。
+Provides text editing functionality on nodes. Double-click a node to edit its text.
 
 ```javascript
-// 添加 node-editor 工具（2.8.0+ 无需传 event）
+// Add node-editor tool (2.8.0+ does not require passing event)
 node.addTools({
   name: 'node-editor',
 });
 
-// 自定义 markup 时需指定 getText/setText
+// Specify getText/setText when customizing markup
 node.addTools({
   name: 'node-editor',
   args: {
-    getText: 'attrs/label/text',  // 属性路径
+    getText: 'attrs/label/text',  // Attribute path
     setText: 'attrs/label/text',
   },
 });
 ```
 
-| 参数 | 类型 | 说明 |
+| Parameter | Type | Description |
 |------|------|------|
-| `getText` | string \| Function | 获取文本的属性路径或方法 |
-| `setText` | string \| Function | 设置文本的属性路径或方法 |
-| `attrs/fontSize` | string | 编辑字体大小，默认 14 |
-| `attrs/color` | string | 字体颜色，默认 #000 |
+| `getText` | string \| Function | Attribute path or method to get text |
+| `setText` | string \| Function | Attribute path or method to set text |
+| `attrs/fontSize` | string | Editing font size, default 14 |
+| `attrs/color` | string | Font color, default #000 |
 
-## 边内置工具
+## Built-in Edge Tools
 
-### vertices — 路径点编辑
+### vertices — Path Point Editing
 
-在路径点位置渲染小圆点，支持拖动修改位置、双击删除、单击边添加路径点。
+Renders small dots at path point positions, supporting drag-to-modify position, double-click to delete, and click on edges to add path points.
 
 ```javascript
 graph.addEdge({
@@ -239,15 +238,15 @@ graph.addEdge({
 });
 ```
 
-| 参数 | 类型 | 默认值 | 说明 |
+| Parameter | Type | Default Value | Description |
 |------|------|--------|------|
-| `snapRadius` | number | 20 | 路径点吸附半径 |
-| `addable` | boolean | true | 是否可添加路径点 |
-| `removable` | boolean | true | 双击是否可删除 |
+| `snapRadius` | number | 20 | Path point snap radius |
+| `addable` | boolean | true | Whether path points can be added |
+| `removable` | boolean | true | Whether path points can be deleted on double-click |
 
-### segments — 线段工具
+### segments — Segment Tool
 
-在每条线段中心渲染工具条，拖动可调整线段两端路径点位置。
+Renders a toolbar at the center of each segment. Dragging adjusts the position of the path points at both ends of the segment.
 
 ```javascript
 graph.addEdge({
@@ -259,20 +258,20 @@ graph.addEdge({
 });
 ```
 
-### button-remove（边）
+### button-remove (Edge)
 
-在边的指定位置渲染删除按钮。
+Renders a delete button at the specified position on the edge.
 
 ```javascript
 edge.addTools({
   name: 'button-remove',
-  args: { distance: 20 },  // 距离起点的距离
+  args: { distance: 20 },  // Distance from the starting point
 });
 ```
 
 ### source-arrowhead / target-arrowhead
 
-在边的起点或终点渲染箭头图形，拖动可修改边的起点/终点。
+Render arrow graphics at the start or end point of an edge. Dragging can modify the start/end point of the edge.
 
 ```javascript
 edge.addTools([
@@ -281,9 +280,9 @@ edge.addTools([
 ]);
 ```
 
-### edge-editor — 边文本编辑
+### edge-editor — Edge Text Editor
 
-双击边即可编辑边上的文本标签。
+Double-click an edge to edit the text label on it.
 
 ```javascript
 edge.addTools({
@@ -294,9 +293,9 @@ edge.addTools({
 });
 ```
 
-## 常见模式
+## Common Patterns
 
-### 选中时显示工具，取消选中时移除
+### Display Tools When Selected, Remove When Unselected
 
 ```javascript
 graph.on('node:selected', ({ node }) => {
@@ -311,7 +310,7 @@ graph.on('node:unselected', ({ node }) => {
 });
 ```
 
-### 双击编辑节点文本
+### Double-click to Edit Node Text
 
 ```javascript
 graph.on('node:dblclick', ({ node }) => {
@@ -319,18 +318,18 @@ graph.on('node:dblclick', ({ node }) => {
 });
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### ❌ 在 mouseenter 添加工具但忘记在 mouseleave 移除
+### ❌ Adding Tools on `mouseenter` but Forgetting to Remove on `mouseleave`
 
 ```javascript
-// 错误：工具会无限累积
+// Error: Tools will accumulate indefinitely
 graph.on('node:mouseenter', ({ node }) => {
   node.addTools([{ name: 'button-remove' }]);
 });
-// 缺少 mouseleave 处理
+// Missing mouseleave handling
 
-// 正确：配对使用
+// Correct: Paired usage
 graph.on('node:mouseenter', ({ node }) => {
   node.addTools([{ name: 'button-remove', args: { x: '100%', y: 0, offset: { x: -10, y: 10 } } }]);
 });
@@ -339,21 +338,21 @@ graph.on('node:mouseleave', ({ node }) => {
 });
 ```
 
-### ❌ 错误使用 graph.render() 方法
+### ❌ Incorrect Usage of graph.render() Method
 
 ```javascript
-// 错误：Graph 实例没有 render 方法
+// Error: Graph instance does not have a render method
 const graph = new Graph({ ... });
-graph.render(); // ❌ 报错：graph.render is not a function
+graph.render(); // ❌ Error: graph.render is not a function
 
-// 正确：Graph 构造函数会自动渲染，无需手动调用 render()
+// Correct: The Graph constructor automatically renders, no need to manually call render()
 const graph = new Graph({ ... });
 ```
 
-### ❌ 工具配置方式错误
+### ❌ Incorrect Tool Configuration Method
 
 ```javascript
-// 错误：在事件中动态添加 vertices 和 segments 工具
+// Incorrect: Dynamically adding vertices and segments tools in an event
 graph.on('edge:mouseenter', ({ cell }) => {
   cell.addTools([
     'vertices',
@@ -361,7 +360,7 @@ graph.on('edge:mouseenter', ({ cell }) => {
   ])
 })
 
-// 正确：在创建边时直接配置工具
+// Correct: Directly configure tools when creating an edge
 graph.addEdge({
   source: node1,
   target: node2,
@@ -369,10 +368,10 @@ graph.addEdge({
 });
 ```
 
-### ❌ 错误地使用了 tools.items 配置结构
+### ❌ Incorrect Usage of tools.items Configuration Structure
 
 ```javascript
-// 错误：tools 配置应为数组，而不是对象
+// Error: tools configuration should be an array, not an object
 const edge = graph.addEdge({
   source: 'source',
   target: 'target',
@@ -384,7 +383,7 @@ const edge = graph.addEdge({
   }
 })
 
-// 正确：tools 应为数组形式
+// Correct: tools should be in array form
 const edge = graph.addEdge({
   source: 'source',
   target: 'target',
@@ -395,10 +394,10 @@ const edge = graph.addEdge({
 })
 ```
 
-### ❌ 错误地为边添加工具时使用了错误的配置格式
+### ❌ Incorrect Configuration Format When Adding Tools to an Edge
 
 ```javascript
-// 错误：tools 配置应该是一个数组，而不是对象
+// Incorrect: The tools configuration should be an array, not an object
 const edge = graph.addEdge({
   source: 'source',
   target: 'target',
@@ -407,7 +406,7 @@ const edge = graph.addEdge({
   }
 })
 
-// 正确：tools 应为数组形式
+// Correct: tools should be in array format
 const edge = graph.addEdge({
   source: 'source',
   target: 'target',
@@ -417,21 +416,21 @@ const edge = graph.addEdge({
 })
 ```
 
-### ❌ 错误地在 Graph 实例上调用 render 方法
+### ❌ Incorrectly Calling the render Method on a Graph Instance
 
 ```javascript
-// 错误：Graph 实例没有 render 方法
+// Error: Graph instances do not have a render method
 const graph = new Graph({ ... });
-graph.render(); // ❌ 报错：graph.render is not a function
+graph.render(); // ❌ Error: graph.render is not a function
 
-// 正确：Graph 构造函数会自动渲染，无需手动调用 render()
+// Correct: The Graph constructor automatically renders, no need to manually call render()
 const graph = new Graph({ ... });
 ```
 
-### ❌ 错误地在 createEdge 中使用了错误的 tools 配置格式
+### ❌ Incorrect Usage of Tools Configuration Format in createEdge
 
 ```javascript
-// 错误：createEdge 中 tools 配置应为数组，而不是对象
+// Incorrect: tools configuration in createEdge should be an array, not an object
 graph.options.connecting = {
   createEdge() {
     return graph.createEdge({
@@ -446,7 +445,7 @@ graph.options.connecting = {
   }
 }
 
-// 正确：tools 应为数组形式
+// Correct: tools should be in array format
 graph.options.connecting = {
   createEdge() {
     return graph.createEdge({
@@ -460,17 +459,17 @@ graph.options.connecting = {
 }
 ```
 
-### ❌ 未正确处理节点选中状态导致工具重复添加
+### ❌ Failure to Properly Handle Node Selection State Results in Duplicate Tool Addition
 
 ```javascript
-// 错误：每次点击都会添加边界工具，未清理已有工具
+// Error: Adds boundary tool on every click without clearing existing tools
 graph.on('node:click', ({ node }) => {
   node.addTools([
     { name: 'boundary' }
   ]);
 });
 
-// 正确：先清除已有工具再添加
+// Correct: Clear existing tools before adding new ones
 graph.on('node:click', ({ node }) => {
   graph.getNodes().forEach((n) => n.removeTools());
   node.addTools([
@@ -479,15 +478,15 @@ graph.on('node:click', ({ node }) => {
 });
 ```
 
-### ❌ 语法错误或不完整的代码片段
+### ❌ Syntax Errors or Incomplete Code Snippets
 
 ```javascript
-// 错误：代码不完整导致语法错误
+// Error: Incomplete code causes syntax errors
 const node2 = graph.addNode({
   shape: 'rect',
   x: 300,
   y: 100,
-  width: 10  graph.addEdge({ // ❌ 语法错误
+  width: 10  graph.addEdge({ // ❌ Syntax error
   source: node1,
   target: node2,
   attrs: {
@@ -495,7 +494,7 @@ const node2 = graph.addNode({
   },
 });
 
-// 正确：确保代码语法完整
+// Correct: Ensure complete and correct syntax
 const node2 = graph.addNode({
   shape: 'rect',
   x: 300,
@@ -517,10 +516,10 @@ graph.addEdge({
 });
 ```
 
-### ❌ 错误地使用 Selection 插件并尝试访问 node.selected 事件
+### ❌ Incorrect Usage of the Selection Plugin and Attempting to Access the `node.selected` Event
 
 ```javascript
-// 错误：Selection 插件不会触发 node:selected 事件，且 Selection 插件未正确导入
+// Incorrect: The Selection plugin does not trigger the `node:selected` event, and the Selection plugin is not imported correctly
 import { Graph, Selection } from '@antv/x6';
 
 const graph = new Graph({
@@ -549,7 +548,7 @@ graph.on('node:selected', ({ node }) => {
   ]);
 });
 
-// 正确：使用 click 事件代替 selected 事件，并移除 Selection 插件
+// Correct: Use the `click` event instead of the `selected` event, and remove the Selection plugin
 import { Graph } from '@antv/x6';
 
 const graph = new Graph({
@@ -576,10 +575,10 @@ graph.on('node:click', ({ node }) => {
 });
 ```
 
-### ❌ 错误地在 addTools 时传入了错误的数据结构
+### ❌ Incorrectly Passing the Wrong Data Structure to `addTools`
 
 ```javascript
-// 错误：addTools 接收的是数组，而不是对象
+// Error: addTools expects an array, not an object
 node.addTools({
   name: 'boundary',
   args: {
@@ -591,7 +590,7 @@ node.addTools({
   },
 });
 
-// 正确：addTools 应该接收数组
+// Correct: addTools should receive an array
 node.addTools([
   {
     name: 'boundary',
@@ -606,7 +605,7 @@ node.addTools([
 ]);
 ```
 
-## 最小可运行示例
+## Minimum Viable Example
 
 ```javascript
 import { Graph } from '@antv/x6';

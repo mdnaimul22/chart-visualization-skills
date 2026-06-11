@@ -1,8 +1,8 @@
 ---
 id: "x6-core-cell-data"
-title: "X6 Cell 数据操作 API（prop/attr/data）"
+title: "X6 Cell Data Manipulation API (prop/attr/data)"
 description: |
-  节点和边的数据读写 API：prop() 通用属性操作、attr() 样式属性操作、getData()/setData() 业务数据操作。
+  Node and edge data read/write API: prop() for general attribute operations, attr() for style attribute operations, and getData()/setData() for business data operations.
 library: x6
 version: 3.x
 category: "core"
@@ -17,102 +17,102 @@ tags:
   - edge
 ---
 
-# Cell 数据操作 API
+# Cell Data Operation API
 
-## 概述
+## Overview
 
-X6 中每个 Cell（节点或边）都有三层数据操作 API：
+In X6, each Cell (node or edge) has three layers of data manipulation APIs:
 
-| API | 作用 | 典型使用场景 |
-|-----|------|-------------|
-| `prop()` | 读写任意属性（shape、size、position 等） | 修改节点位置、大小 |
-| `attr()` | 读写 `attrs` 下的样式属性 | 修改填充色、边框、文字 |
-| `getData()` / `setData()` | 读写 `data` 字段（业务数据） | 存储业务状态、自定义数据 |
+| API | Function | Typical Use Cases |
+|-----|----------|-------------|
+| `prop()` | Read/write any property (shape, size, position, etc.) | Modify node position, size |
+| `attr()` | Read/write style properties under `attrs` | Modify fill color, border, text |
+| `getData()` / `setData()` | Read/write `data` field (business data) | Store business state, custom data |
 
-## prop — 通用属性操作
+## prop — Common Property Operation
 
-`prop()` 是最底层的属性操作方法，可以读写 Cell 的任意属性。
+`prop()` is the most fundamental property operation method, capable of reading and writing any property of a Cell.
 
-### 读取属性
+### Read Properties
 
 ```javascript
-// 获取所有属性
+// Get all properties
 const allProps = node.prop();
 
-// 获取指定属性
+// Get specified property
 const position = node.prop('position');    // { x: 100, y: 200 }
 const shape = node.prop('shape');          // 'rect'
 
-// 获取嵌套路径属性
+// Get nested path property
 const fill = node.prop('attrs/body/fill'); // '#fff'
 ```
 
-### 设置属性
+### Set Properties
 
 ```javascript
-// 设置单个属性
+// Set a single property
 node.prop('position', { x: 200, y: 300 });
 
-// 通过路径设置嵌套属性
+// Set nested properties via path
 node.prop('attrs/body/fill', '#f0f0f0');
 
-// 批量设置多个属性（深度合并）
+// Batch set multiple properties (deep merge)
 node.prop({
   position: { x: 200, y: 300 },
   size: { width: 120, height: 60 },
 });
 ```
 
-### 删除属性
+### Delete Attribute
 
 ```javascript
-// 设置为 null 即删除
+// Set to null to delete
 node.prop('attrs/body/stroke', null);
 ```
 
 ### setProp / removeProp
 
 ```javascript
-// setProp 等价于 prop(key, value)
+// setProp is equivalent to prop(key, value)
 node.setProp('label', 'Hello');
 node.setProp({ label: 'Hello', size: { width: 100, height: 40 } });
 
-// removeProp 删除指定属性
+// removeProp deletes the specified property
 node.removeProp('data');
 node.removeProp('attrs/body/stroke');
 ```
 
-## attr — 样式属性操作
+## attr — Style Attribute Operations
 
-`attr()` 是 `prop('attrs', ...)` 的快捷方式，专门操作 `attrs` 下的 SVG 样式。
+`attr()` is a shorthand for `prop('attrs', ...)`, specifically designed to manipulate SVG styles under `attrs`.
 
-### 读取样式
+### Read Style
 
 ```javascript
-// 获取所有 attrs
+// Get all attrs
 const attrs = node.attr();
 // { body: { fill: '#fff', stroke: '#333' }, label: { text: 'Hello' } }
 
-// 获取指定选择器的属性
+// Get attributes of a specified selector
 const bodyAttrs = node.attr('body');        // { fill: '#fff', stroke: '#333' }
 const fill = node.attr('body/fill');        // '#fff'
 ```
 
-### 设置样式
+### Set Style
 
 ```javascript
-// 设置指定路径的值
+// Set the value of the specified path
 node.attr('body/fill', '#ff0000');
-node.attr('label/text', '新标题');
+node.attr('label/text', 'New Title');
 
-// 批量设置
+// Batch setting
 node.attr({
   body: { fill: '#ff0000', stroke: '#333' },
-  label: { text: '新标题', fontSize: 14 },
+  label: { text: 'New Title', fontSize: 14 },
 });
 ```
 
-### 边的 attr 操作
+### Edge's attr Operation
 
 ```javascript
 edge.attr('line/stroke', '#ff0000');
@@ -120,11 +120,11 @@ edge.attr('line/strokeWidth', 3);
 edge.attr('line/targetMarker', 'classic');
 ```
 
-## getData / setData — 业务数据操作
+## getData / setData — Business Data Operations
 
-`data` 字段用于存储与渲染无关的业务数据，是最常用的状态存储方式。
+The `data` field is used to store business data unrelated to rendering, and it is the most commonly used method for state storage.
 
-### 初始化时设置 data
+### Set data during initialization
 
 ```javascript
 const node = graph.addNode({
@@ -138,65 +138,65 @@ const node = graph.addNode({
 });
 ```
 
-### 读取 data
+### Read data
 
 ```javascript
 const data = node.getData();
 // { status: 'running', progress: 0.75, taskId: 'task-001' }
 ```
 
-### 设置 data（深度合并，默认行为）
+### Set data (Deep Merge, Default Behavior)
 
 ```javascript
-// 深度合并：只更新指定字段，保留其他字段
+// Deep Merge: Only update the specified field, retain other fields
 node.setData({ status: 'completed' });
-// data 变为：{ status: 'completed', progress: 0.75, taskId: 'task-001' }
+// data becomes: { status: 'completed', progress: 0.75, taskId: 'task-001' }
 ```
 
-### 设置 data（浅合并）
+### Set data (shallow merge)
 
 ```javascript
-// 浅合并：Object.assign 行为
+// Shallow merge: Object.assign behavior
 node.setData({ status: 'failed', error: 'timeout' }, { deep: false });
 ```
 
-### 替换 data（完全覆盖）
+### Replace data (completely overwrite)
 
 ```javascript
-// 完全覆盖，丢弃旧数据
+// Completely overwrite, discard old data
 node.replaceData({ status: 'new', version: 2 });
-// 等价于
+// Equivalent to
 node.setData({ status: 'new', version: 2 }, { overwrite: true });
 ```
 
-### 删除 data
+### Delete data
 
 ```javascript
 node.removeData();
 ```
 
-## 监听数据变化
+## Listening to Data Changes
 
 ```javascript
-// 监听单个节点数据变化
+// Listen to data changes of a single node
 node.on('change:data', ({ current, previous }) => {
-  console.log('data 从', previous, '变为', current);
+  console.log('data changed from', previous, 'to', current);
 });
 
-// 通过 graph 监听所有节点数据变化
+// Listen to data changes of all nodes through the graph
 graph.on('node:change:data', ({ node, current, previous }) => {
   console.log(`${node.id} data changed`);
 });
 
-// 监听 attrs 变化
+// Listen to attrs changes
 graph.on('node:change:attrs', ({ node }) => {
   console.log(`${node.id} attrs changed`);
 });
 ```
 
-## 批量操作（Batch）
+## Batch Operations
 
-多次 prop/attr/setData 调用会触发多次事件。可以用 batch 合并为一次：
+Multiple prop/attr/setData calls will trigger multiple events. Use batch to merge them into one:
 
 ```javascript
 graph.startBatch('update');
@@ -204,15 +204,15 @@ node.prop('position', { x: 200, y: 300 });
 node.attr('body/fill', '#ff0000');
 node.setData({ status: 'updated' });
 graph.stopBatch('update');
-// 只触发一次 batch:stop 事件
+// Only triggers one batch:stop event
 ```
 
-## 完整示例：动态状态更新
+## Complete Example: Dynamic Status Update
 
 ```javascript
 import { Graph, Shape } from '@antv/x6';
 
-// 注册带状态渲染的 HTML 节点
+// Register an HTML node with status rendering
 Shape.HTML.register({
   shape: 'status-node',
   effect: ['data'],
@@ -235,35 +235,35 @@ const graph = new Graph({ container: 'container', width: 800, height: 600 });
 const node = graph.addNode({
   shape: 'status-node',
   x: 100, y: 100, width: 160, height: 50,
-  data: { status: 'pending', label: '数据处理' },
+  data: { status: 'pending', label: 'Data Processing' },
 });
 
-// 模拟状态更新 —— setData 触发 effect 重新渲染
+// Simulate status update —— setData triggers effect re-rendering
 setTimeout(() => node.setData({ status: 'running' }), 1000);
-setTimeout(() => node.setData({ status: 'error', label: '数据处理（失败）' }), 3000);
+setTimeout(() => node.setData({ status: 'error', label: 'Data Processing (Failed)' }), 3000);
 ```
 
-## 常见错误
+## Common Errors
 
 ```javascript
-// ❌ 错误：直接修改 getData() 返回的对象不会触发更新
+// ❌ Error: Directly modifying the object returned by getData() does not trigger updates
 const data = node.getData();
-data.status = 'done';  // 不会触发重新渲染！
+data.status = 'done';  // Will not trigger re-rendering!
 
-// ✅ 正确：通过 setData 修改
+// ✅ Correct: Modify using setData
 node.setData({ status: 'done' });
 
-// ❌ 错误：attr 路径分隔符用 '.' 而非 '/'
-node.attr('body.fill', '#fff');  // 错误，不生效
+// ❌ Error: Using '.' instead of '/' as the attr path separator
+node.attr('body.fill', '#fff');  // Incorrect, will not take effect
 
-// ✅ 正确：使用 '/' 作为路径分隔符
+// ✅ Correct: Use '/' as the path separator
 node.attr('body/fill', '#fff');
 
-// ❌ 错误：prop 设置 attrs 时只传部分会丢失其他
+// ❌ Error: Setting only part of attrs using prop will lose others
 node.prop('attrs', { body: { fill: '#f00' } });
-// 这会覆盖整个 attrs，丢失 label 等其他选择器！
+// This will overwrite the entire attrs, losing other selectors like label!
 
-// ✅ 正确：使用路径形式或 attr() 方法
-node.prop('attrs/body/fill', '#f00');  // 只修改 body.fill
-node.attr('body/fill', '#f00');        // 等价
+// ✅ Correct: Use path form or attr() method
+node.prop('attrs/body/fill', '#f00');  // Only modifies body.fill
+node.attr('body/fill', '#f00');        // Equivalent
 ```

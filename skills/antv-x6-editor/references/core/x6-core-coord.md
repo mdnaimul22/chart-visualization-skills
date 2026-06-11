@@ -1,8 +1,8 @@
 ---
 id: "x6-core-coord"
-title: "X6 坐标转换（Coord）"
+title: "X6 Coordinate Transformation (Coord)"
 description: |
-  X6 坐标系转换 API：local（画布本地坐标）、graph（视口坐标）、client（浏览器视口坐标）、page（文档坐标）之间的相互转换。
+  X6 Coordinate System Transformation API: mutual conversion between local (canvas local coordinates), graph (viewport coordinates), client (browser viewport coordinates), and page (document coordinates).
 
 library: "x6"
 version: "3.x"
@@ -10,11 +10,11 @@ category: "core"
 subcategory: "coord"
 tags:
   - "coord"
-  - "坐标转换"
+  - "coordinate transformation"
   - "localToGraph"
   - "clientToLocal"
   - "snapToGrid"
-  - "坐标系"
+  - "coordinate system"
 
 related:
   - "x6-core-graph-init"
@@ -22,56 +22,56 @@ related:
   - "x6-core-mousewheel"
 
 use_cases:
-  - "鼠标事件坐标转换为画布坐标"
-  - "根据屏幕位置添加节点"
-  - "拖拽外部元素到画布并定位"
-  - "坐标吸附到网格"
-  - "自定义右键菜单定位"
+  - "Convert mouse event coordinates to canvas coordinates"
+  - "Add nodes based on screen position"
+  - "Drag external elements to the canvas and position them"
+  - "Snap coordinates to grid"
+  - "Custom right-click menu positioning"
 
 difficulty: "intermediate"
 completeness: "full"
 ---
 
-## 坐标系说明
+## Coordinate System Explanation
 
-X6 中存在四套坐标系：
+There are four coordinate systems in X6:
 
-| 坐标系 | 说明 | 应用场景 |
-|--------|------|----------|
-| **local** | 画布本地坐标，节点的 x/y 属于此坐标系 | 节点定位、addNode、节点属性 |
-| **graph** | 经过平移/缩放变换后的视口坐标 | 画布实际渲染像素位置 |
-| **client** | 浏览器窗口视口坐标（`getBoundingClientRect`） | 鼠标事件的 clientX/clientY |
-| **page** | 文档坐标（含页面滚动偏移） | 鼠标事件的 pageX/pageY |
+| Coordinate System | Description | Application Scenarios |
+|-------------------|-------------|-----------------------|
+| **local** | Canvas local coordinates, where the x/y of nodes belong to this system | Node positioning, addNode, node attributes |
+| **graph** | Viewport coordinates after translation/scaling transformations | Actual rendering pixel positions on the canvas |
+| **client** | Browser window viewport coordinates (`getBoundingClientRect`) | Mouse event clientX/clientY |
+| **page** | Document coordinates (including page scroll offsets) | Mouse event pageX/pageY |
 
-转换关系：
+Transformation relationships:
 
 ```
 local --[matrix]--> graph --[offset]--> client --[scroll]--> page
 ```
 
-## 点坐标转换 API
+## Point Coordinate Transformation API
 
-### local → 其他
+### local → Others
 
 ```javascript
-// local → graph（应用缩放和平移）
+// local → graph (Apply scaling and panning)
 graph.localToGraph({ x: 100, y: 100 });      // Point
 graph.localToGraph(100, 100);                  // Point
 
-// local → client（浏览器视口坐标）
+// local → client (Browser viewport coordinates)
 graph.localToClient({ x: 100, y: 100 });      // Point
 
-// local → page（文档坐标）
+// local → page (Document coordinates)
 graph.localToPage({ x: 100, y: 100 });        // Point
 ```
 
-### 其他 → local
+### Other → local
 
 ```javascript
-// graph → local（逆变换）
+// graph → local (Inverse transformation)
 graph.graphToLocal({ x: 200, y: 150 });       // Point
 
-// client → local（最常用：鼠标事件 → 画布坐标）
+// client → local (Most commonly used: Mouse event → Canvas coordinates)
 graph.clientToLocal({ x: e.clientX, y: e.clientY });   // Point
 graph.clientToLocal(e.clientX, e.clientY);              // Point
 
@@ -82,9 +82,9 @@ graph.clientToGraph({ x: e.clientX, y: e.clientY });   // Point
 graph.pageToLocal({ x: e.pageX, y: e.pageY });         // Point
 ```
 
-## 矩形坐标转换 API
+## Rectangle Coordinate Transformation API
 
-所有点转换都有对应的矩形版本，返回 `Rectangle` 对象：
+All point transformations have corresponding rectangle versions, returning a `Rectangle` object:
 
 ```javascript
 // local → graph
@@ -108,22 +108,22 @@ graph.pageToLocalRect({ x: 0, y: 0, width: 100, height: 100 });
 
 ## snapToGrid
 
-将客户端坐标转换为 local 坐标并吸附到网格：
+Converts client coordinates to local coordinates and snaps them to the grid:
 
 ```javascript
-// 将鼠标位置吸附到网格
+// Snap mouse position to the grid
 const pos = graph.snapToGrid(e.clientX, e.clientY);
-// 返回吸附后的 local 坐标 Point { x, y }
+// Returns the snapped local coordinates Point { x, y }
 ```
 
-## 常用场景示例
+## Common Use Case Examples
 
-### 场景 1：从外部拖拽元素到画布创建节点
+### Scenario 1: Dragging External Elements to the Canvas to Create Nodes
 
 ```javascript
 document.getElementById('drag-source').addEventListener('drop', (e) => {
   e.preventDefault();
-  // 将鼠标释放位置转换为画布坐标，并吸附到网格
+  // Convert the mouse release position to canvas coordinates and snap to the grid
   const pos = graph.snapToGrid(e.clientX, e.clientY);
   graph.addNode({
     x: pos.x,
@@ -135,11 +135,11 @@ document.getElementById('drag-source').addEventListener('drop', (e) => {
 });
 ```
 
-### 场景 2：自定义右键菜单定位
+### Scenario 2: Customizing Right-Click Menu Positioning
 
 ```javascript
 graph.on('node:contextmenu', ({ e, node }) => {
-  // 使用 client 坐标定位菜单（相对于浏览器视口）
+  // Position the menu using client coordinates (relative to the browser viewport)
   const menu = document.getElementById('context-menu');
   menu.style.left = `${e.clientX}px`;
   menu.style.top = `${e.clientY}px`;
@@ -147,65 +147,65 @@ graph.on('node:contextmenu', ({ e, node }) => {
 });
 ```
 
-### 场景 3：获取节点在屏幕上的实际位置
+### Scenario 3: Obtain the Actual Position of a Node on the Screen
 
 ```javascript
 const node = graph.getCellById('node1');
-const { x, y } = node.getPosition();  // local 坐标
+const { x, y } = node.getPosition();  // local coordinates
 
-// 转换为浏览器视口坐标（可用于定位浮层）
+// Convert to browser viewport coordinates (can be used for positioning floating layers)
 const clientPos = graph.localToClient({ x, y });
-console.log(`节点在屏幕上的位置: (${clientPos.x}, ${clientPos.y})`);
+console.log(`Node position on the screen: (${clientPos.x}, ${clientPos.y})`);
 ```
 
-### 场景 4：计算画布可视区域内的节点
+### Scenario 4: Calculate Nodes Within the Visible Area of the Canvas
 
 ```javascript
-// 获取当前可视区域（graph 坐标系）
+// Get the current visible area (graph coordinate system)
 const visibleArea = graph.getGraphArea();  // Rectangle
 
-// 转换为 local 坐标系
+// Convert to local coordinate system
 const localArea = graph.graphToLocalRect(visibleArea);
 
-// 筛选在可视区域内的节点
+// Filter nodes within the visible area
 const visibleNodes = graph.getNodes().filter((node) => {
   const bbox = node.getBBox();
   return localArea.isIntersectWithRect(bbox);
 });
 ```
 
-## 常见错误
+## Common Errors
 
-### ❌ 直接使用鼠标 clientX/clientY 作为节点坐标
+### ❌ Directly Using Mouse clientX/clientY as Node Coordinates
 
 ```javascript
-// 错误：鼠标坐标是 client 坐标系，不能直接用于节点定位
+// Error: Mouse coordinates are in the client coordinate system and cannot be used directly for node positioning
 document.addEventListener('click', (e) => {
-  graph.addNode({ x: e.clientX, y: e.clientY, width: 80, height: 40 });  // ❌ 位置不对
+  graph.addNode({ x: e.clientX, y: e.clientY, width: 80, height: 40 });  // ❌ Incorrect position
 });
 ```
 
 ```javascript
-// 正确：先转换坐标系
+// Correct: Convert the coordinate system first
 document.addEventListener('click', (e) => {
   const pos = graph.clientToLocal(e.clientX, e.clientY);
   graph.addNode({ x: pos.x, y: pos.y, width: 80, height: 40 });  // ✅
 });
 ```
 
-### ❌ 混淆 localToGraph 和 localToClient
+### ❌ Confusing localToGraph and localToClient
 
 ```javascript
-// localToGraph：加了画布缩放/平移变换，用于画布内部像素计算
-// localToClient：转换到浏览器视口坐标，用于定位 DOM 元素（如弹窗、菜单）
+// localToGraph: Includes canvas scaling/panning transformations, used for internal canvas pixel calculations
+// localToClient: Converts to browser viewport coordinates, used for positioning DOM elements (e.g., popups, menus)
 ```
 
-### ❌ X6 事件中的坐标已是 local 坐标
+### ❌ Coordinates in X6 Events Are Already Local Coordinates
 
 ```javascript
-// X6 事件回调中的 x, y 已经是 local 坐标，无需再转换
+// The x, y in X6 event callbacks are already local coordinates, no need for further conversion
 graph.on('blank:click', ({ e, x, y }) => {
-  // x, y 已经是 local 坐标 ✅
+  // x, y are already local coordinates ✅
   graph.addNode({ x, y, width: 80, height: 40 });
 });
 ```
