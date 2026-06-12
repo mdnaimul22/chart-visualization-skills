@@ -20,14 +20,15 @@ tags:
 # Connector Complete Parameters
 
 ```markdown
-# Connector 连接器完整参数
+
+# Connector Complete Parameters
 ```
 
 **Note:** The provided content only contains a header in Chinese and its English translation. Since there is no additional content to translate, the output remains the same as the input with the header translated. If you have more content to translate, please provide it, and I will ensure it adheres to the strict instructions.
 
-Here is the corrected translation based on the provided input:
-
 ```markdown
+# Connector Complete Parameters
+```
 # Connector Complete Parameters
 ```
 

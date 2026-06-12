@@ -58,7 +58,6 @@ anti_patterns:
 difficulty: "intermediate"
 completeness: "full"
 ---
-
 ## 1. Unique Registration Entry Point: `Shape.HTML.register`
 
 In X6 3.x, **all rich HTML nodes are registered via `Shape.HTML.register` as a named shape**, and then added using `graph.addNode({ shape: 'xxx' })`. **There is no other registration method**.

@@ -384,7 +384,6 @@ const graph = new Graph({ container: 'container' });
   }
 }
 ```
-
 ### Error: Using graph.render() Causes Runtime Error
 
 **Error Code Example:**

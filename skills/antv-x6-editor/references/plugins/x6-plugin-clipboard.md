@@ -10,9 +10,6 @@ category: "plugins"
 subcategory: "clipboard"
 tags:
   - "Clipboard"
-  - "复制"
-  - "粘贴"
-  - "剪切"
   - "copy"
   - "paste"
   - "cut"
@@ -32,7 +29,6 @@ use_cases:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 ```javascript

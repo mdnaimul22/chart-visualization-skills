@@ -31,7 +31,6 @@ use_cases:
 difficulty: "intermediate"
 completeness: "full"
 ---
-
 ## Full List of Connectors
 
 | Connector | Description | Typical Use Cases |

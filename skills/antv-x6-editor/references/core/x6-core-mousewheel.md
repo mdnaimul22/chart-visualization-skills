@@ -29,7 +29,6 @@ use_cases:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 ```javascript

@@ -30,7 +30,6 @@ use_cases:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 Canvas panning is configured in the Graph constructor via the `panning` field:

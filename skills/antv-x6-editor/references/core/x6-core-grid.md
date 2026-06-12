@@ -10,7 +10,7 @@ category: "core"
 subcategory: "grid"
 tags:
   - "grid"
-  - "网格"
+  - "grid"
   - "dot"
   - "mesh"
   - "doubleMesh"
@@ -31,7 +31,6 @@ use_cases:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 The grid is configured in the Graph constructor via the `grid` field:

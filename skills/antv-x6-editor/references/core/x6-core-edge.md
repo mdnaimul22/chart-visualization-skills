@@ -10,17 +10,13 @@ version: "3.x"
 category: "core"
 subcategory: "edge"
 tags:
-  - "边"
   - "edge"
-  - "连线"
-  - "路由器"
+  - "connection"
   - "router"
-  - "连接器"
   - "connector"
-  - "箭头"
+  - "arrow"
   - "marker"
   - "targetMarker"
-  - "标签"
   - "label"
   - "vertices"
   - "orth"
@@ -28,7 +24,7 @@ tags:
   - "smooth"
   - "rounded"
   - "strokeDasharray"
-  - "虚线"
+  - "dashed"
 
 related:
   - "x6-core-node"
@@ -50,7 +46,6 @@ anti_patterns:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Add Edge
 
 ```javascript

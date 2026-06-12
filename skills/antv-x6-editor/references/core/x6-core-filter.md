@@ -10,7 +10,7 @@ category: "core"
 subcategory: "filter"
 tags:
   - "filter"
-  - "滤镜"
+  - "filter"
   - "shadow"
   - "blur"
   - "highlight"
@@ -35,7 +35,6 @@ use_cases:
 difficulty: "intermediate"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 Use built-in filters through the `filter` property in the `attrs` of nodes/edges:

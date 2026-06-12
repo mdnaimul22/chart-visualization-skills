@@ -38,7 +38,6 @@ use_cases:
 difficulty: "intermediate"
 completeness: "full"
 ---
-
 ## Complete List of Built-in Tools
 
 ### Node Tools

@@ -10,11 +10,10 @@ category: "patterns"
 subcategory: "uml"
 tags:
   - "UML"
-  - "类图"
-  - "class diagram"
-  - "继承"
-  - "接口"
-  - "关联"
+  - "Class Diagram"
+  - "Inheritance"
+  - "Interface"
+  - "Association"
 
 related:
   - "x6-intermediate-custom-node"
@@ -31,7 +30,6 @@ use_cases:
 difficulty: "advanced"
 completeness: "full"
 ---
-
 ## Scene Characteristics
 
 Core features of UML class diagrams:

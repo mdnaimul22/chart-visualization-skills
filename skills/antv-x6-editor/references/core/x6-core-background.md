@@ -30,7 +30,6 @@ use_cases:
 difficulty: "beginner"
 completeness: "full"
 ---
-
 ## Basic Usage
 
 The background is configured in the Graph constructor via the `background` field:

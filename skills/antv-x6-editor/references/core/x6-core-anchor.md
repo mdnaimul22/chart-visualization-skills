@@ -11,7 +11,7 @@ category: "core"
 subcategory: "anchor"
 tags:
   - "anchor"
-  - "锚点"
+  - "anchor point"
   - "nodeAnchor"
   - "edgeAnchor"
   - "connection endpoint"
@@ -50,6 +50,7 @@ Anchors are used in conjunction with **connectionPoint**: the anchor determines 
 
 ## Node Anchor (节点锚点)
 
+(Note: Since the provided content only includes a header, the translation remains the same, preserving the structure and technical terms as instructed.)
 ### Configuration Method
 
 Set through the `anchor` field in the edge's `source` / `target`:

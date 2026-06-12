@@ -10,19 +10,15 @@ version: "3.x"
 category: "core"
 subcategory: "animation"
 tags:
-  - "动画"
   - "animation"
   - "animate"
-  - "过渡"
   - "transition"
-  - "暂停"
   - "pause"
   - "play"
   - "cancel"
   - "finish"
   - "reverse"
   - "Web Animations API"
-  - "关键帧"
   - "keyframes"
   - "duration"
   - "iterations"
@@ -45,7 +41,6 @@ anti_patterns:
   - "Use / to separate animation property paths (e.g., position/x), do not write x directly"
   - "Do not confuse CSS animation property names with X6 animation configurations"
 ---
-
 # X6 Animation and Transition
 
 X6's `animate` API is implemented based on the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) standard, providing powerful animation capabilities.
