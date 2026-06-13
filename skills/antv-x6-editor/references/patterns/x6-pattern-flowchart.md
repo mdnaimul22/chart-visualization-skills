@@ -367,7 +367,7 @@ const graph = new Graph({ container: 'container' });
   id: 'edge1',
   source: 'node1',
   target: 'node2',
-  label: '连接' // ❌ Error: label should be defined within attrs or use the labels array
+  label: 'Connection' // ❌ Error: label should be defined within attrs or use the labels array
 }
 ```
 
@@ -378,7 +378,7 @@ const graph = new Graph({ container: 'container' });
 {
   source: 'node1',
   target: 'node2',
-  label: '连接', // ✅ In fromJSON, label can be used directly
+  label: 'Connection', // ✅ In fromJSON, label can be used directly
   attrs: {
     line: { stroke: '#8f8f8f', strokeWidth: 1 }
   }

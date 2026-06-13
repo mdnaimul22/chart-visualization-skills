@@ -10,10 +10,9 @@ category: "core"
 subcategory: "panning"
 tags:
   - "panning"
-  - "平移"
-  - "拖拽画布"
   - "pan"
-  - "画布移动"
+  - "canvas drag"
+  - "canvas move"
 
 related:
   - "x6-core-graph-init"

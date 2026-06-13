@@ -13,9 +13,7 @@ tags:
   - connection
 ---
 
-# Edge Anchor
-
-(Note: The original content provided only contains the header "Edge Anchor (边锚点)". The translation maintains the structure and syntax as instructed, with the Chinese term in parentheses translated to English.)
+# Edge Anchor (Edge Anchor Point)
 ## Overview
 
 When an edge's `source` or `target` connects to another edge (rather than a node), an Edge Anchor is required to determine the connection point's position on the target edge's path.

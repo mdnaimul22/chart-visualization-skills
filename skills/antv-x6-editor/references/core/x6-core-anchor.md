@@ -49,8 +49,6 @@ completeness: "full"
 Anchors are used in conjunction with **connectionPoint**: the anchor determines the reference point, and the connectionPoint determines the final connection position (usually the intersection of the anchor and the node boundary).
 
 ## Node Anchor (节点锚点)
-
-(Note: Since the provided content only includes a header, the translation remains the same, preserving the structure and technical terms as instructed.)
 ### Configuration Method
 
 Set through the `anchor` field in the edge's `source` / `target`:
