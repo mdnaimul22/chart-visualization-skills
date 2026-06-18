@@ -1,5 +1,5 @@
 {
-  "skills/antv-g2-chart/SKILL.md": "4e7307c016ee9ad648319f3942081e53",
+  "skills/antv-g2-chart/SKILL.md": "5d85b66d62798b9cba09b0066e39c133",
   "skills/antv-g2-chart/references/scales/g2-scale-linear.md": "6369d562522952faf3ee5f4788bd71be",
   "skills/antv-g2-chart/references/scales/g2-scale-band.md": "f595a1b51ed94c47e9964bb92fe7b4e4",
   "skills/antv-g2-chart/references/scales/g2-scale-ordinal.md": "a33c49a97c8d98ffb080f0df3271a07a",
@@ -155,8 +155,8 @@
   "skills/antv-g2-chart/references/coordinates/g2-coord-cartesian.md": "eddb17ad059385274ce2725fcc1aa84f",
   "skills/antv-g2-chart/references/coordinates/g2-coord-fisheye.md": "13d553dae52380dec735d1c2c7d1029d",
   "skills/antv-g2-chart/references/coordinates/g2-coord-transpose.md": "b3949416d872bcf012ad4ddd87a3a8b8",
-  "skills/antv-g2-chart/references/core/g2-core-chart-init.md": "81aff5b65f6df839ede4c313e4f55683",
-  "skills/antv-g2-chart/references/core/g2-core-encode-channel.md": "d99f638f3f50875a27c22f654c89a07b",
+  "skills/antv-g2-chart/references/core/g2-core-chart-init.md": "82ead8ee04ee85515280c3a8414b2038",
+  "skills/antv-g2-chart/references/core/g2-core-encode-channel.md": "41b7aa17206b73b487cbf02c0e4fe949",
   "skills/antv-g2-chart/references/core/g2-core-view-composition.md": "41fd2fe9f3e743107f767558043c27ea",
   "skills/antv-g2-chart/references/themes/g2-theme-custom.md": "65ee69a303ad7712a2b6c59d58eddb8c",
   "skills/antv-g2-chart/references/themes/g2-theme-builtin.md": "7dd96cbf68ca2e351feb97524eef65de",
