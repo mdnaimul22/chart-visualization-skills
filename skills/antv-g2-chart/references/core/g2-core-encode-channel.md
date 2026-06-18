@@ -1,17 +1,18 @@
 ---
 id: "g2-core-encode-channel"
-title: "Detailed Explanation of G2 Encode Channel System"
+title: "G2 encode 通道系统详解"
 description: |
-  Encode is the core data mapping mechanism in G2 v5, mapping data fields to visual channels (position, color, size, shape, etc.).
-  In Spec mode, encode is a field in the options object; in the chained API, it is called via the .encode() method.
+  encode 是 G2 v5 的核心数据映射机制，将数据字段映射到视觉通道（位置、颜色、大小、形状等）。
+  在 Spec 模式中，encode 是 options 对象中的一个字段；在链式 API 中通过 .encode() 方法调用。
 
 library: "g2"
 version: "5.x"
 category: "core"
 tags:
   - "encode"
+  - "通道"
   - "channel"
-  - "data mapping"
+  - "数据映射"
   - "x"
   - "y"
   - "color"
@@ -26,36 +27,37 @@ related:
   - "g2-core-data-binding"
 
 use_cases:
-  - "Map data fields to visual attributes of a chart"
-  - "Understand the structure of the encode object in Spec mode"
-  - "Configure multi-channel mappings"
+  - "将数据字段映射到图表的视觉属性"
+  - "理解 Spec 模式中 encode 对象的结构"
+  - "配置多通道映射"
 
 difficulty: "beginner"
-completeness: "partial"
+completeness: "full"
 created: "2024-01-01"
 updated: "2025-03-01"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/encode"
 ---
-## Core Concepts
 
-**Channel** is an abstraction of graphical attributes. In Spec mode, `encode` is a field of the `options` object,
-where each key is a channel name, and the value is a data field name (string) or a constant.
+## 核心概念
 
-## General Channel List
+**通道（Channel）** 是图形属性的抽象。在 Spec 模式中，`encode` 是 `options` 对象的一个字段，
+其中每个 key 是通道名，value 是数据字段名（字符串）或常量。
 
-| Channel | Description | Common Mark |
+## 通用通道列表
+
+| 通道 | 说明 | 常见 Mark |
 |------|------|-----------|
-| `x` | X-axis position | All Marks |
-| `y` | Y-axis position | All Marks |
-| `color` | Color (fill + stroke) | All Marks |
-| `size` | Size/Thickness | Point, Link, Line |
-| `shape` | Shape | Point, Interval |
-| `opacity` | Opacity | All Marks |
-| `series` | Series grouping (does not affect color) | Line, Area |
-| `key` | Element matching key during animation | All Marks |
+| `x` | X 轴位置 | 所有 Mark |
+| `y` | Y 轴位置 | 所有 Mark |
+| `color` | 颜色（fill + stroke） | 所有 Mark |
+| `size` | 大小/粗细 | Point、Link、Line |
+| `shape` | 形状 | Point、Interval |
+| `opacity` | 透明度 | 所有 Mark |
+| `series` | 系列分组（不影响颜色） | Line、Area |
+| `key` | 动画时元素匹配键 | 所有 Mark |
 
-## Basic Usage (Spec Mode)
+## 基本用法（Spec 模式）
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -65,23 +67,23 @@ const chart = new Chart({ container: 'container', width: 640, height: 480 });
 chart.options({
   type: 'interval',
   data: [
-    { city: 'Beijing', gdp: 3.6 },
-    { city: 'Shanghai', gdp: 4.0 },
-    { city: 'Guangzhou', gdp: 2.8 },
+    { city: '北京', gdp: 3.6 },
+    { city: '上海', gdp: 4.0 },
+    { city: '广州', gdp: 2.8 },
   ],
   encode: {
-    x: 'city',      // Category axis: Automatically uses Band Scale
-    y: 'gdp',       // Numerical axis: Automatically uses Linear Scale
-    color: 'city',  // Color distinction
+    x: 'city',      // 分类轴：自动使用 Band Scale
+    y: 'gdp',       // 数值轴：自动使用 Linear Scale
+    color: 'city',  // 颜色区分
   },
 });
 
 chart.render();
 ```
 
-## Typical Scenario Examples
+## 典型场景示例
 
-### Time X-Axis (Line Chart)
+### 时间 x 轴（折线图）
 
 ```javascript
 chart.options({
@@ -92,14 +94,14 @@ chart.options({
     { date: new Date('2024-03-01'), value: 110 },
   ],
   encode: {
-    x: 'date',      // Date objects automatically use Time Scale
+    x: 'date',      // Date 对象自动使用 Time Scale
     y: 'value',
-    color: 'series', // Multi-series line
+    color: 'series', // 多系列折线
   },
 });
 ```
 
-### Dual Numerical Axes + Bubble Chart (Multi-Channel Mapping)
+### 双数值轴 + 气泡图（多通道映射）
 
 ```javascript
 chart.options({
@@ -112,7 +114,7 @@ chart.options({
   encode: {
     x: 'income',
     y: 'lifeExpect',
-    size: 'population',    // Bubble size
+    size: 'population',    // 气泡大小
     color: 'country',
     shape: 'point',
   },
@@ -122,7 +124,7 @@ chart.options({
 });
 ```
 
-### Function Mapping (Advanced)
+### 函数映射（高级）
 
 ```javascript
 chart.options({
@@ -131,27 +133,27 @@ chart.options({
   encode: {
     x: 'date',
     y: 'value',
-    // When value is a function: Dynamically calculate channel values
+    // value 是函数时：动态计算通道值
     color: (d) => d.value > 100 ? 'red' : 'blue',
     size: (d) => Math.sqrt(d.count),
   },
 });
 ```
 
-## encode Field Value Type Description
+## encode 字段值类型说明
 
-| Value Type | Meaning | Example |
-|------------|---------|--------|
-| `string` (field name) | Maps to a data field | `'genre'` |
-| `string` (color/shape constant) | Same value for all elements | `'#1890ff'`, `'circle'` |
-| `number` | Same numerical value for all elements | `10` (size constant) |
-| `function` | Dynamic calculation | `(d) => d.val * 2` |
+| 值类型 | 含义 | 示例 |
+|--------|------|------|
+| `string`（字段名）| 映射数据字段 | `'genre'` |
+| `string`（颜色/形状常量）| 所有元素相同值 | `'#1890ff'`、`'circle'` |
+| `number` | 所有元素相同数值 | `10`（size 常量） |
+| `function` | 动态计算 | `(d) => d.val * 2` |
 
-> **Judgment Rules**: `encode.color` passed `'genre'` → considered as a field name; passed `'#1890ff'` → considered as a color constant (starts with `#` or a valid CSS color name). `encode.size` passed `10` (number) → considered as a constant.
+> **判断规则**：`encode.color` 传入 `'genre'` → 视为字段名；传入 `'#1890ff'` → 视为颜色常量（以 `#` 开头或合法 CSS 颜色名）。`encode.size` 传入 `10`（数字）→ 常量。
 
-## G2 v4 → v5 Spec Migration Reference
+## G2 v4 → v5 Spec 迁移对照
 
-| G2 v4 Chaining | G2 v5 Spec `encode` Field |
+| G2 v4 链式 | G2 v5 Spec encode 字段 |
 |-----------|------------------------|
 | `.position('x*y')` | `encode: { x: 'x', y: 'y' }` |
 | `.color('type')` | `encode: { color: 'type' }` |
@@ -159,37 +161,65 @@ chart.options({
 | `.shape('circle')` | `encode: { shape: 'circle' }` |
 | `.opacity('rate')` | `encode: { opacity: 'rate' }` |
 
-## Common Errors and Fixes
+## Mark 特有通道
 
-### Error 1: encode written in style
+不同 mark 类型支持额外的通道：
+
+| Mark | 特有通道 | 说明 |
+|------|---------|------|
+| `interval` | `y1` | 区间终点（甘特图、范围柱）|
+| `line` | `shape` | 线型：`'line'`\|`'smooth'`\|`'hv'`\|`'vh'`\|`'hvh'`\|`'vhv'` |
+| `point` | `shape` | 点形：`'circle'`\|`'square'`\|`'diamond'`\|`'triangle'`\|... |
+| `area` | `shape` | 区域：`'area'`\|`'smooth'`\|`'hvh'` |
+| `text` | `text` | 文本内容（字段名或函数）|
+| `image` | `src` | 图片 URL 字段 |
+| `vector` | `rotate`, `size` | 方向角度和长度 |
+| `sankey`/`chord` | `source`, `target`, `value` | 关系图的起终点和权重 |
+
+## encode 常量 vs 字段名判定
+
 ```javascript
-// ❌ Incorrect: style does not perform data mapping
+encode: {
+  color: 'type',       // 字段名 → 按 type 字段分色
+  color: '#1890ff',    // # 开头 → 颜色常量，所有元素同色
+  color: 'steelblue',  // CSS 颜色名 → 颜色常量
+  color: () => 'red',  // 函数 → 常量（返回固定值时等同常量）
+  size: 'population',  // 字段名 → 按 population 映射大小
+  size: 10,            // 数字 → 大小常量
+}
+```
+
+## 常见错误与修正
+
+### 错误 1：encode 写在了 style 里
+```javascript
+// ❌ 错误：style 不做数据映射
 chart.options({
   type: 'interval',
   data: [...],
-  style: { color: 'genre' },  // Invalid! genre is a field name, not a color value
+  style: { color: 'genre' },  // 无效！genre 是字段名，不是颜色值
 });
 
-// ✅ Correct: Use encode for data mapping, and style for fixed styles
+// ✅ 正确：数据映射用 encode，固定样式用 style
 chart.options({
   type: 'interval',
   data: [...],
-  encode: { color: 'genre' },   // Data-driven color
-  style: { fillOpacity: 0.8 },  // Fixed opacity
+  encode: { color: 'genre' },   // 数据驱动颜色
+  style: { fillOpacity: 0.8 },  // 固定透明度
 });
 ```
 
-### Error 2: Confusion Between color and series Channels
+### 错误 2：color 与 series 通道混淆
 ```javascript
-// Explanation: color both groups and changes colors; series only groups without changing colors
-// For multi-series line charts, it is recommended to use color:
+// 说明：color 既分组又改颜色；series 只分组不改颜色
+// 多系列折线图推荐用 color：
 chart.options({
   type: 'line',
   encode: {
     x: 'month',
     y: 'value',
-    color: 'type',    // ✅ Recommended: Each line has a different color
-    // series: 'type', // Only groups, same color (less commonly used)
+    color: 'type',    // ✅ 推荐：每条线不同颜色
+    // series: 'type', // 只分组，颜色相同（少用）
   },
 });
 ```

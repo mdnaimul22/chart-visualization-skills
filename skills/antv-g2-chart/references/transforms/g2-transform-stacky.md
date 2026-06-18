@@ -31,7 +31,7 @@ use_cases:
   - "Create pie charts (with theta coordinate system)"
 
 difficulty: "beginner"
-completeness: "partial"
+completeness: "full"
 created: "2024-01-01"
 updated: "2025-03-26"
 author: "antv-team"
