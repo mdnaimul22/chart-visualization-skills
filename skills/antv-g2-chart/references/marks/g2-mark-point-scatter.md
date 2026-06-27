@@ -1,22 +1,22 @@
 ---
 id: "g2-mark-point-scatter"
-title: "G2 Scatter Plot (Point Mark)"
+title: "G2 散点图（Point Mark）"
 description: |
-  Create a scatter plot using Point Mark to display the correlation between two numerical variables through x/y positions.
-  This article uses the Spec mode (chart.options({})), supporting variants such as bubble charts (size channel), categorical coloring, and custom shapes.
+  使用 Point Mark 创建散点图，通过 x/y 位置展示两个数值变量的相关性。
+  本文采用 Spec 模式（chart.options({})），支持气泡图（size 通道）、分类着色、自定义形状等变体。
 
 library: "g2"
 version: "5.x"
 category: "marks"
 subcategory: "point"
 tags:
-  - "scatter plot"
-  - "bubble chart"
+  - "散点图"
+  - "气泡图"
   - "Point"
   - "scatter"
   - "bubble"
-  - "correlation"
-  - "distribution"
+  - "相关性"
+  - "分布"
   - "spec"
 
 related:
@@ -25,13 +25,13 @@ related:
   - "g2-interaction-tooltip"
 
 use_cases:
-  - "Display the correlation between two continuous variables"
-  - "Identify data distribution and outliers"
-  - "Use bubble charts to display three-dimensional data (x/y/size)"
+  - "展示两个连续变量的相关性"
+  - "发现数据分布和异常值"
+  - "用气泡图展示三维数据（x/y/size）"
 
 anti_patterns:
-  - "Performance is poor when there are more than 10,000 data points; consider using a density plot"
-  - "Scatter plots are less meaningful when both axes are categorical variables"
+  - "数据点超过 10000 个时性能较差，考虑使用密度图"
+  - "两轴都是分类变量时，散点图意义不大"
 
 difficulty: "beginner"
 completeness: "full"
@@ -41,7 +41,7 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/examples/point/scatter"
 ---
 
-## Minimum Viable Example
+## 最小可运行示例
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -72,37 +72,85 @@ chart.options({
 chart.render();
 ```
 
-## Bubble Chart (Three-Dimensional Data)
+## 气泡图（三维数据）
+
+气泡图样式要点：不要使用白色描边（浅色主题下像错误图表），推荐径向渐变 + 阴影 + 较高 fillOpacity；
+size 比例尺推荐使用 sqrt 类型，合理设置 size.range（建议 [4, 40]），隐藏 size 图例，
+坐标轴使用虚线网格，标签用 overlapDodgeY 防重叠。
 
 ```javascript
 import { Chart } from '@antv/g2';
 
 const chart = new Chart({ container: 'container', width: 700, height: 500 });
 
+const data1990 = [
+  { income: 28604, life: 77,    population: 17096869, country: 'Australia' },
+  { income: 31163, life: 77.4,  population: 27662440, country: 'Canada' },
+  { income: 1516,  life: 68,    population: 1154605773, country: 'China' },
+  { income: 29476, life: 77.1,  population: 56943299, country: 'France' },
+  { income: 29550, life: 79.1,  population: 122249285, country: 'Japan' },
+  { income: 37062, life: 75.4,  population: 252847810, country: 'United States' },
+];
+
+const data2015 = [
+  { income: 44056, life: 81.8,  population: 23968973, country: 'Australia' },
+  { income: 43294, life: 81.7,  population: 35939927, country: 'Canada' },
+  { income: 13334, life: 76.9,  population: 1376048943, country: 'China' },
+  { income: 37599, life: 81.9,  population: 64395345, country: 'France' },
+  { income: 36162, life: 83.5,  population: 126573481, country: 'Japan' },
+  { income: 53354, life: 79.1,  population: 321773631, country: 'United States' },
+];
+
+const allData = [
+  ...data1990.map(d => ({ ...d, year: '1990' })),
+  ...data2015.map(d => ({ ...d, year: '2015' })),
+];
+
+// 颜色映射表：scale.color.range 和 fill 回调共用
+const COLOR_MAP = { '1990': '#fb7678', '2015': '#81e7ee' };
+
 chart.options({
   type: 'point',
-  data: [
-    { income: 30000, lifeExpect: 72, population: 1400, country: 'China'  },
-    { income: 60000, lifeExpect: 79, population: 330,  country: 'USA'    },
-    { income: 45000, lifeExpect: 84, population: 125,  country: 'Japan'  },
-    { income: 20000, lifeExpect: 68, population: 1380, country: 'India'  },
-    { income: 35000, lifeExpect: 80, population: 210,  country: 'Brazil' },
-  ],
+  data: allData,
   encode: {
     x: 'income',
-    y: 'lifeExpect',
-    size: 'population',    // Bubble size = Third dimension
-    color: 'country',
+    y: 'life',
+    size: 'population',    // 气泡大小 = 第三个维度
+    color: 'year',
+    shape: 'point',
   },
   scale: {
-    size: { range: [10, 60] },    // Control bubble size range
+    size: { type: 'sqrt', range: [4, 40] },    // sqrt 比例尺 + 合适的气泡范围
+    color: { domain: ['1990', '2015'], range: Object.values(COLOR_MAP) },
+  },
+  style: {
+    fillOpacity: 0.85,
+    lineWidth: 0,
+    // 径向渐变 + 阴影：模拟 3D 球体质感
+    // 通过 COLOR_MAP[datum.year] 获取颜色，与 scale.color.range 保持一致
+    fill: (datum) => {
+      const color = COLOR_MAP[datum.year];
+      return `radial-gradient(circle at 35% 35%, rgb(255,255,255) 0%, ${color} 100%)`;
+    },
+    shadowBlur: 10,
+    shadowColor: 'rgba(0, 0, 0, 0.15)',
+    shadowOffsetY: 5,
+  },
+  legend: { size: false },    // size 图例意义不大，建议隐藏
+  labels: [
+    { text: 'country', fontSize: 12, fontWeight: 700, fill: '#2D3748', dy: 10,
+      transform: [{ type: 'overlapDodgeY' }] },
+  ],
+  axis: {
+    x: { grid: true, gridLineDash: [4, 4], gridStrokeOpacity: 0.3 },
+    y: { grid: true, gridLineDash: [4, 4], gridStrokeOpacity: 0.3 },
   },
   tooltip: {
-    title: 'country',
+    title: (d) => `${d.country} (${d.year})`,
     items: [
-      { field: 'income',     name: 'Income per capita' },
-      { field: 'lifeExpect', name: 'Life expectancy' },
-      { field: 'population', name: 'Population (millions)' },
+      { field: 'income',     name: '人均收入' },
+      { field: 'life',       name: '预期寿命' },
+      { field: 'population', name: '人口', valueFormatter: (v) => `${(v / 1e6).toFixed(1)}M` },
     ],
   },
 });
@@ -110,7 +158,9 @@ chart.options({
 chart.render();
 ```
 
-## Custom Point Shapes
+> 气泡图完整样式指南（含径向渐变、阴影等）见 [气泡图文档](g2-mark-point-bubble.md)。
+
+## 自定义点形状
 
 ```javascript
 chart.options({
@@ -120,7 +170,7 @@ chart.options({
     x: 'x',
     y: 'y',
     color: 'type',
-    shape: 'type',    // Map the type field to the shape channel
+    shape: 'type',    // 将 type 字段映射到形状通道
   },
   scale: {
     shape: {
@@ -130,10 +180,10 @@ chart.options({
 });
 ```
 
-## Scatter Plot + Trend Line
+## 散点图 + 趋势线
 
 ```javascript
-// Use type: 'view' + children to overlay scatter plot and regression trend line
+// 用 type: 'view' + children 叠加散点和回归趋势线
 chart.options({
   type: 'view',
   data: [...],
@@ -152,26 +202,26 @@ chart.options({
 });
 ```
 
-## Common Errors and Fixes
+## 常见错误与修正
 
-### Error 1: Performance Issues with Large Datasets
+### 错误 1：大数据量性能问题
 ```javascript
-// ❌ Note: 100,000 points will cause slow rendering
+// ❌ 注意：十万个点会导致渲染缓慢
 chart.options({ type: 'point', data: hugeDataWith100000Points, encode: { x: 'x', y: 'y' } });
 
-// ✅ Optimization 1: Sample the data first
-chart.options({ type: 'point', data: sampledData, encode: { x: 'x', y: 'y' } });
+// ✅ 优化方案 1：先在数据层面采样
+chart.options({ type: 'point',  sampledData, encode: { x: 'x', y: 'y' } });
 
-// ✅ Optimization 2: Use a density chart to display distribution
-chart.options({ type: 'density', data: [...], encode: { x: 'x', y: 'y' } });
+// ✅ 优化方案 2：改用密度图展示分布
+chart.options({ type: 'density',  [...], encode: { x: 'x', y: 'y' } });
 ```
 
-### Error 2: Using String Literals in the `size` Channel
+### 错误 2：size 通道使用字符串常量
 ```javascript
-// ❌ Misunderstanding: String in `size` is treated as a field name
-chart.options({ type: 'point', encode: { size: '10' } });  // Looks for a field named '10'
+// ❌ 误解：size 传字符串会被当作字段名
+chart.options({ type: 'point', encode: { size: '10' } });  // 寻找名为 '10' 的字段
 
-// ✅ Correct: Use numbers for fixed sizes, field name strings for data mapping
-chart.options({ type: 'point', encode: { size: 10 } });           // Fixed size 10
-chart.options({ type: 'point', encode: { size: 'population' } }); // Maps to the 'population' field
+// ✅ 正确：固定大小用数字，数据映射用字段名字符串
+chart.options({ type: 'point', encode: { size: 10 } });           // 固定大小 10
+chart.options({ type: 'point', encode: { size: 'population' } }); // 映射字段
 ```
