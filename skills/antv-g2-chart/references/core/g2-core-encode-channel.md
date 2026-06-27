@@ -37,6 +37,7 @@ updated: "2025-03-01"
 author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/encode"
 ---
+
 ## Core Concepts
 
 **Channel** is an abstraction of graphical attributes. In Spec mode, `encode` is a field of the `options` object,
@@ -102,7 +103,7 @@ chart.options({
 ### Dual Numerical Axes + Bubble Chart (Multi-Channel Mapping)
 
 ```javascript
-// 颜色映射表：scale.color.range 和 fill 回调共用
+// Color mapping table: Shared by scale.color.range and fill callback
 const COLOR_MAP = { 'China': '#5B8FF9', 'USA': '#fb7678', 'Japan': '#81e7ee' };
 
 chart.options({
@@ -120,14 +121,14 @@ chart.options({
     shape: 'point',
   },
   scale: {
-    size: { type: 'sqrt', range: [4, 40] },    // sqrt 比例尺 + 合适的气泡范围
+    size: { type: 'sqrt', range: [4, 40] },    // sqrt scale + appropriate bubble range
     color: { range: Object.values(COLOR_MAP) },
   },
   style: {
-    fillOpacity: 0.85,            // 不要用 stroke: '#fff'，浅色主题下像错误图表
+    fillOpacity: 0.85,            // Avoid using stroke: '#fff', as it resembles an error chart in light themes
     lineWidth: 0,
-    // 径向渐变：从白色中心到映射色边缘，模拟 3D 球体质感
-    // 通过 COLOR_MAP[datum.country] 获取颜色，与 scale.color.range 保持一致
+    // Radial gradient: From white center to mapped color edge, simulating 3D sphere texture
+    // Retrieve color via COLOR_MAP[datum.country], consistent with scale.color.range
     fill: (datum) => {
       const color = COLOR_MAP[datum.country];
       return `radial-gradient(circle at 35% 35%, rgb(255,255,255) 0%, ${color} 100%)`;
@@ -136,10 +137,9 @@ chart.options({
     shadowColor: 'rgba(0, 0, 0, 0.15)',
     shadowOffsetY: 5,
   },
-  legend: { size: false },        // size 图例意义不大，建议隐藏
+  legend: { size: false },        // Size legend is less meaningful; recommend hiding
 });
 ```
-
 ### Function Mapping (Advanced)
 
 ```javascript
