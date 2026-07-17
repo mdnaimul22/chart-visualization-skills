@@ -12,10 +12,10 @@ subcategory: "advanced"
 tags:
   - "edge-bundling"
   - "bubble-sets"
-  - "边绑定"
-  - "气泡集"
-  - "集合关系"
-  - "节点分组"
+  - "edge binding"
+  - "bubble sets"
+  - "set relationships"
+  - "node grouping"
 
 related:
   - "g6-plugin-fisheye-hull-watermark"
