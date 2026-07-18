@@ -12,10 +12,10 @@ subcategory: "ui"
 tags:
   - "fullscreen"
   - "title"
-  - "全屏"
-  - "标题"
-  - "图标题"
-  - "沉浸式"
+  - "full screen"
+  - "heading"
+  - "graph title"
+  - "immersive"
 
 related:
   - "g6-plugin-contextmenu-toolbar"
@@ -26,7 +26,6 @@ completeness: "full"
 created: "2026-04-16"
 updated: "2026-04-16"
 ---
-
 ## Title Plugin (title)
 
 Adds a main title and subtitle to the graph canvas, supporting custom styles such as font, color, and alignment.
