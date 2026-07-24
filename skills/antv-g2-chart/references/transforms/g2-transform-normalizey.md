@@ -1,21 +1,21 @@
 ---
 id: "g2-transform-normalizey"
-title: "G2 NormalizeY 归一化变换"
+title: "G2 NormalizeY Transformation"
 description: |
-  NormalizeY 将每个 x 分组内的 y 值归一化到 [0, 1]，
-  通常跟在 stackY 之后使用，用于创建百分比堆叠图表，
-  消除总量差异，聚焦占比分布。
+  NormalizeY normalizes the y values within each x group to the range [0, 1],
+  typically used after stackY to create percentage stacked charts,
+  eliminating total quantity differences and focusing on proportion distribution.
 
 library: "g2"
 version: "5.x"
 category: "transforms"
 tags:
   - "normalizeY"
-  - "归一化"
-  - "百分比"
+  - "normalization"
+  - "percentage"
   - "transform"
-  - "百分比堆叠"
-  - "占比"
+  - "percentage stacking"
+  - "proportion"
   - "spec"
 
 related:
@@ -23,9 +23,9 @@ related:
   - "g2-transform-stacky"
 
 use_cases:
-  - "创建百分比堆叠柱状图"
-  - "创建百分比堆叠面积图"
-  - "消除总量差异，聚焦占比"
+  - "Creating percentage stacked bar charts"
+  - "Creating percentage stacked area charts"
+  - "Eliminating total quantity differences, focusing on proportion"
 
 difficulty: "beginner"
 completeness: "full"
@@ -35,7 +35,7 @@ author: "antv-team"
 source_url: "https://g2.antv.antgroup.com/manual/core/transform/normalize-y"
 ---
 
-## 基本用法（必须配合 stackY）
+## Basic Usage (Must be Used with stackY)
 
 ```javascript
 import { Chart } from '@antv/g2';
@@ -47,8 +47,8 @@ chart.options({
   data,
   encode: { x: 'month', y: 'value', color: 'type' },
   transform: [
-    { type: 'stackY' },       // 第一步：堆叠
-    { type: 'normalizeY' },   // 第二步：归一化（顺序不能颠倒！）
+    { type: 'stackY' },       // Step 1: Stack
+    { type: 'normalizeY' },   // Step 2: Normalize (Order cannot be reversed!)
   ],
   axis: {
     y: { labelFormatter: (v) => `${(v * 100).toFixed(0)}%` },
@@ -58,20 +58,20 @@ chart.options({
 chart.render();
 ```
 
-## 配置项
+## Configuration Options
 
 ```javascript
 transform: [
   { type: 'stackY' },
   {
     type: 'normalizeY',
-    basis: 'max',    // 归一化基准：'max'（默认，每组最大值）| 'min' | 'first' | 'last' | 'mean' | 'median'
-    series: 'y',     // 指定归一化的通道，默认 'y'
+    basis: 'max',    // Normalization basis: 'max' (default, maximum value per group) | 'min' | 'first' | 'last' | 'mean' | 'median'
+    series: 'y',     // Specifies the channel for normalization, default is 'y'
   },
 ],
 ```
 
-## 百分比堆叠面积图
+## Percentage Stacked Area Chart
 
 ```javascript
 chart.options({
@@ -88,9 +88,9 @@ chart.options({
 });
 ```
 
-## Y 轴百分比格式化
+## Y-axis Percentage Formatting
 
-normalizeY 后 y 值范围为 [0, 1]，需手动格式化为百分比显示：
+After `normalizeY`, the y-value range is [0, 1], and it needs to be manually formatted to display as a percentage:
 
 ```javascript
 axis: {
@@ -98,20 +98,20 @@ axis: {
 }
 ```
 
-## 常见错误与修正
+## Common Errors and Fixes
 
-### 错误 1：normalizeY 在 stackY 之前执行
+### Error 1: normalizeY Executed Before stackY
 ```javascript
-// ❌ 错误：先归一化再堆叠，得不到百分比堆叠效果
+// ❌ Incorrect: Normalizing before stacking does not achieve the percentage stacking effect
 transform: [{ type: 'normalizeY' }, { type: 'stackY' }],
 
-// ✅ 正确：先堆叠，再归一化
+// ✅ Correct: Stack first, then normalize
 transform: [{ type: 'stackY' }, { type: 'normalizeY' }],
 ```
 
-### 错误 2：缺少 stackY 直接使用 normalizeY
+### Error 2: Missing stackY, Directly Using normalizeY
 ```javascript
-// ❌ 错误：仅 normalizeY 不会产生百分比堆叠效果
+// ❌ Incorrect: Only normalizeY does not produce a percentage stacking effect
 chart.options({
   type: 'interval',
   data,
@@ -119,7 +119,7 @@ chart.options({
   transform: [{ type: 'normalizeY' }],
 });
 
-// ✅ 正确：stackY + normalizeY 配合
+// ✅ Correct: Combine stackY with normalizeY
 chart.options({
   type: 'interval',
   data,
@@ -128,12 +128,12 @@ chart.options({
 });
 ```
 
-### 错误 3：Y 轴未格式化为百分比
+### Error 3: Y-axis Not Formatted as Percentage
 ```javascript
-// ❌ 问题：归一化后 y 轴显示 0.0 - 1.0，用户看不懂
+// ❌ Problem: After normalization, the Y-axis displays 0.0 - 1.0, which is unclear to users
 chart.options({ transform: [{ type: 'stackY' }, { type: 'normalizeY' }] });
 
-// ✅ 正确：添加百分比格式化
+// ✅ Correct: Add percentage formatting
 chart.options({
   transform: [{ type: 'stackY' }, { type: 'normalizeY' }],
   axis: { y: { labelFormatter: (v) => `${(v * 100).toFixed(0)}%` } },
